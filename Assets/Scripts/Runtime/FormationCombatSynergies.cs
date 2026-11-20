@@ -76,7 +76,7 @@ namespace YesterdayConvoy
             {
                 var carrier=Units.FirstOrDefault(u=>u.Id==State(p).RidingCarrier);
                 if(carrier?.Alive!=true){State(p).RidingCarrier=0;if(carrier!=null)State(carrier).Passenger=0;}
-                else if(p.Alive)p.Position=CampaignRiderPosition(carrier);
+                else if(p.Alive&&SnowBossFreezeRemaining(p)<=0)p.Position=CampaignRiderPosition(carrier);
             }
         }
         void SetupSea()

@@ -3110,6 +3110,272 @@
       "nativeReport": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-06_原作特效整备-v1\\defenders\\native-probe\\production\\whitw2_skill_03_trail_01\\report.json",
       "sourceBundle": "battle/prefabs/effects/whitw2.ab",
       "adaptation": "Native shader capture; independent anchor; no style repaint."
+    },
+    {
+      "key": "defender/D27/sbell2_skill_02_start_01",
+      "count": 76,
+      "width": 372,
+      "height": 228,
+      "columns": 5,
+      "ppu": 62.222225189208984,
+      "pivotX": 0.44623655913978494,
+      "pivotY": 0.5570178952133447,
+      "duration": 2.533333333333333,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_02_start_01-00.png",
+          "count": 40,
+          "width": 1860,
+          "height": 1824
+        },
+        {
+          "file": "D27/sbell2_skill_02_start_01-01.png",
+          "count": 36,
+          "width": 1860,
+          "height": 1824
+        }
+      ],
+      "sourcePrefab": "sbell2_skill_02_start_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Caster attack effect from S2 Body/Attack UberEffectEmitter. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_skill_01_hit",
+      "count": 45,
+      "width": 152,
+      "height": 132,
+      "columns": 8,
+      "ppu": 80.0,
+      "pivotX": 0.5,
+      "pivotY": 0.4469706217447917,
+      "duration": 1.5,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_01_hit-00.png",
+          "count": 45,
+          "width": 1216,
+          "height": 792
+        }
+      ],
+      "sourcePrefab": "sbell2_skill_01_hit",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Direct target impact from S2 Body/Attack UberEffectEmitter. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_buff_01_hit_02",
+      "count": 11,
+      "width": 64,
+      "height": 64,
+      "columns": 8,
+      "ppu": 71.1111068725586,
+      "pivotX": 0.484375,
+      "pivotY": 0.6093766093254089,
+      "duration": 0.36666666666666664,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_buff_01_hit_02-00.png",
+          "count": 11,
+          "width": 512,
+          "height": 128
+        }
+      ],
+      "sourcePrefab": "sbell2_buff_01_hit_02",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Periodic target impact from sbell2_t1[s2_dot]. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_revive",
+      "count": 59,
+      "width": 156,
+      "height": 108,
+      "columns": 8,
+      "ppu": 60.68965148925781,
+      "pivotX": 0.46794871794871795,
+      "pivotY": 0.2962970733642578,
+      "duration": 1.9666666666666666,
+      "hdrRange": 16.0,
+      "loop": false,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_revive-00.png",
+          "count": 59,
+          "width": 1248,
+          "height": 864
+        }
+      ],
+      "sourcePrefab": "sbell2_revive",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "First-lethal recovery effect from sbell2_t2[heal]. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_frozen",
+      "count": 102,
+      "width": 112,
+      "height": 84,
+      "columns": 8,
+      "ppu": 71.11111450195312,
+      "pivotX": 0.48214285714285715,
+      "pivotY": 0.2619060334705171,
+      "duration": 3.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_frozen-00.png",
+          "count": 102,
+          "width": 896,
+          "height": 1092
+        }
+      ],
+      "sourcePrefab": "sbell2_frozen",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Native D27 ice shell. Used at frozen unit anchors as a board adaptation. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_ground_01",
+      "count": 72,
+      "width": 96,
+      "height": 52,
+      "columns": 8,
+      "ppu": 86.9565200805664,
+      "pivotX": 0.4895833333333333,
+      "pivotY": 0.500002384185791,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_ground_01-00.png",
+          "count": 72,
+          "width": 768,
+          "height": 468
+        }
+      ],
+      "sourcePrefab": "sbell2_ground_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Original ground snow layer sampled for each effective board snow tile. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_ground_02",
+      "count": 72,
+      "width": 104,
+      "height": 72,
+      "columns": 8,
+      "ppu": 86.9565200805664,
+      "pivotX": 0.5,
+      "pivotY": 0.5833350552452935,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_ground_02-00.png",
+          "count": 72,
+          "width": 832,
+          "height": 648
+        }
+      ],
+      "sourcePrefab": "sbell2_ground_02",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Original ground snow layer sampled for each effective board snow tile. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_ground_03",
+      "count": 72,
+      "width": 104,
+      "height": 72,
+      "columns": 8,
+      "ppu": 86.9565200805664,
+      "pivotX": 0.5,
+      "pivotY": 0.5833350552452935,
+      "duration": 2.4,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_ground_03-00.png",
+          "count": 72,
+          "width": 832,
+          "height": 648
+        }
+      ],
+      "sourcePrefab": "sbell2_ground_03",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "Original ground snow layer sampled for each effective board snow tile. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_skill_03_flow",
+      "count": 105,
+      "width": 244,
+      "height": 120,
+      "columns": 8,
+      "ppu": 41.48147964477539,
+      "pivotX": 0.5122950819672131,
+      "pivotY": 0.4750004450480143,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_03_flow-00.png",
+          "count": 105,
+          "width": 1952,
+          "height": 1680
+        }
+      ],
+      "sourcePrefab": "sbell2_skill_03_flow",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "S3 persistent flow from sbell2_s3[switch_mode]. Loop the steady window after its initial fade-in. Sampled at 30 fps with the board camera pitch and native particle materials."
+    },
+    {
+      "key": "defender/D27/sbell2_skill_02_buff_01",
+      "count": 105,
+      "width": 96,
+      "height": 48,
+      "columns": 8,
+      "ppu": 50.909088134765625,
+      "pivotX": 0.6145833333333334,
+      "pivotY": 0.14583500226338705,
+      "duration": 3.5,
+      "hdrRange": 16.0,
+      "loop": true,
+      "directional": false,
+      "forwardDegrees": 0,
+      "pages": [
+        {
+          "file": "D27/sbell2_skill_02_buff_01-00.png",
+          "count": 105,
+          "width": 768,
+          "height": 672
+        }
+      ],
+      "sourcePrefab": "sbell2_skill_02_buff_01",
+      "sourceBundle": "battle/prefabs/effects/sbell2.ab",
+      "adaptation": "S2 persistent owner layer from skchr_sbell2_2 BuffDuringSkill sbell2_s2[effect_1]. Continue from the stable window after the initial fade-in. Native brightness and pivot retained."
     }
   ]
 }

@@ -63,7 +63,7 @@ namespace YesterdayConvoy
         }
         float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,bool transferred=false)
         {
-            if(target==null||!target.Alive||raw<=0)return 0;var t=State(target);var s=State(source);
+            if(target==null||!target.Alive||raw<=0||target is FormationDefender snowBoss&&SnowBossTransitionActive(snowBoss))return 0;var t=State(target);var s=State(source);
             float armor=target.Armor+Buff(target,"mandra_armor")+Buff(target,"blast_armor")+Buff(target,"kingdom_armor");
             if(Buff(target,"armorbreak")>0)armor-=Mathf.Min(5,Stack(target,"armorbreak"))*2;
             if(source is FormationFighter sf&&HasItem(sf,"AA")&&armor>0)armor*=1-Stack(source,"saw")*.02f;
@@ -121,7 +121,7 @@ namespace YesterdayConvoy
                 if(Key(fighter)=="B04"&&fighter.Health<fighter.MaxHealth*.5f&&t.Stage==0){t.Stage=1;fighter.PhaseStage=1;NativePhasePresentation(fighter);GiveBuff(fighter,"stage_as",.3f,999);GainSP(fighter,6);RelayReturned(fighter);}
                 if(HasItem(fighter,"BE")&&!t.EmergencyUsedThisLife&&fighter.Health<fighter.MaxHealth*.3f&&Stack(fighter,"emergency")<2&&fighter.Health>0){t.EmergencyUsedThisLife=true;AddStack(fighter,"emergency",1,2);Shield(fighter,fighter,fighter.MaxHealth*.2f,6,"emergency");GiveBuff(fighter,"move",.4f,4);}
             }
-            bool killed=target.Health<=0;
+            bool killed=target.Health<=0 && !(target is FormationDefender transitioningBoss && BeginSnowBossTransition(transitioningBoss));
             var presentation = HitPresentation(source);
             Hits.Add(new FormationHit
             {
@@ -140,7 +140,7 @@ namespace YesterdayConvoy
                     DeepEmber(target);
                 }
             }
-            if(t.Boss&&target.Alive)
+            if(t.Boss&&target.Alive&&!(target is FormationDefender specialBoss&&specialBoss.IsSnowBoss))
             {
                 int plane=Campaign.CurrentNode.Plane;int stage=plane==3?(target.Health<target.MaxHealth*.35f?2:target.Health<target.MaxHealth*.7f?1:0):(target.Health<target.MaxHealth*.5f?1:0);
                 if(stage>t.Stage){t.Stage=stage;target.PhaseStage=stage;target.Interval=t.BaseInterval/(1+(plane==1?.2f:plane==3?.15f:0));}

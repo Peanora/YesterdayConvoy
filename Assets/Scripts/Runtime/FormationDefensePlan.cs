@@ -104,7 +104,7 @@ namespace YesterdayConvoy
             Defense("3-4", "战斗", 35f, 2.99f, "D22 D01 D05 D06", "D28 D07 D08 D12 D11"),
             Defense("3-5", "遭遇", 42f, 3.18f, "D26 D01 D02 D04", "D24 D09 D10 D12 D08"),
             Defense("3-6", "奖励", 16f, 1.80f, "D06 D04 D05", "D07 D08 D09"),
-            Defense("3-7", "首领", 60f, 3.55f, "D30 D01 D02 D05", "D24 D07 D08 D09 D12", 150f),
+            Defense("3-7", "首领", 1f, 1f, "D27", "", 150f),
         };
 
         public static readonly BossDefinition[] Bosses =
@@ -125,10 +125,10 @@ namespace YesterdayConvoy
             },
             new BossDefinition
             {
-                NodeId = "3-7", ArtId = "D30", Name = "玛恩纳",
-                Health = 660000, Attack = 610, Armor = 45, MagicResistance = 35,
-                Interval = 2.8f, Range = 3.5f, InitialSP = 12, RequiredSP = 26, ActionSeconds = 3,
-                Effect = "蓄力3秒后沿预警直线斩击，宽2格，最多命中5人，每段造成160%攻击力物伤。70%和35%生命转段，最后转为五连斩。"
+                NodeId = "3-7", ArtId = "D27", Name = "圣聆初雪",
+                Health = 500000, Attack = 230, Armor = 35, MagicResistance = 30,
+                Interval = 3.2f, Range = 4.25f, InitialSP = 0, RequiredSP = 0, ActionSeconds = 1,
+                Effect = "第一阶段「霜涛覆岭」，攻击落点积雪并向邻格扩散，雪地持续造成法伤。第一段生命耗尽时冻结全场进攻方2秒，随后以完整的第二段生命释放「群山俯首」。第二段生命耗尽后才算消灭。"
             },
         };
 
@@ -178,7 +178,7 @@ namespace YesterdayConvoy
         {
             if (nodeId == "1-6" && artId == "D22")
                 return "进攻方首次进入3.2格范围后展开火墙，持续6秒，每战一次。穿墙的合格敌方弹道伤害降低15%。";
-            var boss = Bosses.FirstOrDefault(guard => guard.ArtId == artId);
+            var boss = Bosses.FirstOrDefault(guard => guard.NodeId == nodeId && guard.ArtId == artId);
             if (boss != null) return boss.Effect;
             var defender = DefenderByArtId(artId);
             return defender == null ? null : defender.Effect ?? Defenders[defender.Role].Effect;
@@ -196,8 +196,8 @@ namespace YesterdayConvoy
                 HealthScale = health,
                 AttackScale = attack,
                 TimeLimit = limit > 0 ? limit : kind == "奖励" ? float.PositiveInfinity : kind == "首领" ? 120 : 90,
-                Front = front.Split(' '),
-                Rear = rear.Split(' '),
+                Front = front.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries),
+                Rear = rear.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries),
             };
         }
 

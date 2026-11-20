@@ -64,7 +64,7 @@ namespace YesterdayConvoy
                         u.ActionUntil=Math.Max(u.ActionUntil,presentation.At+action+.35);
                         ScheduleOwned(u,presentation.At+action,()=>
                         {
-                            if(!u.Alive)return;var t=FighterTarget(u);if(t==null)return;
+                            if(!u.Alive||SnowBossFreezeRemaining(u)>0)return;var t=FighterTarget(u);if(t==null)return;
                             var follow=BeginAction(u,.35,false);
                             QueueOrdinaryAction(u,t,follow,()=>{s.Autos++;NativeSegment(u,new[]{t},u.Attack*.6f,0,false,0,false);CompleteAuto(u,true);});
                         });
@@ -243,6 +243,7 @@ namespace YesterdayConvoy
         void HealLow(FormationFighter u,int n,float mult){foreach(var f in LowAllies(n))CombatHeal(u,f,u.Attack*mult*Power(u),true,true);}
         void BlinkBehind(FormationFighter u,FormationActor target,float distance)
         {
+            if(SnowBossFreezeRemaining(u)>0)return;
             Vector2 desired=target.Position+new Vector2(distance,0);desired.x=Mathf.Clamp(desired.x,BattleAreaStart,Width-1);desired.y=Mathf.Clamp(desired.y,0,Height-1);
             if(Terrain==null||Terrain.CanTravel(u.Position,desired))u.Position=desired;
         }

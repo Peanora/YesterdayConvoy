@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -61,7 +62,7 @@ namespace YesterdayConvoy.Tests
                 ["D09"] = "炎熔", ["D10"] = "芙蓉", ["D11"] = "安赛尔", ["D12"] = "梓兰",
                 ["D21"] = "荒芜拉普兰德", ["D22"] = "余", ["D23"] = "Mon3tr", ["D24"] = "新约能天使",
                 ["D25"] = "斩业星熊", ["D26"] = "凛御银灰", ["D27"] = "圣聆初雪", ["D28"] = "望",
-                ["D29"] = "塞雷娅", ["D30"] = "玛恩纳"
+                ["D29"] = "塞雷娅"
             };
             var north = new RectInt(15, 0, 5, 4);
             var south = new RectInt(15, 4, 5, 4);
@@ -97,6 +98,16 @@ namespace YesterdayConvoy.Tests
                     Assert.That(defender.Name, Is.EqualTo(expectedNames[defender.ArtId]), node.Id);
                     seenNames.Add(defender.ArtId);
                 }
+                if (node.Id == "3-7")
+                {
+                    var boss = model.Defenders.Single();
+                    Assert.That(boss.ArtId, Is.EqualTo("D27"));
+                    Assert.That(boss.IsSnowBoss, Is.True);
+                    Assert.That(boss.SnowBossPhase, Is.EqualTo(1));
+                    Assert.That(terrain.IsWalkable(Vector2Int.RoundToInt(boss.Position)), Is.True);
+                }
+                else
+                    Assert.That(model.Defenders.Any(defender => defender.IsSnowBoss), Is.False, node.Id);
 
                 var original = model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
                     defender.MaxHealth, defender.Attack)).ToArray();
@@ -109,6 +120,7 @@ namespace YesterdayConvoy.Tests
 
             CollectionAssert.AreEquivalent(expectedNames.Keys, seenNames);
             CollectionAssert.AreEquivalent(new[] { false, true }, seenSides);
+            Assert.That(FormationCampaignRules.DefenderByArtId("D30").Name, Is.EqualTo("玛恩纳"));
         }
 
         [TestCase("1-7")]
@@ -599,31 +611,101 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void MlynarWaitsForChargeThenDealsDamageOnlyAfterTheThreeSecondWarning()
+        public void SnowBossFreezesAcrossTheBoardOnceAndNeedsASecondClearBeforeTheGate()
         {
-            var model = Fixture(out var run, "M11");
+            var model = Fixture(out var run, "M03", "M11");
             ReachNode(run, "3-7", collectDrops: false);
             model.BindCampaign(run);
-            var guard = model.Defenders.Single(defender => defender.ArtId == "D30");
-            model.Defenders.RemoveAll(defender => defender != guard);
-            var fighter = model.Units.Single();
+            var guard = model.Defenders.Single();
+            var fighter = model.Units[0];
+            var distant = model.Units[1];
             Assert.That(model.StartBattle(), Is.True);
-            Assert.That(guard.SkillCharge, Is.EqualTo(12));
-            Assert.That(guard.SkillRequired, Is.EqualTo(26));
             fighter.Position = guard.Position + Vector2.left;
             fighter.MaxHealth = fighter.Health = 100000;
-            Advance(model, 2);
-            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id), Is.False);
+            distant.Position = Vector2.zero;
+            for (int tick = 0; tick < 400 && model.SnowBossSnow(guard).Count == 0; tick++)
+                Advance(model, .025f);
+            Assert.That(model.SnowBossSnow(guard), Is.Not.Empty, "Phase 1 builds snow at real contact cells");
+            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill && hit.Amount > 0), Is.True);
+            Assert.That(Vector2.Distance(distant.Position, guard.Position), Is.GreaterThan(guard.Range));
 
-            guard.SkillCharge = guard.SkillRequired;
-            Advance(model, .025f);
-            double warnedAt = model.Clock;
-            Advance(model, 2.95f);
-            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id), Is.False);
-            Advance(model, .075f);
-            var hits = model.Hits.Where(hit => hit.FromId == guard.Id).ToArray();
-            Assert.That(hits.Length, Is.EqualTo(3));
-            Assert.That(hits.All(hit => Math.Abs(hit.At - (warnedAt + 3)) < .026), Is.True);
+            guard.Health = 1;
+            for (int tick = 0; tick < 160 && !model.SnowBossTransitionActive(guard); tick++)
+                Advance(model, .025f);
+            Assert.That(model.SnowBossTransitionActive(guard), Is.True);
+            Assert.That(guard.Health, Is.Zero);
+            Assert.That(model.SnowBossSnow(guard), Is.Empty);
+            Assert.That(model.BossAlive, Is.True);
+            Assert.That(model.RemainingDefenders, Is.EqualTo(1));
+            Assert.That(model.Phase, Is.EqualTo(FormationPhase.Fighting));
+            Assert.That(model.Hits.Any(hit => hit.ToId == guard.Id && hit.Killed), Is.False);
+
+            var clock = model.Clock;
+            var freeze = model.SnowBossFreezeRemaining(distant);
+            var actors = model.Units.Where(unit => unit.Alive).ToArray();
+            Assert.That(actors.All(unit => model.SnowBossFreezeRemaining(unit) > 0), Is.True);
+            var poses = actors.Select(unit => (unit.Position, unit.LastActionAt, unit.SkillCharge)).ToArray();
+            model.Paused = true;
+            Advance(model, 2);
+            Assert.That(model.Clock, Is.EqualTo(clock));
+            Assert.That(model.SnowBossFreezeRemaining(distant), Is.EqualTo(freeze));
+            model.Paused = false;
+            Advance(model, .25f);
+            Assert.That(actors.Select(unit => (unit.Position, unit.LastActionAt, unit.SkillCharge)), Is.EqualTo(poses));
+            Assert.That(model.SnowBossFreezeRemaining(distant), Is.LessThan(freeze));
+
+            for (int tick = 0; tick < 90 && model.SnowBossTransitionActive(guard); tick++)
+                Advance(model, .025f);
+            Assert.That(guard.SnowBossPhase, Is.EqualTo(2));
+            Assert.That(guard.Health, Is.GreaterThan(guard.MaxHealth * .95f));
+            for (int tick = 0; tick < 240 && !model.Hits.Any(hit => hit.FromId == guard.Id && hit.At > clock && hit.Skill && hit.Amount > 0); tick++)
+                Advance(model, .025f);
+            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.At > clock && hit.Skill && hit.Amount > 0), Is.True);
+            guard.Health = 1;
+            for (int tick = 0; tick < 240 && guard.Alive; tick++)
+                Advance(model, .025f);
+            Assert.That(guard.Alive, Is.False);
+            Assert.That(model.BossAlive, Is.False);
+            Assert.That(model.RemainingDefenders, Is.Zero);
+            Assert.That(model.Phase, Is.EqualTo(FormationPhase.Exiting));
+            Advance(model, 25);
+            Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
+            Assert.That(model.Retry(), Is.True);
+            Assert.That(model.Defenders.Single().SnowBossPhase, Is.EqualTo(1));
+            Assert.That(model.SnowBossFreezeRemaining(distant), Is.Zero);
+        }
+
+        [Test]
+        public void DefaultSnowBossTrialRosterWinsTheUnmodifiedBattle()
+        {
+            const int seed = 20261117;
+            var start = typeof(FormationShopSession).GetMethod("StartPramanixBossTrial", BindingFlags.Static | BindingFlags.NonPublic);
+            var session = (FormationShopSession)start.Invoke(null, new object[] { seed });
+            try
+            {
+                var model = new FormationBattleModel(seed, SavedTerrain());
+                session.ApplyTo(model);
+                Assert.That(session.Run.IsPramanixBossTrial, Is.True);
+                Assert.That(model.EnabledCount, Is.GreaterThan(0));
+                var boss = model.Defenders.Single();
+                Assert.That(boss.IsSnowBoss, Is.True);
+                Assert.That(model.StartBattle(), Is.True);
+                double transition = 0, clear = 0;
+                for (int tick = 0; tick < 6000 && (model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting); tick++)
+                {
+                    model.Advance(.025f);
+                    if (transition == 0 && model.SnowBossTransitionActive(boss)) transition = model.Clock;
+                    if (clear == 0 && model.RemainingDefenders == 0) clear = model.Clock;
+                }
+                TestContext.WriteLine($"Snow boss trial: phase={model.Phase}, transition={transition:0.000}s, clear={clear:0.000}s, end={model.Clock:0.000}s, HP={boss.Health:0}/{boss.MaxHealth:0}");
+                Assert.That(transition, Is.GreaterThan(0));
+                Assert.That(clear, Is.GreaterThan(transition + 2));
+                Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
+            }
+            finally
+            {
+                FormationShopSession.StartNew(seed, true);
+            }
         }
 
         [Test]

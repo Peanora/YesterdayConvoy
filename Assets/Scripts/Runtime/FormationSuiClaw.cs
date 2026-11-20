@@ -70,6 +70,13 @@ namespace YesterdayConvoy
         void ReleaseSuiClaw(FormationFighter owner, FormationSuiClawStrike strike)
         {
             if (strike.Released) return;
+            double freeze = SnowBossFreezeRemaining(owner);
+            if (freeze > 1e-8)
+            {
+                strike.LiftAt = Clock + freeze;
+                ScheduleOwned(owner, strike.LiftAt, () => ReleaseSuiClaw(owner, strike));
+                return;
+            }
             strike.Released = true;
             owner.Position = strike.ReturnPoint;
         }
@@ -105,6 +112,11 @@ namespace YesterdayConvoy
             ScheduleOwned(owner, impactAt, () =>
             {
                 if (Phase != FormationPhase.Fighting) return;
+                if (SnowBossFreezeRemaining(owner) > 0)
+                {
+                    if (cue != null) SettleSuiClawStrike(owner, cue, cue.Center, false);
+                    return;
+                }
                 var victims = Defenders.Where(defender => defender.Alive).ToArray();
                 if(victims.Length>0)
                 {

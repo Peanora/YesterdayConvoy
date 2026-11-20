@@ -108,6 +108,7 @@ namespace YesterdayConvoy
         public int NodeIndex {get;private set;}
         public FormationCampaignRules.NodeDefinition CurrentNode=>FormationCampaignRules.Nodes[NodeIndex];
         public bool IsPractice {get;}
+        public bool IsPramanixBossTrial { get; }
         public FormationSynergyTrial SynergyTrial { get; }
         public string LastTrialProgress { get; private set; }
         internal bool ShowsHopeRewards => SynergyTrial?.Trait.Id == "整合";
@@ -167,10 +168,11 @@ namespace YesterdayConvoy
         public FormationCampaignRun(ShopTrialModel shop,int seed) : this(shop,seed,null) {}
 
         internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode,FormationSynergyTrial trial=null,
-            IReadOnlyList<string> openingStarters = null)
+            IReadOnlyList<string> openingStarters = null, bool pramanixBossTrial = false)
         {
             this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
             SynergyTrial=trial;
+            IsPramanixBossTrial = pramanixBossTrial;
             IsPractice=practiceNode.HasValue;
             if(IsPractice&&!SelectPracticeNode(practiceNode.Value))throw new ArgumentOutOfRangeException(nameof(practiceNode));
             if (trial != null)
@@ -185,6 +187,7 @@ namespace YesterdayConvoy
                 if (trial.Trait.Id == "萨卡兹") { SarkazPact = 2; SarkazBloodPact = true; }
                 return;
             }
+            if (IsPramanixBossTrial) return;
             if (openingStarters != null)
             {
                 PrepareOpeningDelivery(openingStarters);
@@ -201,6 +204,7 @@ namespace YesterdayConvoy
         {
             if(!IsPractice||node<0||node>=FormationCampaignRules.Nodes.Length||FormationCampaignRules.Nodes[node].DefenderCount==0)return false;
             if (SynergyTrial != null && node != SynergyTrial.NodeIndex) return false;
+            if (IsPramanixBossTrial && FormationCampaignRules.Nodes[node].Id != "3-7") return false;
             if(NodeIndex!=node)CurrentEncounterTier=1;
             NodeIndex=node;
             synergyTrialSettled=false;

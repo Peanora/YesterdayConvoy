@@ -46,6 +46,10 @@ namespace YesterdayConvoy
     {
         public bool Healer;
         public Vector2Int? SkillCell { get; internal set; }
+        public bool IsSnowBoss { get; internal set; }
+        public int SnowBossPhase { get; internal set; }
+        public double SnowBossTransitionStartedAt { get; internal set; }
+        public double SnowBossTransitionUntil { get; internal set; }
     }
 
     public sealed class FormationHit
@@ -605,6 +609,7 @@ namespace YesterdayConvoy
 
         void Move(FormationFighter unit, Vector2 goal, float dt, bool avoid)
         {
+            if (SnowBossFreezeRemaining(unit) > 0) return;
             if (Terrain != null)
             {
                 Vector2 waypoint;

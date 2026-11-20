@@ -129,12 +129,12 @@ namespace YesterdayConvoy
             var trial = Campaign.SynergyTrial;
             var life = new Rect(1006, 20, 86, 36);
             Fill(new Rect(life.x, life.y + 2, 1, 32), OperationsEdge);
-            if (trial != null)
+            if (trial != null || Campaign.IsPramanixBossTrial)
             {
                 var panel = OperationsRouteRect;
                 OperationsLabel(new Rect(panel.x + 12, panel.y + 7, panel.width - 24, 26),
-                    trial.Trait.Name + " · 羁绊试玩", 18, OperationsGold, true);
-                OperationsLabel(new Rect(panel.x + 12, panel.y + 35, panel.width - 24, 18), trial.Hint, 12, OperationsInk);
+                    trial == null ? "圣聆初雪 · 首领试玩" : trial.Trait.Name + " · 羁绊试玩", 18, OperationsGold, true);
+                OperationsLabel(new Rect(panel.x + 12, panel.y + 35, panel.width - 24, 18), trial?.Hint ?? PramanixTrialHint, 12, OperationsInk);
                 OperationsLabel(life, "无限金币", 12, OperationsMuted, false, TextAnchor.MiddleCenter);
             }
             else

@@ -65,9 +65,20 @@ namespace YesterdayConvoy
             ["D30"]=new[]{"mlynar_skill_03_buff_03","mlynar_skill_03_start_01","mlynar_skill_03_hit_01"},
         };
 
-        static IEnumerable<ArtSequence> FormationGuardEffects(string id)
+        const string PramanixEffects = "defender/D27/";
+        static readonly string[] PramanixBossEffectKeys =
+        {
+            "sbell2_skill_03_start_01", "sbell2_skill_03_hit",
+            "sbell2_skill_02_buff_01", "sbell2_skill_02_start_01", "sbell2_skill_01_hit", "sbell2_buff_01_hit_02",
+            "sbell2_ground_01", "sbell2_ground_02", "sbell2_ground_03", "sbell2_revive",
+            "sbell2_frozen", "sbell2_skill_03_flow"
+        };
+
+        IEnumerable<ArtSequence> FormationGuardEffects(string id)
         {
             if(!FormationGuardEffectKeys.TryGetValue(id,out var keys))yield break;
+            if(id=="D27"&&Model.Defenders.Any(d=>d.IsSnowBoss))
+                keys=PramanixBossEffectKeys;
             foreach(string key in keys)
                 if(OriginalCombatVfxArt.TryGet("defender/"+id+"/"+key,out var clip))yield return clip.Sequence;
         }
@@ -79,6 +90,11 @@ namespace YesterdayConvoy
             foreach(var guard in Model.Defenders)
             {
                 if(!guard.Alive)continue;
+                if(guard.IsSnowBoss)
+                {
+                    PresentPramanixBoss(guard, now);
+                    continue;
+                }
                 string id=guard.ArtId;
                 var effect=Model.GuardEffect(guard);
                 if(effect!=null&&now>=effect.StartedAt&&now<=effect.EndsAt)
@@ -129,9 +145,23 @@ namespace YesterdayConvoy
             }
             foreach(var action in Model.PresentationActions)
             {
-                if(action.ActorId<100||action.Animation!="skill_attack")continue;
+                if(action.ActorId<100||action.Cancelled)continue;
                 var guard=Model.Defenders.FirstOrDefault(d=>d.Id==action.ActorId);
                 if(guard==null)continue;
+                if(guard.IsSnowBoss)
+                {
+                    string effect = action.Animation switch
+                    {
+                        "skill_2_attack" => "sbell2_skill_02_start_01",
+                        "skill_attack" or "skill_attack_b" or "skill_attack_c" => "sbell2_skill_03_start_01",
+                        _ => null
+                    };
+                    if(effect!=null && !(guard.SnowBossTransitionStartedAt>0 && action.At<=guard.SnowBossTransitionStartedAt))
+                        LegacyOriginal(PramanixEffects+effect,(now-(action.Animation=="skill_2_attack"?action.ContactAt:action.At))*action.Rate,action.From,22,
+                            flat:true,scale:1.45f);
+                    continue;
+                }
+                if(action.Animation!="skill_attack")continue;
                 string cast=guard.ArtId switch
                 {
                     "D24"=>"angel2_skill_3_loop_start_01",
@@ -145,6 +175,7 @@ namespace YesterdayConvoy
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
             {
+                var pramanix = hit.SourceArtId == "D27" ? Model.Defenders.FirstOrDefault(d => d.Id == hit.FromId && d.IsSnowBoss) : null;
                 string clip=hit.SourceArtId switch
                 {
                     "D21"=>hit.Skill?"whitw2_skill_03_token_hit_01":"whitw2_hit_01",
@@ -153,15 +184,64 @@ namespace YesterdayConvoy
                     "D24"=>hit.Skill?"angel2_skill_3_loop_hit_01":"angel2_attack_loop_hit_01",
                     "D25"=>"hsgma2_attack_01_hit_01",
                     "D26"=>"svash2_attack_hit_01",
-                    "D27"=>"sbell2_skill_03_hit",
+                    "D27"=>pramanix == null ? "sbell2_skill_03_hit" : PramanixBossHit(pramanix, hit),
                     "D28"=>"wang_attack_01_hit",
                     "D29"=>hit.Heal?null:"demkni_attack_01_hit",
                     "D30"=>"mlynar_skill_03_hit_01",
                     _=>null
                 };
                 if(clip!=null&&guardHitSprites.Add((hit.SourceArtId,hit.ToId,hit.At,clip)))
-                    LegacyOriginal("defender/"+hit.SourceArtId+"/"+clip,(now-hit.At)*FormationVisualRate,hit.To,35);
+                    LegacyOriginal("defender/"+hit.SourceArtId+"/"+clip,(now-hit.At)*FormationVisualRate,hit.To,pramanix!=null?-6:35);
             }
+        }
+
+        static string PramanixBossHit(FormationDefender guard, FormationHit hit)
+        {
+            if(guard.SnowBossTransitionStartedAt>0 && hit.At<=guard.SnowBossTransitionStartedAt)return null;
+            return hit.Action?.Animation switch
+            {
+                "skill_2_attack" => "sbell2_skill_01_hit",
+                "SnowBossS2Tick" => "sbell2_buff_01_hit_02",
+                "skill_attack" or "skill_attack_b" or "skill_attack_c" => "sbell2_skill_03_hit",
+                _ => null
+            };
+        }
+
+        void PresentPramanixBoss(FormationDefender guard, double now)
+        {
+            double s2StartedAt = Model.SnowBossS2StartedAt(guard);
+            if(s2StartedAt>=0)
+                PresentPramanixWind("sbell2_skill_02_buff_01",(now-s2StartedAt)*FormationVisualRate,guard.Position,16,PramanixBossScale);
+            var snowCells = Model.SnowBossSnow(guard);
+            foreach(var snow in snowCells)
+            {
+                string texture = snow.Value == 1 ? "sbell2_ground_01" : snow.Value < 5 ? "sbell2_ground_02" : "sbell2_ground_03";
+                Vector2 cell = snow.Key;
+                double age = .8 + (now*FormationVisualRate+cell.x*.17+cell.y*.31)%1.6;
+                LegacyOriginal(PramanixEffects+texture,age,cell,-12,flat:true);
+            }
+            var field = Model.GuardEffect(guard);
+            if(field != null && field.Kind == "snow")
+            {
+                PresentPramanixWind("sbell2_skill_03_flow",(now-field.StartedAt)*FormationVisualRate,guard.Position,20,1.45f);
+                if(snowCells.Count==0)PresentGuardSnowField(field);
+            }
+            if(!Model.SnowBossTransitionActive(guard))return;
+            double transitionAge = (now-guard.SnowBossTransitionStartedAt)*FormationVisualRate;
+            LegacyOriginal(PramanixEffects+"sbell2_revive",transitionAge,guard.Position,28,
+                flat:true,scale:PramanixBossScale);
+            double iceAge = transitionAge < 3.4 ? transitionAge : .8 + (transitionAge-.8)%2.6;
+            foreach(var fighter in Model.Units.Concat(Model.Summons))
+                if(Model.SnowBossFreezeRemaining(fighter)>0)
+                    LegacyOriginal(PramanixEffects+"sbell2_frozen",iceAge,fighter.Position,-5,
+                        scale:Mathf.Max(1,Mathf.Max(fighter.Footprint.x,fighter.Footprint.y)*.72f));
+        }
+
+        void PresentPramanixWind(string effect, double age, Vector2 cell, int order, float scale)
+        {
+            // The first native sample includes the fade-in. Repeat only the settled section.
+            if(age>=3.5)age=1+(age-1)%2.5;
+            LegacyOriginal(PramanixEffects+effect,age,cell,order,flat:true,scale:scale);
         }
 
         void DrawGuardGroundCell(Vector2 cell,Color color)

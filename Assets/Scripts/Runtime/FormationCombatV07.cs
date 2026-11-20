@@ -12,7 +12,8 @@ namespace YesterdayConvoy
         public int BattleGold { get; private set; }
         public int InitialDefenderCount { get; private set; }
         public bool BossAlive => Defenders.Any(d => d.Alive && State(d).Boss);
-        public float EncounterProgress => initialGuardHealth <= 0 ? 0 : Mathf.Clamp01(1 - Defenders.Where(d => State(d).InitialGuard).Sum(d => State(d).LowestHealth) / initialGuardHealth);
+        public float EncounterProgress => initialGuardHealth <= 0 ? 0 : Mathf.Clamp01(1 - Defenders.Where(d => State(d).InitialGuard).Sum(d =>
+            State(d).LowestHealth + (d.IsSnowBoss && d.SnowBossPhase == 1 ? d.MaxHealth : 0)) / initialGuardHealth);
         internal bool IsInitialGuard(FormationDefender guard) => State(guard).InitialGuard;
         public readonly List<FormationFighter> Summons = new List<FormationFighter>();
         public IReadOnlyDictionary<string,int> SynergyCounts => synergyCounts;
@@ -173,7 +174,7 @@ namespace YesterdayConvoy
         bool AttackRecovery(FormationActor a) => State(a).Spec?.Recovery=="攻击" || Key(a)=="WIS"&&Campaign.WisadelSkill==1;
         void GainSP(FormationActor a,float amount,bool attackPoint=false,bool echo=false)
         {
-            if(a==null||a.SkillRequired<=0)return;var s=State(a);
+            if(a==null||a.SkillRequired<=0||a is FormationFighter fighter&&SnowBossFreezeRemaining(fighter)>0)return;var s=State(a);
             if(AttackRecovery(a)&&!attackPoint){s.SPFraction+=amount;amount=Mathf.Floor(s.SPFraction/3);s.SPFraction-=amount*3;}
             float actual=Mathf.Min(amount,Mathf.Max(0,a.SkillRequired-a.SkillCharge));a.SkillCharge+=actual;
             if(echo&&amount>actual)s.Echo=Mathf.Min(new[]{0,0,4,6,8,12}[Mathf.Clamp(Level("同频"),0,5)],s.Echo+amount-actual);
@@ -182,8 +183,9 @@ namespace YesterdayConvoy
         {
             ConfigureCampaignTeam();events.Clear();zones.Clear();Summons.Clear();relaySources.Clear();finalDeaths.Clear();seaCells.Clear();seaBursts.Clear();seaExtra=0;
             BattleGold=0;killedGuards=0;actionSequence=0;resonanceBeats=0;nextSeaDecay=1;BattleEvents.Clear();SkillCasts.Clear();
+            snowBossFrozen.Clear();
             foreach(var d in Defenders){var s=State(d);s.LowestHealth=d.MaxHealth;d.Health=d.MaxHealth;d.Alive=true;d.SkillCharge=s.GuardInitialSP;ResetGuardKit(d);}
-            InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth);
+            InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth*(d.IsSnowBoss?2:1));
             foreach(var u in Units.Where(u=>u.Enabled))
             {
                 var s=State(u);u.PhaseStage=0;s.NativeLives=0;u.NativePhase=0;u.NativePhaseChangedAt=0;u.NativePhaseReturningUntil=0;s.LastTarget=-1;s.Action=0;u.SkillCharge=s.Spec?.InitialSP??0;
@@ -206,6 +208,16 @@ namespace YesterdayConvoy
             LimitSeconds = node.TimeLimit;
             if (node.DefenderCount == 0) return;
 
+            var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
+            if (boss?.ArtId == "D27")
+            {
+                var cell = new Vector2Int(Width - 5, 4);
+                if (Terrain != null && (!Terrain.CanPlaceDefender(cell) || !Terrain.IsWalkable(cell) || Terrain.HeightAt(cell) > 0))
+                    throw new InvalidOperationException($"No legal boss cell for campaign node {node.Id} at {cell}.");
+                AddCampaignDefender(node, null, boss.ArtId, cell, 1, boss);
+                return;
+            }
+
             var rng = new FormationRandom(unchecked((uint)Seed ^ ((uint)(Campaign.NodeIndex + 1) * 0x9e3779b9u)));
             var north = FormationCampaignRules.NorthGuardFormation;
             var south = FormationCampaignRules.SouthGuardFormation;
@@ -219,7 +231,6 @@ namespace YesterdayConvoy
             }
 
             int tier = node.Kind == "遭遇" ? Campaign.CurrentEncounterTier : 1;
-            var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
             for (int i = 0; i < node.Front.Length; i++)
                 AddCampaignDefender(node, formation, node.Front[i], formation.Front[i], tier, boss);
             for (int i = 0; i < node.Rear.Length; i++)
@@ -264,7 +275,9 @@ namespace YesterdayConvoy
                 Name = guard.Name,
                 Healer = guard.Role == 5,
                 Position = cell,
-                SkillCell = formation.SkillCell(artId),
+                SkillCell = formation?.SkillCell(artId),
+                IsSnowBoss = isBoss && artId == "D27",
+                SnowBossPhase = isBoss && artId == "D27" ? 1 : 0,
                 MaxHealth = isBoss ? boss.Health : FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
                 Armor = isBoss ? boss.Armor : role.Armor,
@@ -295,6 +308,7 @@ namespace YesterdayConvoy
         {
             Hits.RemoveAll(h=>h.At<Clock-3);
             presentationActions.RemoveAll(action=>Math.Max(action.EndAt,action.ContactAt)<Clock-6);
+            CompleteSnowBossTransition();
             foreach(var a in Units.Cast<FormationActor>().Concat(Defenders).Concat(Summons).ToArray())
             {
                 var s=State(a);a.IsMoving=false;
@@ -305,6 +319,7 @@ namespace YesterdayConvoy
                     if(Clock+1e-8>=at)ReturnCampaignFighter(u);continue;
                 }
                 if(!a.Alive)continue;
+                if(a is FormationFighter frozen && SnowBossFreezeRemaining(frozen)>0)continue;
                 if(s.Spec!=null)
                 {
                     RefreshCampaignStats(a);
@@ -344,7 +359,7 @@ namespace YesterdayConvoy
         void TickCampaignFighter(FormationFighter u,float dt,bool summon)
         {
             var s=State(u);
-            if(s.NativePending||Buff(u,"stun")>0||Buff(u,"freeze")>0)return;
+            if(s.NativePending||Buff(u,"stun")>0||Buff(u,"freeze")>0||SnowBossFreezeRemaining(u)>0)return;
             if(s.RidingCarrier!=0){var carrier=Units.FirstOrDefault(v=>v.Id==s.RidingCarrier&&v.Alive);if(carrier!=null)u.Position=CampaignRiderPosition(carrier);}
             bool cadejo=u.ArtId=="B14";
             bool entered=HasEnteredBattleArea(u);
@@ -352,6 +367,7 @@ namespace YesterdayConvoy
             if(Key(u)=="M34"&&Stack(u,"awake")==0)return;
             var target=FighterTarget(u);u.TargetId=target?.Id??-1;
             if(Clock<u.ActionUntil||s.BusyUntil>Clock)return;
+            if(MoveSnowBossInduced(u,dt))return;
             if(cadejo&&(!entered||target==null||Vector2.Distance(u.Position,target.Position)>u.Range))
             {
                 AdvanceCadejoEngagement(u,target);

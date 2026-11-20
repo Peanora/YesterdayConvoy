@@ -194,7 +194,7 @@ namespace YesterdayConvoy
             bool showProgress=!string.IsNullOrEmpty(progress);
             var r=new Rect(350,198,580,showProgress?270:234);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
             string outcome=Model.Phase==FormationPhase.Won?"蓝门突破":"本关失利";
-            string title=trial?.Trait.Name??Campaign.CurrentNode.Id;
+            string title=Campaign.IsPramanixBossTrial ? "圣聆初雪" : trial?.Trait.Name??Campaign.CurrentNode.Id;
             CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,40),$"{title}  ·  {outcome}",25,true);
             CampaignLabel(new Rect(r.x+25,r.y+84,r.width-50,35),$"用时 {Model.Clock:0.0} 秒  ·  剩余守军 {Model.RemainingDefenders}/{Model.InitialDefenderCount}  ·  守军生命削减 {Model.EncounterProgress:P0}",15);
             if(showProgress)CampaignLabel(new Rect(r.x+25,r.y+122,r.width-50,67),progress,14,true);

@@ -38,6 +38,8 @@ namespace YesterdayConvoy
             string id = hit.SourceArtId ?? FormationFeedbackActor(hit.FromId)?.ArtId;
             switch (id)
             {
+                case "D27":
+                    return ImpactStyle.Magic;
                 case "SLUG": case "M02": case "M03": case "P14H": case "B14": case "M35":
                     return hit.Skill && id == "B14" ? ImpactStyle.Blast : ImpactStyle.Bite;
                 case "M08": case "M11": case "M16": case "D07": case "GOLEM":

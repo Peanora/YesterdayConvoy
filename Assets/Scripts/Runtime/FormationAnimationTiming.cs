@@ -176,7 +176,8 @@ namespace YesterdayConvoy
             context.Presentation = presentation;
             Action contact = () =>
             {
-                if (presentation.Cancelled || !actor.Alive || State(actor).LifeVersion != life || target == null || !target.Alive)
+                if (presentation.Cancelled || !actor.Alive || State(actor).LifeVersion != life || target == null || !target.Alive ||
+                    SnowBossFreezeRemaining(actor) > 0 && presentation.LaunchedAt + 1e-8 >= snowBossFrozenUntil - SnowBossTransitionSeconds)
                 { presentation.Cancelled = true; return; }
                 presentation.To = target.Position;
                 RunInPresentationContext(actor, context, resolve);
@@ -244,7 +245,7 @@ namespace YesterdayConvoy
             Action contact = () =>
             {
                 completion.ContactResolved = true;
-                if (!actor.Alive || State(actor).LifeVersion != completion.Life)
+                if (!actor.Alive || State(actor).LifeVersion != completion.Life || SnowBossFreezeRemaining(actor) > 0)
                 { presentation.Cancelled = true; return; }
                 var target = Units.Cast<FormationActor>().Concat(Defenders).Concat(Summons).FirstOrDefault(a => a.Id == presentation.TargetId);
                 if (target != null) presentation.To = target.Position;

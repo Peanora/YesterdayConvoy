@@ -25,6 +25,11 @@ namespace YesterdayConvoy
             internal float OutsideHealing;
             internal FormationFighter HuntTarget;
             internal FormationGuardEffect Effect;
+            internal Dictionary<Vector2Int, int> SnowTiles;
+            internal HashSet<int> InSnow;
+            internal Dictionary<int, Vector2Int> SnowInduction;
+            internal int SnowStrikes;
+            internal double NextSnowTick;
         }
 
         readonly Dictionary<int, GuardKit> guardKits = new Dictionary<int, GuardKit>();
@@ -40,6 +45,7 @@ namespace YesterdayConvoy
         {
             guardKits.Remove(guard.Id);
             var kit = Kit(guard);
+            if (guard.IsSnowBoss) ResetSnowBoss(guard, kit);
             if (guard.ArtId == "D28" && GuardSkillCellIsFree(guard))
                 PlaceGuardChess(guard, kit);
         }
@@ -74,6 +80,8 @@ namespace YesterdayConvoy
             foreach (var guard in Defenders)
             {
                 if (guard.ArtId != "D27") continue;
+                if (guard.IsSnowBoss && SnowBossSnow(guard).ContainsKey(Vector2Int.RoundToInt(fighter.Position)))
+                    slow = Mathf.Max(slow, .25f);
                 var effect = GuardEffect(guard);
                 if (effect != null && (fighter.Position - effect.Origin).sqrMagnitude <= effect.Radius * effect.Radius)
                     return Mathf.Max(slow, .25f);
@@ -150,7 +158,7 @@ namespace YesterdayConvoy
             context.Presentation = action;
             void Contact()
             {
-                if (!guard.Alive) { action.Cancelled = true; return; }
+                if (!guard.Alive || action.Cancelled) { action.Cancelled = true; return; }
                 RunInPresentationContext(guard, context, resolve);
             }
             if (action.ContactAt <= Clock + 1e-8) Contact();
@@ -161,6 +169,11 @@ namespace YesterdayConvoy
         {
             var state = State(guard);
             var kit = Kit(guard);
+            if (guard.IsSnowBoss)
+            {
+                TickSnowBoss(guard, kit);
+                return;
+            }
             if (guard.ArtId == "D28")
             {
                 TickGuardChess(guard, kit);

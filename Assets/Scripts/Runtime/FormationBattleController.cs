@@ -220,11 +220,11 @@ namespace YesterdayConvoy
         }
         public void ResetDemo()
         {
-            if (Campaign?.SynergyTrial != null)
+            if (Campaign?.IsPramanixBossTrial == true || Campaign?.SynergyTrial != null)
             {
                 if (openingGroundBall != null) return;
                 Model = Session.PreparePracticeBattle(Campaign.NodeIndex);
-                ResetFormationPreparation(Campaign.SynergyTrial.Hint);
+                ResetFormationPreparation(Campaign.SynergyTrial?.Hint ?? PramanixTrialHint);
                 return;
             }
             if(Campaign?.IsPractice==true){SelectPracticeBattle(Campaign.NodeIndex);return;}
@@ -243,7 +243,7 @@ namespace YesterdayConvoy
 
         internal void SelectPracticeBattle(int node)
         {
-            if(Campaign?.IsPractice==true && Campaign.SynergyTrial==null)
+            if(Campaign?.IsPractice==true && Campaign.SynergyTrial==null && !Campaign.IsPramanixBossTrial)
             {
                 var next=Session.PreparePracticeBattle(node);
                 if(next==null)return;
@@ -266,6 +266,17 @@ namespace YesterdayConvoy
             Model = new FormationBattleModel(seed, Model.Terrain);
             Session.ApplyTo(Model);
             ResetFormationPreparation(trial.Hint);
+        }
+
+        const string PramanixTrialHint = "预设阵容已上阵，可直接开战或先调整站位。";
+
+        internal void SelectPramanixBossTrial()
+        {
+            if (!Ready) return;
+            Session = FormationShopSession.StartPramanixBossTrial(seed);
+            Model = new FormationBattleModel(seed, Model.Terrain);
+            Session.ApplyTo(Model);
+            ResetFormationPreparation(PramanixTrialHint);
         }
 
         void ResetFormationPreparation(string message)

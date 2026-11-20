@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 namespace YesterdayConvoy
 {
     /// <summary>Opt-in production-path Player verification.</summary>
-    public sealed class FormationCampaignEvidence : MonoBehaviour
+    public sealed partial class FormationCampaignEvidence : MonoBehaviour
     {
         [Serializable] sealed class Check {public string name;public bool passed;}
         [Serializable] sealed class Report
@@ -20,6 +20,7 @@ namespace YesterdayConvoy
             public List<Check> checks=new List<Check>();public List<string> exceptions=new List<string>();
             public List<DefenseStage> defenseStages = new List<DefenseStage>();
             public List<SynergyStage> synergyStages = new List<SynergyStage>();
+            public SnowBossReplay snowBoss;
         }
         [Serializable] sealed class DefenseStage
         {
@@ -40,7 +41,7 @@ namespace YesterdayConvoy
         static bool started;
         readonly Report result=new Report{scope="Production v0.7 choices, shop, deployments, equipment, ground rewards and the first three battles on the joined board. Left preparation uses the same tile scale as combat. Screenshots come from the Windows Player. Accelerated battles use normal simulation time through the campaign controller."};
         FormationBattleController controller;string directory;bool done;
-        internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested;
+        internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested || SnowBossRequested;
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
         static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
         static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
@@ -62,7 +63,7 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            var fallback = SynergyRequested ? "artifacts/formation-synergy-trials/player" :
+            var fallback = SnowBossRequested ? "artifacts/formation-snow-boss/player" : SynergyRequested ? "artifacts/formation-synergy-trials/player" :
                 DefenseRequested ? "artifacts/formation-defense/player" : "artifacts/formation-combat-view/player";
             directory=Path.GetFullPath(at>=0&&at+1<args.Length?args[at+1]:fallback);Directory.CreateDirectory(directory);
             return Guard(Verify());
@@ -178,6 +179,11 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (SnowBossRequested)
+            {
+                yield return VerifySnowBossTrial();
+                yield break;
+            }
             if (SynergyRequested)
             {
                 yield return VerifySynergyTrials();
@@ -1330,8 +1336,6 @@ namespace YesterdayConvoy
                                 yield return Frame(capture + "-" + guard.ArtId + "-skill");
                                 if (id == "1-6" && guard.ArtId == "D22")
                                     yield return CaptureInterfaceClip(id + "-D22-normal-speed", 48, "-formationDefenseClips");
-                                else if (!probe && id == "3-7" && guard.ArtId == "D30")
-                                    yield return CaptureInterfaceClip(id + "-D30-normal-speed", 84, "-formationDefenseClips");
                                 else if (probe)
                                     yield return CaptureInterfaceClip(capture + "-" + guard.ArtId + "-normal-speed", 36, "-formationDefenseClips");
                             }
@@ -1404,7 +1408,7 @@ namespace YesterdayConvoy
         {
             done=true;result.error=error?.ToString();result.exceptionCount=result.exceptions.Count;result.assertions=result.checks.Count;
             result.passed=error==null&&result.exceptionCount==0;
-            string report = SynergyRequested ? "synergy-smoke.json" :
+            string report = SnowBossRequested ? "snow-boss-smoke.json" : SynergyRequested ? "synergy-smoke.json" :
                 DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" :
                 OpeningDeliveryRequested ? "opening-delivery-smoke.json" : StrategyHistoryRequested ? "strategy-history-smoke.json" :
                 ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";

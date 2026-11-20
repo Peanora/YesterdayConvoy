@@ -119,8 +119,11 @@ namespace YesterdayConvoy
         public float ActorPresentationHeight(FormationActor actor)
         {
             if(actor is FormationFighter)return FormationUnitCatalog.Find(actor.ArtId)?.VisualHeight??1.12f;
-            return art.TryGetValue(actor.ArtId,out var source)&&source.Height>0?source.Height:1.12f;
+            float height = art.TryGetValue(actor.ArtId,out var source)&&source.Height>0?source.Height:1.12f;
+            return actor is FormationDefender guard && guard.IsSnowBoss ? height * PramanixBossScale : height;
         }
+
+        const float PramanixBossScale = 2.45f;
 
         Rect FormationActorScreenRect(FormationFighter actor)
         {
@@ -149,6 +152,11 @@ namespace YesterdayConvoy
                 body.transform.SetParent(actorRoot,false);body.sharedMaterial=actorMaterial;bodies[actor.Id]=body;
                 ActorGrounding.Attach(body,ActorPresentationHeight(actor));
             }
+            else if(body.gameObject.name!=actor.Name)
+            {
+                body.gameObject.name=actor.Name;
+                ActorGrounding.Attach(body,ActorPresentationHeight(actor));
+            }
             if(PresentFormationSuiBody(actor,body))return;
             double now=Model.Clock,deathAge=now-actor.LastDeathAt;
             bool returning=actor is FormationFighter returningFighter&&returningFighter.NativePhaseReturningUntil>now;
@@ -171,6 +179,7 @@ namespace YesterdayConvoy
             double age=key=="death"?deathAge*FormationVisualRate:key=="attack"||key=="cast"?(now-visualStarted)*actionRate:
                 (Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now*FormationVisualRate);
             float sourceHeight,labelTop=0,actionScale=1;
+            bool frozen = actor is FormationFighter frozenFighter && Model.SnowBossFreezeRemaining(frozenFighter) > 0;
             if(!defender)
             {
                 var source=formationMonsterArt[actor.ArtId];sourceHeight=source.Height;
@@ -186,7 +195,7 @@ namespace YesterdayConvoy
                     var nativeFrame=source.Frame(key,age,loop);
                     // A newly entered phase can request an uncached page. Retain the last real
                     // source frame while the same production cache prepares that window.
-                    if(nativeFrame!=null)body.sprite=nativeFrame;
+                    if(nativeFrame!=null&&(!frozen||body.sprite==null))body.sprite=nativeFrame;
                     actionScale=source.DisplayScaleFor(key);
                 }
                 else
@@ -218,7 +227,8 @@ namespace YesterdayConvoy
                     if(key=="death"){body.enabled=false;return;}
                     key=casting&&source.HasAction("skill")?"skill":source.HasOrdinaryAttack?"attack":"idle";
                 }
-                body.sprite=source.Frame(key,age,regularSkill||harvesterMotion?loop:key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");
+                if(!frozen||body.sprite==null)
+                    body.sprite=source.Frame(key,age,regularSkill||harvesterMotion?loop:key!="attack"&&key!="cast"&&key!="skill"&&key!="death"&&key!="extra_die_2"&&key!="extra_revive"&&key!="extra_skill_front_start"&&key!="extra_skill_front_end");
                 }
                 labelTop=source.PresentationTop(key);
             }
@@ -228,10 +238,15 @@ namespace YesterdayConvoy
                 bool singleFrameSequence=false;
                 if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
                 {
-                    double sourceAge=(now-actor.LastActionAt)*FormationVisualRate;
+                    double sourceAge=(now-actor.LastActionAt)*actionRate;
+                    double s2StartedAt=Model.SnowBossS2StartedAt(guard);
                     if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&
                        source.Clips.TryGetValue(actor.PresentationAction,out var nativeSkill)&&sourceAge<nativeSkill.Duration)
                     {key=actor.PresentationAction;age=sourceAge;singleFrameSequence=true;}
+                    else if(guard.IsSnowBoss&&Model.SnowBossTransitionActive(guard))
+                    {key="idle";age=0;singleFrameSequence=true;}
+                    else if(!acting&&s2StartedAt>=0&&CombatViewActive&&source.Clips.ContainsKey("skill_2_idle"))
+                    {key="skill_2_idle";age=(now-s2StartedAt)*FormationVisualRate;}
                     else if(!acting&&Model.GuardSkillActive(guard)&&source.Clips.ContainsKey("skill_idle"))
                     {key="skill_idle";age=Math.Max(0,now-actor.LastSkillAt)*FormationVisualRate;}
                 }
@@ -254,7 +269,7 @@ namespace YesterdayConvoy
             body.transform.localScale=Vector3.one*(scale*actionScale);
             formationLabelHeights[actor.Id]=(labelTop>0?labelTop:sourceHeight)*scale;
             body.sortingOrder=5000-Mathf.RoundToInt(actor.Position.y*50)+(actor is FormationFighter rider&&Model.PresentationCarrier(rider)!=null?8:0);
-            Color color=Color.white;
+            Color color=frozen ? new Color(.67f,.83f,1f) : Color.white;
             if(actor is FormationFighter fighter&&fighter.Instance==shopDragInstance&&DragPreviewVisible)color.a=.25f;
             body.color=color;
         }
