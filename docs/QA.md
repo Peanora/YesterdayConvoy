@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-20 圣聆初雪命中与积雪辨识
+
+- 默认皮肤二技能「霜涛覆岭」复用原作 `sbell2_skill_02_start_01`、直接命中 `sbell2_skill_01_hit`，周期伤害仍走独立的 `sbell2_buff_01_hit_02`。三技能「群山俯首」复用原作 `sbell2_skill_03_start_01`、`sbell2_skill_03_hit` 和持续 `sbell2_skill_03_flow`。直接命中以结算时的目标位置为准，按目标体型抬至身体中部并排在该目标体层上。施法、直接命中和持续风雪各按原图集输出到棋盘显示色域。对照原客户端录像二技能约 1:32.8–1:35.4，三技能约 2:04.6–2:06.8。原录像里的独立立体冰簇归属仍未确定，棋盘用三档原作平面雪纹叠加浅蓝格底，颜色随实际雪层加深。这是适配工业灰地板的表现层。原素材权利状态见来源记录。[原包绑定](art/source-records/formation-pramanix-boss-2026-11-20.json) · [二技能原作录像](https://www.bilibili.com/video/BV1f7sfzGEor/?t=92) · [三技能原作录像](https://www.bilibili.com/video/BV1f7sfzGEor/?t=124)
+- 源码 `b9cc82818d00a8712272197c10ab620d4eb8ae73`，Unity 6000.6.5f1 Windows x64 Development 构建通过，1001973390 bytes、0 错误、退出 0。表现功能提交 `49f27564` 的定向 EditMode **98/98**，退出 0。后两次提交调整独立版采集时的失焦和音乐暂停采样。[最终构建](../artifacts/formation-pramanix-hit-readability/build-reviewed.log) · [EditMode](../artifacts/formation-pramanix-hit-readability/editmode.xml)
+- 1280×720 D3D11 独立版 **53/53、零异常**，走正常首领试玩控制器，战斗倍率 1×，133.650 秒实际进入蓝门。二、三技能在 8.400 和 74.950 秒记录到与真实伤害对应、位于目标身体的原作图集。连续帧复看两技出手、多人命中以及两次出手之间保留的积雪，晚期三技能仍有 14 格雪，中心五层。同为倒计时 61.2 秒的可见雪格局部，显示 RGB 均值由约 159/162/160 变为 167/185/196。复看了正常视图及关键帧，拥挤处仍会有多名目标的命中交叠。录像按采集时点重采样到 24 fps，约 12.6 秒，保留游戏混音，完整解码通过。[二技能命中](../artifacts/formation-pramanix-hit-readability/reviewed/04-s2-native-direct-impact.png) · [三技能命中](../artifacts/formation-pramanix-hit-readability/reviewed/06-s3-native-direct-impact.png) · [晚期积雪](../artifacts/formation-pramanix-hit-readability/reviewed/06-late-s3-snowfall.png) · [有声实机短片](../artifacts/formation-pramanix-hit-readability/pramanix-contact-and-snow.mp4) · [独立版报告](../artifacts/formation-pramanix-hit-readability/reviewed/snow-boss-smoke.json)
+
 ## 2026-11-20 圣聆初雪持续攻击、积雪与原声
 
 - 运行源码 `d9f024110c728c2ff9851dfed27c00d1a10890b7`。Unity 6000.6.5f1 Windows x64 Development 构建通过，1001968578 bytes、0 错误，退出 0。功能提交 `b5ad2d14` 的完整 EditMode **1213/1213**、零跳过，退出 0。后续版本补了初雪雪格的色彩输出，战斗参数相同。仓库检查覆盖 14312 个跟踪文件。[最终构建](../artifacts/formation-snow-boss-sustained/build-snow-decode.log) · [EditMode](../artifacts/formation-snow-boss-sustained/editmode-final.xml)
