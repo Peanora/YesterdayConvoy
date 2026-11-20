@@ -126,11 +126,26 @@ namespace YesterdayConvoy.Tests
             var guard = controller.Model.Defenders.Single();
             yield return Until(() => controller.Model.PresentationActions.Any(action => action.ActorId == guard.Id && !action.Skill), 4);
             var cast = controller.Model.PresentationActions.First(action => action.ActorId == guard.Id && !action.Skill);
+            Assert.That(cast.TargetId, Is.EqualTo(controller.Model.Units.Single().Id).And.LessThan(-1));
             Assert.That(cast.LaunchedAt - cast.At, Is.EqualTo(.833333313 / 2).Within(.0001));
             Assert.That(controller.Model.Hits.Any(hit => hit.Action == cast), Is.False, "The mirror of the original first attack starts with a windup.");
             yield return Until(() => controller.Model.Hits.Any(hit => hit.Action == cast), 2);
             var contact = controller.Model.Hits.First(hit => hit.Action == cast);
             Assert.That(contact.At, Is.InRange(cast.LaunchedAt - .0001, cast.LaunchedAt + .0251));
+            SpriteRenderer floor = null;
+            SpriteRenderer bodyHit = null;
+            for (int sample = 0; sample < 14 && (floor == null || bodyHit == null); sample++)
+            {
+                var layers = LegacyLayers();
+                floor = layers.FirstOrDefault(renderer => renderer.sprite.name.Contains("lava_attack_01_hit") && HasPaint(renderer.sprite));
+                bodyHit = layers.FirstOrDefault(renderer => renderer.sprite.name.Contains("common_firemagic_hit_01") && HasPaint(renderer.sprite));
+                if (floor == null || bodyHit == null) { Step(.025f); yield return null; }
+            }
+            Assert.That(floor, Is.Not.Null, "The original flame must render on a valid player target cell.");
+            Assert.That(bodyHit, Is.Not.Null, "The original body impact is a separate layer.");
+            Assert.That(Vector3.Distance(floor.transform.position, controller.ActorWorldPoint(contact.To) + Vector3.up * .025f),
+                Is.LessThan(.001f));
+            Assert.That(bodyHit.sortingOrder, Is.GreaterThan(floor.sortingOrder));
         }
 
         [UnityTest] public IEnumerator OriginalCampaignContactDoesNotAddAGenericBodyFlash()

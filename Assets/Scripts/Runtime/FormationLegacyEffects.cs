@@ -256,7 +256,7 @@ namespace YesterdayConvoy
                 "D30" when empowered => "mlynar_skill_03_start_01",
                 _ => null
             };
-            if(guard.ArtId == "D09" && action.TargetId >= 0)
+            if(guard.ArtId == "D09" && action.TargetId != -1)
             {
                 // The native cast combines view and local particle alignment in one camera sample.
                 // Keep its target-cell pivot and the captured orientation, with contact drawn separately above it.
