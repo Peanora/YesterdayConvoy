@@ -342,7 +342,7 @@ namespace YesterdayConvoy
                     var slot = Session.Seats.For(piece.Instance);
                     if (!slot.HasValue || slot.Value.Lineup) continue;
                     var reserve = FormationReserveRect(slot.Value.Index);
-                    DrawEquippedItemStrip(piece.Instance, reserve.position + new Vector2(4, 37), 17, alignLeft: true);
+                    DrawEquippedItemStrip(piece.Instance, reserve.position + new Vector2(4, 37), 17);
                 }
             }
             if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;

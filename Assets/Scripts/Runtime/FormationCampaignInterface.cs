@@ -256,6 +256,7 @@ namespace YesterdayConvoy
                     _ => string.Empty
                 };
             }
+            if (key.Length == 1 && !string.IsNullOrWhiteSpace(data.Effect)) return data.Effect;
             var names=new Dictionary<string,string>{{"attack_pct","攻击"},{"attack_speed","攻速"},{"hp_pct","最大生命"},{"power","能力强度"},{"armor","护甲"},{"mr","法抗"},{"sp_per_second","自然技力/秒"}};
             string stats=string.Join(" / ",data.Stats.Select(p=>(names.TryGetValue(p.Key,out var name)?name:p.Key)+"+"+(p.Key=="attack_pct"||p.Key=="attack_speed"||p.Key=="hp_pct"||p.Key=="power"?(p.Value*100).ToString("0.#")+"%":p.Value.ToString("0.##"))));
             return string.IsNullOrWhiteSpace(stats) ? data.Effect :

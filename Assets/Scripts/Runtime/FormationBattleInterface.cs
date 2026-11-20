@@ -224,6 +224,8 @@ namespace YesterdayConvoy
                 Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));
                 Fill(new Rect(p.x-22,p.y+1,44*Mathf.Clamp01(actor.Health/actor.MaxHealth),3),ally?Cyan:new Color(1,.42f,.32f));
                 Label(new Rect(p.x-65,p.y-18,130,18),actor.Name,11,White,TextAnchor.MiddleCenter);
+                if (Model.Phase == FormationPhase.Preparation && actor is FormationFighter fighter)
+                    DrawEquippedItemStrip(fighter.Instance, new Vector2(p.x + 27, p.y - 6), 18);
             }
             if(Model.Phase==FormationPhase.Preparation)
                 foreach(var u in Model.Units.Where(u=>u.Enabled))
@@ -231,7 +233,6 @@ namespace YesterdayConvoy
                     if(!FormationActorVisibleInView(u))continue;
                     var p=CellScreen(u.SpawnCenter);
                     Label(new Rect(p.x-44,p.y-6,88,22),new string('★',u.Star),11,Gold,TextAnchor.MiddleCenter);
-                    DrawEquippedItemStrip(u.Instance, p + new Vector2(0, 15), 18);
                 }
             foreach(var h in Model.Hits)
             {

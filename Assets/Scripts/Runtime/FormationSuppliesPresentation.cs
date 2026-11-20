@@ -94,14 +94,22 @@ namespace YesterdayConvoy
         {
             get
             {
-                if (FormationInspectedItemId == 0) return Rect.zero;
-                const float width = 308, height = 181, gap = 8;
+                if (!CanUseEquipmentTiles || InspectedEquipment is not { } item) return Rect.zero;
+                const float width = 308, gap = 8;
+                float height = item.Key.Length == 1 ? 116 : 181;
                 float rightEdge = EquipmentTilesViewport.xMin - gap;
                 float x = rightEdge - width;
-                if (InspectedEquipment.Owner > 0 && FormationInspectionAvailable)
+                if (item.Owner > 0 && FormationInspectionAvailable)
                 {
                     var role = FormationInspectionRect;
-                    x = role.xMax + gap + width <= rightEdge ? role.xMax + gap : role.xMin - gap - width;
+                    var character = FormationInspectionTarget;
+                    float left = Mathf.Min(role.xMin, character.xMin) - gap - width;
+                    float right = Mathf.Max(role.xMax, character.xMax) + gap;
+                    if (left >= FormationTraitSidebarRect.xMax && (right + width > rightEdge || character.center.x > role.center.x))
+                        x = left;
+                    else if (role.xMax + gap + width <= rightEdge)
+                        x = Mathf.Min(right, rightEdge - width);
+                    else x = role.xMin - gap - width;
                 }
                 float top = MarketVisible || ShopPanelTransitioning ? FormationMarketRect.yMax + gap : 85;
                 return new Rect(x, Mathf.Clamp(equipmentDetailsAnchor.y, top, FormationExperienceRect.yMin - height - gap), width, height);
@@ -317,15 +325,14 @@ namespace YesterdayConvoy
                 DrawSupplyItem(new Rect(slot.x + 2, slot.y + 2, slot.width - 4, slot.height - 4), item.Key);
         }
 
-        void DrawEquippedItemStrip(int owner, Vector2 center, float size, bool alignLeft = false)
+        void DrawEquippedItemStrip(int owner, Vector2 origin, float size)
         {
             if (Campaign == null || owner == shopDragInstance && DragPreviewVisible) return;
             var equipment = Campaign.Equipment(owner);
             if (equipment.Count == 0) return;
             float pitch = size + 2;
-            float x = alignLeft ? center.x : center.x - (pitch * equipment.Count - 2) * .5f;
             for (int i = 0; i < equipment.Count; i++)
-                DrawEquippedItemSlot(new Rect(x + pitch * i, center.y, size, size), equipment[i]);
+                DrawEquippedItemSlot(new Rect(origin.x + pitch * i, origin.y, size, size), equipment[i]);
         }
 
         static Color BallAccent(string color) => color switch
