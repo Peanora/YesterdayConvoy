@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -44,6 +45,7 @@ namespace YesterdayConvoy
         static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
         static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
         static bool ReserveRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationReserveEvidence")>=0;
+        static bool StrategyHistoryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationStrategyHistoryEvidence")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
@@ -152,6 +154,12 @@ namespace YesterdayConvoy
             if (DefenseRequested)
             {
                 yield return VerifyDefenses();
+                yield break;
+            }
+            if (StrategyHistoryRequested)
+            {
+                result.scope = "Visible Windows Player with actual mouse and keyboard input. Two real fights reach 1-3; ordinary settlement and node transition with fixture wins between later checkpoints reach 2-2 and 3-2. Covers reveal, single reroll, preselection, confirmation, history, click-through protection and fresh challenge reset.";
+                yield return VerifyStrategyHistory();
                 yield break;
             }
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationStrategyEvidence") >= 0)
@@ -586,6 +594,214 @@ namespace YesterdayConvoy
             }
         }
 
+        IEnumerator VerifyStrategyHistory()
+        {
+            var anchor = FormationBattleController.FormationStrategyHistoryAnchor.center;
+            var firstCard = new Vector2(282, 398);
+            var reroll = new Vector2(548, 628);
+            var confirm = new Vector2(725, 628);
+            var confirmed = new List<string>();
+            var run = controller.Campaign;
+            Assert(run.CurrentNode.Id == "1-1" && run.PreplanId == null && run.AugmentIds.Count == 0,
+                "Fresh challenge has no confirmed strategy");
+            yield return ShowStrategyHistory("01-empty-strategy-history", confirmed, null);
+            yield return PressStrategyUiKey(0x1b);
+            yield return WaitForStrategyUi(() => !controller.FormationStrategyHistoryOpen, "Escape closes strategy history");
+
+            yield return ClaimGroundRewards(false);
+            yield return ResolveChoices();
+            string preplan = run.PreplanId;
+            Assert(!string.IsNullOrEmpty(preplan), "Opening choice commits a real preplan");
+            DeployOpeningRecruits();
+            yield return ReadyArt();
+            yield return ShowStrategyHistory("02-opening-preplan-history", confirmed, preplan);
+            yield return ClickStrategyUi(FormationBattleController.FormationStartRect.center);
+            yield return WaitForStrategyUi(() => !controller.FormationStrategyHistoryOpen, "Outside click closes strategy history");
+            Assert(controller.Model.Phase == FormationPhase.Preparation && controller.Model.Clock == 0,
+                "The closing click cannot start the battle through strategy history");
+
+            for (int i = 0; i < 2; i++)
+            {
+                yield return ReadyArt();
+                controller.StartBattle();
+                Assert(controller.Model.Phase == FormationPhase.Fighting, "Start real opening battle " + run.CurrentNode.Id);
+                if (i == 0)
+                {
+                    controller.Model.Paused = true;
+                    yield return ClickStrategyUi(anchor);
+                    Assert(!controller.FormationStrategyHistoryOpen, "Paused combat cannot open preparation strategy history");
+                    controller.Model.Paused = false;
+                }
+                int ticks = 0;
+                while (controller.Model.Phase == FormationPhase.Fighting || controller.Model.Phase == FormationPhase.Exiting)
+                {
+                    if (++ticks > 1600) throw new InvalidOperationException("Strategy timeline battle timed out.");
+                    for (int tick = 0; tick < 12; tick++) controller.Model.Advance(.25f);
+                    yield return null;
+                }
+                result.battles++;
+                yield return WaitForStrategyUi(() => run.NodeSettled, "Opening battle settles through production controller");
+                Assert(controller.ContinueCampaign(), "Advance from actual opening battle " + (i + 1));
+                if (i == 0) yield return null;
+            }
+
+            foreach (string node in new[] { "1-3", "2-2", "3-2" })
+            {
+                result.node = run.CurrentNode.Id;
+                var options = run.Choices.ToArray();
+                Assert(result.node == node && controller.Model.Phase == FormationPhase.Preparation && run.HasBlockingChoice &&
+                    options.Length == 3 && options.All(option => !string.IsNullOrEmpty(option.Strategy?.Tier)) &&
+                    options.Select(option => option.Strategy.Tier).Distinct().Count() == 1,
+                    node + " automatically presents three same-tier strategies before battle");
+                controller.StartBattle();
+                Assert(controller.Model.Phase == FormationPhase.Preparation, node + " must confirm before battle");
+                yield return CaptureInterfaceClip(node + "-reveal", 27);
+                yield return new WaitForSecondsRealtime(.98f);
+                yield return Frame(node + "-choices");
+                if (node == "1-3")
+                {
+                    yield return MoveStrategyUiPointer(firstCard);
+                    yield return Frame(node + "-hover");
+                    yield return ClickStrategyUi(firstCard);
+                    yield return Frame(node + "-preselected");
+                    Assert(run.AugmentIds.Count == 0, "Preselection does not commit a strategy");
+                    var previousDraw = run.Choices;
+                    yield return ClickStrategyUi(reroll);
+                    yield return CaptureInterfaceClip(node + "-reroll", 27);
+                    yield return WaitForStrategyUi(() => !run.CanRerollChoice, "Live mouse uses one free whole-group reroll");
+                    Assert(!ReferenceEquals(previousDraw, run.Choices) &&
+                        run.Choices.All(option => option.Strategy.Tier == options[0].Strategy.Tier),
+                        "Reroll redraws all alternatives within the same tier");
+                    yield return new WaitForSecondsRealtime(.90f);
+                    options = run.Choices.ToArray();
+                    yield return ClickStrategyUi(reroll);
+                    Assert(run.Choices.Select(option => option.Id).SequenceEqual(options.Select(option => option.Id)),
+                        "Disabled reroll preserves all three replacements");
+                    yield return ClickStrategyUi(confirm);
+                    Assert(run.AugmentIds.Count == 0, "Reroll clears preselection and disables confirmation");
+                }
+
+                int card = node == "2-2" ? 1 : 0;
+                if (node == "2-2") yield return PressStrategyUiKey(0x32);
+                else yield return ClickStrategyUi(firstCard);
+                Assert(run.AugmentIds.SequenceEqual(confirmed), node + " picked state leaves already committed IDs intact");
+                if (node == "2-2") yield return PressStrategyUiKey(0x0d);
+                else yield return ClickStrategyUi(confirm);
+                yield return CaptureInterfaceClip(node + "-confirm", 22);
+                confirmed.Add(options[card].Id);
+                yield return WaitForStrategyUi(() => run.AugmentIds.SequenceEqual(confirmed), node + " live confirmation adds the picked strategy once");
+                yield return ResolveChoices();
+                yield return ShowStrategyHistory(node + "-history", confirmed, preplan);
+                yield return ClickStrategyUi(anchor);
+                yield return WaitForStrategyUi(() => !controller.FormationStrategyHistoryOpen, node + " closes by clicking the strategy strip again");
+                if (node == "3-2") break;
+
+                string nextCheckpoint = node == "1-3" ? "2-2" : "3-2";
+                while (run.CurrentNode.Id != nextCheckpoint)
+                {
+                    if (run.CurrentNode.Kind != "补给")
+                        Assert(run.SettleBattle(true, 1, run.CurrentNode.DefenderCount, 0, false) != null,
+                            "Apply fixture win through settlement at " + run.CurrentNode.Id);
+                    else yield return ResolveChoices();
+                    Assert(controller.ContinueCampaign(), "Advance through the normal node transition to " + run.CurrentNode.Id);
+                    if (run.CurrentNode.Id == "1-4")
+                    {
+                        yield return ShowStrategyHistory("1-4-persisted-history", confirmed, preplan);
+                        yield return PressStrategyUiKey(0x1b);
+                        yield return WaitForStrategyUi(() => !controller.FormationStrategyHistoryOpen, "Close persisted strategy history");
+                    }
+                }
+            }
+
+            controller.ResetDemo();
+            yield return null;
+            Assert(!ReferenceEquals(run, controller.Campaign) && !controller.FormationStrategyHistoryOpen &&
+                controller.Campaign.CurrentNode.Id == "1-1", "New challenge resets the strategy overlay");
+            yield return ShowStrategyHistory("17-fresh-challenge-history", Array.Empty<string>(), null);
+        }
+
+        IEnumerator ShowStrategyHistory(string screenshot, IReadOnlyList<string> augments, string preplan)
+        {
+            yield return ClickStrategyUi(FormationBattleController.FormationStrategyHistoryAnchor.center);
+            yield return WaitForStrategyUi(() => controller.FormationStrategyHistoryOpen, "Live mouse opens " + screenshot);
+            Assert(controller.Campaign.PreplanId == preplan && controller.Campaign.AugmentIds.SequenceEqual(augments),
+                screenshot + " preserves the committed list: " +
+                string.Join(", ", new[] { preplan }.Concat(augments).Where(id => id != null).Select(id => FormationCampaignRules.FindRecord(id).Name)));
+            yield return Frame(screenshot);
+        }
+
+        IEnumerator WaitForStrategyUi(Func<bool> reached, string label)
+        {
+            double deadline = Time.realtimeSinceStartupAsDouble + 4;
+            while (!reached() && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
+            Assert(reached(), label);
+        }
+
+        [StructLayout(LayoutKind.Sequential)] struct StrategyCursorPoint { public int X, Y; }
+        [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+        [DllImport("user32.dll")] static extern bool ClientToScreen(IntPtr window, ref StrategyCursorPoint point);
+        [DllImport("user32.dll")] static extern bool SetCursorPos(int x, int y);
+        [DllImport("user32.dll")] static extern void mouse_event(uint flags, uint x, uint y, uint data, UIntPtr extra);
+        [DllImport("user32.dll")] static extern void keybd_event(byte key, byte scan, uint flags, UIntPtr extra);
+
+        static IntPtr StrategyUiWindow()
+        {
+            if (Application.platform != RuntimePlatform.WindowsPlayer)
+                throw new InvalidOperationException("Live strategy input requires the Windows Player.");
+            IntPtr window = GetForegroundWindow();
+            GetWindowThreadProcessId(window, out uint processId);
+            using var process = System.Diagnostics.Process.GetCurrentProcess();
+            return processId == (uint)process.Id ? window : IntPtr.Zero;
+        }
+
+        static IEnumerator WaitForStrategyUiWindow()
+        {
+            double deadline = Time.realtimeSinceStartupAsDouble + 4;
+            while (StrategyUiWindow() == IntPtr.Zero)
+            {
+                if (Time.realtimeSinceStartupAsDouble >= deadline)
+                {
+                    IntPtr foreground = GetForegroundWindow();
+                    GetWindowThreadProcessId(foreground, out uint owner);
+                    using var process = System.Diagnostics.Process.GetCurrentProcess();
+                    throw new InvalidOperationException($"Live input needs the foreground Player. Foreground HWND {foreground}, owner PID {owner}; Player PID {process.Id}, focused={Application.isFocused}.");
+                }
+                yield return null;
+            }
+        }
+
+        static IEnumerator MoveStrategyUiPointer(Vector2 logicalPoint)
+        {
+            yield return WaitForStrategyUiWindow();
+            var window = StrategyUiWindow();
+            var viewport = TacticalViewport.Current;
+            Vector2 client = viewport.Offset + logicalPoint * viewport.Scale;
+            var point = new StrategyCursorPoint { X = Mathf.RoundToInt(client.x), Y = Mathf.RoundToInt(client.y) };
+            if (!ClientToScreen(window, ref point) || !SetCursorPos(point.X, point.Y))
+                throw new InvalidOperationException("Could not position the cursor in the active Player.");
+            yield return new WaitForSecondsRealtime(.06f);
+        }
+
+        static IEnumerator ClickStrategyUi(Vector2 point)
+        {
+            yield return MoveStrategyUiPointer(point);
+            yield return WaitForStrategyUiWindow();
+            mouse_event(0x0002, 0, 0, 0, UIntPtr.Zero);
+            yield return new WaitForSecondsRealtime(.055f);
+            mouse_event(0x0004, 0, 0, 0, UIntPtr.Zero);
+            yield return null;
+        }
+
+        static IEnumerator PressStrategyUiKey(byte key)
+        {
+            yield return WaitForStrategyUiWindow();
+            keybd_event(key, 0, 0, UIntPtr.Zero);
+            yield return new WaitForSecondsRealtime(.055f);
+            keybd_event(key, 0, 0x0002, UIntPtr.Zero);
+            yield return null;
+        }
+
         static FormationCampaignRun OpenSeededStarterRewards(int seed)
         {
             var session = new FormationShopSession(seed, fullCampaign: true);
@@ -1011,7 +1227,7 @@ namespace YesterdayConvoy
             result.passed=error==null&&result.exceptionCount==0;
             string report = SynergyRequested ? "synergy-smoke.json" :
                 DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" :
-                ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
+                StrategyHistoryRequested ? "strategy-history-smoke.json" : ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
             File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
             string marker = SynergyRequested ? "FORMATION_SYNERGY_SMOKE_" : DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
             Debug.Log(marker+(result.passed?"PASS":"FAIL: "+result.error));

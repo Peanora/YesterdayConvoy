@@ -14,7 +14,8 @@ namespace YesterdayConvoy
         public FormationCampaignRun Campaign=>Session?.Run;
         bool AwaitingOptionalRewards=>HasGroundRewards||Campaign?.PendingRewardChoices>0;
         bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||
-            campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||campaignResultSummaryOpen||formationExitOpen);
+            campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||
+            campaignResultSummaryOpen||formationExitOpen||FormationStrategyHistoryOpen);
 
         GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
         {
@@ -42,6 +43,7 @@ namespace YesterdayConvoy
             if(Campaign==null||Campaign.HasBlockingChoice||Campaign.Finished||openingGroundBall!=null)return false;
             Session.SavePositions(Model);
             if(!Session.AdvanceNode())return false;
+            FormationStrategyHistoryOpen=false;
             campaignResultSettled=false;lastSoundAt=-10;selectedPiece=0;formationInspectedTag=null;
             RefreshCampaignPreparation();SetMarketVisible(false);SetFormationView(false);
             notice=Campaign.CurrentNode.Kind=="补给"?"选择一组补给，之后继续下一节点。":"新防线已经公开。先侦察，再调整装备、搭档与站位。";
@@ -78,6 +80,7 @@ namespace YesterdayConvoy
         void CloseCampaignPanels()
         {
             campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;
+            FormationStrategyHistoryOpen=false;
             rewardHistoryOpen=false;formationExitOpen=false;
             CloseFormationInspection();CloseFormationRouteDetails();CloseFormationEquipmentDetails();CancelFormationEquipmentInteraction();CancelFormationDrag();
         }
@@ -106,7 +109,8 @@ namespace YesterdayConvoy
             if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
             if(campaignRewardChoiceOpen&&Campaign.PendingRewardChoices>0){DrawCampaignChoices(true);return;}
             if(Campaign.Finished&&(!AwaitingOptionalRewards||campaignResultSummaryOpen)){DrawCampaignFinished();return;}
-            if(campaignInventoryOpen)DrawCampaignInventory();
+            if(FormationStrategyHistoryOpen)DrawFormationStrategyHistory();
+            else if(campaignInventoryOpen)DrawCampaignInventory();
             else if(campaignFormationOpen)DrawCampaignFormation();
             else if(campaignRouteOpen)DrawCampaignRoute();
             else if(campaignScoutingOpen)DrawCampaignScouting();

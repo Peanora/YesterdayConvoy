@@ -62,6 +62,7 @@ namespace YesterdayConvoy
                 DrawFormationResources(preparing);
                 approvedShop.DrawShopFlows();
                 if(preparing)DrawFormationMarket();
+                if(!FormationStrategyHistoryOpen)DrawFormationStrategyHistoryToggle();
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
                 if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
                 GUI.enabled=enabled&&!formationMenuOpen;

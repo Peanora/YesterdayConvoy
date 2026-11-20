@@ -14,6 +14,7 @@ namespace YesterdayConvoy
         static readonly Color OperationsFocus = new Color32(211, 207, 193, 255);
         static readonly Color OperationsGold = FormationPreparationPalette.Amber;
         static readonly Rect OperationsRouteRect = new Rect(210, 9, 787, 58);
+        internal static readonly Rect FormationStrategyHistoryAnchor = new Rect(527, 76, 228, 27);
         static readonly Rect OperationsExitRect = new Rect(14, 20, 58, 36);
         static readonly Rect OperationsScoutRect = new Rect(83, 20, 113, 36);
         static readonly Rect OperationsMenuRect = new Rect(1215, 20, 49, 36);
@@ -23,9 +24,12 @@ namespace YesterdayConvoy
             .Select(group => group.Select(node => node.Index).ToArray()).ToArray();
         int formationInspectedNode = -1;
         bool formationExitOpen, campaignScoutOwn;
+        internal bool FormationStrategyHistoryOpen { get; private set; }
         Texture2D operationsNodeIcons;
 
         int[] OperationsPlaneNodes => OperationsPlanes[Campaign.CurrentNode.Plane - 1];
+        bool FormationStrategyHistoryAvailable => Campaign != null && Campaign.SynergyTrial == null && !CombatViewActive &&
+            !MarketVisible && !ShopPanelTransitioning;
 
         public Rect FormationRouteNodeRect(int nodeIndex)
         {
@@ -44,7 +48,7 @@ namespace YesterdayConvoy
                 var anchor = FormationRouteNodeRect(formationInspectedNode);
                 if (anchor.width <= 0) return Rect.zero;
                 return new Rect(Mathf.Clamp(anchor.center.x - 147, 15, 971),
-                    MarketVisible ? FormationMarketRect.yMax + 6 : 83, 294, 113);
+                    MarketVisible ? FormationMarketRect.yMax + 6 : FormationStrategyHistoryAnchor.yMax + 8, 294, 113);
             }
         }
 
@@ -56,7 +60,8 @@ namespace YesterdayConvoy
         }
 
         bool OperationsBlocksPoint(Vector2 point) =>
-            formationInspectedNode >= 0 && FormationRouteDetailsRect.Contains(point);
+            (formationInspectedNode >= 0 && FormationRouteDetailsRect.Contains(point)) ||
+            (FormationStrategyHistoryAvailable && FormationStrategyHistoryAnchor.Contains(point));
 
         void OperationsLabel(Rect rect, string value, int size, Color color, bool bold = false,
             TextAnchor align = TextAnchor.MiddleLeft) =>
@@ -139,6 +144,115 @@ namespace YesterdayConvoy
             CloseCampaignPanels();
             CloseFormationTraitDetails();
             SetMarketVisible(false);
+        }
+
+        FormationCampaignRules.DataRecord FormationStrategyAt(int slot)
+        {
+            var augments = Campaign.AugmentIds;
+            string id = slot == 0 ? Campaign.PreplanId : slot <= augments.Count ? augments[slot - 1] : null;
+            return id == null ? null : FormationCampaignRules.FindRecord(id);
+        }
+
+        void DrawFormationStrategyHistoryToggle()
+        {
+            if (!FormationStrategyHistoryAvailable) return;
+            var r = FormationStrategyHistoryAnchor;
+            bool open = FormationStrategyHistoryOpen;
+            bool hover = GUI.enabled && r.Contains(Event.current.mousePosition);
+            Fill(r, open || hover ? OperationsRail : OperationsSurface);
+            ApprovedUi.Border(r, open || hover ? OperationsFocus : OperationsEdge);
+            for (int slot = 0; slot < 4; slot++)
+            {
+                var icon = new Rect(r.x + 8 + 28 * slot, r.y + 3, 24, 21);
+                var strategy = FormationStrategyAt(slot);
+                if (strategy == null)
+                {
+                    Fill(icon, FormationPreparationPalette.Hover);
+                    ApprovedUi.Border(icon, OperationsEdge);
+                    OperationsLabel(icon, "·", 11, OperationsMuted, false, TextAnchor.MiddleCenter);
+                }
+                else DrawFormationStrategyIcon(icon, strategy);
+            }
+            Fill(new Rect(r.x + 118, r.y + 5, 1, 17), OperationsEdge);
+            var label = new Rect(r.x + 125, r.y, 76, r.height);
+            OperationsLabel(label, "本局策略", 12, GUI.enabled ? OperationsInk : OperationsMuted, true, TextAnchor.MiddleCenter);
+            OperationsLabel(new Rect(r.xMax - 22, r.y, 16, r.height), open ? "−" : "+", 13, OperationsGold,
+                true, TextAnchor.MiddleCenter);
+            if (!GUI.Button(r, GUIContent.none, GUIStyle.none)) return;
+            if (!open) OpenFormationOperationsPanel();
+            FormationStrategyHistoryOpen = !open;
+        }
+
+        void DrawFormationStrategyIcon(Rect icon, FormationCampaignRules.DataRecord strategy)
+        {
+            EnsureStrategyArt();
+            int column = strategy.Tier switch { "银" => 1, "金" => 2, "彩" => 3, _ => 0 };
+            if (strategyPlates != null)
+                GUI.DrawTextureWithTexCoords(icon, strategyPlates, new Rect(column / 4f, .73f, .25f, .27f));
+            else Fill(icon, StrategyGlints[column]);
+            if (strategyProps != null)
+            {
+                int art = StrategyIllustration(strategy.Id, strategy.Kind);
+                float side = Mathf.Min(icon.width, icon.height) * 1.12f;
+                var image = new Rect(icon.center.x - side / 2, icon.center.y - side / 2, side, side);
+                GUI.DrawTextureWithTexCoords(image, strategyProps, StrategyTile(art % 3, art / 3, 3, 2));
+            }
+            else OperationsLabel(icon, "◆", 12, StrategyInk[column], true, TextAnchor.MiddleCenter);
+        }
+
+        void DrawFormationStrategyHistory()
+        {
+            DrawFormationStrategyHistoryToggle();
+            if (!FormationStrategyHistoryOpen) return;
+            const float width = 510, contentWidth = 435;
+            float left = FormationStrategyHistoryAnchor.center.x - width / 2;
+            float top = FormationStrategyHistoryAnchor.yMax + 4;
+            var body = CampaignText(13);
+            body.normal.textColor = OperationsMuted;
+            float height = 46;
+            int count = 0;
+            for (int slot = 0; slot < 4; slot++)
+            {
+                var strategy = FormationStrategyAt(slot);
+                if (strategy == null) continue;
+                height += Mathf.Max(54, body.CalcHeight(new GUIContent(strategy.Effect), contentWidth) + 34);
+                count++;
+            }
+            var panel = new Rect(left, top, width, height + (count == 0 ? 43 : 8));
+            Fill(panel, OperationsSurface);
+            ApprovedUi.Border(panel, OperationsEdge);
+            Fill(new Rect(panel.x, panel.y, panel.width, 2), OperationsGold);
+            OperationsLabel(new Rect(left + 14, top + 7, 370, 30), "本局已选策略", 16, OperationsInk, true);
+            if (OperationsButton(new Rect(panel.xMax - 36, top + 6, 27, 28), "×"))
+                FormationStrategyHistoryOpen = false;
+
+            if (count == 0)
+                OperationsLabel(new Rect(left + 14, top + 42, width - 28, 31), "本局还未确认任何策略。", 13, OperationsMuted);
+            float y = top + 41;
+            for (int slot = 0; slot < 4; slot++)
+            {
+                var strategy = FormationStrategyAt(slot);
+                if (strategy == null) continue;
+                var effect = new GUIContent(strategy.Effect);
+                float rowHeight = Mathf.Max(54, body.CalcHeight(effect, contentWidth) + 34);
+                Fill(new Rect(left + 12, y, width - 24, 1), OperationsEdge);
+                DrawFormationStrategyIcon(new Rect(left + 13, y + 9, 39, 36), strategy);
+                OperationsLabel(new Rect(left + 62, y + 6, 270, 22), strategy.Name, 15, OperationsInk, true);
+                OperationsLabel(new Rect(panel.xMax - 147, y + 6, 133, 22),
+                    slot == 0 ? "开局预案" : $"{strategy.Tier}档战备 · {strategy.Kind}", 11,
+                    strategy.Tier == "银" ? StrategyGlints[1] : strategy.Tier == "彩" ? StrategyGlints[3] : OperationsGold,
+                    false, TextAnchor.MiddleRight);
+                GUI.Label(new Rect(left + 62, y + 29, contentWidth, rowHeight - 31), effect, body);
+                y += rowHeight;
+            }
+
+            var input = Event.current;
+            if (GUI.enabled && input.type == EventType.MouseUp && input.button == 0 &&
+                !panel.Contains(input.mousePosition) && !FormationStrategyHistoryAnchor.Contains(input.mousePosition))
+            {
+                FormationStrategyHistoryOpen = false;
+                input.Use();
+            }
         }
 
         void DrawFormationNodeRail()

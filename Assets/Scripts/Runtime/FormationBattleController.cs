@@ -98,7 +98,7 @@ namespace YesterdayConvoy
             CancelFormationDrag();
             if (formationMenuOpen) { CloseFormationMenu(); return; }
             if (formationExitOpen || campaignInventoryOpen || campaignFormationOpen || campaignRouteOpen ||
-                campaignScoutingOpen || campaignRewardChoiceOpen || campaignResultSummaryOpen)
+                campaignScoutingOpen || campaignRewardChoiceOpen || campaignResultSummaryOpen || FormationStrategyHistoryOpen)
             { CloseCampaignPanels(); return; }
             if (rewardHistoryOpen) { rewardHistoryOpen = false; return; }
             if (shopOddsVisible) { shopOddsVisible = false; return; }

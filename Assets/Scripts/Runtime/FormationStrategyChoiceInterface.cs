@@ -8,8 +8,8 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const float StrategyCardWidth = 340, StrategyCardHeight = 362, StrategyCardGap = 18;
-        const float StrategyDealLead = .12f, StrategyDealGap = .10f, StrategyDealSeconds = .35f;
-        const float StrategyPickSeconds = .23f, StrategyConfirmSeconds = .21f;
+        const float StrategyDealLead = .105f, StrategyDealGap = .092f, StrategyDealSeconds = .61f;
+        const float StrategyPickSeconds = .23f, StrategyConfirmSeconds = .535f, StrategyRerollSeconds = .273f;
         static readonly Color StrategyLight = new Color32(246, 247, 244, 255);
         static readonly Color StrategyMuted = new Color32(193, 208, 215, 255);
         static readonly Color StrategyGold = new Color32(239, 203, 131, 255);
@@ -29,12 +29,20 @@ namespace YesterdayConvoy
         static readonly Regex StrategyNumbers = new Regex(StrategyNumber);
         static readonly Regex StrategyTextGroups = new Regex(
             "(?:" + StrategyNumber + @"|[A-Za-z]+|[（【《“]*.)[，。；、！？：）】》”]*");
-        static Texture2D strategyPlates, strategyProps, strategyVeil;
+        static Texture2D strategyPlates, strategyProps, strategyVeil, strategyCardBack, strategyLightStreak;
         IReadOnlyList<FormationCampaignRun.ChoiceOption> displayedStrategyOptions;
         (GUIContent Content, GUIStyle Style)[] strategyDescriptions;
         int selectedStrategyCard = -1;
         double strategyOpenedAt, strategyDealtAt, strategyPickedAt;
-        double? strategyConfirmedAt;
+        double? strategyConfirmedAt, strategyRerolledAt;
+        float strategyDealLead;
+
+        static void EnsureStrategyArt()
+        {
+            if (strategyPlates == null) strategyPlates = Resources.Load<Texture2D>("UI/Strategy/plates");
+            if (strategyProps == null) strategyProps = Resources.Load<Texture2D>("UI/Strategy/props");
+            if (strategyVeil == null) strategyVeil = Resources.Load<Texture2D>("UI/Strategy/veil");
+        }
 
         bool DrawStrategyChoice()
         {
@@ -45,12 +53,11 @@ namespace YesterdayConvoy
                 displayedStrategyOptions = null;
                 strategyDescriptions = null;
                 strategyConfirmedAt = null;
+                strategyRerolledAt = null;
                 return false;
             }
 
-            if (strategyPlates == null) strategyPlates = Resources.Load<Texture2D>("UI/Strategy/plates");
-            if (strategyProps == null) strategyProps = Resources.Load<Texture2D>("UI/Strategy/props");
-            if (strategyVeil == null) strategyVeil = Resources.Load<Texture2D>("UI/Strategy/veil");
+            EnsureStrategyArt();
 
             string tier = options[0].Strategy.Tier;
             int column = tier switch { "银" => 1, "金" => 2, "彩" => 3, _ => 0 };
@@ -58,12 +65,14 @@ namespace YesterdayConvoy
             double now = Time.unscaledTimeAsDouble;
             if (!ReferenceEquals(options, displayedStrategyOptions))
             {
-                if (displayedStrategyOptions == null || displayedStrategyOptions[0].Strategy.Tier != tier)
-                    strategyOpenedAt = now;
+                bool opensPanel = displayedStrategyOptions == null || displayedStrategyOptions[0].Strategy.Tier != tier;
+                if (opensPanel) strategyOpenedAt = now;
+                strategyDealLead = opensPanel ? StrategyDealLead : 0;
                 displayedStrategyOptions = options;
                 selectedStrategyCard = -1;
                 strategyDealtAt = now;
                 strategyConfirmedAt = null;
+                strategyRerolledAt = null;
                 strategyDescriptions = new (GUIContent, GUIStyle)[options.Count];
                 for (int i = 0; i < options.Count; i++)
                     strategyDescriptions[i] = FitStrategyDescription(options[i].Description, StrategyInk[column]);
@@ -71,13 +80,13 @@ namespace YesterdayConvoy
             string title = preplan ? "选择战略预案" : "选择战略战备";
             string node = preplan ? (run.IsPractice ? "开局" : "1-1 开局") : run.CurrentNode.Id + " 战前";
             string count = options.Count == 3 ? "三选一" : options.Count == 2 ? "二选一" : "一项可选";
-            float open = preplan ? 1 : StrategyEaseOut(StrategyProgress(now - strategyOpenedAt, .24f));
-            DrawStrategyBackdrop(title, node, preplan ? count : tier + "档" + count, open);
-
+            double openElapsed = now - strategyOpenedAt;
             double dealElapsed = now - strategyDealtAt;
-            float dealEnd = StrategyDealLead + (options.Count - 1) * StrategyDealGap + StrategyDealSeconds;
-            bool acceptingInput = preplan || dealElapsed >= dealEnd && !strategyConfirmedAt.HasValue;
-            float confirmProgress = strategyConfirmedAt.HasValue ? StrategyProgress(now - strategyConfirmedAt.Value, StrategyConfirmSeconds) : 0;
+            double confirmElapsed = strategyConfirmedAt.HasValue ? now - strategyConfirmedAt.Value : 0;
+            double rerollElapsed = strategyRerolledAt.HasValue ? now - strategyRerolledAt.Value : 0;
+            float dealEnd = strategyDealLead + (options.Count - 1) * StrategyDealGap + StrategyDealSeconds;
+            bool acceptingInput = preplan || dealElapsed >= dealEnd && !strategyConfirmedAt.HasValue && !strategyRerolledAt.HasValue;
+            DrawStrategyBackdrop(title, node, preplan ? count : tier + "档" + count, column, openElapsed, confirmElapsed);
 
             var key = Event.current;
             bool confirmFromKey = false;
@@ -101,34 +110,44 @@ namespace YesterdayConvoy
             for (int i = 0; i < options.Count; i++)
             {
                 var rect = new Rect(start + i * (StrategyCardWidth + StrategyCardGap), 217, StrategyCardWidth, StrategyCardHeight);
-                GUI.enabled = enabled && acceptingInput;
-                if (GUI.Button(rect, GUIContent.none, GUIStyle.none)) SelectStrategyCard(i, now);
-                GUI.enabled = enabled;
-                bool selected = i == selectedStrategyCard;
                 if (preplan)
-                    DrawStrategyCard(rect, options[i], strategyDescriptions[i], column, i, selected);
+                {
+                    if (GUI.Button(rect, GUIContent.none, GUIStyle.none)) SelectStrategyCard(i, now);
+                    DrawStrategyCard(rect, options[i], strategyDescriptions[i], column, i, i == selectedStrategyCard);
+                }
                 else
                 {
-                    float deal = StrategyProgress(dealElapsed - StrategyDealLead - i * StrategyDealGap, StrategyDealSeconds);
+                    if (StrategyCardHit(rect, enabled && acceptingInput, out bool hovered, out bool pressed)) SelectStrategyCard(i, now);
+                    bool selected = i == selectedStrategyCard;
+                    double cardElapsed = dealElapsed - strategyDealLead - i * StrategyDealGap;
                     float pick = selected ? StrategyProgress(now - strategyPickedAt, StrategyPickSeconds) : 1;
-                    DrawDealtStrategyCard(rect, options[i], strategyDescriptions[i], column, i, selected, deal, pick, confirmProgress);
+                    DrawDealtStrategyCard(rect, options[i], strategyDescriptions[i], column, i, selected, hovered, pressed,
+                        cardElapsed, pick, confirmElapsed, rerollElapsed);
                 }
             }
 
             var color = GUI.color;
-            GUI.color *= new Color(1, 1, 1, preplan ? 1 : StrategyProgress(dealElapsed - dealEnd + .20f, .20f));
+            float actionsAlpha = StrategyProgress(dealElapsed - dealEnd + .14f, .14f)
+                * (1 - StrategyProgress(confirmElapsed, .15f)) * (1 - StrategyProgress(rerollElapsed, .16f));
+            if (!preplan) GUI.color *= new Color(1, 1, 1, actionsAlpha);
             bool reroll = DrawStrategyAction(new Rect(468, 606, 160, 44),
                 "免费重抽   " + (run.CanRerollChoice ? "1 / 1" : "0 / 1"), run.CanRerollChoice && acceptingInput);
             bool confirm = DrawStrategyAction(new Rect(638, 606, 174, 44), preplan ? "确认预案" : "确认战备",
-                selectedStrategyCard >= 0 && acceptingInput, true) || confirmFromKey;
+                selectedStrategyCard >= 0 && acceptingInput, true, !preplan) || confirmFromKey;
             GUI.color = color;
             if (reroll)
             {
-                if (run.RerollChoice()) selectedStrategyCard = -1;
+                if (preplan) run.RerollChoice();
+                else strategyRerolledAt = now;
                 return true;
             }
+            if (rerollElapsed >= StrategyRerollSeconds && Event.current.type == EventType.Repaint)
+            {
+                run.RerollChoice();
+                strategyRerolledAt = null;
+            }
             if (confirm && !preplan) strategyConfirmedAt = now;
-            if ((confirm && preplan) || (confirmProgress >= 1 && Event.current.type == EventType.Repaint))
+            if ((confirm && preplan) || (confirmElapsed >= StrategyConfirmSeconds && Event.current.type == EventType.Repaint))
             {
                 ChooseCampaignOption(selectedStrategyCard);
                 selectedStrategyCard = -1;
@@ -144,13 +163,39 @@ namespace YesterdayConvoy
             strategyPickedAt = now;
         }
 
+        static bool StrategyCardHit(Rect rect, bool enable, out bool hovered, out bool pressed)
+        {
+            var input = Event.current;
+            var hit = new Rect(rect.x, rect.y - 8, rect.width, rect.height + 8);
+            int control = GUIUtility.GetControlID("StrategyChoiceCard".GetHashCode(), FocusType.Passive, rect);
+            hovered = enable && hit.Contains(input.mousePosition);
+            pressed = hovered && GUIUtility.hotControl == control;
+            switch (input.GetTypeForControl(control))
+            {
+                case EventType.MouseDown when hovered && input.button == 0 && GUIUtility.hotControl == 0:
+                    GUIUtility.hotControl = control;
+                    input.Use();
+                    break;
+                case EventType.MouseUp when input.button == 0 && GUIUtility.hotControl == control:
+                    GUIUtility.hotControl = 0;
+                    pressed = false;
+                    input.Use();
+                    return hovered;
+            }
+            return false;
+        }
+
         static float StrategyProgress(double elapsed, float duration) => Mathf.Clamp01((float)(elapsed / duration));
         static float StrategyEaseOut(float progress) => 1 - (1 - progress) * (1 - progress) * (1 - progress);
 
-        void DrawStrategyBackdrop(string title, string node, string subtitle, float open)
+        void DrawStrategyBackdrop(string title, string node, string subtitle, int column, double elapsed, double confirm)
         {
+            bool preplan = column == 0;
+            float veil = preplan ? 1 : Mathf.Lerp(.45f, 1, StrategyEaseOut(StrategyProgress(elapsed, .28f)));
+            float fade = StrategyEaseOut(StrategyProgress(confirm - .31f, .24f));
+            float titleReveal = preplan ? 1 : StrategyEaseOut(StrategyProgress(elapsed - .065f, .274f));
             var color = GUI.color;
-            GUI.color *= new Color(1, 1, 1, Mathf.Lerp(.45f, 1, open));
+            GUI.color *= new Color(1, 1, 1, veil * (1 - fade));
             var screen = new Rect(0, 0, 1280, 720);
             if (strategyVeil != null) GUI.DrawTexture(screen, strategyVeil);
             else Fill(screen, StrategyTint(new Color(.09f, .14f, .18f, .95f)));
@@ -159,44 +204,169 @@ namespace YesterdayConvoy
             Fill(new Rect(0, 57, 1280, 1), StrategyTint(new Color32(168, 201, 208, 36)));
             StrategyLabel(new Rect(27, 16, 16, 24), "◆", 13, StrategyGold, 700);
             StrategyLabel(new Rect(51, 16, 120, 24), "昨日圆车", 13, StrategyLight, 700);
-            GUI.color = color * new Color(1, 1, 1, open);
-            float lift = (1 - open) * 10;
-            Fill(new Rect(448 - 98 * open, 132 + lift, 98 * open, 1), StrategyTint(new Color32(182, 203, 212, 96)));
-            Fill(new Rect(832, 132 + lift, 98 * open, 1), StrategyTint(new Color32(182, 203, 212, 96)));
-            Fill(new Rect(443, 132 + lift, 5, 6), StrategyTint(StrategyGold));
-            Fill(new Rect(832, 132 + lift, 5, 6), StrategyTint(StrategyGold));
-            StrategyLabel(new Rect(449, 98 + lift, 382, 67), title, 47, StrategyLight, 700, TextAnchor.MiddleCenter);
-            StrategyLabel(new Rect(450, 168 + lift, 380, 25), "<color=#EFCB83><b>" + node + "</b></color>　/　" + subtitle,
+            if (!preplan && elapsed < .26f)
+            {
+                float scan = StrategyProgress(elapsed, .26f);
+                float width = Mathf.Lerp(20, 1176, StrategyEaseOut(scan));
+                float y = Mathf.Lerp(351, 326, scan);
+                float flash = Mathf.Sin(scan * Mathf.PI);
+                DrawStrategyStreak(new Rect(640 - width * .5f, y - 3, width, 8), StrategyGlints[column], flash * .18f);
+                DrawStrategyStreak(new Rect(640 - width * .5f, y, width, 2), StrategyGlints[column], flash);
+            }
+
+            GUI.color = color * new Color(1, 1, 1, titleReveal * (1 - StrategyProgress(confirm, .25f)));
+            float windowWidth = Mathf.Lerp(8, 590, titleReveal);
+            float left = 640 - windowWidth * .5f;
+            const float top = 94;
+            GUI.BeginGroup(new Rect(left, top, windowWidth, 112));
+            var rule = StrategyTint(new Color32(182, 203, 212, 96));
+            Fill(new Rect(350 - left, 132 - top, 98, 1), rule);
+            Fill(new Rect(832 - left, 132 - top, 98, 1), rule);
+            Fill(new Rect(443 - left, 132 - top, 5, 6), StrategyTint(StrategyGold));
+            Fill(new Rect(832 - left, 132 - top, 5, 6), StrategyTint(StrategyGold));
+            StrategyLabel(new Rect(449 - left, 98 - top, 382, 67), title, 47, StrategyLight, 700, TextAnchor.MiddleCenter);
+            StrategyLabel(new Rect(450 - left, 168 - top, 380, 25), "<color=#EFCB83><b>" + node + "</b></color>　/　" + subtitle,
                 14, StrategyMuted, 400, TextAnchor.MiddleCenter, true);
+            GUI.EndGroup();
             GUI.color = color;
         }
 
         void DrawDealtStrategyCard(Rect rect, FormationCampaignRun.ChoiceOption option,
-            (GUIContent Content, GUIStyle Style) description, int column, int index, bool selected,
-            float deal, float pick, float confirm)
+            (GUIContent Content, GUIStyle Style) description, int column, int index, bool selected, bool hovered, bool pressed,
+            double dealElapsed, float pick, double confirm, double reroll)
         {
-            float arrive = StrategyEaseOut(deal);
-            float pulse = Mathf.Sin(pick * Mathf.PI);
-            float shrink = StrategyEaseOut(confirm);
-            float scale = 1 + .018f * pulse + (selected ? .035f : -.05f) * shrink;
-            float alpha = Mathf.Clamp01(deal * 2.7f) * (1 - (selected ? .45f : .88f) * confirm);
+            if (dealElapsed <= 0) return;
+            float deal = StrategyProgress(dealElapsed, StrategyDealSeconds);
+            float slide = Mathf.SmoothStep(0, 1, StrategyProgress(deal - .16f, .43f));
+            float settle = StrategyEaseOut(StrategyProgress(deal - .59f, .41f));
+            float fan = (rect.center.x - 640) / (StrategyCardWidth + StrategyCardGap);
+            float scale = Mathf.Lerp(.61f, .97f, slide) + .03f * settle;
+            float angle = Mathf.Lerp(fan * 5, fan * 2, slide) * (1 - settle);
+            float alpha = StrategyEaseOut(StrategyProgress(deal, .23f));
+            float facing = -Mathf.Cos(Mathf.PI * StrategyProgress(deal - .49f, .43f));
+            rect.center = new Vector2(Mathf.Lerp(640 + fan * 10, rect.center.x + fan * 6, slide) - fan * 6 * settle,
+                rect.center.y + Mathf.Lerp(49, -5, slide) * (1 - settle));
+
+            float lift = selected ? -8 : hovered ? -6 : 0;
+            float pickPulse = Mathf.Sin(pick * Mathf.PI);
+            rect.y += pressed ? 3 : lift + (selected ? 10 * (1 - pick) - 5 * pickPulse : 0);
+            scale *= pressed ? .98f : 1 + .019f * pickPulse;
+            if (reroll > 0)
+            {
+                float gather = StrategyEaseOut(StrategyProgress(reroll - index * .024f, .225f));
+                rect.center = Vector2.Lerp(rect.center, new Vector2(640 + fan * 4, 422), gather);
+                angle += fan * 7 * gather;
+                scale *= Mathf.Lerp(1, .61f, gather);
+                alpha *= 1 - gather;
+            }
+            if (confirm > 0 && selected)
+            {
+                float windup = StrategyEaseOut(StrategyProgress(confirm, .198f));
+                float fly = Mathf.SmoothStep(0, 1, StrategyProgress(confirm - .198f, StrategyConfirmSeconds - .198f));
+                rect.y -= windup * 5;
+                rect.center = Vector2.Lerp(rect.center, FormationStrategyHistoryAnchor.center, fly);
+                scale *= Mathf.Lerp(1 + .035f * windup, .23f, fly);
+                alpha *= Mathf.Lerp(1, .38f, fly);
+            }
+            else if (confirm > 0)
+            {
+                float fold = StrategyEaseOut(StrategyProgress(confirm, .26f));
+                float side = index < selectedStrategyCard ? -1 : 1;
+                rect.position += new Vector2(side * 40, 36) * fold;
+                angle += side * 7 * fold;
+                scale *= Mathf.Lerp(1, .87f, fold);
+                facing *= Mathf.Lerp(1, .54f, fold);
+                alpha *= 1 - fold;
+            }
+            if (alpha <= .005f) return;
+
             var matrix = GUI.matrix;
             var color = GUI.color;
-            rect.y += (1 - arrive) * 45 + (selected ? -9 : 16) * shrink;
-            GUIUtility.ScaleAroundPivot(new Vector2(Mathf.Lerp(.56f, 1, arrive) * scale, scale), rect.center);
+            if (angle != 0) GUIUtility.RotateAroundPivot(angle, rect.center);
+            GUIUtility.ScaleAroundPivot(new Vector2(Mathf.Max(.025f, Mathf.Abs(facing)) * scale, scale), rect.center);
             GUI.color *= new Color(1, 1, 1, alpha);
-            DrawStrategyCard(rect, option, description, column, index, selected);
-
-            float shine = Mathf.Max(Mathf.Sin(deal * Mathf.PI) * .70f, pulse * .55f, selected ? confirm * .72f : 0);
-            if (shine > .01f)
+            if (facing < 0) DrawStrategyCardBack(rect, StrategyGlints[column]);
+            else
             {
-                var glint = StrategyGlints[column];
-                glint.a = shine;
-                Fill(new Rect(rect.x + 2, rect.y + 2, rect.width - 15, 2), StrategyTint(glint));
-                Fill(new Rect(rect.x + 2, rect.y + 2, 2, 38), StrategyTint(glint));
+                if (hovered && !selected)
+                    Fill(new Rect(rect.x, rect.y - 1, rect.width - 21, 2), StrategyTint(new Color(.76f, .90f, .91f, .47f)));
+                DrawStrategyCard(rect, option, description, column, index, selected);
+
+                float shine = confirm > 0 && selected ? StrategyProgress(confirm, .26f)
+                    : pick < 1 ? pick : StrategyProgress(dealElapsed - .504f, .26f);
+                float highlight = Mathf.Sin(shine * Mathf.PI);
+                if (highlight > .01f)
+                {
+                    float left = Mathf.Lerp(rect.x + 5, rect.xMax - 116, shine);
+                    DrawStrategyStreak(new Rect(left, rect.y + 5, 91, rect.height - 22),
+                        selected ? StrategySelection : StrategyGlints[column], highlight * (selected ? .30f : .22f));
+                }
             }
             GUI.color = color;
             GUI.matrix = matrix;
+
+            if (selected && confirm > .44f)
+            {
+                var anchor = FormationStrategyHistoryAnchor;
+                float seam = StrategyProgress(confirm - .44f, .095f);
+                DrawStrategyStreak(new Rect(anchor.x - 12, anchor.center.y - 1, anchor.width + 24, 2), StrategySelection, seam * .76f);
+            }
+        }
+
+        static void DrawStrategyCardBack(Rect rect, Color accent)
+        {
+            if (strategyCardBack == null)
+            {
+                const int width = 170, height = 181, corner = 10;
+                var pixels = new Color32[width * height];
+                for (int y = 0; y < height; y++)
+                {
+                    int edge = Mathf.Min(y, height - 1 - y);
+                    int last = width - 1 - Mathf.Max(0, corner - edge);
+                    for (int x = 0; x <= last; x++)
+                    {
+                        bool rim = edge == 0 || x == 0 || x == last;
+                        bool grid = x % 9 == 0 || y % 9 == 0;
+                        int shade = 24 + (width - x + y) / 16 + (grid ? 7 : 0);
+                        pixels[y * width + x] = rim ? new Color32(111, 131, 137, 255)
+                            : new Color32((byte)shade, (byte)(shade + 10), (byte)(shade + 15), 255);
+                    }
+                }
+                strategyCardBack = new Texture2D(width, height, TextureFormat.RGBA32, false) { hideFlags = HideFlags.HideAndDontSave };
+                strategyCardBack.SetPixels32(pixels);
+                strategyCardBack.Apply(false, true);
+            }
+            GUI.DrawTexture(rect, strategyCardBack);
+            ApprovedUi.Border(new Rect(rect.x + 16, rect.y + 16, rect.width - 35, rect.height - 32),
+                StrategyTint(new Color(accent.r, accent.g, accent.b, .32f)));
+            var matrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(45, rect.center);
+            ApprovedUi.Border(new Rect(rect.center.x - 30, rect.center.y - 30, 60, 60), StrategyTint(accent));
+            Fill(new Rect(rect.center.x - 10, rect.center.y - 10, 20, 20), StrategyTint(accent));
+            GUI.matrix = matrix;
+        }
+
+        static void DrawStrategyStreak(Rect rect, Color tint, float opacity)
+        {
+            if (strategyLightStreak == null)
+            {
+                const int width = 64;
+                var pixels = new Color32[width];
+                for (int i = 0; i < width; i++)
+                {
+                    float strength = Mathf.Sin(i / (float)(width - 1) * Mathf.PI);
+                    pixels[i] = new Color32(255, 255, 255, (byte)(255 * strength * strength));
+                }
+                strategyLightStreak = new Texture2D(width, 1, TextureFormat.RGBA32, false)
+                    { hideFlags = HideFlags.HideAndDontSave, wrapMode = TextureWrapMode.Clamp };
+                strategyLightStreak.SetPixels32(pixels);
+                strategyLightStreak.Apply(false, true);
+            }
+            var previous = GUI.color;
+            tint.a *= previous.a * opacity;
+            GUI.color = tint;
+            GUI.DrawTexture(rect, strategyLightStreak);
+            GUI.color = previous;
         }
 
         static Color StrategyTint(Color color)
@@ -287,15 +457,17 @@ namespace YesterdayConvoy
             GUI.Label(rect, value, style);
         }
 
-        static bool DrawStrategyAction(Rect rect, string text, bool available, bool confirm = false)
+        static bool DrawStrategyAction(Rect rect, string text, bool available, bool confirm = false, bool strategy = false)
         {
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && available;
             bool hover = GUI.enabled && rect.Contains(Event.current.mousePosition);
-            var face = confirm && available ? (hover ? new Color32(249, 220, 161, 255) : StrategyGold)
-                : hover ? new Color32(40, 60, 73, 255) : new Color32(27, 41, 51, 255);
+            Color accent = strategy ? StrategySelection : StrategyGold;
+            Color accentHover = strategy ? new Color32(210, 255, 240, 255) : new Color32(249, 220, 161, 255);
+            Color face = confirm && available ? (hover ? accentHover : accent)
+                : (Color)(hover ? new Color32(40, 60, 73, 255) : new Color32(27, 41, 51, 255));
             Fill(rect, StrategyTint(face));
-            ApprovedUi.Border(rect, StrategyTint(confirm && available ? StrategyGold : new Color32(108, 129, 139, 184)));
+            ApprovedUi.Border(rect, StrategyTint(confirm && available ? accent : (Color)new Color32(108, 129, 139, 184)));
             StrategyLabel(rect, text, 14, !available ? StrategyMuted : confirm ? StrategyInk[2] : StrategyLight,
                 650, TextAnchor.MiddleCenter);
             bool click = GUI.Button(rect, GUIContent.none, GUIStyle.none);
