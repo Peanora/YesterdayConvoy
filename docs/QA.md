@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-20 随机开局补给与战备动画
+
+- Unity 6000.6.5f1 定向 EditMode **58/58**、D3D11 PlayMode **5/5**。覆盖同种子可复现、跨种子的装备和角色变化、初始店铺前预占库存、两种拾取顺序、到达后才到账、自动上阵和开局预案时点。Windows x64 Development 构建源码 `69c7d7409aebee3db4f5601225f0265d1bc52061`，994054498 bytes，0 错误，退出 0。[EditMode](../artifacts/formation-opening-rewards/editmode-final.xml) · [PlayMode](../artifacts/formation-opening-rewards/playmode.xml) · [构建日志](../artifacts/formation-opening-rewards/build.log)
+- 1280×720 D3D11 独立版前三场 **151/151、零异常、退出 0**。同版普通启动及菜单新开均用鼠标领取，看到两次开局阵容不同，装备分别为快装弹匣和生命核心。确认两球领完才出现战略预案。[开局实机](../artifacts/formation-opening-rewards/campaign-player/01-opening-reward-balls.png) · [正式入口回归](../artifacts/formation-opening-rewards/campaign-player/campaign-smoke.json)
+- 同版通过六场实际战斗到达银、金、彩三个战备测试节点，**61/61、零异常、退出 0**。银档由鼠标实际重抽、选中及确认，金、彩档通过正式选择接口验证应用。金档第 8 帧看到三张牌处于不同的展开阶段，第 17 帧已稳定并可操作。参考《货币战争》投资策略的三选一画面，使用本作牌面，入场和确认时长由本作调校。官方录像在本次环境无法播放，原作动态时序未逐帧核验。全三个位面的普通长局未跑。[投资策略参考画面](https://www.700g.com/zixun03/226029.html) · [官方特别节目](https://www.bilibili.com/video/BV1kc1uBkE4s/) · [金档实机片段](../artifacts/formation-opening-rewards/strategy-reveal.mp4) · [三档独立版回归](../artifacts/formation-opening-rewards/strategy-player/campaign-smoke.json)
+
 ## 2026-11-20 商店点卡招募
 
 - Unity 6000.6.5f1 正式场景 PlayMode **1/1**。覆盖卡牌底部购买、拖动取消、空卡位重复点击、金币扣款、备战落位和后续布阵。Windows x64 Development 构建源码 `8e7a3930fefb328e5c99cc81ed989eeab9faf3f7`，994045522 bytes，0 错误，退出 0。[PlayMode](../artifacts/formation-card-purchase/playmode-visible.xml) · [构建日志](../artifacts/formation-card-purchase/build-final.log)
