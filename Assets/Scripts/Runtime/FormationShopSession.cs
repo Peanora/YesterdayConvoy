@@ -11,6 +11,7 @@ namespace YesterdayConvoy
     /// </summary>
     public sealed class FormationShopSession
     {
+        static readonly int[] OpeningCostWeights = { 75, 20, 5 };
         public static FormationShopSession Current { get; private set; }
         public ShopTrialModel Shop { get; private set; }
         public ShopSeatLayout Seats { get; private set; }
@@ -53,12 +54,15 @@ namespace YesterdayConvoy
             {
                 Shop.EnableFormationEconomy(unlimited:practiceNode.HasValue);
                 var random=new System.Random(seed^0x317a9);
-                var starting = trial?.Roster ?? FormationCampaignRules.AllUnits.Where(role => role.Cost == 1)
-                    .OrderBy(_ => random.Next()).Take(3).Select(role => role.CardId).ToArray();
-                var pieces = (practiceNode.HasValue ? starting : Array.Empty<string>()).Select(id => new ShopTrialModel.Piece { Id = id,
+                var starting = trial?.Roster ?? (practiceNode.HasValue
+                    ? FormationCampaignRules.AllUnits.Where(role => role.Cost == 1)
+                        .OrderBy(_ => random.Next()).Take(3).Select(role => role.CardId).ToArray()
+                    : Array.Empty<string>());
+                var pieces = starting.Select(id => new ShopTrialModel.Piece { Id = id,
                     Star = trial?.Trait.Id == "泥岩" && FormationCampaignRun.HasNativeTrait(id, "泥岩") ? 3 : 1 });
                 Shop.Preset(pieces, Array.Empty<string>(), level: Math.Max(3, starting.Count), xp: 0, gold: 8);
-                Run=new FormationCampaignRun(Shop,seed,practiceNode,trial,practiceNode.HasValue ? null : starting);
+                Run=new FormationCampaignRun(Shop,seed,practiceNode,trial,
+                    practiceNode.HasValue ? null : DrawOpeningRoster(Shop, random));
                 Round=Run.NodeIndex+1;
             }
             else
@@ -75,6 +79,35 @@ namespace YesterdayConvoy
             Seats = new ShopSeatLayout(Shop.FormationEconomy);
             lineup.AddRange(Shop.Bench.Select(piece => piece.Id));
             Synchronize(); Shop.BeginPreparation(); Shop.Refresh(true);
+        }
+
+        static string[] DrawOpeningRoster(ShopTrialModel shop, System.Random random)
+        {
+            var pools = Enumerable.Range(1, OpeningCostWeights.Length)
+                .Select(cost => FormationCampaignRules.AllUnits
+                    .Where(role => role.Cost == cost && shop.Available(role.CardId) > 0)
+                    .Select(role => role.CardId).ToList()).ToArray();
+            var starters = new string[3];
+            for (int slot = 0; slot < starters.Length; slot++)
+            {
+                int totalWeight = 0;
+                for (int tier = 0; tier < pools.Length; tier++)
+                    if (pools[tier].Count > 0) totalWeight += OpeningCostWeights[tier];
+                if (totalWeight == 0) throw new InvalidOperationException("The opening roster ran out of distinct recruits.");
+                int roll = random.Next(totalWeight);
+                for (int tier = 0; tier < pools.Length; tier++)
+                {
+                    var pool = pools[tier];
+                    if (pool.Count == 0) continue;
+                    roll -= OpeningCostWeights[tier];
+                    if (roll >= 0) continue;
+                    int index = random.Next(pool.Count);
+                    starters[slot] = pool[index];
+                    pool.RemoveAt(index);
+                    break;
+                }
+            }
+            return starters;
         }
 
         public void ApplyTo(FormationBattleModel target)
@@ -325,6 +358,13 @@ namespace YesterdayConvoy
             var result=Run.Choose(index);if(result.Success){Synchronize();if(model!=null&&model.Phase==FormationPhase.Preparation)ApplyTo(model);}return result;
         }
         public bool RerollChoice()=>Run!=null&&Run.RerollChoice();
+
+        internal bool CompleteOpeningDelivery()
+        {
+            if (Run?.CompleteOpeningDelivery() != true) return false;
+            Synchronize();
+            return true;
+        }
 
         internal FormationCampaignRun.BallReward CompleteBall(int id)
         {

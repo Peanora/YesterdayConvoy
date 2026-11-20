@@ -77,6 +77,7 @@ namespace YesterdayConvoy
                 }
                 DrawFormationRewardFlights();
                 DrawHeldFormationActor();
+                DrawFormationOpeningDelivery();
                 DrawFormationExitConfirmation();
                 GUI.enabled=enabled;
                 if (!formationExitOpen) DrawFormationMenuControls();

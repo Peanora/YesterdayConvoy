@@ -46,6 +46,7 @@ namespace YesterdayConvoy
         static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
         static bool ReserveRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationReserveEvidence")>=0;
         static bool StrategyHistoryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationStrategyHistoryEvidence")>=0;
+        static bool OpeningDeliveryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationOpeningDeliveryEvidence")>=0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] static void Install()
         {
@@ -162,6 +163,12 @@ namespace YesterdayConvoy
                 yield return VerifyStrategyHistory();
                 yield break;
             }
+            if (OpeningDeliveryRequested)
+            {
+                result.scope = "Visible Windows Player through actual automatic opening delivery, preplan reveal and physical keyboard and mouse confirmation. Covers normal startup and opening again from a fresh challenge.";
+                yield return VerifyOpeningDelivery();
+                yield break;
+            }
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "-formationStrategyEvidence") >= 0)
             {
                 result.scope = "Production strategy panels on the authored board, with three seeded runs through two actual auto battles each. Choice confirmation is driven through the campaign API.";
@@ -175,18 +182,9 @@ namespace YesterdayConvoy
                 yield break;
             }
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
-            Assert(controller.Shop.Bench.Count==0&&controller.Campaign.Inventory.Count==0&&
-                controller.Campaign.PendingBalls.Count==2&&controller.Campaign.PendingBalls.All(ball=>ball.IsOpening)&&
-                !controller.Campaign.HasBlockingChoice,"Opening gear and recruits are visibly unclaimed before any choice");
             Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
             Assert(FormationBattleModel.Width==24&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10,"Smaller 10 by 8 left deployment area retains the 12 by 8 guard half");
-            yield return new WaitForSecondsRealtime(.55f);
-            yield return Frame("01-opening-reward-balls");
-            yield return ClaimGroundRewards(true,"opening-reward");
-            Assert(controller.Shop.Bench.Count==3&&controller.Shop.Bench.Select(p=>p.Id).Distinct().Count()==3&&
-                controller.Shop.Bench.All(piece=>piece.Star==1&&controller.Shop.Definition(piece.Id).Cost==1)&&
-                controller.Shop.Bench.All(piece=>controller.Session.Seats.For(piece.Instance) is { Lineup: false })&&
-                controller.Model.EnabledCount==0&&controller.Campaign.Inventory.Count==1,"Both opening balls deliver three distinct starters to reserve and one component");
+            yield return WaitForOpeningDelivery("01-opening-delivery-and-preplan");
             if (ReserveRequested)
             {
                 yield return VerifyReserveOverflow();
@@ -325,7 +323,7 @@ namespace YesterdayConvoy
                 yield return ResolveChoices();
                 if (battle == 1)
                 {
-                    Assert(controller.Campaign.PendingBalls.Count(ball=>ball.Component==null) == 4 && controller.Campaign.BallRewards.All(ball=>ball.Node==FormationCampaignRun.OpeningRewardNode),
+                    Assert(controller.Campaign.PendingBalls.Count(ball=>ball.Component==null) == 4 && controller.Campaign.BallRewards.Count == 0,
                         "First real reward settlement drops four unopened balls without payouts");
                     var dropped = controller.Campaign.PendingBalls.Select(ball=>ball.Id).ToArray();
                     Assert(controller.ContinueCampaign(),"Unopened ground rewards do not block the next node");
@@ -525,7 +523,7 @@ namespace YesterdayConvoy
             var seeds = new Dictionary<string, int>();
             for (int seed = controller.seed; seed < controller.seed + 300 && seeds.Count < 3; seed++)
             {
-                var run = OpenSeededStarterRewards(seed);
+                var run = CompleteSeededOpeningDelivery(seed);
                 while (run.HasBlockingChoice) run.Choose(0);
                 for (int i = 0; i < 2; i++)
                 {
@@ -543,7 +541,7 @@ namespace YesterdayConvoy
                 controller.seed = seeds[tier] - 1;
                 controller.ResetDemo();
                 yield return null;
-                yield return ClaimGroundRewards(false);
+                yield return WaitForOpeningDelivery();
                 Assert(controller.Campaign.Choices.Count == 3 &&
                     controller.Campaign.Choices.All(option => option.Strategy?.Tier == ""), "Opening choices are ungraded for " + tier);
                 if (tier == "银") yield return Frame("strategy-opening");
@@ -604,11 +602,7 @@ namespace YesterdayConvoy
             var run = controller.Campaign;
             Assert(run.CurrentNode.Id == "1-1" && run.PreplanId == null && run.AugmentIds.Count == 0,
                 "Fresh challenge has no confirmed strategy");
-            yield return ShowStrategyHistory("01-empty-strategy-history", confirmed, null);
-            yield return PressStrategyUiKey(0x1b);
-            yield return WaitForStrategyUi(() => !controller.FormationStrategyHistoryOpen, "Escape closes strategy history");
-
-            yield return ClaimGroundRewards(false);
+            yield return WaitForOpeningDelivery();
             yield return ResolveChoices();
             string preplan = run.PreplanId;
             Assert(!string.IsNullOrEmpty(preplan), "Opening choice commits a real preplan");
@@ -714,10 +708,13 @@ namespace YesterdayConvoy
             }
 
             controller.ResetDemo();
-            yield return null;
             Assert(!ReferenceEquals(run, controller.Campaign) && !controller.FormationStrategyHistoryOpen &&
-                controller.Campaign.CurrentNode.Id == "1-1", "New challenge resets the strategy overlay");
-            yield return ShowStrategyHistory("17-fresh-challenge-history", Array.Empty<string>(), null);
+                controller.Campaign.CurrentNode.Id == "1-1" && controller.Campaign.PreplanId == null && controller.Campaign.AugmentIds.Count == 0,
+                "New challenge resets the strategy overlay and option history");
+            yield return WaitForOpeningDelivery();
+            Assert(controller.Campaign.PreplanId == null && controller.Campaign.AugmentIds.Count == 0,
+                "The automatic opening and new unconfirmed preplan do not inherit prior strategies");
+            yield return Frame("17-fresh-challenge-preplan");
         }
 
         IEnumerator ShowStrategyHistory(string screenshot, IReadOnlyList<string> augments, string preplan)
@@ -802,18 +799,86 @@ namespace YesterdayConvoy
             yield return null;
         }
 
-        static FormationCampaignRun OpenSeededStarterRewards(int seed)
+        IEnumerator WaitForOpeningDelivery(string clip = null)
+        {
+            var run = controller.Campaign;
+            Assert(run.OpeningRewardsPending && !run.HasBlockingChoice && !controller.Session.CanShop &&
+                controller.Shop.Bench.Count == 0 && run.Inventory.Count == 0 && run.PendingBalls.Count == 0,
+                "Automatic opening starts with reserved stock, no landed grants, no ground balls and no preplan");
+            var recruits = run.OpeningRecruits.ToArray();
+            string component = run.OpeningComponent;
+            Assert(recruits.Length == 3 && recruits.Select(recruit => recruit.CardId).Distinct().Count() == 3 &&
+                recruits.All(recruit => recruit.Star == 1 && controller.Shop.Definition(recruit.CardId).Cost is >= 1 and <= 3 &&
+                    controller.Shop.ReservedRewards(recruit.CardId) == 1) &&
+                FormationCampaignRules.AllComponents.Any(item => item.Id == component),
+                "Three distinct 1–3 cost one-star starters occupy their original stock before delivery");
+            if (clip != null) yield return CaptureInterfaceClip(clip, 54);
+            yield return WaitForStrategyUi(() => !run.OpeningRewardsPending, "Normal updates complete opening delivery with no reward click");
+            Assert(controller.Shop.Bench.Select(piece => piece.Id).SequenceEqual(recruits.Select(recruit => recruit.CardId)) &&
+                controller.Shop.Bench.All(piece => piece.Star == 1 && controller.Session.Seats.For(piece.Instance) is { Lineup: false } &&
+                    controller.Shop.ReservedRewards(piece.Id) == 0) && controller.Model.EnabledCount == 0 &&
+                run.Inventory.Count == 1 && run.Inventory[0].Key == component && run.PendingBalls.Count == 0 && run.BallRewards.Count == 0,
+                "Landing places the three recruits in reserve and the component in inventory while the board stays empty");
+            Assert(run.Choices.Count == 3 && run.Choices.All(choice => choice.Strategy?.Tier == "") && !controller.Session.CanShop,
+                "Landing immediately opens the original three ungraded preplans and keeps trading locked");
+            controller.Shop.Validate();
+        }
+
+        IEnumerator VerifyOpeningDelivery()
+        {
+            var runs = new List<FormationCampaignRun>();
+            const byte Enter = 0x0d, Escape = 0x1b;
+            var confirmButton = new Vector2(725, 628);
+            for (int round = 0; round < 2; round++)
+            {
+                var run = controller.Campaign;
+                runs.Add(run);
+                string prefix = (round + 1).ToString("D2");
+                yield return WaitForOpeningDelivery(prefix + "-opening-delivery-and-preplan");
+                yield return new WaitForSecondsRealtime(.97f);
+                yield return Frame(prefix + "-preplan-choices");
+                int pick = round == 0 ? 1 : 0;
+                string id = run.Choices[pick].Id;
+                if (round == 0) yield return PressStrategyUiKey(0x32);
+                else yield return ClickStrategyUi(new Vector2(282, 398));
+                Assert(run.PreplanId == null, "Opening preselection does not apply its effect");
+                if (round == 0) yield return PressStrategyUiKey(Enter);
+                else yield return ClickStrategyUi(confirmButton);
+                yield return CaptureInterfaceClip(prefix + "-preplan-confirm", 20);
+                yield return WaitForStrategyUi(() => run.PreplanId == id, "The live " + (round == 0 ? "keyboard" : "mouse") + " confirms the chosen preplan");
+                yield return ResolveChoices();
+                Assert(controller.Model.EnabledCount == 0 && controller.Session.CanShop,
+                    "The preparation HUD returns with no automatic deployment");
+                yield return Frame(prefix + "-opening-ready");
+                yield return ShowStrategyHistory(prefix + "-opening-strategy-history", Array.Empty<string>(), id);
+                yield return PressStrategyUiKey(Escape);
+                yield return WaitForStrategyUi(() => !controller.FormationStrategyHistoryOpen, "Escape closes the preplan history");
+                if (round == 0)
+                {
+                    yield return ClickStrategyUi(FormationBattleController.FormationCoinRect.center);
+                    yield return WaitForStrategyUi(() => controller.MarketVisible && !controller.ShopPanelTransitioning,
+                        "The ordinary coin HUD opens the recruitment drawer");
+                    yield return ClickStrategyUi(FormationBattleController.FormationCoinRect.center);
+                    yield return WaitForStrategyUi(() => !controller.MarketVisible && !controller.ShopPanelTransitioning,
+                        "The ordinary coin HUD closes the recruitment drawer");
+                    yield return ClickStrategyUi(new Vector2(1239, 38));
+                    yield return ClickStrategyUi(new Vector2(ApprovedUi.Menu.center.x, 179));
+                    yield return WaitForStrategyUi(() => !ReferenceEquals(run, controller.Campaign), "The system menu starts a fresh automatic opening");
+                }
+            }
+            Assert(runs[0].PreplanId != null && controller.Campaign.AugmentIds.Count == 0,
+                "The second opening keeps only strategies confirmed in the new challenge");
+        }
+
+        static FormationCampaignRun CompleteSeededOpeningDelivery(int seed)
         {
             var session = new FormationShopSession(seed, fullCampaign: true);
-            foreach (var drop in session.Run.PendingBalls.ToArray())
-            {
-                if (session.Run.BeginBall(drop.Id) == null || session.CompleteBall(drop.Id) == null)
-                    throw new InvalidOperationException("Could not claim the seeded opening rewards.");
-            }
+            if (!session.CompleteOpeningDelivery())
+                throw new InvalidOperationException("Could not complete the seeded opening delivery.");
             return session.Run;
         }
 
-        IEnumerator ClaimGroundRewards(bool capture, string clipPrefix = "reward-opening")
+        IEnumerator ClaimGroundRewards(bool capture, string clipPrefix = "reward-flight")
         {
             bool captured = false;
             int remaining = controller.Campaign.PendingBalls.Count;
@@ -846,7 +911,7 @@ namespace YesterdayConvoy
                 while (controller.Campaign.PendingBalls.Any(ball => ball.Id == drop.Id) && Time.realtimeSinceStartupAsDouble < deadline)
                     yield return null;
                 Assert(controller.Campaign.PendingBalls.Count == --remaining,"Arrival claims exactly one ball");
-                if (!drop.IsOpening) yield return ResolveChoices();
+                yield return ResolveChoices();
             }
         }
 
@@ -889,13 +954,13 @@ namespace YesterdayConvoy
 
             int badgeSeed = Enumerable.Range(controller.seed, 100).First(seed =>
             {
-                var run = OpenSeededStarterRewards(seed);
+                var run = CompleteSeededOpeningDelivery(seed);
                 return run.Choices.Any(option => option.Id == "P13");
             });
             controller.seed = badgeSeed - 1;
             controller.ResetDemo();
             yield return null;
-            yield return ClaimGroundRewards(false);
+            yield return WaitForOpeningDelivery();
             int preplan = Array.FindIndex(controller.Campaign.Choices.ToArray(), option => option.Id == "P13");
             Assert(controller.ChooseCampaignOption(preplan).Success &&
                 controller.Campaign.Choices.All(option => FormationCampaignRun.BadgeTrait(option.Id) != null),
@@ -1227,7 +1292,8 @@ namespace YesterdayConvoy
             result.passed=error==null&&result.exceptionCount==0;
             string report = SynergyRequested ? "synergy-smoke.json" :
                 DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" :
-                StrategyHistoryRequested ? "strategy-history-smoke.json" : ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
+                OpeningDeliveryRequested ? "opening-delivery-smoke.json" : StrategyHistoryRequested ? "strategy-history-smoke.json" :
+                ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
             File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
             string marker = SynergyRequested ? "FORMATION_SYNERGY_SMOKE_" : DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
             Debug.Log(marker+(result.passed?"PASS":"FAIL: "+result.error));

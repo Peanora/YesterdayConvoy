@@ -31,7 +31,7 @@ namespace YesterdayConvoy.Tests
             }
             Assert.That(controller, Is.Not.Null); Assert.That(controller.Ready, Is.True);
             Assert.That(controller.Campaign, Is.Not.Null); Assert.That(controller.Shop.UnlimitedGold, Is.False);
-            yield return FormationFullGameSceneTests.ClaimOpeningRewards(controller);
+            yield return FormationFullGameSceneTests.WaitForOpeningDelivery(controller);
             int choices = 0;
             while (controller.Campaign.HasBlockingChoice)
             {

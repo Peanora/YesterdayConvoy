@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace YesterdayConvoy.Tests
@@ -24,8 +25,15 @@ namespace YesterdayConvoy.Tests
             }
         }
 
+        internal static bool CompleteOpeningDelivery(FormationShopSession session)
+        {
+            var completion = typeof(FormationShopSession).GetMethod("CompleteOpeningDelivery",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            return (bool)completion.Invoke(session, null);
+        }
+
         [Test]
-        public void OpeningBallsReserveDistinctStartersAndRandomizeReproduciblyBySeed()
+        public void OpeningDeliveryPreservesReservedStockAndOpensOnePreplan()
         {
             string Open(int seed)
             {
@@ -36,41 +44,55 @@ namespace YesterdayConvoy.Tests
                 Assert.That(run.HasBlockingChoice || session.CanShop, Is.False);
                 Assert.That(shop.Bench, Is.Empty);
                 Assert.That(run.Inventory, Is.Empty);
-                Assert.That(run.PendingBalls.Count, Is.EqualTo(2));
-                var recruitDrop = run.PendingBalls.Single(ball => ball.Color == "白");
-                var equipmentDrop = run.PendingBalls.Single(ball => ball.Color == "蓝");
-                var recruits = run.BeginBall(recruitDrop.Id).Recruits;
-                var equipment = run.BeginBall(equipmentDrop.Id).Items.Single();
-                Assert.That(recruits.Select(recruit => recruit.CardId).Distinct().Count(), Is.EqualTo(3));
-                Assert.That("ABCDEF", Does.Contain(equipment));
-                foreach (var recruit in recruits)
+                Assert.That(run.PendingBalls, Is.Empty);
+                var ids = shop.RewardReservations.OrderBy(ticket => ticket.Token).Select(ticket => ticket.Id).ToArray();
+                Assert.That(ids.Distinct().Count(), Is.EqualTo(3));
+                foreach (string id in ids)
                 {
-                    Assert.That(shop.Definition(recruit.CardId).Cost, Is.EqualTo(1));
-                    Assert.That(shop.ReservedRewards(recruit.CardId), Is.EqualTo(1));
+                    Assert.That(shop.Definition(id).Cost, Is.InRange(1, 3));
+                    Assert.That(shop.Available(id) + shop.Offers.Count(offer => offer == id), Is.EqualTo(shop.Capacity(id) - 1));
                 }
-                Assert.That(shop.Bench, Is.Empty);
-                Assert.That(run.Inventory, Is.Empty);
-                Assert.That(run.BeginBall(recruitDrop.Id), Is.Null);
-                Assert.That(run.CompleteBall(equipmentDrop.Id), Is.Not.Null);
-                Assert.That(run.HasBlockingChoice, Is.False);
-                Assert.That(run.CompleteBall(recruitDrop.Id), Is.Not.Null);
-                Assert.That(run.CompleteBall(recruitDrop.Id), Is.Null);
+                Assert.That(run.Choose(0).Success, Is.False);
+                Assert.That(run.SettleBattle(true, 1, 3, 0, false), Is.Null);
+                Assert.That(run.AdvanceNode(), Is.False);
+                Assert.That(CompleteOpeningDelivery(session), Is.True);
+                Assert.That(CompleteOpeningDelivery(session), Is.False);
                 Assert.That(run.OpeningRewardsPending, Is.False);
+                Assert.That(run.Choices.Count, Is.EqualTo(3));
                 Assert.That(run.ChoiceTitle, Does.Contain("战略预案"));
-                Assert.That(run.Inventory.Select(item => item.Key), Is.EqualTo(new[] { equipment }));
-                Assert.That(shop.Bench.Select(piece => piece.Id), Is.EqualTo(recruits.Select(recruit => recruit.CardId)));
+                Assert.That(shop.Bench.Select(piece => piece.Id), Is.EqualTo(ids));
+                Assert.That(shop.Bench.All(piece => piece.Star == 1 && !session.Seats.InLineup(piece.Instance)), Is.True);
                 Assert.That(shop.Gold, Is.EqualTo(8));
                 Assert.That(shop.Level, Is.EqualTo(3));
-                Assert.That(recruits.All(recruit => shop.ReservedRewards(recruit.CardId) == 0), Is.True);
+                Assert.That(shop.RewardReservations, Is.Empty);
+                Assert.That(run.PendingBalls, Is.Empty);
+                Assert.That(run.BallRewards, Is.Empty);
+                string equipment = run.Inventory.Single().Key;
+                Assert.That(FormationCampaignRules.AllComponents.Select(item => item.Id), Does.Contain(equipment));
                 shop.Validate();
-                return equipment + " / " + string.Join(",", recruits.Select(recruit => recruit.CardId).OrderBy(id => id));
+                return equipment + " / " + string.Join(",", ids);
             }
 
             string first = Open(17);
             Assert.That(Open(17), Is.EqualTo(first));
-            var outcomes = Enumerable.Range(17, 10).Select(Open).ToArray();
-            Assert.That(outcomes.Select(result => result.Split('/')[0]).Distinct().Count(), Is.GreaterThan(1));
-            Assert.That(outcomes.Select(result => result.Split('/')[1]).Distinct().Count(), Is.GreaterThan(1));
+            Assert.That(Enumerable.Range(17, 10).Select(Open).Distinct().Count(), Is.GreaterThan(1));
+        }
+
+        [Test]
+        public void OpeningCostDrawIsWeightedAcrossSeedsWithoutRepeatingIdentity()
+        {
+            const int seeds = 1000, draws = seeds * 3;
+            var counts = new int[3];
+            for (int seed = 0; seed < seeds; seed++)
+            {
+                var shop = new FormationShopSession(seed, fullCampaign: true).Shop;
+                var ids = shop.RewardReservations.Select(ticket => ticket.Id).ToArray();
+                Assert.That(ids.Distinct().Count(), Is.EqualTo(3));
+                foreach (string id in ids) counts[shop.Definition(id).Cost - 1]++;
+            }
+            Assert.That(counts[0] / (double)draws, Is.EqualTo(.75).Within(.035));
+            Assert.That(counts[1] / (double)draws, Is.EqualTo(.20).Within(.03));
+            Assert.That(counts[2] / (double)draws, Is.EqualTo(.05).Within(.016));
         }
 
         [Test]

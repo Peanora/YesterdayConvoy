@@ -80,6 +80,7 @@ namespace YesterdayConvoy
             RefreshFormationOperatingVisibility();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
+            TickFormationOpeningDelivery(Time.unscaledDeltaTime);
             TickFormationRewards(Time.unscaledDeltaTime);
             TickFormationTraitFeedback(Time.unscaledDeltaTime);
             if(Input.GetKeyDown(KeyCode.Tab)&&Model.Phase==FormationPhase.Preparation&&!CampaignInteractionBlocked&&!formationMenuOpen)ToggleFormationMarket();

@@ -13,7 +13,7 @@ namespace YesterdayConvoy
         Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll;
         public FormationCampaignRun Campaign=>Session?.Run;
         bool AwaitingOptionalRewards=>HasGroundRewards||Campaign?.PendingRewardChoices>0;
-        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||
+        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.OpeningRewardsPending||Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||
             campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||
             campaignResultSummaryOpen||formationExitOpen||FormationStrategyHistoryOpen);
 

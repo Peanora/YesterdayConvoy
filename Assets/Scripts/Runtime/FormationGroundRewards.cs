@@ -233,7 +233,7 @@ namespace YesterdayConvoy
                 flight.ArrivalItems = Campaign.Inventory.Count - firstItem;
                 if (flight.ArrivalItems > 0)
                     RevealEquipmentSlot(firstItem + flight.ArrivalItems - 1);
-                notice = (ball.Drop.IsOpening ? "开局补给" : ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
+                notice = (ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
                 changed = true;
             }
             if (changed)
@@ -471,13 +471,6 @@ namespace YesterdayConvoy
         void DrawFormationRewardFlights()
         {
             if (CombatViewActive || ViewingDefenders || formationMenuOpen || Event.current.type != EventType.Repaint) return;
-            if (Campaign?.OpeningRewardsPending == true && !CampaignInteractionBlocked)
-            {
-                var anchor = RewardProjection(GroundRewardPoint((RewardLeft + RewardRight) * .5f, RewardFar, .3f));
-                var label = new Rect(anchor.x - 64, anchor.y - 22, 128, 19);
-                Fill(label, new Color(.10f,.15f,.19f,.89f));
-                EconomyLabel(label, "开局补给 · 点击拾取", 11, EconomyIce, true, TextAnchor.MiddleCenter);
-            }
             if (rewardFlights.Count == 0) return;
             int nextItem = Campaign.Inventory.Count;
             foreach (var flight in rewardFlights)

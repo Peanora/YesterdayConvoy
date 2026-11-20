@@ -36,6 +36,7 @@ namespace YesterdayConvoy
         double strategyOpenedAt, strategyDealtAt, strategyPickedAt;
         double? strategyConfirmedAt, strategyRerolledAt;
         float strategyDealLead;
+        bool strategyConfirmToHistory;
 
         static void EnsureStrategyArt()
         {
@@ -85,7 +86,7 @@ namespace YesterdayConvoy
             double confirmElapsed = strategyConfirmedAt.HasValue ? now - strategyConfirmedAt.Value : 0;
             double rerollElapsed = strategyRerolledAt.HasValue ? now - strategyRerolledAt.Value : 0;
             float dealEnd = strategyDealLead + (options.Count - 1) * StrategyDealGap + StrategyDealSeconds;
-            bool acceptingInput = preplan || dealElapsed >= dealEnd && !strategyConfirmedAt.HasValue && !strategyRerolledAt.HasValue;
+            bool acceptingInput = dealElapsed >= dealEnd && !strategyConfirmedAt.HasValue && !strategyRerolledAt.HasValue;
             DrawStrategyBackdrop(title, node, preplan ? count : tier + "档" + count, column, openElapsed, confirmElapsed);
 
             var key = Event.current;
@@ -110,26 +111,18 @@ namespace YesterdayConvoy
             for (int i = 0; i < options.Count; i++)
             {
                 var rect = new Rect(start + i * (StrategyCardWidth + StrategyCardGap), 217, StrategyCardWidth, StrategyCardHeight);
-                if (preplan)
-                {
-                    if (GUI.Button(rect, GUIContent.none, GUIStyle.none)) SelectStrategyCard(i, now);
-                    DrawStrategyCard(rect, options[i], strategyDescriptions[i], column, i, i == selectedStrategyCard);
-                }
-                else
-                {
-                    if (StrategyCardHit(rect, enabled && acceptingInput, out bool hovered, out bool pressed)) SelectStrategyCard(i, now);
-                    bool selected = i == selectedStrategyCard;
-                    double cardElapsed = dealElapsed - strategyDealLead - i * StrategyDealGap;
-                    float pick = selected ? StrategyProgress(now - strategyPickedAt, StrategyPickSeconds) : 1;
-                    DrawDealtStrategyCard(rect, options[i], strategyDescriptions[i], column, i, selected, hovered, pressed,
-                        cardElapsed, pick, confirmElapsed, rerollElapsed);
-                }
+                if (StrategyCardHit(rect, enabled && acceptingInput, out bool hovered, out bool pressed)) SelectStrategyCard(i, now);
+                bool selected = i == selectedStrategyCard;
+                double cardElapsed = dealElapsed - strategyDealLead - i * StrategyDealGap;
+                float pick = selected ? StrategyProgress(now - strategyPickedAt, StrategyPickSeconds) : 1;
+                DrawDealtStrategyCard(rect, options[i], strategyDescriptions[i], column, i, selected, hovered, pressed,
+                    cardElapsed, pick, confirmElapsed, rerollElapsed);
             }
 
             var color = GUI.color;
             float actionsAlpha = StrategyProgress(dealElapsed - dealEnd + .14f, .14f)
                 * (1 - StrategyProgress(confirmElapsed, .15f)) * (1 - StrategyProgress(rerollElapsed, .16f));
-            if (!preplan) GUI.color *= new Color(1, 1, 1, actionsAlpha);
+            GUI.color *= new Color(1, 1, 1, actionsAlpha);
             bool reroll = DrawStrategyAction(new Rect(468, 606, 160, 44),
                 "免费重抽   " + (run.CanRerollChoice ? "1 / 1" : "0 / 1"), run.CanRerollChoice && acceptingInput);
             bool confirm = DrawStrategyAction(new Rect(638, 606, 174, 44), preplan ? "确认预案" : "确认战备",
@@ -137,8 +130,7 @@ namespace YesterdayConvoy
             GUI.color = color;
             if (reroll)
             {
-                if (preplan) run.RerollChoice();
-                else strategyRerolledAt = now;
+                strategyRerolledAt = now;
                 return true;
             }
             if (rerollElapsed >= StrategyRerollSeconds && Event.current.type == EventType.Repaint)
@@ -146,8 +138,12 @@ namespace YesterdayConvoy
                 run.RerollChoice();
                 strategyRerolledAt = null;
             }
-            if (confirm && !preplan) strategyConfirmedAt = now;
-            if ((confirm && preplan) || (confirmElapsed >= StrategyConfirmSeconds && Event.current.type == EventType.Repaint))
+            if (confirm)
+            {
+                strategyConfirmedAt = now;
+                strategyConfirmToHistory = FormationStrategyHistoryAvailable;
+            }
+            if (confirmElapsed >= StrategyConfirmSeconds && Event.current.type == EventType.Repaint)
             {
                 ChooseCampaignOption(selectedStrategyCard);
                 selectedStrategyCard = -1;
@@ -190,10 +186,9 @@ namespace YesterdayConvoy
 
         void DrawStrategyBackdrop(string title, string node, string subtitle, int column, double elapsed, double confirm)
         {
-            bool preplan = column == 0;
-            float veil = preplan ? 1 : Mathf.Lerp(.45f, 1, StrategyEaseOut(StrategyProgress(elapsed, .28f)));
+            float veil = Mathf.Lerp(.45f, 1, StrategyEaseOut(StrategyProgress(elapsed, .28f)));
             float fade = StrategyEaseOut(StrategyProgress(confirm - .31f, .24f));
-            float titleReveal = preplan ? 1 : StrategyEaseOut(StrategyProgress(elapsed - .065f, .274f));
+            float titleReveal = StrategyEaseOut(StrategyProgress(elapsed - .065f, .274f));
             var color = GUI.color;
             GUI.color *= new Color(1, 1, 1, veil * (1 - fade));
             var screen = new Rect(0, 0, 1280, 720);
@@ -204,7 +199,7 @@ namespace YesterdayConvoy
             Fill(new Rect(0, 57, 1280, 1), StrategyTint(new Color32(168, 201, 208, 36)));
             StrategyLabel(new Rect(27, 16, 16, 24), "◆", 13, StrategyGold, 700);
             StrategyLabel(new Rect(51, 16, 120, 24), "昨日圆车", 13, StrategyLight, 700);
-            if (!preplan && elapsed < .26f)
+            if (elapsed < .26f)
             {
                 float scan = StrategyProgress(elapsed, .26f);
                 float width = Mathf.Lerp(20, 1176, StrategyEaseOut(scan));
@@ -264,9 +259,18 @@ namespace YesterdayConvoy
                 float windup = StrategyEaseOut(StrategyProgress(confirm, .198f));
                 float fly = Mathf.SmoothStep(0, 1, StrategyProgress(confirm - .198f, StrategyConfirmSeconds - .198f));
                 rect.y -= windup * 5;
-                rect.center = Vector2.Lerp(rect.center, FormationStrategyHistoryAnchor.center, fly);
-                scale *= Mathf.Lerp(1 + .035f * windup, .23f, fly);
-                alpha *= Mathf.Lerp(1, .38f, fly);
+                if (strategyConfirmToHistory)
+                {
+                    rect.center = Vector2.Lerp(rect.center, FormationStrategyHistoryAnchor.center, fly);
+                    scale *= Mathf.Lerp(1 + .035f * windup, .23f, fly);
+                    alpha *= Mathf.Lerp(1, .38f, fly);
+                }
+                else
+                {
+                    rect.y -= 26 * fly;
+                    scale *= Mathf.Lerp(1 + .035f * windup, .86f, fly);
+                    alpha *= 1 - fly;
+                }
             }
             else if (confirm > 0)
             {
@@ -305,7 +309,7 @@ namespace YesterdayConvoy
             GUI.color = color;
             GUI.matrix = matrix;
 
-            if (selected && confirm > .44f)
+            if (selected && strategyConfirmToHistory && confirm > .44f)
             {
                 var anchor = FormationStrategyHistoryAnchor;
                 float seam = StrategyProgress(confirm - .44f, .095f);

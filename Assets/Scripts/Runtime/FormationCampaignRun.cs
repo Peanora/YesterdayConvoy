@@ -7,7 +7,6 @@ namespace YesterdayConvoy
     /// <summary>One finite v0.7 challenge. Scene/UI only choose options; this owns rewards and their once-only keys.</summary>
     public sealed class FormationCampaignRun
     {
-        internal const string OpeningRewardNode = "开局";
         public sealed class ChoiceOption
         {
             public string Id, Name, Description;
@@ -50,7 +49,6 @@ namespace YesterdayConvoy
             public string Node { get; }
             public string Color { get; }
             public string Component { get; }
-            public bool IsOpening => Node == OpeningRewardNode;
             internal BallPayout Payout { get; }
             internal RewardDrop(int id,string node,string color,BallPayout payout,string component = null)
             { Id = id; Node = node; Color = color; Payout = payout; Component = component; }
@@ -88,6 +86,8 @@ namespace YesterdayConvoy
         readonly List<BallReward> ballRewards = new List<BallReward>();
         readonly List<RewardDrop> pendingBalls = new List<RewardDrop>();
         readonly Dictionary<int,RewardDrop> openingBalls = new Dictionary<int,RewardDrop>();
+        IReadOnlyList<RewardRecruit> openingRecruits = Array.Empty<RewardRecruit>();
+        string openingComponent;
         int ballSequence;
         readonly HashSet<string> settled=new HashSet<string>();
         readonly HashSet<int> hopeClaims=new HashSet<int>();
@@ -122,7 +122,9 @@ namespace YesterdayConvoy
         public IReadOnlyList<string> OpenedBalls=>openedBalls;
         public IReadOnlyList<BallReward> BallRewards => ballRewards;
         public IReadOnlyList<RewardDrop> PendingBalls => pendingBalls;
-        public bool OpeningRewardsPending => pendingBalls.Any(ball => ball.IsOpening);
+        public bool OpeningRewardsPending => openingComponent != null;
+        internal IReadOnlyList<RewardRecruit> OpeningRecruits => openingRecruits;
+        internal string OpeningComponent => openingComponent;
         public int PendingRewardChoices => rewardSelections.Count;
         public string RewardChoiceTitle => rewardSelections.Count == 0 ? null : rewardSelections.Peek().Title;
         public IReadOnlyList<ChoiceOption> RewardChoices => rewardSelections.Count == 0 ? Array.Empty<ChoiceOption>() : rewardSelections.Peek().Options;
@@ -185,8 +187,8 @@ namespace YesterdayConvoy
             }
             if (openingStarters != null)
             {
-                QueueOpeningRewards(openingStarters);
-                LastSummary = "点击奖励球领取开局装备与角色";
+                PrepareOpeningDelivery(openingStarters);
+                LastSummary = "开局物资发放中";
             }
             else
             {
@@ -216,7 +218,7 @@ namespace YesterdayConvoy
         }
         public ShopTrialModel.Result ChooseReward(int index)
         {
-            if (HasBlockingChoice || openingBalls.Count != 0 || index < 0 || index >= RewardChoices.Count) return Fail("没有可领取的选项");
+            if (HasBlockingChoice || OpeningRewardsPending || openingBalls.Count != 0 || index < 0 || index >= RewardChoices.Count) return Fail("没有可领取的选项");
             var option = rewardSelections.Dequeue().Options[index];
             option.Apply?.Invoke(); OnShopChanged(); return Ok("已选择："+option.Name);
         }
@@ -320,7 +322,7 @@ namespace YesterdayConvoy
         {var unit=FormationCampaignRules.Find(id);return unit!=null&&(unit.Factions.Contains(trait)||unit.Styles.Contains(trait));}
         public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
         {
-            string key=CurrentNode.Id;if(IsPractice||Finished||CurrentNode.Kind=="补给")return null;
+            string key=CurrentNode.Id;if(IsPractice||Finished||OpeningRewardsPending||CurrentNode.Kind=="补给")return null;
             if(!settled.Add(key))return null;
             bool reward=CurrentNode.Kind=="奖励";
             int payment=5;if(debt>0){int paid=Math.Min(3,debt);payment-=paid;debt-=paid;}
@@ -389,7 +391,7 @@ namespace YesterdayConvoy
 
         public bool AdvanceNode()
         {
-            if(Finished||!NodeSettled||HasBlockingChoice||openingBalls.Count!=0||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
+            if(Finished||!NodeSettled||HasBlockingChoice||OpeningRewardsPending||openingBalls.Count!=0||NodeIndex+1>=FormationCampaignRules.Nodes.Length)return false;
             int oldPlane=CurrentNode.Plane;NodeIndex++;CurrentEncounterTier=1;openedBalls.Clear();
             if(growthFund>0){shop.AddGold(3);growthFund--;}
             if(contractPays>0){Give(contractId);contractPays--;}
@@ -548,21 +550,32 @@ namespace YesterdayConvoy
             pendingBalls.Add(new RewardDrop(++ballSequence,node,"",payout,component));
         }
 
-        void QueueOpeningRewards(IReadOnlyList<string> starterIds)
+        void PrepareOpeningDelivery(IReadOnlyList<string> starterIds)
         {
-            var equipment = new BallPayout();
-            equipment.items.Add(Shuffle("ABCDEF".Select(letter => letter.ToString())).First());
-            pendingBalls.Add(new RewardDrop(++ballSequence, OpeningRewardNode, "蓝", equipment));
-
-            var recruits = new BallPayout();
+            var recruits = new List<RewardRecruit>(starterIds.Count);
             foreach (string id in starterIds)
             {
                 var ticket = shop.ReserveRewardCandidate(id);
                 if (ticket == null) throw new InvalidOperationException("Missing stock for starter " + id);
-                recruits.recruits.Add(new RewardRecruit(id, shop.Definition(id).Name, 1, ticket));
+                recruits.Add(new RewardRecruit(id, shop.Definition(id).Name, 1, ticket));
             }
-            pendingBalls.Add(new RewardDrop(++ballSequence, OpeningRewardNode, "白", recruits));
+            openingRecruits = recruits.AsReadOnly();
+            openingComponent = Shuffle("ABCDEF").First().ToString();
         }
+
+        internal bool CompleteOpeningDelivery()
+        {
+            if (!OpeningRewardsPending) return false;
+            foreach (var recruit in openingRecruits) DeliverRewardRecruit(recruit);
+            AddItem(openingComponent);
+            openingRecruits = Array.Empty<RewardRecruit>();
+            openingComponent = null;
+            RequestPreplan();
+            LastSummary = "开局物资已入库";
+            OnShopChanged();
+            return true;
+        }
+
         static int EquipmentWeight(string key) => key.Length == 1 && "ABCDEF".Contains(key) ? 1 :
             FormationCampaignRules.AllItems.Any(item=>item.Id==key) ? 2 : 0;
 
@@ -575,7 +588,7 @@ namespace YesterdayConvoy
 
         public BallPayout BeginBall(int id)
         {
-            if (HasBlockingChoice || openingBalls.ContainsKey(id)) return null;
+            if (HasBlockingChoice || OpeningRewardsPending || openingBalls.ContainsKey(id)) return null;
             var drop = pendingBalls.Find(ball => ball.Id == id);
             if (drop == null) return null;
             openingBalls.Add(id, drop);
@@ -632,11 +645,7 @@ namespace YesterdayConvoy
             var recruits = new List<string>();
             foreach (var recruit in payout.Recruits)
             {
-                bool granted = (recruit.Reservation == null
-                    ? shop.Grant(recruit.CardId,recruit.Star)
-                    : shop.GrantReserved(recruit.Reservation)).Success;
-                if (!granted) waiting.Add(new Delivery{Id=recruit.CardId,Star=recruit.Star,KeepWhenMax=true,
-                    Reservation=recruit.Reservation});
+                bool granted = DeliverRewardRecruit(recruit);
                 recruits.Add(recruit.Star+"★ "+recruit.Name+(granted?"":"（待领）"));
             }
             foreach (string key in payout.Items) AddItem(key);
@@ -661,9 +670,18 @@ namespace YesterdayConvoy
                 rewardSelections.Count > choiceCount ? rewardSelections.Last().Title : null, payout.Items.ToArray());
             if (drop.Component == null && drop.Node == CurrentNode.Id) openedBalls.Add(drop.Color);
             ballRewards.Add(reward);
-            if (drop.IsOpening && !OpeningRewardsPending) RequestPreplan();
             OnShopChanged();
             return reward;
+        }
+
+        bool DeliverRewardRecruit(RewardRecruit recruit)
+        {
+            bool granted = (recruit.Reservation == null
+                ? shop.Grant(recruit.CardId,recruit.Star)
+                : shop.GrantReserved(recruit.Reservation)).Success;
+            if (!granted) waiting.Add(new Delivery { Id=recruit.CardId, Star=recruit.Star, KeepWhenMax=true,
+                Reservation=recruit.Reservation });
+            return granted;
         }
 
         IEnumerable<ChoiceOption> ComponentRewardOptions() => "ABCDEF".Select(letter=>letter.ToString()).Select(key=>

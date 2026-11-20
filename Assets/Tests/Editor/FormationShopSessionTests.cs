@@ -131,11 +131,7 @@ namespace YesterdayConvoy.Tests
         public void ReserveOverflowPromotesInOrderAllowsDeploymentAndBlocksOnlyRecruitmentAndBattleAsNeeded()
         {
             var session = new FormationShopSession(17, fullCampaign: true);
-            foreach (var drop in session.Run.PendingBalls.ToArray())
-            {
-                Assert.That(session.Run.BeginBall(drop.Id), Is.Not.Null);
-                Assert.That(session.Run.CompleteBall(drop.Id), Is.Not.Null);
-            }
+            Assert.That(FormationCampaignRunTests.CompleteOpeningDelivery(session), Is.True);
             while (session.Run.HasBlockingChoice) Assert.That(session.Choose(0).Success, Is.True);
 
             var shop = session.Shop;

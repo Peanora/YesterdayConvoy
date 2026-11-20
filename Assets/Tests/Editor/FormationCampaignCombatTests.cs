@@ -554,7 +554,7 @@ namespace YesterdayConvoy.Tests
             {
                 Assert.That(++safety,Is.LessThan(30));
                 if(!run.NodeSettled)run.SettleBattle(true,1,3,0,false);
-                if(collectDrops||run.OpeningRewardsPending)FormationCampaignRunTests.CollectDrops(run);
+                if(collectDrops)FormationCampaignRunTests.CollectDrops(run);
                 Assert.That(run.AdvanceNode(),Is.True);
                 while(run.HasBlockingChoice)Assert.That(run.Choose(0).Success,Is.True);
             }

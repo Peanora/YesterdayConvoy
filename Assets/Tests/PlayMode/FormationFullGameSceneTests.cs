@@ -14,49 +14,33 @@ namespace YesterdayConvoy.Tests
         FormationBattleController controller;
         [TearDown] public void Freeze(){if(controller?.Model!=null)controller.Model.Paused=true;}
 
-        delegate bool RewardPoint(int dropId, out Vector2 point);
-
-        internal static IEnumerator ClaimOpeningRewards(FormationBattleController board)
+        internal static IEnumerator WaitForOpeningDelivery(FormationBattleController board)
         {
-            const BindingFlags nonPublic = BindingFlags.Instance | BindingFlags.NonPublic;
-            var type = typeof(FormationBattleController);
-            var tryRewardPoint = (RewardPoint)type.GetMethod("TryGroundRewardPoint", nonPublic)
-                .CreateDelegate(typeof(RewardPoint), board);
-            var rewardPointer = (Func<EventType, Vector2, bool>)type.GetMethod("ProcessFormationRewardPointer", nonPublic)
-                .CreateDelegate(typeof(Func<EventType, Vector2, bool>), board);
             var run = board.Campaign;
-            var drops = run.PendingBalls.ToArray();
-            Assert.That(drops.Length, Is.EqualTo(2));
-            Assert.That(drops.All(drop => drop.IsOpening), Is.True);
+            Assert.That(run.OpeningRewardsPending, Is.True);
+            Assert.That(run.PendingBalls, Is.Empty);
             Assert.That(board.Shop.Bench, Is.Empty);
             Assert.That(board.Model.Units, Is.Empty);
             Assert.That(run.Inventory, Is.Empty);
+            Assert.That(run.Choices, Is.Empty, "Preplans follow the automatic delivery.");
+            Assert.That(board.Session.CanShop, Is.False, "Opening grants reserve stock before trading starts.");
+            var reserved = board.Shop.RewardReservations.Select(ticket => ticket.Id).ToArray();
+            Assert.That(reserved.Distinct().Count(), Is.EqualTo(3));
 
-            foreach (var drop in drops.Reverse())
-            {
-                Assert.That(run.Choices, Is.Empty, "The preplan appears after both rewards arrive.");
-                Assert.That(board.Session.CanShop, Is.False, "Opening grants reserve stock before trading starts.");
-                double deadline = Time.realtimeSinceStartupAsDouble + 6;
-                while (!tryRewardPoint(drop.Id, out _) && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
-                Assert.That(tryRewardPoint(drop.Id, out var point), Is.True, "The opening reward must be reachable on the real board.");
-                int received = board.Shop.Bench.Count + run.Inventory.Count;
-                Assert.That(rewardPointer(EventType.MouseDown, point), Is.True);
-                Assert.That(rewardPointer(EventType.MouseUp, point), Is.True);
-                Assert.That(board.Shop.Bench.Count + run.Inventory.Count, Is.EqualTo(received), "Opening grants land after the flight.");
-                deadline = Time.realtimeSinceStartupAsDouble + 6;
-                while (board.Shop.Bench.Count + run.Inventory.Count == received && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
-                Assert.That(board.Shop.Bench.Count + run.Inventory.Count, Is.GreaterThan(received));
-                Assert.That(run.PendingBalls.Any(item => item.Id == drop.Id), Is.False);
-            }
-
+            double deadline = Time.realtimeSinceStartupAsDouble + 8;
+            while (run.OpeningRewardsPending && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
+            Assert.That(run.OpeningRewardsPending, Is.False, "The scene lands grants without opening ground rewards.");
             Assert.That(board.Shop.Gold, Is.EqualTo(8));
-            Assert.That(board.Shop.Bench.Select(piece => piece.Id).Distinct().Count(), Is.EqualTo(3));
-            Assert.That(board.Shop.Bench.All(piece => piece.Star == 1 && board.Shop.Definition(piece.Id).Cost == 1), Is.True);
+            Assert.That(board.Shop.Bench.Select(piece => piece.Id), Is.EquivalentTo(reserved));
+            Assert.That(board.Shop.Bench.All(piece => piece.Star == 1 && board.Shop.Definition(piece.Id).Cost is >= 1 and <= 3), Is.True);
+            Assert.That(board.Shop.RewardReservations, Is.Empty);
             Assert.That(board.Model.EnabledCount, Is.Zero);
             Assert.That(board.Shop.Bench.All(piece => board.Session.Seats.For(piece.Instance) is { Lineup: false }), Is.True,
                 "Opening recruits belong to the reserve until explicitly deployed.");
             Assert.That(run.Inventory.Count, Is.EqualTo(1));
             Assert.That(new[] { "A", "B", "C", "D", "E", "F" }, Does.Contain(run.Inventory.Single().Key));
+            Assert.That(run.PendingBalls, Is.Empty);
+            Assert.That(run.BallRewards, Is.Empty);
             Assert.That(run.Choices.Count, Is.EqualTo(3));
             Assert.That(run.ChoiceTitle, Does.Contain("战略预案"));
             board.Shop.Validate();
@@ -158,8 +142,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.Campaign,Is.Not.Null);Assert.That(controller.Shop.UnlimitedGold,Is.False);
             Assert.That(controller.Shop.Gold,Is.EqualTo(8));Assert.That(controller.Shop.Level,Is.EqualTo(3));
             Assert.That(controller.Shop.Roles.Count,Is.EqualTo(46));
-            controller.StartBattle();Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation),"The opening drops must be collected before combat.");
-            yield return ClaimOpeningRewards(controller);
+            controller.StartBattle();Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation),"Automatic opening delivery must finish before combat.");
+            yield return WaitForOpeningDelivery(controller);
             controller.StartBattle();Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation),"The preplan must be confirmed before combat.");
             var old=controller.Campaign.Choices.Select(c=>c.Id).ToArray();
             Assert.That(controller.Campaign.RerollChoice(),Is.True);
@@ -206,7 +190,7 @@ namespace YesterdayConvoy.Tests
                 yield return null;
             }
             Assert.That(controller?.Ready, Is.True);
-            yield return ClaimOpeningRewards(controller);
+            yield return WaitForOpeningDelivery(controller);
             for (int i = 0; controller.Campaign.HasBlockingChoice; i++)
             {
                 Assert.That(i, Is.LessThan(15));

@@ -409,12 +409,11 @@ namespace YesterdayConvoy
             }
             if(Model.Phase!=FormationPhase.Preparation||marketVisible||ShopPanelTransitioning)return;
             bool supply=Campaign?.CurrentNode.Kind=="补给";
-            bool openingRewards = Campaign?.OpeningRewardsPending == true;
-            bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked&&!openingRewards;
+            bool enabled=GUI.enabled;GUI.enabled=enabled&&(supply||RosterArtReady)&&!CampaignInteractionBlocked;
             var start = FormationStartRect;
             bool overflowBlocked = !supply && OverflowCount > 0;
             GUI.enabled = GUI.enabled && openingGroundBall == null && !overflowBlocked;
-            if (EconomyButton(start, openingRewards ? "领取开局补给" : supply ? "继续行军  ›" :
+            if (EconomyButton(start, supply ? "继续行军  ›" :
                 overflowBlocked ? "先处理溢出" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
                 overflowBlocked ? "上阵或出售角色，清空溢出区后开战" :
                 supply ? "补给结束后前往下一节点" : "锁定本场阵容并发起进攻", FormationPreparationPalette.Rust, FormationPreparationPalette.Text, 15))
