@@ -207,7 +207,7 @@ namespace YesterdayConvoy
 
         static void DrawNodeMark(Vector2 p, string kind, Color color)
         {
-            if (kind == "奖励")
+            if (kind == "补给")
             {
                 ApprovedUi.Border(new Rect(p.x - 6, p.y - 2, 12, 8), color);
                 Fill(new Rect(p.x - 8, p.y - 4, 16, 2), color);
@@ -215,7 +215,7 @@ namespace YesterdayConvoy
                 OperationsStroke(p + new Vector2(-4, -7), p + new Vector2(0, -4), color);
                 OperationsStroke(p + new Vector2(4, -7), p + new Vector2(0, -4), color);
             }
-            else if (kind == "补给")
+            else if (kind == "奖励")
             {
                 Fill(new Rect(p.x - 6, p.y - 1, 12, 2), color);
                 Fill(new Rect(p.x - 1, p.y - 6, 2, 12), color);
