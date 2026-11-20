@@ -182,6 +182,10 @@ namespace YesterdayConvoy
                     action.LaunchedAt = action.At + ExusiaiAttackRelease / action.Rate;
                     SetGuardProjectileFlight(action, ExusiaiProjectileSpeed);
                     break;
+                case "D25" when action.Animation is "attack" or "skill_attack":
+                    double sourceContact = action.Animation == "skill_attack" ? .5 : 20d / 60;
+                    action.ContactAt = action.LaunchedAt = action.At + sourceContact / action.Rate;
+                    break;
             }
             return action;
         }

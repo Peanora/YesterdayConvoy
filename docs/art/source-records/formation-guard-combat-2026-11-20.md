@@ -18,7 +18,7 @@
 
 新约能天使默认前向模式 `charpack/char_1041_angel2.ab` 的 `RangedAttack` 为 `0x36b7d9a8ea71e4ef`，三技能循环 `MultiRangedAttack` 为 `0x655c1903482be4ef`，两者 `_mountPointType=2`。棋盘保留的普通身体片段为 `Attack_Loop`，在第 16 个 60 fps 源帧出手。前向 `Skill_3_Loop` 的五次 `OnAttack` 依次位于第 10、12、14、16、18 帧。枪光为该轮第一发触发，五颗弹各自到达后保留原有数值的五次伤害。两种弹体均为直线，默认 2× 的四格飞行约 0.067 秒。棋盘保留固守方朝向及四轮技能，没有接原客户端向投递目标发射的额外阶段。克洛丝的强化多次同一事件、史都华德多目标、梓兰疾速及 Mon3tr 多人治疗保留棋盘既有技能规则，使用可追溯的主弹体。Mon3tr 独立治疗链条仍缺已验证的端点。安赛尔仍缺可运行飞行采样。
 
-斩业星熊的正面 `skill_attack` 使用 `Skill_3_Loop_A`。本机 `charpack/char_1044_hsgma2.ab` 的 S3 `Attack_Anim_A` 发射器路径 ID 为 `0xd653746ee43b21e2`，在 `_startEvent=2` 播放 `hsgma2_skill_03_start_01`。棋盘仅有一段实际打击，对应首组 `hsgma2_skill_03_hit_01`。原作第二组 `hsgma2_skill_03_hit_01_1`、其余动作变体和临死后的四段分支保留为缺口。凛御银灰第三层 `svash2_skill_03_combat_start_01` 仍缺武器骨骼驱动的原拖尾，望的 `token_wang_skill_01_hit` 仍缺可运行采样。
+斩业星熊的正面 `skill_attack` 使用 `Skill_3_Loop_A`。本机 `charpack/char_1044_hsgma2.ab` 的 S3 `Attack_Anim_A` 发射器路径 ID 为 `0xd653746ee43b21e2`，在 `_startEvent=2` 播放 `hsgma2_skill_03_start_01`。正面 `Attack` 和 `Skill_3_Loop_A` 的 `OnAttack` 分别位于源帧 F20（0.333333 秒）和 F30（0.500000 秒），两段按各自时点连接实际结算。棋盘技能态只有一段实际打击，对应首组 `hsgma2_skill_03_hit_01`。原作第二组 `hsgma2_skill_03_hit_01_1`、其余动作变体和临死后的四段分支保留为缺口。凛御银灰第三层 `svash2_skill_03_combat_start_01` 仍缺武器骨骼驱动的原拖尾，望的 `token_wang_skill_01_hit` 仍缺可运行采样。
 
 炎熔原 Actor 的 `startEvent=4` 保持无飞行。普攻和本作强化沿用前向攻击帧的 0.833333 秒标记，发射当刻定位到目标格。本机 `battle/prefabs/effects/lava.ab` 的 `lava_attack_01_hit` 同时包含相机朝向和局部朝向的粒子，原生采样已经合成这两类。棋盘以目标格为支点保持采样的相机朝向，使足边爆闪可与更上层的身体受击区分。
 

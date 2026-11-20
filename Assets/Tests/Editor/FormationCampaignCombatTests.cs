@@ -842,6 +842,41 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void HoshigumaNormalAndProtectedAttacksUseTheirSourceContactMarkers()
+        {
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "1-9", collectDrops: false);
+            model.BindCampaign(run);
+            var guard = model.Defenders.Single(d => d.ArtId == "D25");
+            model.Defenders.RemoveAll(d => d != guard);
+            guard.MaxHealth = 100000;
+            model.SetAnimationProfile("D25", new FormationAnimationProfile { AttackDuration = 1.6f, SkillDuration = 1.6f });
+            Assert.That(model.StartBattle(), Is.True);
+            var fighter = model.Units.Single();
+            fighter.Position = guard.Position + Vector2.left * .7f;
+            fighter.MaxHealth = fighter.Health = 100000;
+            Advance(model, .025f);
+
+            var ordinary = model.PresentationActions.Single(a => a.ActorId == guard.Id && a.Animation == "attack");
+            Assert.That(ordinary.ContactAt - ordinary.At, Is.EqualTo(20d / 120).Within(.00001));
+            Assert.That(model.Hits.Any(h => ReferenceEquals(h.Action, ordinary)), Is.False);
+            Advance(model, .20f);
+            Assert.That(model.Hits.Single(h => ReferenceEquals(h.Action, ordinary)).At, Is.GreaterThanOrEqualTo(ordinary.ContactAt - .00001));
+
+            FormationPresentationAction empowered = null;
+            for (int step = 0; step < 1200 && empowered == null; step++)
+            {
+                Advance(model, .025f);
+                empowered = model.PresentationActions.FirstOrDefault(a => a.ActorId == guard.Id && a.Animation == "skill_attack");
+            }
+            Assert.That(empowered, Is.Not.Null);
+            Assert.That(empowered.ContactAt - empowered.At, Is.EqualTo(30d / 120).Within(.00001));
+            Assert.That(model.Hits.Any(h => ReferenceEquals(h.Action, empowered)), Is.False);
+            Advance(model, .30f);
+            Assert.That(model.Hits.Single(h => ReferenceEquals(h.Action, empowered)).At, Is.GreaterThanOrEqualTo(empowered.ContactAt - .00001));
+        }
+
+        [Test]
         public void WangsReservedChessCellTriggersSkillDamageOnContact()
         {
             var model = Fixture(out var run, "M11");
