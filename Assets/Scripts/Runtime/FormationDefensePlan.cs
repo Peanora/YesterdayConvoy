@@ -112,7 +112,7 @@ namespace YesterdayConvoy
         {
             NodeId = SupernovaBossNodeId, ArtId = "D31", Name = "维什戴尔 · 超新星",
             Health = 220000, Attack = 145, Armor = 30, MagicResistance = 25,
-            Interval = 1.5f, Range = 5.5f,
+            Interval = 1.05f, Range = 5.5f,
             Effect = "第一阶段「饱和复仇」同时攻击最多三名目标，随后切入过载四连射。击破首段生命后切换至第二阶段「爆裂黎明」，每轮发射六枚范围炮弹。击倒首领后进入蓝门。"
         };
 

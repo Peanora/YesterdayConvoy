@@ -8,6 +8,7 @@ namespace YesterdayConvoy
     {
         const double SupernovaTransitionSeconds = 1.25;
         const double SupernovaOverloadAfter = 8;
+        const double SupernovaOverloadInterval = .9;
         const int SupernovaShellsPerSalvo = 6;
         const float SupernovaProjectileSpeed = 10;
         const float SupernovaBlastRadius = 2.2f;
@@ -113,6 +114,7 @@ namespace YesterdayConvoy
                 kit.SupernovaOverload = true;
                 kit.LastCast = Clock;
                 BeginArchivedGuardMotion(guard, true, false, "supernova_s2_overload_begin", 5d / 30, 0);
+                guard.NextAttackAt = guard.ActionUntil;
                 BattleEvents.Add($"{Clock:0.00}:维什戴尔·超新星:过载");
                 return;
             }
@@ -125,7 +127,7 @@ namespace YesterdayConvoy
             float frequency = GuardAttackFrequency(guard);
             var volley = BeginArchivedGuardMotion(guard, true, false,
                 overload ? "supernova_s2_overload" : "supernova_s2_volley", 42d / 30, 8d / 30, firstTarget, frequency);
-            guard.NextAttackAt = Clock + guard.Interval / frequency;
+            guard.NextAttackAt = Clock + (overload ? SupernovaOverloadInterval : guard.Interval) / frequency;
             int count = overload ? 4 : Math.Min(3, targets.Length);
             for (int i = 0; i < count; i++)
             {

@@ -1,5 +1,17 @@
 # 超新星维什戴尔 Boss 的原作资源记录
 
+## 2026-11-21 重做「爆裂黎明」并提高二技能出手频率
+
+逐帧核对 `sale#14` 原作战斗展示 30.3–31.3 秒的白粉翼焰、目标锁定、凝实弹芯和红黑立体落点，33.2–33.7 秒见下一次爆炸与翼焰持续。官方档案的「动作一／二」是皮肤动态立绘，战斗对照来自实战画面及对应原包。 [超新星战斗实录](https://www.bilibili.com/video/BV148G9z1En9/?t=30) · [官方皮肤档案](https://ak.hypergryph.com/archive/dynamicCompile/202504974.html)
+
+原角色 `baseAttackTime=2.1`，专三二技能 `base_attack_time=-.7`，正常与过载的基础间隔都是 1.4 秒。原作 25 秒技能在中点进入过载，原 `MultiRangedAttackWithResetSpellCnt` 额外发射三次，`triggerDelta=.1` 秒。本关按玩家反馈使用 1.05 秒齐射与 0.90 秒过载轮间隔，维持开技约 8 秒进入过载及四发的源间距。基础动作 2×，每轮四发间的 0.05 秒基础间隔仍受攻速状态影响。 [原角色表](https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json) · [原技能表](https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skill_table.json)
+
+二、三技能 20 层共 1,119 帧从 `sale#14` 原 prefab、粒子和着色器以 Vulkan 重采。常见图层为 32 PPU，直接命中为 76.8 PPU，爆炸字样为 48 PPU。采样保留原 HDR 及透明像素的加色通道。棋盘构建为这两组 HDR 图集保留完整 RGBA 像素，避免 BC3 压缩在爆炸渐变及暗红字样上引入色块。二技能分别保留普通和过载炮口、命中与延迟落地。三技能根据射向选原左／右、上、下炮口，沿真实发射至接触间隔移动原生弹芯，真实受击继续独立结算。 [高分辨率采样及逐页校验](../../../Assets/Data/ArtCatalogs/BossRosterFx/B20/SOURCE-RECORD-HD.json)
+
+原 `wisdel_s_3[trigger_spawn]` 在拥有者处挂上 `03_buff_02_F/B` 白粉翼焰，并通过 `OnPlayEmitter` 执行一次 `03_buff_03`。`FollowMountPoint` 类型为 `SPECIAL_0`，皮肤正背分别绑定 `F_Chest_I` 和 `B_Chest_I6`，在待机和开炮时均约为源坐标 `(-3, 192)`。翼焰在六发技能状态内保持，起势后循环已采样的 1–2 源秒稳态。原作魂灵之影是另一条召唤与攻击路径，原展示里的细红线也由它发出。本关恢复式样沿用首领六发重炮机制，尖星锁定继续使用本体原 `AimEff`，伤害、攻击目标选择和炮弹速度沿用本关规则。
+
+`03_hit_02` 是原炮弹停止事件，含地面闪光、碎片、碗形爆炸以及 `static_offset/fixed/name (1)/(2)` 中的原字样，不是条件触发的天赋余震。将落地粒子和原 `spw_sk_02` 红黑字样分开采样，字样恢复 `FxUVRotation` 并选用原图集的 WIS 单元，以较浅的采样角保留立起的轮廓。两层都随同一真实落点与原停止延迟触发，棋盘上分别绘制，字样略上移以避免将其压在贴身混战中。原炮弹接触声音仍沿用，原落点额外的 `WISDEL_S3_BOMB_EFF` 和锁定原声尚缺本地波形。 [原生分层离线对照](../../../artifacts/formation-supernova-original-fx/original-s3-stop-layer-composite.jpg)
+
 ## 2026-11-21 正背面高清重采与攻击辨识
 
 独立 Boss 从本页所列的 `sale#14` 原骨骼和原贴图重新渲染。用每源单位 0.78 像素、249.6 PPU 输出 30 fps，沿用每单位身体宽度 320 源单位的换算。旧二技能正背面为 93.45/97.38 PPU，旧三技能为 160 PPU。当前 23 段、1,841 帧、147 页包含正背面二技能、过载、三技能和前视退场。帧数、原事件与脚点随清单逐项核验。 [前视重采记录](../../../Assets/Data/ArtCatalogs/DefenderArt/D31/ExtraClips/SOURCE-HD.json) · [背视重采记录](../../../Assets/Data/ArtCatalogs/DefenderArt/D31B/ExtraClips/SOURCE-HD.json) · [等尺寸采样对照](../../../artifacts/formation-supernova-boss-hd/source-body-match.jpg)

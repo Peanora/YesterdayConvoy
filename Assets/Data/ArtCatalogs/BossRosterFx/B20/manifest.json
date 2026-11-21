@@ -381,12 +381,12 @@
     {
       "key": "wisdel_skill_02_buff_02_sale#14",
       "count": 90,
-      "width": 28,
-      "height": 16,
+      "width": 52,
+      "height": 28,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.21428571428571427,
-      "pivotY": 0.49802112579345703,
+      "ppu": 32.0,
+      "pivotX": 0.19230769230769232,
+      "pivotY": 0.46202414376395085,
       "duration": 3.0,
       "hdrRange": 256.0,
       "loop": true,
@@ -395,20 +395,20 @@
         {
           "file": "wisdel_skill_02_buff_02_sale#14/00.png",
           "count": 90,
-          "width": 336,
-          "height": 128
+          "width": 624,
+          "height": 224
         }
       ]
     },
     {
       "key": "wisdel_skill_02_buff_sale#14",
       "count": 90,
-      "width": 44,
-      "height": 28,
+      "width": 88,
+      "height": 48,
       "columns": 12,
-      "ppu": 16.0,
+      "ppu": 32.0,
       "pivotX": 0.7272727272727273,
-      "pivotY": 0.3202977861676898,
+      "pivotY": 0.24868075052897132,
       "duration": 3.0,
       "hdrRange": 256.0,
       "loop": true,
@@ -417,108 +417,108 @@
         {
           "file": "wisdel_skill_02_buff_sale#14/00.png",
           "count": 90,
-          "width": 528,
-          "height": 224
+          "width": 1056,
+          "height": 384
         }
       ]
     },
     {
       "key": "wisdel_skill_02_hit_02_sale#14",
-      "count": 50,
-      "width": 48,
-      "height": 40,
-      "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.5,
-      "pivotY": 0.6742084503173829,
-      "duration": 1.6666666666666667,
-      "hdrRange": 256.0,
-      "loop": false,
-      "sourceStart": 0,
-      "pages": [
-        {
-          "file": "wisdel_skill_02_hit_02_sale#14/00.png",
-          "count": 50,
-          "width": 576,
-          "height": 200
-        }
-      ]
-    },
-    {
-      "key": "wisdel_skill_02_hit_sale#14",
       "count": 51,
-      "width": 36,
-      "height": 88,
+      "width": 92,
+      "height": 72,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.4444444444444444,
-      "pivotY": 0.1928220228715376,
+      "ppu": 32.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6518982781304253,
       "duration": 1.7,
       "hdrRange": 256.0,
       "loop": false,
       "sourceStart": 0,
       "pages": [
         {
-          "file": "wisdel_skill_02_hit_sale#14/00.png",
+          "file": "wisdel_skill_02_hit_02_sale#14/00.png",
           "count": 51,
-          "width": 432,
-          "height": 440
+          "width": 1104,
+          "height": 360
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_02_hit_sale#14",
+      "count": 57,
+      "width": 64,
+      "height": 172,
+      "columns": 12,
+      "ppu": 32.0,
+      "pivotX": 0.484375,
+      "pivotY": 0.19149230247320126,
+      "duration": 1.9,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_02_hit_sale#14/00.png",
+          "count": 57,
+          "width": 768,
+          "height": 860
         }
       ]
     },
     {
       "key": "wisdel_skill_02_overload_start_sale#14",
-      "count": 23,
-      "width": 48,
-      "height": 36,
+      "count": 24,
+      "width": 92,
+      "height": 68,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.375,
-      "pivotY": 0.27689827813042533,
-      "duration": 0.7666666666666667,
+      "ppu": 32.0,
+      "pivotX": 0.3804347826086957,
+      "pivotY": 0.2490687650792739,
+      "duration": 0.8,
       "hdrRange": 256.0,
       "loop": false,
       "sourceStart": 0,
       "pages": [
         {
           "file": "wisdel_skill_02_overload_start_sale#14/00.png",
-          "count": 23,
-          "width": 576,
-          "height": 72
+          "count": 24,
+          "width": 1104,
+          "height": 136
         }
       ]
     },
     {
       "key": "wisdel_skill_02_start_sale#14",
-      "count": 23,
-      "width": 44,
-      "height": 32,
+      "count": 24,
+      "width": 84,
+      "height": 60,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.36363636363636365,
-      "pivotY": 0.3115105628967285,
-      "duration": 0.7666666666666667,
+      "ppu": 32.0,
+      "pivotX": 0.36904761904761907,
+      "pivotY": 0.28227793375651045,
+      "duration": 0.8,
       "hdrRange": 256.0,
       "loop": false,
       "sourceStart": 0,
       "pages": [
         {
           "file": "wisdel_skill_02_start_sale#14/00.png",
-          "count": 23,
-          "width": 528,
-          "height": 64
+          "count": 24,
+          "width": 1008,
+          "height": 120
         }
       ]
     },
     {
       "key": "wisdel_skill_03_buff_02_f_sale#14",
       "count": 90,
-      "width": 44,
-      "height": 28,
+      "width": 80,
+      "height": 52,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.3409090909090909,
-      "pivotY": 0.5702977861676897,
+      "ppu": 32.0,
+      "pivotX": 0.35,
+      "pivotY": 0.5372437697190504,
       "duration": 3.0,
       "hdrRange": 256.0,
       "loop": true,
@@ -527,20 +527,20 @@
         {
           "file": "wisdel_skill_03_buff_02_f_sale#14/00.png",
           "count": 90,
-          "width": 528,
-          "height": 224
+          "width": 960,
+          "height": 416
         }
       ]
     },
     {
       "key": "wisdel_skill_03_buff_f_sale#14",
       "count": 90,
-      "width": 40,
-      "height": 28,
+      "width": 80,
+      "height": 52,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.675,
-      "pivotY": 0.24886921473911827,
+      "ppu": 32.0,
+      "pivotX": 0.65,
+      "pivotY": 0.22955146202674281,
       "duration": 3.0,
       "hdrRange": 256.0,
       "loop": true,
@@ -549,20 +549,20 @@
         {
           "file": "wisdel_skill_03_buff_f_sale#14/00.png",
           "count": 90,
-          "width": 480,
-          "height": 224
+          "width": 960,
+          "height": 416
         }
       ]
     },
     {
       "key": "wisdel_skill_03_down_start_sale#14",
       "count": 35,
-      "width": 64,
-      "height": 44,
+      "width": 128,
+      "height": 84,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.34375,
-      "pivotY": 0.3629167730158026,
+      "ppu": 32.0,
+      "pivotX": 0.3671875,
+      "pivotY": 0.33257947649274555,
       "duration": 1.1666666666666667,
       "hdrRange": 256.0,
       "loop": false,
@@ -571,42 +571,42 @@
         {
           "file": "wisdel_skill_03_down_start_sale#14/00.png",
           "count": 35,
-          "width": 768,
-          "height": 132
+          "width": 1536,
+          "height": 252
         }
       ]
     },
     {
       "key": "wisdel_skill_03_hit_02_sale#14",
-      "count": 53,
-      "width": 104,
-      "height": 76,
-      "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.49038461538461536,
-      "pivotY": 0.670636026482833,
-      "duration": 1.7666666666666666,
+      "count": 54,
+      "width": 200,
+      "height": 148,
+      "columns": 10,
+      "ppu": 32.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6752478109823691,
+      "duration": 1.8,
       "hdrRange": 256.0,
       "loop": false,
       "sourceStart": 0,
       "pages": [
         {
           "file": "wisdel_skill_03_hit_02_sale#14/00.png",
-          "count": 53,
-          "width": 1248,
-          "height": 380
+          "count": 54,
+          "width": 2000,
+          "height": 888
         }
       ]
     },
     {
       "key": "wisdel_skill_03_hit_03_sale#14",
       "count": 27,
-      "width": 36,
-      "height": 24,
+      "width": 64,
+      "height": 40,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.4722222222222222,
-      "pivotY": 0.5820140838623047,
+      "ppu": 32.0,
+      "pivotX": 0.484375,
+      "pivotY": 0.5234169006347656,
       "duration": 0.9,
       "hdrRange": 256.0,
       "loop": false,
@@ -615,20 +615,20 @@
         {
           "file": "wisdel_skill_03_hit_03_sale#14/00.png",
           "count": 27,
-          "width": 432,
-          "height": 72
+          "width": 768,
+          "height": 120
         }
       ]
     },
     {
       "key": "wisdel_skill_03_hit_sale#14",
       "count": 23,
-      "width": 76,
-      "height": 60,
+      "width": 144,
+      "height": 112,
       "columns": 12,
-      "ppu": 38.400001525878906,
-      "pivotX": 0.3684210526315789,
-      "pivotY": 0.5354002634684245,
+      "ppu": 76.80000305175781,
+      "pivotX": 0.375,
+      "pivotY": 0.5111431394304549,
       "duration": 0.7666666666666667,
       "hdrRange": 256.0,
       "loop": false,
@@ -637,52 +637,52 @@
         {
           "file": "wisdel_skill_03_hit_sale#14/00.png",
           "count": 23,
-          "width": 912,
-          "height": 120
+          "width": 1728,
+          "height": 224
         }
       ]
     },
     {
       "key": "wisdel_skill_03_start_sale#14",
-      "count": 34,
-      "width": 80,
-      "height": 36,
+      "count": 35,
+      "width": 160,
+      "height": 72,
       "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.3875,
-      "pivotY": 0.3324538336859809,
-      "duration": 1.1333333333333333,
+      "ppu": 32.0,
+      "pivotX": 0.38125,
+      "pivotY": 0.34634272257486975,
+      "duration": 1.1666666666666667,
       "hdrRange": 256.0,
       "loop": false,
       "sourceStart": 0,
       "pages": [
         {
           "file": "wisdel_skill_03_start_sale#14/00.png",
-          "count": 34,
-          "width": 960,
-          "height": 108
+          "count": 35,
+          "width": 1920,
+          "height": 216
         }
       ]
     },
     {
       "key": "wisdel_skill_03_trail_sale#14",
-      "count": 90,
-      "width": 68,
-      "height": 16,
-      "columns": 12,
-      "ppu": 16.0,
-      "pivotX": 0.7941176470588235,
-      "pivotY": 0.49802112579345703,
-      "duration": 3.0,
+      "count": 30,
+      "width": 352,
+      "height": 40,
+      "columns": 5,
+      "ppu": 32.0,
+      "pivotX": 0.9204545454545454,
+      "pivotY": 0.5234170913696289,
+      "duration": 1.0,
       "hdrRange": 256.0,
       "loop": true,
       "sourceStart": 0,
       "pages": [
         {
           "file": "wisdel_skill_03_trail_sale#14/00.png",
-          "count": 90,
-          "width": 816,
-          "height": 128
+          "count": 30,
+          "width": 1760,
+          "height": 240
         }
       ]
     },
@@ -839,6 +839,138 @@
           "height": 280
         }
       ]
+    },
+    {
+      "key": "wisdel_skill_03_up_start_sale#14",
+      "count": 35,
+      "width": 128,
+      "height": 96,
+      "columns": 12,
+      "ppu": 32.0,
+      "pivotX": 0.4296875,
+      "pivotY": 0.3743403752644857,
+      "duration": 1.1666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_up_start_sale#14/00.png",
+          "count": 35,
+          "width": 1536,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_buff_b_sale#14",
+      "count": 90,
+      "width": 60,
+      "height": 40,
+      "columns": 12,
+      "ppu": 32.0,
+      "pivotX": 0.75,
+      "pivotY": 0.3234169006347656,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_buff_b_sale#14/00.png",
+          "count": 90,
+          "width": 720,
+          "height": 320
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_buff_02_b_sale#14",
+      "count": 90,
+      "width": 80,
+      "height": 52,
+      "columns": 12,
+      "ppu": 32.0,
+      "pivotX": 0.375,
+      "pivotY": 0.5372437697190504,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_buff_02_b_sale#14/00.png",
+          "count": 90,
+          "width": 960,
+          "height": 416
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_buff_03_sale#14",
+      "count": 90,
+      "width": 52,
+      "height": 28,
+      "columns": 12,
+      "ppu": 32.0,
+      "pivotX": 0.3269230769230769,
+      "pivotY": 0.5334527151925224,
+      "duration": 3.0,
+      "hdrRange": 256.0,
+      "loop": true,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_buff_03_sale#14/00.png",
+          "count": 90,
+          "width": 624,
+          "height": 224
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_name_sale#14",
+      "count": 40,
+      "width": 328,
+      "height": 164,
+      "columns": 6,
+      "ppu": 48.0,
+      "pivotX": 0.5,
+      "pivotY": 0.22560975609756095,
+      "duration": 1.3333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_name_sale#14/00.png",
+          "count": 40,
+          "width": 1968,
+          "height": 1148
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_ground_sale#14",
+      "count": 54,
+      "width": 200,
+      "height": 148,
+      "columns": 10,
+      "ppu": 32.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6752478109823691,
+      "duration": 1.8,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_ground_sale#14/00.png",
+          "count": 54,
+          "width": 2000,
+          "height": 888
+        }
+      ]
     }
   ],
   "preload": [
@@ -882,7 +1014,13 @@
         "token_wisdel_attack_01_start_sale#14",
         "token_wisdel_birth_01_start_sale#14",
         "token_wisdel_buff_01_sale#14",
-        "wisdel_camouflage_buff_01_sale#14"
+        "wisdel_camouflage_buff_01_sale#14",
+        "wisdel_skill_03_up_start_sale#14",
+        "wisdel_skill_03_buff_b_sale#14",
+        "wisdel_skill_03_buff_02_b_sale#14",
+        "wisdel_skill_03_buff_03_sale#14",
+        "wisdel_skill_03_hit_02_name_sale#14",
+        "wisdel_skill_03_hit_02_ground_sale#14"
       ]
     }
   ],

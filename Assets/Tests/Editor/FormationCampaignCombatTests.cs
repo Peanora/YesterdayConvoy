@@ -964,6 +964,8 @@ namespace YesterdayConvoy.Tests
                 var opening = moves.First(action => action.Animation == "supernova_s2_begin");
                 Assert.That(overload.At, Is.GreaterThanOrEqualTo(opening.At + 8));
                 Assert.That(overload.At, Is.LessThan(transition));
+                AssertSupernovaVolleyCadence(moves, "supernova_s2_volley", 1.05);
+                AssertSupernovaVolleyCadence(moves, "supernova_s2_overload", .90);
                 Assert.That(firstS2Hit?.Action, Is.Not.Null);
                 Assert.That(normal.LaunchedAt - normal.At, Is.EqualTo((8d / 30) / normal.Rate).Within(.000001));
                 Assert.That(firstS2Hit.Action.ContactAt - firstS2Hit.Action.LaunchedAt,
@@ -999,6 +1001,19 @@ namespace YesterdayConvoy.Tests
             {
                 FormationShopSession.StartNew(seed, true);
             }
+        }
+
+        static void AssertSupernovaVolleyCadence(FormationPresentationAction[] moves, string animation, double interval)
+        {
+            var volleys = moves.Where(action => action.Animation == animation).ToArray();
+            var gaps = volleys.Zip(volleys.Skip(1), (previous, next) => (
+                observed: next.At - previous.At, expected: interval * 2 / previous.Rate)).ToArray();
+            Assert.That(gaps.All(gap => gap.observed >= gap.expected - .00001), Is.True,
+                animation + " does not fire early even with an attack-rate change");
+            Assert.That(gaps.Count(gap => gap.observed <= gap.expected + .02501), Is.GreaterThanOrEqualTo(2),
+                animation + " repeatedly reaches its new cadence within one simulation step");
+            TestContext.WriteLine($"{animation} intervals: " +
+                string.Join(", ", gaps.Select(gap => $"{gap.observed:0.000}/{gap.expected:0.000}s")));
         }
 
         [Test]

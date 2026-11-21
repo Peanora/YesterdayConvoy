@@ -17,16 +17,18 @@ namespace YesterdayConvoy
         [Serializable]
         sealed class SupernovaCaptureMark
         {
-            public string cue;
+            public string cue, sprite, textureFormat;
             public long utcTicks;
             public double battleClock;
-            public float x, y;
+            public float x, y, sourceFrameWidth, sourceFrameHeight, sourcePixelsPerUnit;
         }
 
         [Serializable]
         sealed class SupernovaBossReplay
         {
-            public double firstS2VolleyAt, firstS2HitAt, overloadAt, transitionAt, phaseTwoAt, firstS3ShellAt, firstS3HitAt, clearedAt, endAt;
+            public double firstS2VolleyAt, firstS2ReleaseAt, firstS2HitAt, overloadAt, transitionAt, phaseTwoAt,
+                firstS3ShellAt, firstS3ReleaseAt, firstS3ContactAt, firstS3HitAt, clearedAt, endAt;
+            public double[] s2VolleyStarts, overloadVolleyStarts;
             public float startingHealth, restoredHealth;
             public int s2RenderedBodyFrames, s3RenderedBodyFrames;
             public long audioCaptureUtcTicks;
@@ -97,11 +99,17 @@ namespace YesterdayConvoy
                 new[] { "S2 muzzle", "S2 impact", "S2 impact ground" }, (move, hit, frames) =>
                 {
                     replay.firstS2VolleyAt = move.At;
+                    replay.firstS2ReleaseAt = move.LaunchedAt;
                     replay.firstS2HitAt = hit.At;
                     replay.s2RenderedBodyFrames = frames;
+                    replay.s2VolleyStarts = SupernovaVolleyStarts(move);
                 });
             yield return ObserveSupernovaAttack(guard, "supernova_s2_overload", "05-s2-overload", 59, false,
-                new[] { "S2 muzzle overload", "S2 impact" }, (move, _, _) => replay.overloadAt = move.At);
+                new[] { "S2 muzzle overload", "S2 impact" }, (move, _, _) =>
+                {
+                    replay.overloadAt = move.At;
+                    replay.overloadVolleyStarts = SupernovaVolleyStarts(move);
+                });
 
             yield return ObserveSupernovaUntil(() => model.SupernovaBossTransitionActive(guard), "First lethal damage starts the phase change");
             replay.transitionAt = model.Clock;
@@ -131,12 +139,25 @@ namespace YesterdayConvoy
             MarkSupernovaCapture("phase two", SupernovaBossBody(guard));
             Assert(guard.Health > guard.MaxHealth * .9f,
                 "Phase two has its own health bar");
+            SpriteRenderer activation = null;
+            yield return ObserveSupernovaUntil(() =>
+            {
+                activation = controller.GetComponentsInChildren<SpriteRenderer>().FirstOrDefault(renderer =>
+                    renderer.name == FormationBattleController.SupernovaBossEffectPrefix + "S3 activation" &&
+                    renderer.enabled && renderer.sprite != null && renderer.gameObject.activeInHierarchy);
+                return activation != null;
+            }, "The second-stage cast renders the native S3 activation layer before the first shell");
+            Assert(activation.sprite.pixelsPerUnit >= 32 && IsSupernovaUncompressed(activation.sprite.texture.format),
+                "The second-stage activation uses a high-resolution uncompressed effect sample");
+            MarkSupernovaCapture("phase two S3 activation", activation);
             yield return Frame("07-second-health-bar");
 
             yield return ObserveSupernovaAttack(guard, "supernova_s3_shell", "08-s3-shell-and-blast", 70, true,
-                new[] { "S3 aim", "S3 muzzle", "S3 trail", "S3 impact", "S3 impact ground" }, (move, hit, frames) =>
+                new[] { "S3 wings", "S3 aim", "S3 muzzle", "S3 trail", "S3 impact", "S3 impact ground", "S3 blast lettering" }, (move, hit, frames) =>
                 {
                     replay.firstS3ShellAt = move.At;
+                    replay.firstS3ReleaseAt = move.LaunchedAt;
+                    replay.firstS3ContactAt = move.ContactAt;
                     replay.firstS3HitAt = hit.At;
                     replay.s3RenderedBodyFrames = frames;
                 });
@@ -161,6 +182,7 @@ namespace YesterdayConvoy
                     "The live capture writes the game listener mix throughout the fight");
             result.battles++;
             yield return Frame("10-trial-victory");
+            if (supernovaBossLiveCapture) yield return new WaitForSecondsRealtime(1.5f);
 
             var roster = model.Units.Select(unit => (unit.Instance, unit.Spawn, unit.Star)).ToArray();
             controller.ResetDemo();
@@ -186,7 +208,7 @@ namespace YesterdayConvoy
 
             FormationHit hit = null;
             var bodyFrames = new HashSet<Sprite>();
-            var seenLayers = new HashSet<string>();
+            var seenLayers = new Dictionary<string, (float Ppu, TextureFormat Format)>();
             bool capturesFrames = Array.IndexOf(Environment.GetCommandLineArgs(), SupernovaBossClipsFlag) >= 0;
             double deadline = Time.realtimeSinceStartupAsDouble + frames / 24d;
             void Sample()
@@ -198,7 +220,8 @@ namespace YesterdayConvoy
                         bodyFrames.Add(renderer.sprite);
                     foreach (string layer in layers)
                     {
-                        if (renderer.name == FormationBattleController.SupernovaBossEffectPrefix + layer && seenLayers.Add(layer))
+                        if (renderer.name == FormationBattleController.SupernovaBossEffectPrefix + layer &&
+                            seenLayers.TryAdd(layer, (renderer.sprite.pixelsPerUnit, renderer.sprite.texture.format)))
                             MarkSupernovaCapture(animation + " " + layer, renderer);
                     }
                 }
@@ -222,8 +245,10 @@ namespace YesterdayConvoy
                 hit.Action.ProjectileMovement == null && Math.Abs(hit.Action.ContactAt - hit.Action.LaunchedAt - .1 / hit.Action.Rate) < .000001) &&
                 hit.At + .00001 >= hit.Action.ContactAt && hit.At <= hit.Action.ContactAt + .02501,
                 animation + (travels ? " applies real damage only after projectile travel" : " applies real damage on the delayed source contact"));
-            Assert(layers.All(seenLayers.Contains), animation + " renders " + string.Join(", ", layers) +
-                " (observed " + string.Join(", ", seenLayers) + ")");
+            Assert(layers.All(seenLayers.ContainsKey), animation + " renders " + string.Join(", ", layers) +
+                " (observed " + string.Join(", ", seenLayers.Keys) + ")");
+            Assert(seenLayers.Values.All(layer => layer.Ppu >= 32 && IsSupernovaUncompressed(layer.Format)),
+                animation + " uses high-resolution uncompressed samples on every required FX layer");
             var cues = new List<FormationBattleController.FormationAudioCue>();
             controller.CollectFormationAudio(move.At - .00001, model.Clock, cues);
             string[] bossCues = cues.Where(cue => cue.ActorId == guard.Id && cue.Clip != null && cue.SourceEvent != null)
@@ -256,19 +281,33 @@ namespace YesterdayConvoy
         SpriteRenderer SupernovaBossBody(FormationDefender guard) => controller.GetComponentsInChildren<SpriteRenderer>()
             .FirstOrDefault(renderer => renderer.enabled && renderer.sprite != null && renderer.name == guard.Name);
 
+        double[] SupernovaVolleyStarts(FormationPresentationAction first) => controller.Model.PresentationActions
+            .Where(action => action.ActorId == first.ActorId && !action.ProjectileOnly && !action.Cancelled &&
+                action.Animation == first.Animation && action.At >= first.At)
+            .Select(action => action.At).ToArray();
+
         void MarkSupernovaCapture(string cue, SpriteRenderer renderer = null)
         {
             if (!supernovaBossLiveCapture) return;
             var point = renderer == null ? Vector3.zero : controller.battleCamera.WorldToViewportPoint(renderer.transform.position);
+            var sprite = renderer == null ? null : renderer.sprite;
             result.supernovaBoss.captureMarks.Add(new SupernovaCaptureMark
             {
                 cue = cue,
                 utcTicks = DateTime.UtcNow.Ticks,
                 battleClock = controller.Model.Clock,
                 x = point.x,
-                y = renderer == null ? 0 : 1 - point.y
+                y = renderer == null ? 0 : 1 - point.y,
+                sprite = sprite == null ? null : sprite.name,
+                textureFormat = sprite == null ? null : sprite.texture.format.ToString(),
+                sourceFrameWidth = sprite == null ? 0 : sprite.rect.width,
+                sourceFrameHeight = sprite == null ? 0 : sprite.rect.height,
+                sourcePixelsPerUnit = sprite == null ? 0 : sprite.pixelsPerUnit
             });
         }
+
+        static bool IsSupernovaUncompressed(TextureFormat format) =>
+            format == TextureFormat.RGBA32 || format == TextureFormat.ARGB32;
 
         static bool IsSupernovaBodySprite(Sprite sprite) => sprite != null &&
             (sprite.name.StartsWith("D31/", StringComparison.Ordinal) || sprite.name.StartsWith("D31B/", StringComparison.Ordinal));

@@ -141,15 +141,16 @@ namespace YesterdayConvoy.Editor
             foreach(string relative in plan.Images)
             {
                 string file=ArtSourcePaths.Resolve(relative),target=Path.Combine(Cache,relative+".ycart");
-                // Keep the source HDR gradient and additive RGB in the fire front and contact.
-                bool keepFirePixels=relative.StartsWith("TalulahUnboundVfx/original-fire-",StringComparison.Ordinal);
-                string format=keepFirePixels?"|rgba32":"";
+                // Block compression distorts additive RGB and smooth gradients in these HDR layers.
+                bool keepHdrPixels=relative.StartsWith("TalulahUnboundVfx/original-fire-",StringComparison.Ordinal)||
+                    ArtSourcePaths.PreserveSupernovaSkillPixels(relative);
+                string format=keepHdrPixels?"|rgba32":"";
                 var info=new FileInfo(file);string stamp=info.Length+"|"+info.LastWriteTimeUtc.Ticks+format;
                 string record=File.Exists(target+".hash")?File.ReadAllText(target+".hash"):"";
                 if(!strict&&File.Exists(target)&&record.EndsWith("\n"+stamp,StringComparison.Ordinal))continue;
                 byte[] source=File.ReadAllBytes(file);hashed+=source.Length;string hash=Hash(source)+format;
                 if(File.Exists(target)&&(record==hash||record.StartsWith(hash+"\n",StringComparison.Ordinal))){File.WriteAllText(target+".hash",hash+"\n"+stamp);continue;}
-                var texture=Decode(file);try{Write(target,texture,compress:!keepFirePixels);File.WriteAllText(target+".hash",hash+"\n"+stamp);changed++;}finally{UnityEngine.Object.DestroyImmediate(texture);}
+                var texture=Decode(file);try{Write(target,texture,compress:!keepHdrPixels);File.WriteAllText(target+".hash",hash+"\n"+stamp);changed++;}finally{UnityEngine.Object.DestroyImmediate(texture);}
             }
             foreach(var pair in plan.Previews)
             {

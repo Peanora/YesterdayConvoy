@@ -9,6 +9,7 @@ namespace YesterdayConvoy
     {
         const string SupernovaBossClipPrefix = "skill_supernova_";
         const string SupernovaBossDeathClip = "skill_supernova_death";
+        const string SupernovaBlastLettering = "03_hit_02_name";
         internal const string SupernovaBossEffectPrefix = "Formation Supernova / ";
         static readonly string[] SupernovaBossBodyClips =
         {
@@ -21,7 +22,9 @@ namespace YesterdayConvoy
         static readonly string[] SupernovaBossEffects =
         {
             "02_buff", "02_buff_02", "02_start", "02_overload_start", "02_hit", "02_hit_02",
-            "03_buff_f", "03_start", "03_trail", "03_hit", "03_hit_02", "03_hit_03"
+            "03_buff_f", "03_buff_b", "03_buff_02_f", "03_buff_02_b", "03_buff_03",
+            "03_start", "03_up_start", "03_down_start", "03_trail", "03_hit", "03_hit_02_ground", "03_hit_03",
+            SupernovaBlastLettering
         };
 
         bool UsesSupernovaBossArt(string artId) => (artId == "D31" || artId == "D31B") &&
@@ -55,28 +58,39 @@ namespace YesterdayConvoy
                 Math.Max(0, now - Math.Max(0, mode.StartedAt))) * FormationVisualRate;
         }
 
-        static BossRosterFxArt.Clip SupernovaBossEffect(string suffix) =>
-            BossRosterFxArt.Get(BossRosterFxArt.Key("B20", "wisdel_skill_" + suffix + "_sale#14"));
+        static string SupernovaBossEffectKey(string suffix) => BossRosterFxArt.Key("B20", "wisdel_skill_" + suffix + "_sale#14");
 
         static IEnumerable<ArtSequence> FormationSupernovaBossEffectSequences()
         {
-            foreach (string suffix in SupernovaBossEffects) yield return SupernovaBossEffect(suffix).Sequence;
+            foreach (string suffix in SupernovaBossEffects) yield return BossRosterFxArt.Get(SupernovaBossEffectKey(suffix)).Sequence;
         }
 
         void PresentSupernovaBossState(FormationDefender guard, double now)
         {
             var mode = Model.SupernovaBossMode(guard);
-            string effect = mode.Animation switch
+            if (mode.Animation == null || !CombatViewActive) return;
+            double age = (now - mode.StartedAt) * FormationVisualRate;
+            Vector3 foot = FormationDisplayPoint(guard);
+            bool flip = guard.Facing.x < 0;
+            if (guard.SupernovaBossPhase == 1)
             {
-                "supernova_s2_begin" => "02_buff",
-                "supernova_s2_overload_begin" => "02_buff_02",
-                "supernova_s3_begin" when !SupernovaRearView(guard) => "03_buff_f",
-                _ => null
-            };
-            if (effect == null || !CombatViewActive || Model.SupernovaBossTransitionActive(guard)) return;
-            ShowSupernovaBossEffect(effect, guard.SupernovaBossPhase == 1 ? "S2 state" : "S3 state",
-                (now - mode.StartedAt) * FormationVisualRate, guard.Position, FormationDisplayPoint(guard), 10,
-                flip: guard.Facing.x < 0, loop: true);
+                string effect = mode.Animation == "supernova_s2_overload_begin" ? "02_buff_02" : "02_buff";
+                ShowSupernovaBossEffect(effect, "S2 state", age, guard.Position, foot, 10, flip: flip, loop: true);
+                return;
+            }
+
+            bool rear = SupernovaRearView(guard);
+            ShowSupernovaBossEffect(rear ? "03_buff_b" : "03_buff_f", "S3 state", age, guard.Position, foot, 10,
+                flip: flip, loop: true);
+            float scale = FormationGuardBodyScale(guard, null);
+            // SPECIAL_0 follows the original chest bone in both views. Idle/Loop stays near (-3, 192).
+            Vector3 shoulder = foot + (battleCamera.transform.up * 192 + battleCamera.transform.right * (flip ? 3 : -3))
+                * (scale / 320);
+            // The native buff is held on the caster. Play its buildup once, then sample its measured steady second.
+            double wingAge = age < 2 ? age : 1 + (age - 1) % 1;
+            ShowSupernovaBossEffect(rear ? "03_buff_02_b" : "03_buff_02_f", "S3 wings", wingAge, guard.Position,
+                shoulder - battleCamera.transform.forward * .12f, 56, flip: flip, scale: scale * 1.2f);
+            ShowSupernovaBossEffect("03_buff_03", "S3 activation", age, guard.Position, shoulder, 12, flip: flip, scale: scale);
         }
 
         void PresentSupernovaBossAction(FormationDefender guard, FormationPresentationAction action, double now)
@@ -98,9 +112,12 @@ namespace YesterdayConvoy
             if (action.Animation != "supernova_s3_shell") return;
             var target = FormationFeedbackActor(action.TargetId);
             Vector3 muzzle = SupernovaBossMuzzle(guard, action, true);
+            Vector2 shotDirection = SupernovaShotDirection(action);
+            string muzzleEffect = Mathf.Abs(shotDirection.y) > Mathf.Abs(shotDirection.x)
+                ? (shotDirection.y > 0 ? "03_up_start" : "03_down_start") : "03_start";
             if (sinceRelease >= 0)
-                ShowSupernovaBossEffect("03_start", "S3 muzzle", sinceRelease + 16d / 30, action.From, muzzle, 66,
-                    flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)));
+                ShowSupernovaBossEffect(muzzleEffect, "S3 muzzle", sinceRelease + 16d / 30, action.From, muzzle, 66,
+                    flip: SupernovaFacesLeft(guard, shotDirection));
             if (now < action.ContactAt)
             {
                 Vector2 destination = target?.Alive == true ? target.Position : action.To;
@@ -108,17 +125,20 @@ namespace YesterdayConvoy
                 ShowSupernovaBossEffect("03_hit_03", "S3 aim", (now - action.At) * action.Rate, destination, contact, 52, scale: 1.2f);
                 if (now < action.LaunchedAt) return;
                 float progress = Mathf.Clamp01((float)((now - action.LaunchedAt) / (action.ContactAt - action.LaunchedAt)));
-                // At close range only a few updates fit in the real flight window. Begin with the native visible core.
                 Vector2 sortingCell = new Vector2(Mathf.Lerp(action.From.x, destination.x, progress), Mathf.Min(action.From.y, destination.y));
-                ShowSupernovaBossEffect("03_trail", "S3 trail", sinceRelease + 4d / 30,
+                ShowSupernovaBossEffect("03_trail", "S3 trail", sinceRelease,
                     sortingCell, Vector3.Lerp(muzzle, contact, progress), 68,
                     loop: true, direction: contact - muzzle, scale: 1.4f);
                 return;
             }
 
-            // The ground effect is emitted once when the real shell stops, even for a shot that hits no surviving unit.
-            ShowSupernovaBossEffect("03_hit_02", "S3 impact ground", (now - action.ContactAt) * action.Rate - .15,
-                action.To, ActorWorldPoint(action.To) + Vector3.up * .045f, -110, ground: true);
+            // The native stop sample already contains the camera projection of the floor and vertical shards.
+            // Root it on the real landing cell and keep that projection so the vertical burst is not flattened.
+            double blastAge = (now - action.ContactAt) * action.Rate - .15;
+            Vector3 blastRoot = ActorWorldPoint(action.To) + Vector3.up * .045f;
+            ShowSupernovaBossEffect("03_hit_02_ground", "S3 impact ground", blastAge, action.To, blastRoot, 45, scale: .92f);
+            ShowSupernovaBossEffect(SupernovaBlastLettering, "S3 blast lettering", blastAge, action.To,
+                blastRoot + battleCamera.transform.up * .5f, 76, scale: .75f);
         }
 
         void PresentSupernovaBossHit(FormationHit hit, double now)
@@ -171,8 +191,7 @@ namespace YesterdayConvoy
             bool flip = false, bool loop = false, bool ground = false, Vector3? direction = null, float scale = 1)
         {
             if (age < 0 || !FormationPointVisibleInView(cell)) return false;
-            var clip = SupernovaBossEffect(suffix);
-            if (!clip.Sequence.Ready) return false;
+            if (!BossRosterFxArt.TryGet(SupernovaBossEffectKey(suffix), out var clip) || !clip.Sequence.Ready) return false;
             float roll = direction.HasValue ? Mathf.Atan2(Vector3.Dot(direction.Value, battleCamera.transform.up),
                 Vector3.Dot(direction.Value, battleCamera.transform.right)) * Mathf.Rad2Deg : 0;
             var renderer = LegacyDraw(clip.At(age, loop), legacyHdrMaterial, position, cell, scale, order,
