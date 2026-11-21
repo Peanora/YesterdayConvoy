@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-21 超新星双阶段首领实机验收
+
+源码 `3780261d561b29427b8241dd5efcafa7fa99befb`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,150,254 字节、零错误、退出 0。Runtime DLL SHA-256 `AF5CBC4D0F5488BC900C94A30DD7E3DAA870F369018423E57719D1DACB67777B`。最终 EditMode 1220/1220，定向用例验证三目标齐射、过载四发的源间隔、两段独立生命与暂停、六炮重装、同炮范围伤害和蓝门。 [构建日志](../artifacts/formation-supernova-boss/build.log) · [EditMode XML](../artifacts/formation-supernova-boss/edit-final.xml)
+
+同版 D3D11 Player 用默认八人阵容、1× 模拟时钟打完整关，35/35、零运行异常。3.300 秒二技能首次齐射起手，3.500 秒首次真实伤害，11.700 秒进入过载。32.475 秒首段耗尽，暂停时转段与动作均停住，33.725 秒恢复第二段 220,000 生命。34.150 秒第一发三技能重炮起手，34.475 秒接触结算，渲染检查记录了独立瞄准、炮口、飞行、命中与地面余波。59.500 秒清场，64.900 秒本体实际过蓝门，重试还原首段并保留阵容。 [Player 报告](../artifacts/formation-supernova-boss/player/supernova-boss-smoke.json)
+
+逐帧复看 `sale#14` 原动作，二技能常规射姿、过载抬炮和三技能横扛重炮可区分。19.08 秒有声剪辑按实录时间戳封装，截图实际采样约 9–10 fps，输出为 1280×720、24 fps。剪辑约 0.32 秒可见二技能粉白炮口，3.79 秒可见地面闪光，6.90 秒可见过载期间的多处红色受击。12.57 秒可见三技能同炮的多体受击，15.45 秒和 18.29 秒可见脚下橙红余波。原作动作基准为 2×。三技能近距离短弹道在实际渲染层中可测，近身混战的录制画面中难以单独辨认。 [正常速度实机片段](../artifacts/formation-supernova-boss/supernova-boss.mp4) · [原作对照时间](art/source-records/formation-supernova-boss.md)
+
+两条过载专用原声与三技能后视常驻层缺可用采样。Player 通过游戏的关卡选择命令启动，Windows 前台焦点阻止了物理鼠标用例，结算和通关使用实际战斗推进。 [侦察](../artifacts/formation-supernova-boss/player/02-supernova-scout.png) · [转段暂停](../artifacts/formation-supernova-boss/player/06-transition-paused.png) · [胜利](../artifacts/formation-supernova-boss/player/10-trial-victory.png)
+
 ## 2026-11-21 同源石谷原素材接入验收
 
 对应 `632bd50c5aaf9fc8d0ebff5b3ecca8334e2a1e82`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,110,218 字节、0 错误、退出 0。Runtime DLL SHA-256 `169CF88DCD2E45EF53AF49A43C66453D647760BDCD7EB646DB14D6C96CCEE583`。176 个保存格，16 个原门。EditMode 1219/1219（包含 1-3 与望五子落子）；D3D11 定向 PlayMode 2/2，覆盖浅渠非通行、两岸和桥、原门、角色脚点/深度与水面暂停。Windows 默认入口 D3D11 三战及奖励扩展验证 175/175，0 异常；不是十三关完整人工通关。
