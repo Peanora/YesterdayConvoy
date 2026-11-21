@@ -219,7 +219,8 @@ namespace YesterdayConvoy.Editor
             // Camera.aspect is an editor override, not a serialized scene property. Validate the
             // actual virtual 16:9 presentation, independent of the batch editor's Game View size.
             camera.aspect=1280f/720;
-            var tiles=scene.GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Transform>(true)).Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
+            var baseBoard=scene.GetRootGameObjects().Single(g=>g.name.StartsWith("Authored rectangle",StringComparison.Ordinal));
+            var tiles=baseBoard.GetComponentsInChildren<Transform>(true).Where(t=>t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
             if(tiles.Length!=FormationBattleModel.Width*FormationBattleModel.Height)throw new InvalidOperationException("Native floor must match current saved board dimensions.");
             foreach(var tile in tiles)
             {

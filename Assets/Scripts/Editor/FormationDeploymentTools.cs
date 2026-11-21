@@ -50,6 +50,7 @@ namespace YesterdayConvoy.Editor
         public static void Validate()
         {
             FormationCanyonTools.Validate();
+            FormationMapTools.Validate();
             var controller=Object.FindAnyObjectByType<FormationBattleController>();
             if(controller.formationCards==null||controller.formationCards.Length!=FormationUnitCatalog.All.Count||
                 controller.formationCards.Any(c=>c==null)||controller.formationCards.Select(c=>c.CardId).Distinct().Count()!=FormationUnitCatalog.All.Count)

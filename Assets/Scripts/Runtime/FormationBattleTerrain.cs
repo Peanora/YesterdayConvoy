@@ -31,12 +31,20 @@ namespace YesterdayConvoy
         readonly float[,] distances;
         readonly int[,] nextCorner;
         public IReadOnlyList<FormationBattleTerrainRegion> Regions { get; }
+        internal FormationCampaignRules.GuardFormation FirstGuardFormation { get; }
+        internal FormationCampaignRules.GuardFormation SecondGuardFormation { get; }
 
         public FormationBattleTerrainLayout(IEnumerable<FormationBattleTerrainRegion> source)
+            : this(source, null, null) { }
+
+        internal FormationBattleTerrainLayout(IEnumerable<FormationBattleTerrainRegion> source,
+            FormationCampaignRules.GuardFormation first, FormationCampaignRules.GuardFormation second)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             regions = new List<FormationBattleTerrainRegion>(source).ToArray();
             Regions = Array.AsReadOnly(regions);
+            FirstGuardFormation = first;
+            SecondGuardFormation = second;
             obstacles = new Rect[regions.Length];
             for (int i = 0; i < regions.Length; i++)
             {

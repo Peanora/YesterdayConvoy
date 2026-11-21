@@ -441,20 +441,27 @@ namespace YesterdayConvoy
             Synchronize();return LastReward;
         }
 
-        internal FormationBattleModel PreparePracticeBattle(int node)
+        internal FormationBattleModel PreparePracticeBattle(int node) => PreparePracticeBattleOnMap(node, null);
+
+        internal FormationBattleModel PreparePracticeBattleOnMap(int node,
+            Func<FormationCampaignRun, FormationBattleTerrainLayout> selectTerrain)
         {
             if(model==null||Run?.SelectPracticeNode(node)!=true)return null;
             SavePositions(model);
             Round=Run.NodeIndex+1;
-            var next=new FormationBattleModel(Seed,model.Terrain);
+            var next=new FormationBattleModel(Seed,selectTerrain != null ? selectTerrain(Run) : model.Terrain);
             ApplyTo(next);
             return next;
         }
-        public bool AdvanceNode()
+        public bool AdvanceNode() => AdvanceNode(null);
+
+        internal bool AdvanceNode(Func<FormationCampaignRun, FormationBattleTerrainLayout> selectTerrain)
         {
             if(Run==null||model==null)return false;
             SavePositions(model);if(!Run.AdvanceNode())return false;
-            Round=Run.NodeIndex+1;LastReward=null;model.Retry();ApplyTo(model);return true;
+            Round=Run.NodeIndex+1;LastReward=null;
+            model.PrepareNextNode(selectTerrain != null ? selectTerrain(Run) : model.Terrain);
+            ApplyTo(model);return true;
         }
 
         void Synchronize()

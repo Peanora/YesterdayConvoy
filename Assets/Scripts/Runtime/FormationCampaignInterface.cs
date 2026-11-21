@@ -42,7 +42,7 @@ namespace YesterdayConvoy
         {
             if(Campaign==null||Campaign.HasBlockingChoice||Campaign.Finished||openingGroundBall!=null)return false;
             Session.SavePositions(Model);
-            if(!Session.AdvanceNode())return false;
+            if(!Session.AdvanceNode(SelectFormationTerrain))return false;
             FormationStrategyHistoryOpen=false;
             campaignResultSettled=false;lastSoundAt=-10;selectedPiece=0;formationInspectedTag=null;
             RefreshCampaignPreparation();SetMarketVisible(false);SetFormationView(false);

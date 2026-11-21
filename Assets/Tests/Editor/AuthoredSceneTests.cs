@@ -27,8 +27,17 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.terrain,Is.Not.Null);
             Assert.That(roots.SelectMany(root=>root.GetComponentsInChildren<ManualBattleController>(true)),Is.Empty);
             var transforms=roots.SelectMany(root=>root.GetComponentsInChildren<Transform>(true)).ToArray();
-            Assert.That(transforms.Count(tile=>tile.name.StartsWith("Tile ",StringComparison.Ordinal)),
+            Assert.That(transforms.Count(tile=>tile.gameObject.activeInHierarchy&&tile.name.StartsWith("Tile ",StringComparison.Ordinal)),
                 Is.EqualTo(FormationBattleModel.Width*FormationBattleModel.Height));
+            Assert.That(controller.maps, Is.Not.Null);
+            foreach (var map in new[] { controller.maps.street, controller.maps.hall, controller.maps.ice })
+            {
+                Assert.That(map, Is.Not.Null);
+                Assert.That(map.gameObject.activeInHierarchy, Is.False);
+                Assert.That(PrefabUtility.IsPartOfPrefabInstance(map.gameObject), Is.True);
+                Assert.That(map.transform.Find("Board cells").childCount,
+                    Is.EqualTo(FormationBattleModel.Width * FormationBattleModel.Height));
+            }
             foreach(var transform in transforms)
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject),Is.Zero,transform.name);
             foreach(var filter in roots.SelectMany(root=>root.GetComponentsInChildren<MeshFilter>(true)))

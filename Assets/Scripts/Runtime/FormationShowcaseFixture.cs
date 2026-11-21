@@ -66,7 +66,7 @@ namespace YesterdayConvoy
                 }
             Shop.Preset(definitions.Select(spec => new ShopTrialModel.Piece { Id = spec.CardId, Star = 1 }),
                 Array.Empty<string>(), level: 10, xp: 0, gold: 0);
-            Model = new FormationBattleModel(seed, terrain != null ? terrain.BuildLayout() : null);
+            Model = new FormationBattleModel(seed, SelectFormationTerrain(Session.Run));
             Session.ApplyTo(Model);
             // Clear any default placement selected by shared opening card identities,
             // then use the real reserve-to-board transaction for every showcase member.

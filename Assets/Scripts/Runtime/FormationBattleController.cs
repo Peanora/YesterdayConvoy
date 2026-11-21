@@ -22,6 +22,7 @@ namespace YesterdayConvoy
         public static Rect BoardInputRect=>new Rect(188,64,816,514);
         public Camera battleCamera;
         public FormationBattleTerrainAuthoring terrain;
+        public FormationBattleMaps maps;
         public Material actorTemplate,lineTemplate;
         public CardDefinition[] formationCards=Array.Empty<CardDefinition>();
         public int seed=20261117;
@@ -46,7 +47,7 @@ namespace YesterdayConvoy
                 fullCampaign&&!FormationCampaignEvidence.Requested ? Guid.NewGuid().GetHashCode() : seed,fullCampaign:fullCampaign);
             seed=Session.Seed;
             if(Session.Run?.OpeningRewardsPending==true)notice=Session.Run.LastSummary;
-            Model=new FormationBattleModel(seed,terrain!=null?terrain.BuildLayout():null);Session.ApplyTo(Model);
+            Model=new FormationBattleModel(seed,SelectFormationTerrain(Session.Run));Session.ApplyTo(Model);
             if(Session.Run!=null)Model.BindCampaign(Session.Run);
             else {Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
             if(battleCamera==null)battleCamera=Camera.main;
@@ -67,6 +68,15 @@ namespace YesterdayConvoy
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
             Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.7 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
+        }
+
+        FormationBattleTerrainLayout SelectFormationTerrain(FormationCampaignRun run)
+        {
+            if (maps == null) return terrain?.BuildLayout();
+            var board = run == null || run.GuardTrialArt != null || run.IsSupernovaBossTrial || run.SynergyTrial != null
+                ? FormationBattleMaps.Board.Canyon
+                : FormationBattleMaps.ForNode(run.CurrentNode.Id, run.CurrentNode.Plane);
+            return maps.Select(board, terrain);
         }
         void Update()
         {
@@ -238,7 +248,7 @@ namespace YesterdayConvoy
         {
             seed=fullCampaign&&!FormationCampaignEvidence.Requested ? Guid.NewGuid().GetHashCode() : unchecked(seed+1);
             Session=FormationShopSession.StartNew(seed,fullCampaign:fullCampaign);
-            Model=new FormationBattleModel(seed,Model.Terrain);
+            Model=new FormationBattleModel(seed,SelectFormationTerrain(Session.Run));
             Session.ApplyTo(Model);
             if(!fullCampaign){Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
             ResetFormationPreparation(fullCampaign?Campaign.LastSummary:"新挑战：无限测试金币，有限牌库与三人军团。");
@@ -248,14 +258,14 @@ namespace YesterdayConvoy
         {
             if (Campaign?.IsDifficultyTrial == true)
             {
-                var next=Session.PreparePracticeBattle(node);
+                var next=Session.PreparePracticeBattleOnMap(node, SelectFormationTerrain);
                 if(next==null)return;
                 Model=next;
             }
             else
             {
                 Session=FormationShopSession.StartPractice(seed,node);
-                Model=new FormationBattleModel(seed,Model.Terrain);
+                Model=new FormationBattleModel(seed,SelectFormationTerrain(Session.Run));
                 Session.ApplyTo(Model);
             }
             ResetFormationPreparation("难度试玩 · 招募、刷新和经验免费");
@@ -266,7 +276,7 @@ namespace YesterdayConvoy
             var trial = FormationSynergyTrial.Find(traitId);
             if (!Ready || trial == null) return;
             Session = FormationShopSession.StartSynergyTrial(seed, trial);
-            Model = new FormationBattleModel(seed, Model.Terrain);
+            Model = new FormationBattleModel(seed, SelectFormationTerrain(Session.Run));
             Session.ApplyTo(Model);
             ResetFormationPreparation(trial.Hint);
         }
@@ -278,7 +288,7 @@ namespace YesterdayConvoy
         {
             if (!Ready || FormationCampaignRules.DefenderByArtId(artId) == null) return;
             Session = FormationShopSession.StartGuardTrial(seed, artId);
-            Model = new FormationBattleModel(seed, Model.Terrain);
+            Model = new FormationBattleModel(seed, SelectFormationTerrain(Session.Run));
             Session.ApplyTo(Model);
             ResetFormationPreparation(GuardTrialHint);
         }
@@ -296,7 +306,7 @@ namespace YesterdayConvoy
         void OpenBossTrial(FormationShopSession session)
         {
             Session = session;
-            Model = new FormationBattleModel(seed, Model.Terrain);
+            Model = new FormationBattleModel(seed, SelectFormationTerrain(Session.Run));
             Session.ApplyTo(Model);
             ResetFormationPreparation(BossTrialHint);
         }

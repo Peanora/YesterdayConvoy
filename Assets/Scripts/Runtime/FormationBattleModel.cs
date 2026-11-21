@@ -100,7 +100,7 @@ namespace YesterdayConvoy
         public readonly List<FormationFighter> Units = new List<FormationFighter>();
         public readonly List<FormationDefender> Defenders = new List<FormationDefender>();
         public readonly List<FormationHit> Hits = new List<FormationHit>();
-        public FormationBattleTerrainLayout Terrain { get; }
+        public FormationBattleTerrainLayout Terrain { get; private set; }
         public FormationPhase Phase { get; private set; }
         public int Round { get; private set; }
         public int Seed { get; private set; }
@@ -264,6 +264,12 @@ namespace YesterdayConvoy
         public bool Retry()
         {
             PrepareRound(); return true;
+        }
+
+        internal void PrepareNextNode(FormationBattleTerrainLayout terrain)
+        {
+            Terrain = terrain;
+            Retry();
         }
 
         public bool NextRound()

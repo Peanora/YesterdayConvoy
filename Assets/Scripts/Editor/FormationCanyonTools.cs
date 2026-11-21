@@ -14,7 +14,7 @@ namespace YesterdayConvoy.Editor
     public static class FormationCanyonTools
     {
         public const string ArtPath = "Assets/Art/Environment/FormationCanyon";
-        const string DressingName = "Formation Canyon · Guard Protocol 02";
+        internal const string DressingName = "Formation Canyon · Guard Protocol 02";
         const float FloorHeight = .12f;
         const float WaterDepth = -.30f;
         static readonly RectInt Basin = new RectInt(12,1,2,1);
@@ -98,6 +98,7 @@ namespace YesterdayConvoy.Editor
             RenderSettings.ambientGroundColor=new Color(.24f,.22f,.17f);
             RenderSettings.ambientIntensity=1;
             controller.terrain.BuildLayout();
+            FormationMapTools.BindCanyon(scene, controller.maps);
             EditorUtility.SetDirty(controller.terrain);
             EditorSceneManager.MarkSceneDirty(scene);
             AssetDatabase.SaveAssets();

@@ -231,8 +231,8 @@ namespace YesterdayConvoy
             }
 
             var rng = new FormationRandom(unchecked((uint)Seed ^ ((uint)(Campaign.NodeIndex + 1) * 0x9e3779b9u)));
-            var north = FormationCampaignRules.NorthGuardFormation;
-            var south = FormationCampaignRules.SouthGuardFormation;
+            var north = Terrain?.FirstGuardFormation ?? FormationCampaignRules.NorthGuardFormation;
+            var south = Terrain?.SecondGuardFormation ?? FormationCampaignRules.SouthGuardFormation;
             bool preferNorth = rng.Next(2) == 0;
             var formation = preferNorth ? north : south;
             if (!CanPlaceGuardFormation(node, formation))

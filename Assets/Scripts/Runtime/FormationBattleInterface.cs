@@ -246,7 +246,8 @@ namespace YesterdayConvoy
                     if(node.Plane!=plane||node.DefenderCount==0)continue;
                     bool current=practice&&i==Campaign.NodeIndex;
                     string time=float.IsPositiveInfinity(node.TimeLimit)?"不限时":$"{node.TimeLimit:0} 秒";
-                    if(Button(new Rect(x,y,284,39),$"{node.Id}  {node.Kind}   ·   {node.DefenderCount} 守军   ·   {time}",true,current))
+                    var board = FormationBattleMaps.DisplayName(FormationBattleMaps.ForNode(node.Id, node.Plane));
+                    if(Button(new Rect(x,y,284,39),$"{node.Id}  {node.Kind}   ·   {board}   ·   {node.DefenderCount} 守军   ·   {time}",true,current))
                     {SelectPracticeBattle(i);return;}
                     y+=47;
                 }
@@ -255,7 +256,7 @@ namespace YesterdayConvoy
 
         void DrawGuardTrialPicker()
         {
-            var r = CampaignWindow("六星守军试玩", "选一名守军，在当前棋盘实战。", false);
+            var r = CampaignWindow("六星守军试玩", "选一名守军，在同源石谷观察普攻与技能。", false);
             if (Button(new Rect(r.xMax - 57, r.y + 15, 38, 30), "×")) { CloseFormationMenu(); return; }
             for (int i = 0; i < 15; i++)
             {
