@@ -8,13 +8,16 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const string SupernovaBossClipPrefix = "skill_supernova_";
+        const string SupernovaBossDeathClip = "skill_supernova_death";
         internal const string SupernovaBossEffectPrefix = "Formation Supernova / ";
         static readonly string[] SupernovaBossBodyClips =
         {
             "skill_supernova_s2_begin", "skill_supernova_s2_idle", "skill_supernova_s2_volley",
             "skill_supernova_s2_overload_begin", "skill_supernova_s2_overload_idle", "skill_supernova_s2_overload",
-            "skill_supernova_transition", "skill_supernova_s3_begin", "skill_supernova_s3_end"
+            "skill_supernova_transition", "skill_supernova_s3_begin", "skill_supernova_s3_idle",
+            "skill_supernova_s3_shell", "skill_supernova_s3_end"
         };
+        static readonly string[] SupernovaBossFrontClips = SupernovaBossBodyClips.Append(SupernovaBossDeathClip).ToArray();
         static readonly string[] SupernovaBossEffects =
         {
             "02_buff", "02_buff_02", "02_start", "02_overload_start", "02_hit", "02_hit_02",
@@ -25,6 +28,7 @@ namespace YesterdayConvoy
             Model != null && Campaign?.CurrentNode.Id == FormationCampaignRules.SupernovaBossNodeId;
 
         static bool IsSupernovaBossClip(string key) => key.StartsWith(SupernovaBossClipPrefix, StringComparison.Ordinal);
+        static string[] SupernovaBossBodyKeys(string artId) => artId == "D31" ? SupernovaBossFrontClips : SupernovaBossBodyClips;
 
         static bool SupernovaRearView(FormationActor actor) => actor.Facing.y > Mathf.Abs(actor.Facing.x);
 
@@ -33,7 +37,7 @@ namespace YesterdayConvoy
         {
             if (guard.PresentationAction?.StartsWith("supernova_", StringComparison.Ordinal) == true)
             {
-                string motion = guard.PresentationAction == "supernova_s3_shell" ? "attack" : "skill_" + guard.PresentationAction;
+                string motion = "skill_" + guard.PresentationAction;
                 bool hold = guard.PresentationAction == "supernova_s3_end" || Model.SupernovaBossTransitionActive(guard);
                 if ((hold || now < guard.PresentationStartedAt + guard.PresentationDuration) && source.Clips.ContainsKey(motion))
                 {
@@ -45,9 +49,10 @@ namespace YesterdayConvoy
             }
 
             var mode = Model.SupernovaBossMode(guard);
-            key = guard.SupernovaBossPhase == 2 ? "idle" : mode.Animation == "supernova_s2_overload_begin"
+            key = guard.SupernovaBossPhase == 2 ? "skill_supernova_s3_idle" : mode.Animation == "supernova_s2_overload_begin"
                 ? "skill_supernova_s2_overload_idle" : "skill_supernova_s2_idle";
-            age = Math.Max(0, now - Math.Max(0, mode.StartedAt)) * FormationVisualRate;
+            age = (Model.Phase == FormationPhase.Preparation ? Time.unscaledTimeAsDouble :
+                Math.Max(0, now - Math.Max(0, mode.StartedAt))) * FormationVisualRate;
         }
 
         static BossRosterFxArt.Clip SupernovaBossEffect(string suffix) =>
@@ -77,36 +82,43 @@ namespace YesterdayConvoy
         void PresentSupernovaBossAction(FormationDefender guard, FormationPresentationAction action, double now)
         {
             bool overload = action.Animation == "supernova_s2_overload";
+            double sinceRelease = (now - action.LaunchedAt) * action.Rate;
             if (overload || action.Animation == "supernova_s2_volley")
             {
-                if (overload || !action.ProjectileOnly)
+                if (sinceRelease >= 0 && (overload || !action.ProjectileOnly))
+                {
+                    // The baked muzzle includes the transparent pre-release part of the source animation.
                     ShowSupernovaBossEffect(overload ? "02_overload_start" : "02_start", overload ? "S2 muzzle overload" : "S2 muzzle",
-                        (now - action.LaunchedAt) * action.Rate, action.From, SupernovaBossMuzzle(guard, action, false), 20,
-                        flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)));
+                        sinceRelease + 7d / 30, action.From, SupernovaBossMuzzle(guard, action, false), 66,
+                        flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)), scale: 1.25f);
+                }
                 return;
             }
 
             if (action.Animation != "supernova_s3_shell") return;
             var target = FormationFeedbackActor(action.TargetId);
             Vector3 muzzle = SupernovaBossMuzzle(guard, action, true);
-            ShowSupernovaBossEffect("03_start", "S3 muzzle", (now - action.LaunchedAt) * action.Rate, action.From, muzzle, 20,
-                flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)));
+            if (sinceRelease >= 0)
+                ShowSupernovaBossEffect("03_start", "S3 muzzle", sinceRelease + 16d / 30, action.From, muzzle, 66,
+                    flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)));
             if (now < action.ContactAt)
             {
                 Vector2 destination = target?.Alive == true ? target.Position : action.To;
                 var contact = FormationFeedbackContactPoint(target, destination, .52f);
-                ShowSupernovaBossEffect("03_hit_03", "S3 aim", (now - action.At) * action.Rate, destination, contact, 21);
+                ShowSupernovaBossEffect("03_hit_03", "S3 aim", (now - action.At) * action.Rate, destination, contact, 52, scale: 1.2f);
                 if (now < action.LaunchedAt) return;
                 float progress = Mathf.Clamp01((float)((now - action.LaunchedAt) / (action.ContactAt - action.LaunchedAt)));
-                ShowSupernovaBossEffect("03_trail", "S3 trail", (now - action.LaunchedAt) * action.Rate,
-                    Vector2.Lerp(action.From, destination, progress), Vector3.Lerp(muzzle, contact, progress), 26,
-                    loop: true, direction: contact - muzzle);
+                // At close range only a few updates fit in the real flight window. Begin with the native visible core.
+                Vector2 sortingCell = new Vector2(Mathf.Lerp(action.From.x, destination.x, progress), Mathf.Min(action.From.y, destination.y));
+                ShowSupernovaBossEffect("03_trail", "S3 trail", sinceRelease + 4d / 30,
+                    sortingCell, Vector3.Lerp(muzzle, contact, progress), 68,
+                    loop: true, direction: contact - muzzle, scale: 1.4f);
                 return;
             }
 
             // The ground effect is emitted once when the real shell stops, even for a shot that hits no surviving unit.
             ShowSupernovaBossEffect("03_hit_02", "S3 impact ground", (now - action.ContactAt) * action.Rate - .15,
-                action.To, ActorWorldPoint(action.To) + Vector3.up * .025f, -4, ground: true);
+                action.To, ActorWorldPoint(action.To) + Vector3.up * .045f, -110, ground: true);
         }
 
         void PresentSupernovaBossHit(FormationHit hit, double now)
@@ -124,9 +136,9 @@ namespace YesterdayConvoy
             }
             double age = (now - hit.At) * action.Rate;
             var point = FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId), hit.To, .52f);
-            if (ShowSupernovaBossEffect(effect, label, age, hit.To, point, 24)) formationImpactOwners.Add(hit);
+            if (ShowSupernovaBossEffect(effect, label, age, hit.To, point, 55, scale: s2 ? 1.3f : 1.5f)) formationImpactOwners.Add(hit);
             if (s2) ShowSupernovaBossEffect("02_hit_02", "S2 impact ground", age - 1, hit.To,
-                ActorWorldPoint(hit.To) + Vector3.up * .025f, -4, ground: true);
+                ActorWorldPoint(hit.To) + Vector3.up * .045f, -65, ground: true);
         }
 
         static bool SupernovaFacesLeft(FormationDefender guard, Vector2 toward) =>
@@ -156,15 +168,15 @@ namespace YesterdayConvoy
         }
 
         bool ShowSupernovaBossEffect(string suffix, string label, double age, Vector2 cell, Vector3 position, int order,
-            bool flip = false, bool loop = false, bool ground = false, Vector3? direction = null)
+            bool flip = false, bool loop = false, bool ground = false, Vector3? direction = null, float scale = 1)
         {
             if (age < 0 || !FormationPointVisibleInView(cell)) return false;
             var clip = SupernovaBossEffect(suffix);
             if (!clip.Sequence.Ready) return false;
             float roll = direction.HasValue ? Mathf.Atan2(Vector3.Dot(direction.Value, battleCamera.transform.up),
                 Vector3.Dot(direction.Value, battleCamera.transform.right)) * Mathf.Rad2Deg : 0;
-            var renderer = LegacyDraw(clip.At(age, loop), legacyHdrMaterial, position, cell, 1f, order,
-                flip: flip, hdr: clip.HdrRange, flat: ground, roll: roll);
+            var renderer = LegacyDraw(clip.At(age, loop), legacyHdrMaterial, position, cell, scale, order,
+                flip: flip, hdr: clip.HdrRange, flat: ground, roll: roll, gammaOutput: true);
             if (renderer == null) return false;
             renderer.name = SupernovaBossEffectPrefix + label;
             return true;

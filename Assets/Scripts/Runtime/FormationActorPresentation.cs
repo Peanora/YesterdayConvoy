@@ -32,9 +32,11 @@ namespace YesterdayConvoy
         {
             if(!warmedFormationArt.Contains(id))return false;
             if(!id.StartsWith("D",StringComparison.Ordinal))return formationMonsterArt.TryGetValue(id,out var source)&&source.IsReady&&FormationInitialMotionKeys(source,id).All(key=>source.WindowReady(key,0,false))&&FormationEffectSequences(source).All(c=>c.Ready);
-            return art.TryGetValue(id,out var defender)&&defender.Clips.Values.Where(c=>FormationGuardClip(c)&&!IsSupernovaBossClip(c.Key)).All(c=>c.Ready)
-                &&(!UsesSupernovaBossArt(id)||SupernovaBossBodyClips.All(key=>defender.Clips.TryGetValue(key,out var clip)&&clip.Ready))
-                &&FormationGuardEffects(id).All(c=>c.Ready);
+            if(!art.TryGetValue(id,out var defender))return false;
+            bool bodyReady = UsesSupernovaBossArt(id)
+                ? SupernovaBossBodyKeys(id).All(key => defender.Clips.TryGetValue(key, out var clip) && clip.Ready)
+                : defender.Clips.Values.Where(c => FormationGuardClip(c) && !IsSupernovaBossClip(c.Key)).All(c => c.Ready);
+            return bodyReady && FormationGuardEffects(id).All(c => c.Ready);
         }
 
         static bool FormationGuardClip(ArtSequence clip) => clip.Key=="idle"||clip.Key=="walk"||clip.Key=="death"||clip.Key=="heal"||
@@ -93,9 +95,15 @@ namespace YesterdayConvoy
                 foreach(var sequence in effects)pinned.Add(sequence.CacheKey);
                 ArtMemoryCache.Pin(pinned);
                 if(id==PramanixBossBodyArt)WarmSnowBossAudio();
-                bool supernova=UsesSupernovaBossArt(id);
-                if(supernova)source.Extras(SupernovaBossBodyClips);
-                foreach(var clip in source.Clips.Values.Where(c=>FormationGuardClip(c)&&(supernova||!IsSupernovaBossClip(c.Key))))yield return clip.Warm();
+                if (UsesSupernovaBossArt(id))
+                {
+                    var keys = SupernovaBossBodyKeys(id);
+                    source.Extras(keys);
+                    foreach (string key in keys) yield return source.Clips[key].Warm();
+                }
+                else
+                    foreach (var clip in source.Clips.Values.Where(c => FormationGuardClip(c) && !IsSupernovaBossClip(c.Key)))
+                        yield return clip.Warm();
                 foreach(var clip in effects)if(!clip.Ready)yield return clip.Warm();
                 if(UsesFormationSixStarNativeFx(id))
                     yield return OriginalNativeFxCatalog.Prepare(OriginalNativeFxCatalog.KeysFor(id));
@@ -183,7 +191,8 @@ namespace YesterdayConvoy
             var foot=CellScreen(actor.SpawnCenter);return new Rect(foot.x-28,foot.y-75,56,82);
         }
         float GuardDeathDuration(FormationActor guard) =>
-            (art.TryGetValue(FormationBodyArtId(guard), out var source) && source.Clips.TryGetValue("death", out var clip)
+            (art.TryGetValue(FormationBodyArtId(guard), out var source) && source.Clips.TryGetValue(
+                guard is FormationDefender { IsSupernovaBoss: true } ? SupernovaBossDeathClip : "death", out var clip)
                 ? clip.Duration : .65f) / FormationVisualRate;
 
         void PresentFormationActor(FormationActor actor,bool defender)
@@ -289,6 +298,8 @@ namespace YesterdayConvoy
                 var source=art[bodyArtId];sourceHeight=source.Height;
                 labelTop=source.IdleVisibleTop>0?source.IdleVisibleTop:source.Height;
                 bool singleFrameSequence=false;
+                if (actor is FormationDefender { IsSupernovaBoss: true, Alive: false })
+                { key = SupernovaBossDeathClip; singleFrameSequence = true; }
                 if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
                 {
                     if(guard.IsSnowBoss)labelTop=PramanixScoutLabelTop;

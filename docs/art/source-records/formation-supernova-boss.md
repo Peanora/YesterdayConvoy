@@ -1,5 +1,13 @@
 # 超新星维什戴尔 Boss 的原作资源记录
 
+## 2026-11-21 正背面高清重采与攻击辨识
+
+独立 Boss 从本页所列的 `sale#14` 原骨骼和原贴图重新渲染。用每源单位 0.78 像素、249.6 PPU 输出 30 fps，沿用每单位身体宽度 320 源单位的换算。旧二技能正背面为 93.45/97.38 PPU，旧三技能为 160 PPU。当前 23 段、1,841 帧、147 页包含正背面二技能、过载、三技能和前视退场。帧数、原事件与脚点随清单逐项核验。 [前视重采记录](../../../Assets/Data/ArtCatalogs/DefenderArt/D31/ExtraClips/SOURCE-HD.json) · [背视重采记录](../../../Assets/Data/ArtCatalogs/DefenderArt/D31B/ExtraClips/SOURCE-HD.json) · [等尺寸采样对照](../../../artifacts/formation-supernova-boss-hd/source-body-match.jpg)
+
+攻击层仍用 B20 的原 HDR 图集。源炮口采样中，二技能常规和过载的第一处可见火光在第 7 帧，三技能在第 16 帧。三技能原 `FxDelay._delayTime` 为 0.5 源秒。运行时让这些亮帧与各自 `OnAttack` 发射点对齐，三技能飞行使用从第 4 帧稳定亮核开始的原拖尾，接触时结束。每次过载出手仍分别触发。Gamma 工程在分层材质输出时转换一次，保留透明像素中的加色 RGB。炮口、拖尾和贴身命中采用局部前景排序，地面层留在相邻身体下方，维持地形深度。二技能小幅扩大炮口和命中，三技能小幅扩大瞄准、弹道和贴身命中，地面余波维持原采样尺寸。 [原生特效采样](../../../Assets/Data/ArtCatalogs/BossRosterFx/B20/SOURCE-RECORD.json)
+
+## 首版来源与原事件对照
+
 - 身体使用 `char_1035_wisdel@sale#14` 的前、后骨骼。对照 `D31/SOURCE.json` 与 `D31B/SOURCE.json` 的三个 SHA-256，逐个核对缓存中的 `.skel`、`.atlas`、`.png`。新增 `ExtraClips` 来自 `2026-11-11_26位Boss原作整备-v1/atlases/B20/{front,back}` 的既有 60 fps 采样。隔帧取原像素，以 30 fps 保存并按同一源脚点裁切。按原 D31 的 320 骨骼单位/格换算每个片段的 PPU，保留原拼接序列和末帧，无重绘或逐帧拉伸。S3 待机和开炮复用 D31/D31B 的 `Skill_3_Idle` 与 `Skill_3_Loop`，退场复用原 D31 前视 `Die`。来源见 [D31 前视](../../../Assets/Data/ArtCatalogs/DefenderArt/D31/SOURCE.json) 和 [D31B 后视](../../../Assets/Data/ArtCatalogs/DefenderArt/D31B/SOURCE.json)。
 - 核对同批 `B20-front-all-actions.mp4` 的 S2 入场 25.97 秒、S2 连射 36.53 秒、S2 过载入场 37.93 秒、过载连射 48.70 秒、S3 入场 50.10 秒和 S3 炮击 59.50 秒，以及 `B20-all-fx.mp4` 的 S2 命中 57–63 秒、过载炮口 63–66 秒、普通炮口 66–69 秒、S3 接触 78–81 秒、瞄准 81–84 秒、实际命中 84–87 秒、炮口 87–90 秒、飞行 90–93 秒。视频是本地的原资产离线采样。前后视原骨骼、`CharacterSkinHooker` 与 `Actor/Projectile/EffectBehaviour` 来自 `26-10-29-15-36-11-33649006`，特效复用 [B20 现有原生采样](../../../Assets/Data/ArtCatalogs/BossRosterFx/B20/SOURCE-RECORD.json)。
 

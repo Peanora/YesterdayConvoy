@@ -1,7 +1,7 @@
 {
   "version": 1,
   "task": "D31",
-  "ppu": 93.44590387017185,
+  "ppu": 249.60000000000002,
   "rearVariant": false,
   "clips": [
     {
@@ -11,20 +11,20 @@
       "duration": 0.3333333432674408,
       "fps": 30,
       "loop": false,
-      "cellWidth": 216,
-      "cellHeight": 136,
-      "columns": 9,
-      "pivotX": 0.45184977251804054,
-      "pivotY": 0.05786531176571748,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 580,
+      "cellHeight": 360,
+      "columns": 3,
+      "pivotX": 0.44482758620689655,
+      "pivotY": 0.06111111111111111,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_s2_begin-00.png",
           "count": 11,
-          "width": 1944,
-          "height": 272
+          "width": 1740,
+          "height": 1440
         }
       ]
     },
@@ -35,26 +35,134 @@
       "duration": 10,
       "fps": 30,
       "loop": true,
-      "cellWidth": 204,
-      "cellHeight": 128,
-      "columns": 10,
-      "pivotX": 0.41960564148969,
-      "pivotY": 0.06148189375107482,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 564,
+      "cellHeight": 352,
+      "columns": 3,
+      "pivotX": 0.42907801418439717,
+      "pivotY": 0.056818181818181816,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_s2_idle-00.png",
-          "count": 160,
-          "width": 2040,
-          "height": 2048
+          "count": 15,
+          "width": 1692,
+          "height": 1760
         },
         {
           "file": "skill_supernova_s2_idle-01.png",
-          "count": 140,
-          "width": 2040,
-          "height": 1792
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-02.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-03.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-04.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-05.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-06.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-07.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-08.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-09.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-10.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-11.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-12.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-13.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-14.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-15.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-16.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-17.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-18.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
+        },
+        {
+          "file": "skill_supernova_s2_idle-19.png",
+          "count": 15,
+          "width": 1692,
+          "height": 1760
         }
       ]
     },
@@ -65,13 +173,13 @@
       "duration": 1.399999976158142,
       "fps": 30,
       "loop": true,
-      "cellWidth": 212,
-      "cellHeight": 132,
-      "columns": 9,
-      "pivotX": 0.4415073153957394,
-      "pivotY": 0.059618806061648315,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 588,
+      "cellHeight": 368,
+      "columns": 3,
+      "pivotX": 0.45068027210884354,
+      "pivotY": 0.057065217391304345,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [
         {
           "time": 0.2666666805744171,
@@ -84,9 +192,21 @@
       "pages": [
         {
           "file": "skill_supernova_s2_volley-00.png",
-          "count": 42,
-          "width": 1908,
-          "height": 660
+          "count": 15,
+          "width": 1764,
+          "height": 1840
+        },
+        {
+          "file": "skill_supernova_s2_volley-01.png",
+          "count": 15,
+          "width": 1764,
+          "height": 1840
+        },
+        {
+          "file": "skill_supernova_s2_volley-02.png",
+          "count": 12,
+          "width": 1764,
+          "height": 1472
         }
       ]
     },
@@ -97,20 +217,20 @@
       "duration": 0.1666666716337204,
       "fps": 30,
       "loop": false,
-      "cellWidth": 204,
-      "cellHeight": 188,
-      "columns": 10,
-      "pivotX": 0.41960564148969,
-      "pivotY": 0.04186001276668924,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 564,
+      "cellHeight": 516,
+      "columns": 3,
+      "pivotX": 0.42907801418439717,
+      "pivotY": 0.044573643410852716,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_s2_overload_begin-00.png",
           "count": 6,
-          "width": 2040,
-          "height": 188
+          "width": 1692,
+          "height": 1032
         }
       ]
     },
@@ -121,32 +241,164 @@
       "duration": 10,
       "fps": 30,
       "loop": true,
-      "cellWidth": 168,
-      "cellHeight": 196,
-      "columns": 12,
-      "pivotX": 0.5095211360946236,
-      "pivotY": 0.06055960408233458,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 468,
+      "cellHeight": 532,
+      "columns": 4,
+      "pivotX": 0.5170940170940171,
+      "pivotY": 0.05263157894736842,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_s2_overload_idle-00.png",
-          "count": 120,
-          "width": 2016,
-          "height": 1960
+          "count": 12,
+          "width": 1872,
+          "height": 1596
         },
         {
           "file": "skill_supernova_s2_overload_idle-01.png",
-          "count": 120,
-          "width": 2016,
-          "height": 1960
+          "count": 12,
+          "width": 1872,
+          "height": 1596
         },
         {
           "file": "skill_supernova_s2_overload_idle-02.png",
-          "count": 60,
-          "width": 2016,
-          "height": 980
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-03.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-04.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-05.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-06.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-07.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-08.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-09.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-10.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-11.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-12.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-13.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-14.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-15.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-16.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-17.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-18.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-19.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-20.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-21.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-22.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-23.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
+        },
+        {
+          "file": "skill_supernova_s2_overload_idle-24.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1596
         }
       ]
     },
@@ -157,13 +409,13 @@
       "duration": 1.399999976158142,
       "fps": 30,
       "loop": true,
-      "cellWidth": 260,
-      "cellHeight": 252,
-      "columns": 7,
-      "pivotX": 0.4061521187072952,
-      "pivotY": 0.0629749301592761,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 720,
+      "cellHeight": 688,
+      "columns": 2,
+      "pivotX": 0.4097222222222222,
+      "pivotY": 0.06686046511627906,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [
         {
           "time": 0.2666666805744171,
@@ -176,9 +428,69 @@
       "pages": [
         {
           "file": "skill_supernova_s2_overload-00.png",
-          "count": 42,
-          "width": 1820,
-          "height": 1512
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-01.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-02.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-03.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-04.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-05.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-06.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-07.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-08.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-09.png",
+          "count": 4,
+          "width": 1440,
+          "height": 1376
+        },
+        {
+          "file": "skill_supernova_s2_overload-10.png",
+          "count": 2,
+          "width": 1440,
+          "height": 688
         }
       ]
     },
@@ -189,20 +501,26 @@
       "duration": 0.5,
       "fps": 30,
       "loop": false,
-      "cellWidth": 200,
-      "cellHeight": 192,
-      "columns": 10,
-      "pivotX": 0.4879977543194838,
-      "pivotY": 0.061821262500716546,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 540,
+      "cellHeight": 520,
+      "columns": 3,
+      "pivotX": 0.47962962962962963,
+      "pivotY": 0.05,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_transition-00.png",
-          "count": 16,
-          "width": 2000,
-          "height": 384
+          "count": 9,
+          "width": 1620,
+          "height": 1560
+        },
+        {
+          "file": "skill_supernova_transition-01.png",
+          "count": 7,
+          "width": 1620,
+          "height": 1560
         }
       ]
     },
@@ -213,20 +531,26 @@
       "duration": 0.8333333134651184,
       "fps": 30,
       "loop": false,
-      "cellWidth": 232,
-      "cellHeight": 136,
-      "columns": 8,
-      "pivotX": 0.4379290985512791,
-      "pivotY": 0.05786531176571748,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 628,
+      "cellHeight": 364,
+      "columns": 3,
+      "pivotX": 0.44745222929936307,
+      "pivotY": 0.06593406593406594,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_s3_begin-00.png",
-          "count": 26,
-          "width": 1856,
-          "height": 544
+          "count": 15,
+          "width": 1884,
+          "height": 1820
+        },
+        {
+          "file": "skill_supernova_s3_begin-01.png",
+          "count": 11,
+          "width": 1884,
+          "height": 1456
         }
       ]
     },
@@ -237,20 +561,246 @@
       "duration": 0.5,
       "fps": 30,
       "loop": false,
-      "cellWidth": 232,
-      "cellHeight": 144,
-      "columns": 8,
-      "pivotX": 0.4379290985512791,
-      "pivotY": 0.054650572223177624,
-      "pixelsPerUnit": 93.44590387017185,
-      "scale": 0.292018449594287,
+      "cellWidth": 624,
+      "cellHeight": 396,
+      "columns": 3,
+      "pivotX": 0.4439102564102564,
+      "pivotY": 0.05808080808080808,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
       "events": [],
       "pages": [
         {
           "file": "skill_supernova_s3_end-00.png",
-          "count": 16,
-          "width": 1856,
-          "height": 288
+          "count": 15,
+          "width": 1872,
+          "height": 1980
+        },
+        {
+          "file": "skill_supernova_s3_end-01.png",
+          "count": 1,
+          "width": 1872,
+          "height": 396
+        }
+      ]
+    },
+    {
+      "key": "skill_supernova_s3_idle",
+      "source": "Skill_3_Idle",
+      "count": 240,
+      "duration": 8,
+      "fps": 30,
+      "loop": true,
+      "cellWidth": 468,
+      "cellHeight": 336,
+      "columns": 4,
+      "pivotX": 0.2606837606837607,
+      "pivotY": 0.050595238095238096,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_supernova_s3_idle-00.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-01.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-02.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-03.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-04.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-05.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-06.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-07.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-08.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        },
+        {
+          "file": "skill_supernova_s3_idle-09.png",
+          "count": 24,
+          "width": 1872,
+          "height": 2016
+        }
+      ]
+    },
+    {
+      "key": "skill_supernova_s3_shell",
+      "source": "Skill_3_Loop",
+      "count": 151,
+      "duration": 5,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 540,
+      "cellHeight": 360,
+      "columns": 3,
+      "pivotX": 0.29259259259259257,
+      "pivotY": 0.05555555555555555,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.5,
+          "name": "OnAttackFinished",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 4.733333110809326,
+          "name": "skill_storage_w",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "skill_supernova_s3_shell-00.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-01.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-02.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-03.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-04.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-05.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-06.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-07.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-08.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-09.png",
+          "count": 15,
+          "width": 1620,
+          "height": 1800
+        },
+        {
+          "file": "skill_supernova_s3_shell-10.png",
+          "count": 1,
+          "width": 1620,
+          "height": 360
+        }
+      ]
+    },
+    {
+      "key": "skill_supernova_death",
+      "source": "Die",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 624,
+      "cellHeight": 476,
+      "columns": 3,
+      "pivotX": 0.530448717948718,
+      "pivotY": 0.07352941176470588,
+      "pixelsPerUnit": 249.60000000000002,
+      "scale": 0.78,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_supernova_death-00.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1904
+        },
+        {
+          "file": "skill_supernova_death-01.png",
+          "count": 12,
+          "width": 1872,
+          "height": 1904
+        },
+        {
+          "file": "skill_supernova_death-02.png",
+          "count": 7,
+          "width": 1872,
+          "height": 1428
         }
       ]
     }
