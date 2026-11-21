@@ -1,0 +1,102 @@
+{
+  "date": "2026-11-21",
+  "characterId": "char_1035_wisdel",
+  "skin": "char_1035_wisdel@sale#14",
+  "voiceId": "char_1035_wisdel_sale#14",
+  "voiceLanguage": "Mandarin zh-CN",
+  "rights": "Original Arknights voice recordings and original Monster Siren Records track. Original rights holders retain rights. Open redistribution permission unconfirmed.",
+  "music": {
+    "song": "Arsonist",
+    "artist": "Monster Siren Records",
+    "id": "880323",
+    "page": "https://monster-siren.hypergryph.com/music/880323",
+    "sourceMetadata": "https://monster-siren.hypergryph.com/api/song/880323",
+    "sourceObject": "siren/audio/20240430/4152df7587e81e7180d716b436096266.wav",
+    "selection": "The exact-titled vocal release specified by the user. The album separately offers an instrumental track.",
+    "sourceSha256": "e8b705919e65df4bbd920a87f5db02fd34289a3765cf52cf3c178f890ee6fceb",
+    "sourceProbe": {
+      "codec_name": "pcm_s24le",
+      "sample_rate": "48000",
+      "channels": 2,
+      "duration_ts": 11562747,
+      "duration": "240.890562"
+    },
+    "projectFile": "Assets/Audio/BGM/Resources/SupernovaBoss/arsonist.ogg",
+    "outputSha256": "15984944613201218af8b99e7126de78f10547210df9f70e8263daf5d73df186",
+    "outputProbe": {
+      "codec_name": "vorbis",
+      "sample_rate": "48000",
+      "channels": 2,
+      "duration_ts": 11562747,
+      "duration": "240.890562"
+    },
+    "export": "Official stereo PCM master encoded as Ogg Vorbis quality 6 with original duration, sample rate and channel count. No trimming, gain, fades or loop remix."
+  },
+  "voice": {
+    "source": {
+      "version": "26-10-29-15-36-11-33649006",
+      "source": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/lpack_vccn1.dat",
+      "archive": "audio/sound_beta_2/voice_cn/char_1035_wisdel_sale#14.ab",
+      "singleBundleSource": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_voice_cn_char_1035_wisdel_sale__14.dat",
+      "md5": "3573c68b80aca32d378a4b1ce43c4c19",
+      "sha256": "b270e9d58338f99dd80d33096a6bd9cb34a58a128b260399f954ab0808477a0a",
+      "verified_against_hot_index": true
+    },
+    "audioMapping": "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/charword_table.json",
+    "clips": {
+      "1": {
+        "sourceClip": "CN_025",
+        "referenceRole": "BATTLE_SKILL_1",
+        "projectFile": "Assets/Audio/SFX/Resources/SupernovaBoss/voice-1.wav",
+        "seconds": 4.2890022675736965,
+        "samples": 189145,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "peakDbfs": -1.65,
+        "rmsDbfs": -17.51,
+        "sha256": "572f045e7a6d2d1b3b4eb918e88fba0ec72d14f457fd9d0d23d351fd1bfe95a7"
+      },
+      "2": {
+        "sourceClip": "CN_026",
+        "referenceRole": "BATTLE_SKILL_2",
+        "projectFile": "Assets/Audio/SFX/Resources/SupernovaBoss/voice-2.wav",
+        "seconds": 6.702675736961451,
+        "samples": 295588,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "peakDbfs": -1.59,
+        "rmsDbfs": -18.58,
+        "sha256": "154504f1cf989a3aff0d4836182d240a47001ade8df67b4472187ec85926256d"
+      },
+      "3": {
+        "sourceClip": "CN_027",
+        "referenceRole": "BATTLE_SKILL_3",
+        "projectFile": "Assets/Audio/SFX/Resources/SupernovaBoss/voice-3.wav",
+        "seconds": 5.179047619047619,
+        "samples": 228396,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "peakDbfs": -0.86,
+        "rmsDbfs": -17.5,
+        "sha256": "2ecc20b60ea1ad89b0ad8a3bdc0ffdb7fd3f95375000c685b1ba4309f7063030"
+      },
+      "4": {
+        "sourceClip": "CN_028",
+        "referenceRole": "BATTLE_SKILL_4",
+        "projectFile": "Assets/Audio/SFX/Resources/SupernovaBoss/voice-4.wav",
+        "seconds": 4.823378684807256,
+        "samples": 212711,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "peakDbfs": -2.43,
+        "rmsDbfs": -17.5,
+        "sha256": "dc5d8400cba7a66a1a89a473fd2ff4e7bc58b71f7f1eae09fad23b57f5c1d8f1"
+      }
+    },
+    "decode": "Four native Unity AudioClips from the Supernova outfit decoded to 16-bit 44.1 kHz mono PCM. No normalization or edits."
+  }
+}

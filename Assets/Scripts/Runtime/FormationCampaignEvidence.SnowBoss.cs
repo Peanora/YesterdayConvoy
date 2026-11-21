@@ -95,7 +95,7 @@ namespace YesterdayConvoy
             Assert(model.Phase == FormationPhase.Fighting && model.Speed == 1, "Boss trial starts at the ordinary simulation rate");
             guard = model.Defenders.Single();
             yield return ObserveSnowBossAudio(1);
-            replay.musicClip = controller.SnowBossMusic.clip.name;
+            replay.musicClip = controller.BossPhaseMusic.clip.name;
             yield return CaptureSnowBossClip("battle-start-voice", 59);
             yield return ObserveSnowBossUntil(() => model.PresentationActions.Any(action => action.ActorId == guard.Id && action.Skill),
                 "Phase 1 performs its S2 animation");
@@ -145,17 +145,17 @@ namespace YesterdayConvoy
             double pausedAt = model.Clock;
             replay.freezeSecondsRemaining = model.SnowBossFreezeRemaining(frozen[0]);
             yield return Frame("05-paused-global-freeze");
-            yield return ObserveSnowBossUntil(() => !controller.SnowBossMusic.isPlaying,
+            yield return ObserveSnowBossUntil(() => !controller.BossPhaseMusic.isPlaying,
                 "The battle music applies pause before sampling the playhead", 2);
             // isPlaying reflects the pause request before the audio thread finishes its current buffer.
             yield return new WaitForSecondsRealtime(.15f);
-            int pausedMusicAt = controller.SnowBossMusic.timeSamples;
+            int pausedMusicAt = controller.BossPhaseMusic.timeSamples;
             yield return new WaitForSecondsRealtime(.3f);
             Assert(replay.freezeSecondsRemaining > 0 && model.Clock == pausedAt &&
                 model.SnowBossFreezeRemaining(frozen[0]) == replay.freezeSecondsRemaining, "Pause holds the transition and the freeze timer");
-            int heldMusicAt = controller.SnowBossMusic.timeSamples;
-            bool heldMusic = !controller.SnowBossMusic.isPlaying && heldMusicAt == pausedMusicAt &&
-                controller.SnowBossVoiceStarts.Count == 1;
+            int heldMusicAt = controller.BossPhaseMusic.timeSamples;
+            bool heldMusic = !controller.BossPhaseMusic.isPlaying && heldMusicAt == pausedMusicAt &&
+                controller.BossPhaseVoiceStarts.Count == 1;
             checkingSnowBossPause = false;
             model.Paused = false;
 
@@ -201,9 +201,9 @@ namespace YesterdayConvoy
             replay.clearedAt = model.Clock;
             yield return Frame("07-second-bar-cleared");
             yield return ObserveSnowBossUntil(() => model.Phase == FormationPhase.Won, "A real deployed body reaches the blue gate");
-            replay.voiceStarts = controller.SnowBossVoiceStarts.ToArray();
+            replay.voiceStarts = controller.BossPhaseVoiceStarts.ToArray();
             Assert(replay.voiceStarts.Length == 2 && replay.voiceStarts.Distinct().Count() == 2 &&
-                !controller.SnowBossMusic.isPlaying && !controller.SnowBossVoice.isPlaying,
+                !controller.BossPhaseMusic.isPlaying && !controller.BossPhaseVoice.isPlaying,
                 "Exactly two distinct dialogue lines play in the fight and both audio channels stop at settlement");
             if (audioCapture != null)
                 replay.audioCaptureUtcTicks = audioCapture.Save(Path.Combine(directory, "battle-mix.wav"), out replay.audioCaptureSeconds);
@@ -335,12 +335,12 @@ namespace YesterdayConvoy
 
         IEnumerator ObserveSnowBossAudio(int phase)
         {
-            yield return ObserveSnowBossUntil(() => controller.SnowBossVoiceStarts.Count == phase &&
-                controller.SnowBossVoice != null && controller.SnowBossVoice.isPlaying,
+            yield return ObserveSnowBossUntil(() => controller.BossPhaseVoiceStarts.Count == phase &&
+                controller.BossPhaseVoice != null && controller.BossPhaseVoice.isPlaying,
                 phase == 1 ? "One original voice starts with the battle" : "A different original voice starts on entry to phase two");
-            var music = controller.SnowBossMusic;
-            var voice = controller.SnowBossVoice;
-            var starts = controller.SnowBossVoiceStarts;
+            var music = controller.BossPhaseMusic;
+            var voice = controller.BossPhaseVoice;
+            var starts = controller.BossPhaseVoiceStarts;
             Assert(music != null && music.loop && music.isPlaying && music.clip != null && music.clip.name == "battle" &&
                 music.clip.length > 170 && music.clip.channels == 2 && !music.mute && music.volume > 0,
                 "The selected original event battle soundtrack is actively looping");

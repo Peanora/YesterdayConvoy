@@ -34,9 +34,10 @@ namespace YesterdayConvoy
             public int s2RenderedBodyFrames, s3RenderedBodyFrames;
             public long audioCaptureUtcTicks;
             public double audioCaptureSeconds;
+            public int[] voiceStarts;
             public List<string> observedAudio = new List<string>();
             public List<SupernovaCaptureMark> captureMarks = new List<SupernovaCaptureMark>();
-            public string outcome;
+            public string musicClip, outcome;
         }
 
         IEnumerator VerifySupernovaBossTrial()
@@ -95,6 +96,8 @@ namespace YesterdayConvoy
             Assert(model.Phase == FormationPhase.Fighting && model.Speed == 1, "Trial uses ordinary simulation speed");
             guard = model.Defenders.Single();
             MarkSupernovaCapture("battle start");
+            yield return ObserveSupernovaAudio(1, 0);
+            replay.musicClip = controller.BossPhaseMusic.clip.name;
 
             yield return ObserveSupernovaAttack(guard, "supernova_s2_volley", "04-s2-rapid-fire", 61, false,
                 new[] { "S2 muzzle", "S2 impact", "S2 impact ground" }, (move, hit, frames) =>
@@ -121,15 +124,25 @@ namespace YesterdayConvoy
                 "An empty first bar keeps the Boss alive and the exit closed");
             Assert(model.Units.Concat(model.Summons).All(unit => model.SnowBossFreezeRemaining(unit) == 0),
                 "The phase change has no snow freeze on the attacking roster");
+            var bossMusic = controller.BossPhaseMusic;
+            Assert(bossMusic.isPlaying && controller.BossPhaseVoiceStarts.Count == 1,
+                "Phase two voice does not overlap the phase-break animation");
+            float unvoicedMusicVolume = bossMusic.volume;
 
             checkingSnowBossPause = true;
             model.Paused = true;
             double pausedAt = model.Clock;
             var pausedPose = SupernovaBossBody(guard)?.sprite;
             yield return Frame("06-transition-paused");
+            yield return ObserveSupernovaUntil(() => !bossMusic.isPlaying, "Battle music responds to pause", 2);
+            // Wait out the audio thread's current buffer before sampling the paused playhead.
+            yield return new WaitForSecondsRealtime(.15f);
+            int pausedMusicAt = bossMusic.timeSamples;
             yield return new WaitForSecondsRealtime(.25f);
             Assert(model.Clock == pausedAt && model.SupernovaBossTransitionActive(guard) &&
                 SupernovaBossBody(guard)?.sprite == pausedPose, "Pause freezes both phase change and the visible source pose");
+            Assert(!bossMusic.isPlaying && bossMusic.timeSamples == pausedMusicAt && controller.BossPhaseVoiceStarts.Count == 1,
+                "Pause holds the music playhead and the second voice remains queued for phase two");
             checkingSnowBossPause = false;
             model.Paused = false;
 
@@ -140,6 +153,12 @@ namespace YesterdayConvoy
             MarkSupernovaCapture("phase two", SupernovaBossBody(guard));
             Assert(guard.Health > guard.MaxHealth * .9f,
                 "Phase two has its own health bar");
+            yield return ObserveSupernovaAudio(2, replay.phaseTwoAt);
+            replay.voiceStarts = controller.BossPhaseVoiceStarts.ToArray();
+            Assert(controller.BossPhaseMusic == bossMusic && bossMusic.timeSamples > pausedMusicAt,
+                "The same battle track resumes its playhead across the phase change");
+            Assert(bossMusic.volume < unvoicedMusicVolume,
+                "The music ducks under the opening line and remains audible");
             SpriteRenderer activation = null;
             yield return ObserveSupernovaUntil(() =>
             {
@@ -171,11 +190,16 @@ namespace YesterdayConvoy
             replay.clearedAt = model.Clock;
             MarkSupernovaCapture("second health bar clear");
             Assert(model.Phase == FormationPhase.Exiting && !model.BossAlive, "Second clear opens the blue gate without immediately settling");
+            Assert(bossMusic.isPlaying, "The battle track continues on the way to the blue gate");
             yield return Frame("09-second-bar-cleared");
             yield return ObserveSupernovaUntil(() => model.Phase == FormationPhase.Won, "A surviving body enters the blue gate before timeout");
             replay.endAt = model.Clock;
             replay.outcome = model.Phase.ToString();
             MarkSupernovaCapture("blue gate reached");
+            Assert(replay.voiceStarts.SequenceEqual(controller.BossPhaseVoiceStarts),
+                "Each phase plays its introductory voice exactly once through victory");
+            Assert(!bossMusic.isPlaying && controller.BossPhaseVoice?.isPlaying != true,
+                "Boss music and voice stop when the battle settles");
             if (audioCapture != null)
                 replay.audioCaptureUtcTicks = audioCapture.Save(Path.Combine(directory, "battle-mix.wav"), out replay.audioCaptureSeconds);
             if (supernovaBossLiveCapture)
@@ -192,6 +216,33 @@ namespace YesterdayConvoy
                 reset.IsSupernovaBoss && reset.SupernovaBossPhase == 1 && reset.Health == replay.startingHealth &&
                 controller.Model.Clock == 0 && roster.SequenceEqual(controller.Model.Units.Select(unit => (unit.Instance, unit.Spawn, unit.Star))),
                 "Retry restores phase one and preserves the formation");
+            yield return null;
+            Assert(controller.BossPhaseMusic?.isPlaying != true && controller.BossPhaseVoice?.isPlaying != true,
+                "Retry preparation is silent until the next battle starts");
+        }
+
+        IEnumerator ObserveSupernovaAudio(int phase, double openedAt)
+        {
+            yield return ObserveSupernovaUntil(() => controller.BossPhaseVoiceStarts.Count == phase &&
+                controller.BossPhaseVoice?.isPlaying == true,
+                $"The original Wis'adel voice starts on entry to phase {phase}", 2);
+            var music = controller.BossPhaseMusic;
+            var voice = controller.BossPhaseVoice;
+            var starts = controller.BossPhaseVoiceStarts;
+            Assert(music != null && music.loop && music.isPlaying && music.clip?.name == "arsonist" &&
+                music.clip.channels == 2 && !music.mute && music.volume > 0,
+                "Arsonist is the active stereo loop under the phase voice");
+            Assert(starts.Distinct().Count() == phase && starts.All(line => line >= 1 && line <= 4) &&
+                voice.clip?.name == "voice-" + starts.Last() && !voice.loop && !voice.mute && voice.volume > 0,
+                "Playback uses a valid distinct non-looping original Wis'adel line");
+            Assert(controller.Model.Clock - openedAt <= .25,
+                "The phase line begins within the opening quarter second of battle time");
+            MarkSupernovaCapture($"phase {phase} voice {voice.clip.name}");
+            int musicAt = music.timeSamples;
+            int voiceAt = voice.timeSamples;
+            yield return new WaitForSecondsRealtime(.15f);
+            Assert(music.timeSamples > musicAt && voice.timeSamples > voiceAt,
+                "The live voice and music playback positions both advance");
         }
 
         IEnumerator ObserveSupernovaAttack(FormationDefender guard, string animation, string clipName, int frames, bool travels,
@@ -259,10 +310,10 @@ namespace YesterdayConvoy
             record(move, hit, bodyFrames.Count);
         }
 
-        IEnumerator ObserveSupernovaUntil(Func<bool> reached, string check)
+        IEnumerator ObserveSupernovaUntil(Func<bool> reached, string check, double? timeoutSeconds = null)
         {
             var model = controller.Model;
-            double deadline = Time.realtimeSinceStartupAsDouble + model.LimitSeconds + 10;
+            double deadline = Time.realtimeSinceStartupAsDouble + (timeoutSeconds ?? model.LimitSeconds + 10);
             while (!reached() && controller.CombatViewActive && Time.realtimeSinceStartupAsDouble < deadline)
                 yield return null;
             Assert(reached(), $"{check} ({model.Phase}, {model.Clock:0.000}s)");

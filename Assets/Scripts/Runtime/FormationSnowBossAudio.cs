@@ -7,36 +7,23 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         const string SnowBossAudioRoot = "SnowBoss/";
-        const int SnowBossVoiceCount = 4;
         static readonly string[] SnowBossEffectKeys =
         {
             "p_skill_swlprdbl_h", "p_atk_swlprdbl_h", "p_atk_swlprdblrs_h", "p_imp_swlprdbl_n",
             "p_skill_swlprdbl_s", "p_atk_swlprdbl_s", "p_imp_swlprdbl_s", "p_skill_swlprdbl", "p_imp_swcvr", "p_imp_swcvr_h"
         };
-        readonly System.Random snowBossVoiceRandom = new System.Random();
-        readonly List<int> snowBossVoiceStarts = new List<int>(2);
         readonly Dictionary<string, AudioClip> snowBossEffectClips = new Dictionary<string, AudioClip>();
         FormationBattleModel snowBossAudioBattle;
         FormationDefender snowBossAudioGuard;
-        AudioClip[] snowBossVoiceClips;
-        AudioClip snowBossBattleTrack;
-        AudioSource snowBossMusic, snowBossVoice, snowBossEffects;
+        AudioSource snowBossEffects;
         double lastSnowBossEffectAt;
         int snowBossPreviousSnowMass;
-        int snowBossFirstVoice, snowBossSecondVoice;
-        bool snowBossAudioPaused;
-
-        internal IReadOnlyList<int> SnowBossVoiceStarts => snowBossVoiceStarts;
-        internal AudioSource SnowBossMusic => snowBossMusic;
-        internal AudioSource SnowBossVoice => snowBossVoice;
+        bool snowBossEffectsLoaded, snowBossAudioPaused;
 
         void WarmSnowBossAudio()
         {
-            if (snowBossVoiceClips != null) return;
-            snowBossVoiceClips = new AudioClip[SnowBossVoiceCount];
-            for (int i = 0; i < SnowBossVoiceCount; i++)
-                snowBossVoiceClips[i] = Resources.Load<AudioClip>(SnowBossAudioRoot + "voice-" + (i + 1));
-            snowBossBattleTrack = Resources.Load<AudioClip>(SnowBossAudioRoot + "battle");
+            if (snowBossEffectsLoaded) return;
+            snowBossEffectsLoaded = true;
             foreach (string key in SnowBossEffectKeys)
             {
                 var clip = Resources.Load<AudioClip>(SnowBossAudioRoot + key);
@@ -60,55 +47,19 @@ namespace YesterdayConvoy
                 if (snowBossAudioGuard == null) return;
 
                 WarmSnowBossAudio();
-                snowBossMusic ??= CreateSnowBossAudioSource(loop: true, volume: .42f);
-                snowBossVoice ??= CreateSnowBossAudioSource(loop: false, volume: .86f);
                 if (snowBossEffectClips.Count > 0)
-                    snowBossEffects ??= CreateSnowBossAudioSource(loop: false, volume: .31f);
-                snowBossMusic.clip = snowBossBattleTrack;
-                snowBossMusic.mute = snowBossVoice.mute = !soundEnabled;
-                snowBossVoiceStarts.Clear();
-                snowBossFirstVoice = snowBossVoiceRandom.Next(SnowBossVoiceCount);
-                snowBossSecondVoice = snowBossVoiceRandom.Next(SnowBossVoiceCount - 1);
-                if (snowBossSecondVoice >= snowBossFirstVoice) snowBossSecondVoice++;
-                if (snowBossMusic.clip != null) snowBossMusic.Play();
+                    snowBossEffects ??= CreateBossAudioSource(loop: false, volume: .31f);
             }
 
-            if (snowBossAudioGuard == null) return;
-            snowBossMusic.mute = snowBossVoice.mute = !soundEnabled;
-            if (snowBossEffects != null) snowBossEffects.mute = !soundEnabled;
+            if (snowBossAudioGuard == null || snowBossEffects == null) return;
+            snowBossEffects.mute = !soundEnabled;
             if (Model.Paused != snowBossAudioPaused)
             {
                 snowBossAudioPaused = Model.Paused;
-                if (snowBossAudioPaused)
-                {
-                    snowBossMusic.Pause();
-                    snowBossVoice.Pause();
-                    if (snowBossEffects != null) snowBossEffects.Pause();
-                }
-                else
-                {
-                    snowBossMusic.UnPause();
-                    snowBossVoice.UnPause();
-                    if (snowBossEffects != null) snowBossEffects.UnPause();
-                }
+                if (snowBossAudioPaused) snowBossEffects.Pause();
+                else snowBossEffects.UnPause();
             }
-            if (snowBossAudioPaused) return;
-            if (snowBossVoiceStarts.Count == 0)
-                PlaySnowBossVoice(snowBossFirstVoice);
-            if (snowBossVoiceStarts.Count == 1 && snowBossAudioGuard.SnowBossPhase == 2)
-                PlaySnowBossVoice(snowBossSecondVoice);
-            if (snowBossEffects != null) PlaySnowBossEffects();
-
-            // Keep the original cue audible under both short phase lines.
-            float musicVolume = snowBossVoice.isPlaying ? .23f : .42f;
-            snowBossMusic.volume = Mathf.MoveTowards(snowBossMusic.volume, musicVolume, Time.unscaledDeltaTime * 2f);
-        }
-
-        void PlaySnowBossVoice(int index)
-        {
-            snowBossVoiceStarts.Add(index + 1);
-            snowBossVoice.clip = snowBossVoiceClips[index];
-            if (snowBossVoice.clip != null) snowBossVoice.Play();
+            if (!snowBossAudioPaused) PlaySnowBossEffects();
         }
 
         void PlaySnowBossEffects()
@@ -203,8 +154,6 @@ namespace YesterdayConvoy
 
         void StopSnowBossAudio()
         {
-            if (snowBossMusic != null) snowBossMusic.Stop();
-            if (snowBossVoice != null) snowBossVoice.Stop();
             if (snowBossEffects != null) snowBossEffects.Stop();
             snowBossAudioBattle = null;
             snowBossAudioGuard = null;
@@ -213,14 +162,5 @@ namespace YesterdayConvoy
             snowBossPreviousSnowMass = 0;
         }
 
-        AudioSource CreateSnowBossAudioSource(bool loop, float volume)
-        {
-            var source = gameObject.AddComponent<AudioSource>();
-            source.playOnAwake = false;
-            source.spatialBlend = 0;
-            source.loop = loop;
-            source.volume = volume;
-            return source;
-        }
     }
 }

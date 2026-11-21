@@ -90,6 +90,7 @@ namespace YesterdayConvoy
             if(!FormationShowcaseRecorder.Drives(this))
             {
                 UpdateFormationSounds();
+                UpdateBossPhaseAudio();
                 UpdateSnowBossAudio();
             }
         }
