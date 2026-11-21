@@ -72,10 +72,12 @@ namespace YesterdayConvoy
                 : Mathf.Max(1, raw - Mathf.Max(-30, armor));
         }
 
-        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,bool transferred=false) =>
+        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,
+            bool transferred=false) =>
             CombatDamage(source,target,raw,type,skill,native,out _,transferred);
 
-        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,out bool landed,bool transferred=false)
+        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,
+            out bool landed,bool transferred=false,bool showPeriodicDamage=false)
         {
             landed = target != null && target.Alive && raw > 0 &&
                 !(target is FormationDefender boss && (SnowBossTransitionActive(boss) || SupernovaBossTransitionActive(boss) ||
@@ -154,7 +156,7 @@ namespace YesterdayConvoy
                 At=Clock, From=source.Position, To=target.Position, FromId=source.Id, ToId=target.Id,
                 Amount=healthLoss, ExpectedDamage=expectedDamage, Skill=skill, Killed=killed, SourceArtId=source.ArtId,
                 DamageType=type,
-                IsOutgoingDamage=source is FormationFighter && target is FormationDefender,
+                IsOutgoingDamage=source is FormationFighter && target is FormationDefender, ShowPeriodicDamage=showPeriodicDamage,
                 Action=presentation, ImpactIndex=presentation?.ProjectileOnly==true?presentation.ProjectileIndex:Math.Max(0,s.ActionHits-1),
                 Absorbed=amount<originalAmount-.001f, Secondary=!native&&source is FormationFighter&&presentation==null
             });
@@ -270,7 +272,7 @@ namespace YesterdayConvoy
             if(Clock>=nextSeaDecay){nextSeaDecay=Clock+1;foreach(var d in Defenders){State(d).Stacks["fire"]=Mathf.Max(0,Stack(d,"fire")-5);State(d).Stacks["nerve"]=Mathf.Max(0,Stack(d,"nerve")-5);}}
             foreach(var z in zones.ToArray())
             {
-                if(z.Next>Clock||z.Until+1e-8<Clock)continue;z.Next+=1;
+                if(z.Next>Clock+1e-8||z.Until+1e-8<Clock)continue;z.Next+=1;
                 var victims=Nearby(z.Center,z.Radius,z.Cap);
                 if(z.Kind=="kingdom")
                 {
@@ -281,10 +283,11 @@ namespace YesterdayConvoy
                     }continue;
                 }
                 if(z.Kind=="trench")victims=Defenders.Where(d=>d.Alive&&new[]{-.8f,0,.8f}.Any(offset=>Mathf.Abs(d.Position.y-z.Center.y-offset)<=.6f)).ToArray();
+                bool rainBurn = z.Kind == "burn" && z.Source.ArtId == "TALULAH_TRIAL" && Campaign.TalulahCost == 5;
                 foreach(var d in victims)
                 {
                     float mult=z.Multiplier*(z.Kind=="trench"?Math.Min(2,new[]{-.8f,0,.8f}.Count(offset=>Mathf.Abs(d.Position.y-z.Center.y-offset)<=.6f)):1);
-                    CombatDamage(z.Source,d,z.Source.Attack*mult*Power(z.Source),1,true,false);
+                    CombatDamage(z.Source,d,z.Source.Attack*mult*Power(z.Source),1,true,false,out _,showPeriodicDamage:rainBurn);
                     if(z.Kind=="trench"&&Level("国度")>=2&&Buff(d,"kingdom_mr")<0)GiveBuff(d,"kingdom_mr",-30,1.1);
                 }
             }

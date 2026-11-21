@@ -19,6 +19,7 @@ namespace YesterdayConvoy.Tests
             ResolveChoices(run);
             foreach (var drop in run.PendingBalls.ToArray())
             {
+                if (run.Shop.Bench.Count(piece => !run.Shop.IsLineupInstance(piece.Instance)) >= ShopSeatLayout.ReserveCapacity) break;
                 Assert.That(run.BeginBall(drop.Id), Is.Not.Null);
                 Assert.That(run.CompleteBall(drop.Id), Is.Not.Null);
                 ResolveChoices(run);
@@ -101,7 +102,7 @@ namespace YesterdayConvoy.Tests
             var shop = Shop(39); var run = new FormationCampaignRun(shop,39);
             ResolveChoices(run);
             Assert.That(run.SettleBattle(true,1,3,0,false),Is.Not.Null);
-            Assert.That(run.PendingBalls.Count(ball=>ball.Component==null),Is.EqualTo(4));
+            Assert.That(run.PendingBalls.Count(ball=>ball.Component==null),Is.EqualTo(2));
             Assert.That(run.OpenedBalls,Is.Empty);
             var drops = run.PendingBalls.Select(ball=>ball.Id).ToArray();
             Assert.That(run.AdvanceNode(),Is.True);
@@ -133,10 +134,47 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.BeginBall(drop.Id),Is.Null);
             CollectDrops(run);
             Assert.That(run.BallRewards.Count,Is.EqualTo(drops.Length));
-            Assert.That(run.BallRewards.Count(reward=>reward.Color.Length>0),Is.EqualTo(4));
+            Assert.That(run.BallRewards.Count(reward=>reward.Color.Length>0),Is.EqualTo(2));
             while(run.PendingRewardChoices>0) Assert.That(run.ChooseReward(0).Success,Is.True);
             Assert.That(run.Inventory.Sum(item=>item.Key.Length==1?1:item.Key.Length==2?2:0),Is.GreaterThanOrEqualTo(2));
         }
+        [Test]
+        public void RewardBallRemainsOnBoardUntilAReserveSeatIsFree()
+        {
+            var shop = Shop();
+            var run = new FormationCampaignRun(shop, 17);
+            ResolveChoices(run);
+            shop.Preset(FormationCampaignRules.AllUnits.Take(ShopSeatLayout.ReserveCapacity)
+                .Select(unit => new ShopTrialModel.Piece { Id = unit.CardId, Star = 1 }),
+                Array.Empty<string>(), 3, 0, 8);
+            run.OpenBall("白");
+            var drop = run.PendingBalls.Single();
+            Assert.That(run.BeginBall(drop.Id), Is.Null);
+            Assert.That(run.PendingBalls.Single(), Is.SameAs(drop));
+            Assert.That(run.CompleteBall(drop.Id), Is.Null);
+            Assert.That(shop.Sell(shop.Bench[0].Instance).Success, Is.True);
+            Assert.That(run.BeginBall(drop.Id), Is.Not.Null);
+            Assert.That(run.CompleteBall(drop.Id), Is.Not.Null);
+        }
+
+        [TestCase(true, 5)]
+        [TestCase(false, 3)]
+        public void OpeningRewardBattleGrantsVictoryHopeOnlyOnAWin(bool won, int expected)
+        {
+            var shop = Shop();
+            var run = new FormationCampaignRun(shop, 17);
+            ResolveChoices(run);
+            string[] ids = FormationCampaignRules.AllUnits.Where(unit => unit.Factions.Contains("整合"))
+                .Take(3).Select(unit => unit.CardId).ToArray();
+            Assert.That(ids, Has.Length.EqualTo(3));
+            shop.Preset(ids.Select(id => new ShopTrialModel.Piece { Id = id, Star = 1 }),
+                Array.Empty<string>(), 3, 0, 8);
+            Assert.That(shop.SetLineup(ids, shop.Bench.Select(piece => piece.Instance)), Is.True);
+            run.LockBattleLineup();
+            Assert.That(run.SettleBattle(won, 1, 3, 0, false), Is.Not.Null);
+            Assert.That(run.Hope, Is.EqualTo(expected));
+        }
+
         [Test]
         public void RewardPacksGrantSeveralDistinctCardsAndTwoStarUsesThreeCopies()
         {
@@ -251,7 +289,7 @@ namespace YesterdayConvoy.Tests
                     " first: "+string.Join(" | ",run.BallRewards.Where(reward=>reward.Node=="1-1").Select(reward=>reward.Color+"/"+string.Join(",",reward.Items)+"/"+reward.Choice));
                 Assert.That(drops.Count(drop=>drop.Component!=null&&drop.Node=="1-1"),Is.EqualTo(firstFloor),trace);
                 Assert.That(drops.Count(drop=>drop.Component!=null&&drop.Node=="1-2"),
-                    Is.EqualTo(Math.Max(0,5-initial-originalLoot-firstFloor)));
+                    Is.EqualTo(Math.Max(0,3-initial-originalLoot-firstFloor)));
             }
             Assert.That(foundSeparateDrop,Is.True);
         }

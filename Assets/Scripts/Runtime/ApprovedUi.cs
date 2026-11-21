@@ -11,6 +11,8 @@ namespace YesterdayConvoy
         internal static readonly Color Gold=new Color(.88f,.77f,.45f);
         internal static readonly Color Rule=new Color(.66f,.74f,.79f);
         static Font regular,medium,bold;
+        static int scrollDragControl;
+        static Vector2 scrollDragOrigin, scrollDragPosition;
         internal static Font Font(Font fallback,int weight=400)
         {
             if(regular==null)regular=Resources.Load<Font>("UI/YesterdayConvoyUI-Regular");
@@ -42,6 +44,54 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(rect.x,rect.y,rect.width,width),color);Fill(new Rect(rect.x,rect.yMax-width,rect.width,width),color);
             Fill(new Rect(rect.x,rect.y,width,rect.height),color);Fill(new Rect(rect.xMax-width,rect.y,width,rect.height),color);
+        }
+
+        internal static Vector2 BeginDragScrollView(Rect viewport, Vector2 scroll, Rect content,
+            GUIStyle verticalScrollbar = null)
+        {
+            var scrollbar = verticalScrollbar ?? GUI.skin.verticalScrollbar;
+            int control = GUIUtility.GetControlID(FocusType.Passive, viewport);
+            var input = Event.current;
+            float limit = Mathf.Max(0, content.height - viewport.height);
+            if (GUI.enabled && limit > 0 && input.button == 0)
+            {
+                var grabArea = viewport;
+                grabArea.xMax -= scrollbar.fixedWidth + scrollbar.margin.left;
+                switch (input.type)
+                {
+                    case EventType.MouseDown when GUIUtility.hotControl == 0 && grabArea.Contains(input.mousePosition):
+                        scrollDragControl = control;
+                        scrollDragOrigin = input.mousePosition;
+                        scrollDragPosition = scroll;
+                        break;
+                    case EventType.MouseDrag when scrollDragControl == control:
+                        float movement = input.mousePosition.y - scrollDragOrigin.y;
+                        if (GUIUtility.hotControl == control || Mathf.Abs(movement) > 5)
+                        {
+                            // Take the drag only after the threshold so buttons keep ordinary clicks.
+                            GUIUtility.hotControl = control;
+                            scroll.y = Mathf.Clamp(scrollDragPosition.y - movement, 0, limit);
+                            input.Use();
+                        }
+                        break;
+                    case EventType.MouseUp when scrollDragControl == control:
+                        if (GUIUtility.hotControl == control)
+                        {
+                            GUIUtility.hotControl = 0;
+                            input.Use();
+                        }
+                        scrollDragControl = 0;
+                        break;
+                }
+            }
+            return GUI.BeginScrollView(viewport, scroll, content, false, false, GUIStyle.none, scrollbar);
+        }
+
+        internal static void ReleaseScrollDrag()
+        {
+            if (scrollDragControl == 0) return;
+            if (GUIUtility.hotControl == scrollDragControl) GUIUtility.hotControl = 0;
+            scrollDragControl = 0;
         }
     }
 }

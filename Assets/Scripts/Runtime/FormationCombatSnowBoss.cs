@@ -19,7 +19,7 @@ namespace YesterdayConvoy
         double snowBossFrozenUntil;
 
         public bool SnowBossTransitionActive(FormationDefender guard) =>
-            Phase == FormationPhase.Fighting && guard.IsSnowBoss && guard.SnowBossTransitionUntil > Clock;
+            Phase == FormationPhase.Fighting && guard.IsSnowBoss && guard.SnowBossPhase == 1 && guard.SnowBossTransitionUntil > Clock;
 
         public double SnowBossFreezeRemaining(FormationFighter unit) =>
             Phase == FormationPhase.Fighting && snowBossFrozenUntil > Clock && unit.Enabled && unit.Alive && snowBossFrozen.Contains(unit.Id)

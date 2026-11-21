@@ -14,7 +14,7 @@ namespace YesterdayConvoy
             public Transform Parent;
             public Func<ShopTrialModel> Shop;
             public Func<Font> Font;
-            public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive,CanCollapse,ReserveOnly,ReserveFull;
+            public Func<bool> Preparing,Loading,Visible,Dragging,OddsVisible,FlowActive,CanCollapse,ReserveOnly,ReserveOverflow;
             public Func<int> DragInstance;
             public Func<int> LineupSeatCount;
             public Func<Vector2> Pointer;
@@ -202,19 +202,19 @@ namespace YesterdayConvoy
             var title=ApprovedUi.Text(host.Font(),13,TextAnchor.MiddleLeft,Color.white,600);
             var hint=ApprovedUi.Text(host.Font(),10,TextAnchor.MiddleRight,new Color(.87f,.92f,.95f));
             bool singleReserve=host.ReserveOnly?.Invoke()??false;
-            bool full=singleReserve&&(host.ReserveFull?.Invoke()??false);
             if(singleReserve)
             {
+                bool overflow=host.ReserveOverflow?.Invoke()??false;
                 var deck=host.ReserveDeck?.Invoke()??new Rect(184,627,950,73);
-                Fill(deck,full?FormationPreparationPalette.Rust:FormationPreparationPalette.Recess);
-                ShopBorder(deck,full?FormationPreparationPalette.RustEdge:FormationPreparationPalette.Edge);
+                Fill(deck,overflow?FormationPreparationPalette.Rust:FormationPreparationPalette.Recess);
+                ShopBorder(deck,overflow?FormationPreparationPalette.RustEdge:FormationPreparationPalette.Edge);
                 for(int slot=0;slot<10;slot++)
                 {
                     var pad=host.ReserveSlot?.Invoke(slot)??ApprovedUi.ReserveSlot(slot);
-                    Fill(pad,full?Color.Lerp(FormationPreparationPalette.Surface,FormationPreparationPalette.Rust,.45f):FormationPreparationPalette.Surface);
-                    ShopBorder(pad,full?FormationPreparationPalette.RustEdge:FormationPreparationPalette.Line);
+                    Fill(pad,overflow?Color.Lerp(FormationPreparationPalette.Surface,FormationPreparationPalette.Rust,.45f):FormationPreparationPalette.Surface);
+                    ShopBorder(pad,overflow?FormationPreparationPalette.RustEdge:FormationPreparationPalette.Line);
                 }
-                string reserveText=full?"备战席 10/10 · 已满":$"备战席 {reserve}/10";
+                string reserveText=$"备战席 {Mathf.Min(reserve, ShopSeatLayout.ReserveCapacity)}/{ShopSeatLayout.ReserveCapacity}";
                 GUI.Label(new Rect(deck.x+7,deck.y+1,135,15),reserveText,LoopText(10,TextAnchor.MiddleLeft,FormationPreparationPalette.Text,600));
                 GUI.Label(new Rect(deck.xMax-139,deck.y+1,132,15),$"已上阵 {shop.Bench.Count(p=>host.InLineup(p.Instance))}/{shop.PopulationCap}",
                     LoopText(10,TextAnchor.MiddleRight,FormationPreparationPalette.Muted,600));
@@ -236,9 +236,8 @@ namespace YesterdayConvoy
                 if(singleReserve)
                 {
                     Color tier=host.ReserveFee?.Invoke(cost)??ApprovedUi.Tier(cost);
-                    Color surface=full?FormationPreparationPalette.Rust:FormationPreparationPalette.Surface;
-                    Fill(r,Color.Lerp(surface,tier,.20f));
-                    ShopBorder(r,Color.Lerp(full?FormationPreparationPalette.RustEdge:FormationPreparationPalette.Line,tier,.25f));
+                    Fill(r,Color.Lerp(FormationPreparationPalette.Surface,tier,.57f));
+                    ShopBorder(r,Color.Lerp(FormationPreparationPalette.Line,tier,.70f));
                 }
                 else DrawLoopCostBackground(r,cost);
                 Fill(new Rect(r.x+15,r.y+51,r.width-30,5),new Color(.04f,.09f,.13f,.31f));
@@ -253,7 +252,7 @@ namespace YesterdayConvoy
                 int star=ShopDisplayedStar(p);DrawShopStars(new Rect(r.xMax-8-star*12,r.y+2,star*12,12),star,new Color(1,.94f,.72f));
                 var footer=new Rect(r.x,r.y+55,r.width,singleReserve?14:16);
                 Color fee=singleReserve?(host.ReserveFee?.Invoke(cost)??ApprovedUi.Tier(cost)):ApprovedUi.Tier(cost);
-                Fill(footer,Color.Lerp(fee,Color.black,singleReserve?.50f:.30f));
+                Fill(footer,Color.Lerp(fee,Color.black,singleReserve?.31f:.30f));
                 footer.x+=1;footer.width-=2;
                 string name=shop.Definition(p.Id).Name;
                 GUI.Label(footer,name,ApprovedUi.Text(host.Font(),name.Length>8&&singleReserve?10:11,TextAnchor.MiddleCenter,Color.white,600));
@@ -716,12 +715,15 @@ namespace YesterdayConvoy
             ApprovedUi.Border(rect,new Color(.51f,.61f,.69f,GUI.enabled?.55f:.2f));
             return clicked;
         }
-        public void DrawLoopCostBackground(Rect rect,int recruitCost)
+        public void DrawLoopCostBackground(Rect rect,int recruitCost,float opacity=1f)
         {
             Color tier=ApprovedUi.Tier(recruitCost),top=Color.Lerp(tier,Color.white,.30f);
+            tier.a=top.a=opacity;
             for(int row=0;row<16;row++)Fill(new Rect(rect.x,rect.y+row*rect.height/16,rect.width,rect.height/16+1),Color.Lerp(top,tier,row/15f));
-            Fill(new Rect(rect.x,rect.yMax-5,rect.width,5),Color.Lerp(tier,Color.black,.28f));
-            ShopBorder(rect,Color.Lerp(tier,Color.white,.45f),1);
+            var shadow=Color.Lerp(tier,Color.black,.28f);shadow.a=opacity;
+            var edge=Color.Lerp(tier,Color.white,.45f);edge.a=opacity;
+            Fill(new Rect(rect.x,rect.yMax-5,rect.width,5),shadow);
+            ShopBorder(rect,edge,1);
         }
         static void ShopLine(Vector2 a,Vector2 b,Color color,float width=2)
         {

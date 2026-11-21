@@ -89,7 +89,7 @@ namespace YesterdayConvoy
 
             bool canConfirm = enabled && selectedIndex >= 0;
             if (canConfirm && GUI.Button(SupplyConfirmRect, GUIContent.none, GUIStyle.none)) confirm = true;
-            if (repaint && ready) DrawSupplyActions(canConfirm, selectedSupplyOption, confirming, run.SupplyEquipmentWithheld, options.Count);
+            if (repaint && ready) DrawSupplyActions(canConfirm, selectedSupplyOption, confirming, run.SupplyEquipmentWithheld);
             if (confirm && canConfirm) supplyConfirmedAt = now;
             if (repaint && claim >= SupplyConfirmDuration)
             {
@@ -301,15 +301,15 @@ namespace YesterdayConvoy
                 OpeningAlpha(SupplyGold, join), false, TextAnchor.MiddleCenter);
         }
 
-        void DrawSupplyActions(bool enabled, FormationCampaignRun.ChoiceOption option, bool confirming, bool withheld, int count)
+        void DrawSupplyActions(bool enabled, FormationCampaignRun.ChoiceOption option, bool confirming, bool withheld)
         {
             Fill(SupplyConfirmRect, enabled ? SupplyGold : new Color32(38, 52, 57, 255));
             ApprovedUi.Border(SupplyConfirmRect, enabled ? SupplyPaper : SupplyLine);
             SupplyLabel(SupplyConfirmRect, confirming ? "正在领取" : "确认领取", 16,
                 enabled ? SupplyDark : SupplyMuted, true, TextAnchor.MiddleCenter);
-            string keyHint = count == 1 ? "按 1 选择" : $"按 1–{count} 快速选择";
-            string label = option == null ? keyHint : "已选 " + option.SupplyUnit.Name;
-            if (option?.SupplyComponent != null && !withheld) label += " + " + FormationCampaignRun.ItemName(option.SupplyComponent);
+            if (option == null) return;
+            string label = "已选 " + option.SupplyUnit.Name;
+            if (option.SupplyComponent != null && !withheld) label += " + " + FormationCampaignRun.ItemName(option.SupplyComponent);
             SupplyLabel(new Rect(0, 663, 1280, 23), label, 12, SupplyMuted, false, TextAnchor.MiddleCenter);
         }
 

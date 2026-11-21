@@ -102,6 +102,30 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void StackedFriendsDoNotReverseTheApproachingFighterEveryTick()
+        {
+            var model = new FormationBattleModel(17, new FormationBattleTerrainLayout(Array.Empty<FormationBattleTerrainRegion>()));
+            var guard = SingleHarmlessGuard(model, new Vector2(20, 3), 1000000);
+            Assert.That(model.StartBattle(), Is.True);
+            var fighter = model.Units[0];
+            fighter.Position = new Vector2(12, 3);
+            foreach (var friend in model.Units.Where(unit => unit.Enabled && unit != fighter))
+            {
+                friend.Position = new Vector2(12.04f, 3);
+                friend.MoveSpeed = 0;
+            }
+
+            for (int step = 0; step < 40; step++)
+            {
+                float x = fighter.Position.x;
+                model.Advance(.025f);
+                Assert.That(fighter.Position.x, Is.GreaterThan(x));
+                Assert.That(fighter.Facing.x, Is.GreaterThan(0));
+                Assert.That(fighter.TargetId, Is.EqualTo(guard.Id));
+            }
+        }
+
+        [Test]
         public void ClearedBoardRoutesAroundBothObstacleTypesBeforePhysicallyEnteringBlueGate()
         {
             var model = SoloDog(); var dog = model.Units[1];

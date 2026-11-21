@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using PreparationPalette = YesterdayConvoy.FormationPreparationPalette;
 
@@ -11,6 +12,9 @@ namespace YesterdayConvoy
         static readonly Color TraitInk = new Color(.91f, .94f, .95f, 1);
         static readonly Color TraitMuted = new Color(.60f, .68f, .72f, 1);
         static readonly Color TraitSelectionEdge = new Color(1f, .95f, .86f);
+        static readonly Color TraitInactiveTierInk = new Color32(105, 108, 96, 255);
+        static readonly Regex TraitTierValues = new Regex(@"(?<![\d./])\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)+");
+        static readonly Regex TraitTierRequirement = new Regex(@"(?<!\d)(?<levels>\d+(?:/\d+)*)人(?:档|起|时|且|[：:])?");
         const float TraitRowHeight = 45;
         const float TraitBadgeSize = 34;
         const float TraitBadgePressSeconds = .065f;
@@ -109,7 +113,8 @@ namespace YesterdayConvoy
 
             bool pointerInList = list.Contains(Event.current.mousePosition);
             float width = list.width - (height > list.height ? 16 : 0);
-            campaignTraitScroll = GUI.BeginScrollView(list, campaignTraitScroll, new Rect(0, 0, width, Mathf.Max(list.height, height)));
+            campaignTraitScroll = ApprovedUi.BeginDragScrollView(list, campaignTraitScroll,
+                new Rect(0, 0, width, Mathf.Max(list.height, height)));
             for (int i = 0; i < rows.Length; i++)
             {
                 var row = rows[i];
@@ -294,12 +299,12 @@ namespace YesterdayConvoy
 
             var body = new Rect(panel.x + 13, panel.y + 69, panel.width - 19, panel.height - 78);
             float width = body.width - 17;
-            var effect = new GUIContent(view.Rule.Effect);
-            var extra = new GUIContent(view.Rule.Extra);
+            var effect = new GUIContent(ColorFormationTraitValues(view, view.Rule.Effect));
+            var extra = new GUIContent(ColorFormationTraitValues(view, view.Rule.Extra));
             var effectStyle = TraitText(13, PreparationPalette.Ink, false, TextAnchor.UpperLeft);
-            var extraStyle = TraitText(11, PreparationPalette.PlateMuted, false, TextAnchor.UpperLeft);
+            effectStyle.richText = true;
             float effectHeight = effectStyle.CalcHeight(effect, width);
-            float extraHeight = string.IsNullOrWhiteSpace(extra.text) ? 0 : 5 + extraStyle.CalcHeight(extra, width);
+            float extraHeight = string.IsNullOrWhiteSpace(extra.text) ? 0 : 5 + effectStyle.CalcHeight(extra, width);
             float membersHeight = Mathf.Ceil(view.Members.Count / (float)TraitMemberColumns) * TraitMemberRowHeight;
             bool hasBadgeMembers = view.BadgeMembers.Count > 0;
             float badgeHeight = hasBadgeMembers
@@ -308,7 +313,7 @@ namespace YesterdayConvoy
             const float tierHeight = 58;
             const float sectionHeadingHeight = 24;
             float contentHeight = tierHeight + 2 * sectionHeadingHeight + effectHeight + extraHeight + 9 + membersHeight + badgeHeight;
-            formationTraitDetailScroll = GUI.BeginScrollView(body, formationTraitDetailScroll,
+            formationTraitDetailScroll = ApprovedUi.BeginDragScrollView(body, formationTraitDetailScroll,
                 new Rect(0, 0, width, Mathf.Max(body.height, contentHeight)));
 
             TraitLabel(new Rect(0, 0, width, 19), "激活档位", 12, PreparationPalette.PlateMuted, true);
@@ -320,7 +325,7 @@ namespace YesterdayConvoy
             y += effectHeight;
             if (extraHeight > 0)
             {
-                GUI.Label(new Rect(0, y + 5, width, extraHeight - 5), extra, extraStyle);
+                GUI.Label(new Rect(0, y + 5, width, extraHeight - 5), extra, effectStyle);
                 y += extraHeight;
             }
             y += 9;
@@ -336,6 +341,39 @@ namespace YesterdayConvoy
             GUI.EndScrollView();
         }
 
+        static string ColorFormationTraitValues(FormationTraitView view, string text)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            var levels = view.Rule.Levels;
+            string muted = ColorUtility.ToHtmlStringRGB(TraitInactiveTierInk);
+            string active = ColorUtility.ToHtmlStringRGB(PreparationPalette.BronzeInk);
+            return TraitTierValues.Replace(text, match =>
+            {
+                var values = match.Value.Split('/');
+                int chosen = System.Array.IndexOf(levels, view.ActiveLevel);
+                var requirement = TraitTierRequirement.Match(text, match.Index);
+                // An explicit tier list before a later pair of amounts changes which tiers the pair describes.
+                foreach (Match candidate in TraitTierRequirement.Matches(text))
+                {
+                    if (candidate.Index > match.Index) break;
+                    requirement = candidate;
+                }
+                if (requirement.Success && requirement.Index < match.Index)
+                {
+                    int start = requirement.Index + requirement.Length;
+                    string[] required = requirement.Groups["levels"].Value.Split('/');
+                    if (required.Length == values.Length && text.IndexOfAny(new[] { '。', '；', '\n' }, start, match.Index - start) < 0)
+                        chosen = System.Array.IndexOf(required, view.ActiveLevel.ToString());
+                    else if (values.Length != levels.Length) return match.Value;
+                }
+                else if (values.Length != levels.Length) return match.Value;
+
+                for (int i = 0; i < values.Length; i++)
+                    values[i] = "<color=#" + (i == chosen ? active : muted) + ">" + values[i] + "</color>";
+                return string.Join("/", values);
+            });
+        }
+
         static void DrawFormationTraitTiers(FormationTraitView view, float width)
         {
             float tierStep = width / view.Rule.Levels.Length;
@@ -349,7 +387,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(tier.x, tier.yMax - 2, tier.width, 2), TraitTint(achieved ? PreparationPalette.BronzeEdge :
                     level == view.NextLevel ? PreparationPalette.Edge : PreparationPalette.PlateRule));
                 string status = current ? " · 当前" : achieved ? " · 达成" : "";
-                TraitLabel(tier, level + " 人" + status, 11, achieved ? PreparationPalette.BronzeInk : PreparationPalette.PlateMuted,
+                TraitLabel(tier, level + " 人" + status, 11, achieved ? PreparationPalette.BronzeInk : TraitInactiveTierInk,
                     current, TextAnchor.MiddleCenter);
             }
         }
@@ -360,7 +398,7 @@ namespace YesterdayConvoy
             TraitLabel(new Rect(0, y + 2, width, 21), title, 12, PreparationPalette.PlateMuted, true);
         }
 
-        static void DrawFormationTraitMembers(IReadOnlyList<FormationTraitMemberView> members, float y, float width)
+        void DrawFormationTraitMembers(IReadOnlyList<FormationTraitMemberView> members, float y, float width)
         {
             float step = width / TraitMemberColumns;
             for (int i = 0; i < members.Count; i++)
@@ -370,19 +408,21 @@ namespace YesterdayConvoy
                     step - 5, TraitMemberRowHeight - 5);
                 bool lineup = member.State == FormationTraitMemberState.Lineup;
                 bool owned = member.State != FormationTraitMemberState.Missing;
-                Fill(tile, TraitTint(lineup ? PreparationPalette.PlateActive : PreparationPalette.PlateInset));
-                ApprovedUi.Border(tile, TraitTint(lineup ? PreparationPalette.BronzeEdge : PreparationPalette.PlateRule));
+                approvedShop.DrawLoopCostBackground(tile, member.Cost, GUI.color.a);
+                Fill(new Rect(tile.x + 1, tile.y + 48, tile.width - 2, tile.height - 49),
+                    TraitTint(new Color(.10f, .15f, .19f, .81f)));
+                if (lineup) ApprovedUi.Border(tile, TraitTint(PreparationPalette.Amber));
 
                 Color previous = GUI.color;
                 GUI.color = owned ? previous : TraitTint(new Color(.87f, .87f, .83f, .9f));
                 ApprovedShopPresentation.DrawTestPortrait(new Rect(tile.x + 13, tile.y + 3, tile.width - 26, 41),
                     FormationUnitArt.For(member.CardId)?.Portrait);
                 GUI.color = previous;
-                TraitLabel(new Rect(tile.x + 5, tile.y + 2, 16, 16), member.Cost.ToString(), 10, PreparationPalette.PlateMuted, true);
+                TraitLabel(new Rect(tile.x + 5, tile.y + 2, 16, 16), member.Cost.ToString(), 10, PreparationPalette.Ink, true);
                 TraitLabel(new Rect(tile.x + 3, tile.y + 47, tile.width - 6, 26), member.Name,
-                    11, owned ? PreparationPalette.Ink : PreparationPalette.PlateMuted, false, TextAnchor.MiddleCenter);
+                    11, owned ? PreparationPalette.Text : PreparationPalette.Muted, false, TextAnchor.MiddleCenter);
                 TraitLabel(new Rect(tile.x + 2, tile.y + 73, tile.width - 4, 14), member.StateText,
-                    10, lineup ? PreparationPalette.BronzeInk : PreparationPalette.PlateMuted, lineup, TextAnchor.MiddleCenter);
+                    10, lineup ? PreparationPalette.Amber : PreparationPalette.Muted, lineup, TextAnchor.MiddleCenter);
             }
         }
     }

@@ -114,12 +114,9 @@ namespace YesterdayConvoy
                 if (!actor.Enabled || !actor.Alive || !FormationActorVisibleInView(actor)) continue;
                 var piece = traitLineup.Find(member => member.Instance == actor.Instance);
                 if (piece == null || !pulse.ContainsMember(piece.Id)) continue;
-                var body = FormationActorScreenRect(actor);
-                // Anchor the badge above the actor and cap its size for large animation frames.
+                // The foot sets the anchor; idle-frame transparency and body size do not scale the badge.
                 var foot = TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(FormationDisplayPoint(actor)));
-                float width = Mathf.Clamp(body.width, 60, 112);
-                float height = Mathf.Clamp(body.height, 68, 120);
-                // The rotating badge uses the preparation canvas coordinates.
+                const float width = 92, height = 96;
                 var bounds = new Rect(
                     Mathf.Clamp(foot.x - width * .5f, BoardInputRect.xMin, BoardInputRect.xMax - width),
                     Mathf.Clamp(foot.y - height + 6, BoardInputRect.yMin + 36, BoardInputRect.yMax - height),

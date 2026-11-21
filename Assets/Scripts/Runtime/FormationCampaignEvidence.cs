@@ -406,8 +406,8 @@ namespace YesterdayConvoy
                 yield return ResolveChoices();
                 if (battle == 1)
                 {
-                    Assert(controller.Campaign.PendingBalls.Count(ball=>ball.Component==null) == 4 && controller.Campaign.BallRewards.Count == 0,
-                        "First real reward settlement drops four unopened balls without payouts");
+                    Assert(controller.Campaign.PendingBalls.Count(ball=>ball.Component==null) == 2 && controller.Campaign.BallRewards.Count == 0,
+                        "First real reward settlement drops two unopened balls without payouts");
                     if (RewardDropEvidenceRequested)
                     {
                         yield return new WaitForSecondsRealtime(.8f);
@@ -426,8 +426,8 @@ namespace YesterdayConvoy
                 if (battle == 2)
                 {
                     var balls = controller.Campaign.BallRewards;
-                    Assert(balls.Count(ball=>ball.Node=="1-1"&&ball.Color.Length>0)==4&&
-                        balls.Count(ball=>ball.Node=="1-2"&&ball.Color.Length>0)==5,"Claim all nine balls with their original nodes");
+                    Assert(balls.Count(ball=>ball.Node=="1-1"&&ball.Color.Length>0)==2&&
+                        balls.Count(ball=>ball.Node=="1-2"&&ball.Color.Length>0)==3,"Claim all five balls with their original nodes");
                     Assert(balls.All(ball => ball.Gold > 0 || ball.Refreshes > 0 || ball.Items.Count > 0 ||
                         ball.Recruit != null || ball.Choice != null), "Each reward animation has a real resolved payout");
                     yield return Frame("06-rewards-revealed");
@@ -561,8 +561,9 @@ namespace YesterdayConvoy
             var secondRect = controller.FormationPieceRect(second.Instance);
             Assert(first.Success && second.Success && controller.Session.Seats.OverflowCount == 2 &&
                 firstRect.width > 0 && secondRect.width > 0 && firstRect.center.x > 850 && secondRect.center.x > 850 &&
-                firstRect.center.y < 400 && secondRect.center.y < 400 && !firstRect.Overlaps(secondRect),
-                "Both awarded recruits occupy distinct visible positions at the upper right");
+                firstRect.yMax < FormationBattleController.FormationBenchRect.yMin &&
+                secondRect.yMax < FormationBattleController.FormationBenchRect.yMin && !firstRect.Overlaps(secondRect),
+                "Both awarded recruits occupy distinct positions just above the right end of the reserve");
             yield return Frame("06-two-overflow-recruits");
             controller.StartBattle();
             Assert(controller.Model.Phase == FormationPhase.Preparation && controller.Model.EnabledCount == 1,
@@ -1313,7 +1314,7 @@ namespace YesterdayConvoy
                 var entry = new DefenseStage
                 {
                     id = id,
-                    side = defenders.Min(d => d.Position.y) < 4 ? "north" : "south",
+                    side = defenders.Length == 1 ? "center" : "two-wings",
                     initialHealth = Mathf.RoundToInt(defenders.Sum(d => d.MaxHealth)),
                 };
                 result.defenseStages.Add(entry);
@@ -1321,9 +1322,16 @@ namespace YesterdayConvoy
                 Assert(defenders.Length == controller.Campaign.CurrentNode.DefenderCount &&
                     defenders.Select(d => d.ArtId).Distinct().Count() == defenders.Length &&
                     defenders.Select(d => d.Position).Distinct().Count() == defenders.Length &&
-                    defenders.Max(d => d.Position.x) - defenders.Min(d => d.Position.x) < 5 &&
-                    defenders.Max(d => d.Position.y) - defenders.Min(d => d.Position.y) < 4,
-                    id + " scouted a single compact legal roster");
+                    defenders.All(d => model.Terrain.CanPlaceDefender(d.Position)),
+                    id + " scouted a legal unique roster");
+                if (defenders.Length > 1)
+                {
+                    var first = model.Terrain.FirstGuardFormation ?? FormationCampaignRules.NorthGuardFormation;
+                    var second = model.Terrain.SecondGuardFormation ?? FormationCampaignRules.SouthGuardFormation;
+                    bool OccupiesWing(FormationCampaignRules.GuardFormation wing) =>
+                        wing.Front.Concat(wing.Rear).Any(cell => defenders.Any(d => d.Position == (Vector2)cell));
+                    Assert(OccupiesWing(first) && OccupiesWing(second), id + " places guards in both authored wings");
+                }
                 Assert(defenders.Where(d => d.SkillCell.HasValue).All(d =>
                     model.Terrain.IsWalkable(d.SkillCell.Value) && defenders.All(guard => guard.Position != (Vector2)d.SkillCell.Value)),
                     id + " reserved skill cells remain clear");

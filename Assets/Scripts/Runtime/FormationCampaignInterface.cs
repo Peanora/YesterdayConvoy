@@ -46,8 +46,14 @@ namespace YesterdayConvoy
             FormationStrategyHistoryOpen=false;
             campaignResultSettled=false;lastSoundAt=-10;selectedPiece=0;formationInspectedTag=null;
             RefreshCampaignPreparation();SetMarketVisible(false);SetFormationView(false);
-            notice=Campaign.CurrentNode.Kind=="补给"?"选择一组补给，之后继续下一节点。":"新防线已经公开。先侦察，再调整装备、搭档与站位。";
+            notice=Campaign.CurrentNode.Kind=="补给"?"选择补给。":"新防线已经公开。";
             return true;
+        }
+        void TickCampaignSupplyAdvance()
+        {
+            if (!formationMenuOpen && !formationExitOpen && Model.Phase == FormationPhase.Preparation &&
+                Campaign is { NodeSettled: true } run && run.CurrentNode.Kind == "补给")
+                ContinueCampaign();
         }
         void RefreshCampaignPreparation()
         {
@@ -116,10 +122,11 @@ namespace YesterdayConvoy
             else if(campaignRouteOpen)DrawCampaignRoute();
             else if(campaignScoutingOpen)DrawCampaignScouting();
         }
+        static Rect CampaignWindowRect => new Rect(172, 82, 936, 525);
         Rect CampaignWindow(string title,string subtitle,bool close=true)
         {
             Fill(new Rect(0,64,1280,650),new Color(.04f,.07f,.10f,.65f));
-            var r=new Rect(172,82,936,525);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,1);
+            var r=CampaignWindowRect;Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,1);
             CampaignLabel(new Rect(r.x+22,r.y+18,r.width-90,30),title,23,true);
             CampaignLabel(new Rect(r.x+22,r.y+52,r.width-48,37),subtitle,12);
             if(close&&Button(new Rect(r.xMax-57,r.y+15,38,30),"×"))CloseCampaignPanels();
@@ -133,7 +140,7 @@ namespace YesterdayConvoy
             float width=(r.width-62-(columns-1)*12)/columns;
             var viewport=new Rect(r.x+22,r.y+96,r.width-44,345);
             float contentHeight=Mathf.Ceil(choices.Length/(float)columns)*185;
-            campaignChoiceScroll=GUI.BeginScrollView(viewport,campaignChoiceScroll,new Rect(0,0,viewport.width-18,Mathf.Max(viewport.height,contentHeight)));
+            campaignChoiceScroll=ApprovedUi.BeginDragScrollView(viewport,campaignChoiceScroll,new Rect(0,0,viewport.width-18,Mathf.Max(viewport.height,contentHeight)));
             for(int i=0;i<choices.Length;i++)
             {
                 var option=choices[i];var card=new Rect(i%columns*(width+12),i/columns*185,width,173);
@@ -211,7 +218,7 @@ namespace YesterdayConvoy
         {
             var r=CampaignWindow("装备与合成","选一件物品，再选角色装备；选两件基础件／宝石可合成固定成品。整备可免费拆下，物品栏不限数量。");
             var view=new Rect(r.x+20,r.y+97,425,330);var inventory=Campaign.Inventory.ToArray();
-            campaignItemScroll=GUI.BeginScrollView(view,campaignItemScroll,new Rect(0,0,403,Mathf.Max(330,inventory.Length*48)));
+            campaignItemScroll=ApprovedUi.BeginDragScrollView(view,campaignItemScroll,new Rect(0,0,403,Mathf.Max(330,inventory.Length*48)));
             for(int i=0;i<inventory.Length;i++)
             {
                 var item=inventory[i];var row=new Rect(0,i*48,396,43);
@@ -224,7 +231,7 @@ namespace YesterdayConvoy
             GUI.EndScrollView();
             var units=Shop.Bench.OrderByDescending(p=>Session.Seats.InLineup(p.Instance)).ThenBy(p=>p.Instance).ToArray();
             var targetView=new Rect(r.x+465,r.y+97,448,330);
-            campaignUnitScroll=GUI.BeginScrollView(targetView,campaignUnitScroll,new Rect(0,0,428,Mathf.Max(330,units.Length*77)));
+            campaignUnitScroll=ApprovedUi.BeginDragScrollView(targetView,campaignUnitScroll,new Rect(0,0,428,Mathf.Max(330,units.Length*77)));
             for(int i=0;i<units.Length;i++)
             {
                 var piece=units[i];var equipment=Campaign.Equipment(piece.Instance).ToArray();var row=new Rect(0,i*77,421,71);
@@ -317,14 +324,21 @@ namespace YesterdayConvoy
             }
             var r=CampaignWindow("行动记录与发展路线","本次挑战的环境、战略战备和三个位面节点。战斗结束统一结算，补给不发基础收入。");
             var viewport=new Rect(r.x+22,r.y+96,r.width-44,400);
-            campaignRouteScroll=GUI.BeginScrollView(viewport,campaignRouteScroll,new Rect(0,0,viewport.width-18,860));
+            campaignRouteScroll=ApprovedUi.BeginDragScrollView(viewport,campaignRouteScroll,new Rect(0,0,viewport.width-18,860));
             CampaignLabel(new Rect(0,0,850,45),"战略预案："+(FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Name??"待选择")+"\n"+FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Effect,13,true);
             float y=58;
             foreach(string id in Campaign.AugmentIds)
             {var a=FormationCampaignRules.FindRecord(id);CampaignLabel(new Rect(0,y,850,53),$"{a?.Tier}档 · {a?.Name}　{a?.Effect}",12);y+=58;}
             y+=10;
             for(int i=0;i<FormationCampaignRules.Nodes.Length;i++)
-            {var n=FormationCampaignRules.Nodes[i];CampaignLabel(new Rect(0,y,850,23),$"{(i<Campaign.NodeIndex?"✓":i==Campaign.NodeIndex?"▶":"·")}  {n.Id}　{n.Kind}　{(n.Kind=="补给"?"补给包五选一":n.DefenderCount+"守军 · 生命×"+n.HealthScale+" · 攻击×"+n.AttackScale)}",12,i==Campaign.NodeIndex);y+=25;}
+            {
+                var n = FormationCampaignRules.Nodes[i];
+                string state = i < Campaign.NodeIndex ? "✓" : i == Campaign.NodeIndex ? "▶" : "·";
+                string health = n.Kind == "奖励" ? "生命 1" : "生命×" + n.HealthScale;
+                string details = n.Kind == "补给" ? "补给包五选一" : $"{n.DefenderCount}守军 · {health} · 攻击×{n.AttackScale}";
+                CampaignLabel(new Rect(0, y, 850, 23), $"{state}  {n.Id}　{n.Kind}　{details}", 12, i == Campaign.NodeIndex);
+                y += 25;
+            }
             GUI.EndScrollView();
         }
         void DrawCampaignScouting()
@@ -334,6 +348,13 @@ namespace YesterdayConvoy
                 trial == null ? $"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}" : trial.Trait.Name + " · 羁绊试玩";
             double limit=trial==null?Campaign.CurrentNode.TimeLimit:Model.LimitSeconds;
             string time=double.IsPositiveInfinity(limit)?"不限时":$"{limit:0} 秒";
+            if (Event.current.type == EventType.MouseDown && Event.current.button == 0 &&
+                !CampaignWindowRect.Contains(Event.current.mousePosition))
+            {
+                CloseCampaignPanels();
+                Event.current.Use();
+                return;
+            }
             var r=CampaignWindow("怪物信息",title+" · "+time);
             if(Button(new Rect(r.x+22,r.y+86,112,29),"本关守军",true,!campaignScoutOwn))
             {campaignScoutOwn=false;campaignScoutScroll=Vector2.zero;}
@@ -346,7 +367,7 @@ namespace YesterdayConvoy
             {
                 var lineup=Model.Units.Where(unit=>unit.Enabled).ToArray();
                 var area=new Rect(r.x+22,r.y+128,r.width-44,r.height-149);
-                campaignScoutScroll=GUI.BeginScrollView(area,campaignScoutScroll,
+                campaignScoutScroll=ApprovedUi.BeginDragScrollView(area,campaignScoutScroll,
                     new Rect(0,0,area.width-18,Mathf.Max(area.height,lineup.Length*72)));
                 for(int i=0;i<lineup.Length;i++)
                 {
@@ -370,7 +391,7 @@ namespace YesterdayConvoy
             }
             float top=encounter?199:128;
             var view=new Rect(r.x+22,r.y+top,r.width-44,r.height-top-20);
-            campaignScoutScroll=GUI.BeginScrollView(view,campaignScoutScroll,new Rect(0,0,view.width-18,Mathf.Max(view.height,Model.Defenders.Count*110)));
+            campaignScoutScroll=ApprovedUi.BeginDragScrollView(view,campaignScoutScroll,new Rect(0,0,view.width-18,Mathf.Max(view.height,Model.Defenders.Count*110)));
             int row=0;
             foreach(var d in Model.Defenders)
             {

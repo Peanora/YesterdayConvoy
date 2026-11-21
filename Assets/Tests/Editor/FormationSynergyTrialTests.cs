@@ -92,7 +92,7 @@ namespace YesterdayConvoy.Tests
                 model.RemainingDefenders, model.BossAlive), Is.Null);
             var firstProgress = (run.Hope, run.MudrockXP, run.LastTrialProgress);
             Assert.That(firstProgress.LastTrialProgress, Is.Not.Empty);
-            int hope = 30 + (won && run.CurrentNode.Kind != "奖励" ? 2 : 0);
+            int hope = 30 + (won ? 2 : 0);
             Assert.That(firstProgress.Hope, Is.EqualTo(id == "整合" ? hope : 0));
             Assert.That(firstProgress.MudrockXP, Is.EqualTo(id == "泥岩" ? 80 : 0));
 

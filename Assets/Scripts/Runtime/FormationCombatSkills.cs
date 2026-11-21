@@ -105,7 +105,7 @@ namespace YesterdayConvoy
                     else
                     {
                         int n=cost==5?6:Campaign.TalulahEnhanced?4:3;
-                        SkillSequence(u,target,n,cost==5?2.6f:2.8f,1,action,cost==5?100:2.5f,cost==5?8:6);
+                        SkillSequence(u,target,n,cost==5?2.6f:2.8f,1,action,cost==5?100:2.5f,cost==5?8:6,allBoard:cost==5);
                         AddZone(u,target.Position,cost==5?100:AreaRadius(u,2.5f),cost==5?.5f:.35f,cost==5?TalulahRainDuration:6,cost==5?8:6,"burn");
                         if(cost==5&&u.Star>=3)for(int sec=2;sec<=TalulahRainDuration;sec+=2)ScheduleOwned(u,Clock+sec,()=>{if(u.Alive)foreach(var d in Defenders.Where(d=>d.Alive).Take(8).ToArray())CombatDamage(u,d,u.Attack*.5f*Power(u),2,true,false);});
                         if(cost==4&&Campaign.TalulahEnhanced)Shield(u,u,u.MaxHealth*.2f,8,"talulah");
@@ -194,7 +194,8 @@ namespace YesterdayConvoy
         {int l=Tagged(u,"爆破")?Level("爆破"):0;return radius*(1+(l>=6?.3f:l>=4?.2f:l>=2?.1f:0)+(Campaign.HasAugment("CG4")?.15f:0));}
         void SkillArea(FormationFighter u,FormationDefender target,float mult,int type,float radius,int cap)
         {if(target==null)return;NativeSegment(u,Nearby(target.Position,AreaRadius(u,radius),cap,target),u.Attack*mult,type,true,0,true);}
-        void SkillSequence(FormationFighter u,FormationDefender target,int segments,float mult,int type,float action,float radius=0,int cap=1,float element=0,bool fire=true)
+        void SkillSequence(FormationFighter u,FormationDefender target,int segments,float mult,int type,float action,
+            float radius=0,int cap=1,float element=0,bool fire=true,bool allBoard=false)
         {
             var center=target.Position;
             for(int i=0;i<segments;i++)
@@ -203,7 +204,9 @@ namespace YesterdayConvoy
                 double at=Clock+(segments==1?0:i*(double)Math.Max(.01f,action-.05f)/segments);
                 ScheduleOwned(u,at,()=>
                 {
-                    if(!u.Alive)return;var t=target.Alive?target:FighterTarget(u);if(t==null)return;
+                    if(!u.Alive)return;
+                    var t=target.Alive?target:allBoard?null:FighterTarget(u);
+                    if(t==null&&!allBoard)return;
                     var victims=Nearby(radius>0?center:t.Position,radius>0?AreaRadius(u,radius):0,cap,t);
                     var parent=activePresentationContext?.SkillCompletion?.Presentation;
                     if(Key(u)=="WIS"&&Campaign.WisadelSkill==1&&parent!=null)

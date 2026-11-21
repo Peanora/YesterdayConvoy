@@ -14,10 +14,18 @@ namespace YesterdayConvoy
         };
         static readonly Rect RewardChoiceRect = new Rect(1104, 88, 94, 22);
         static readonly Rect RewardPageRect = new Rect(1104, 116, 94, 22);
-        static readonly Rect EquipmentTilesViewport = new Rect(1206, 103, 65, 440);
         static readonly Rect EquipmentCombinationRect = new Rect(854, 223, 330, 197);
         const float EquipmentTileWidth = 47, EquipmentTileHeight = 44, EquipmentTilePitch = 50;
-        Vector2 equipmentRailScroll;
+        const float EquipmentRailRight = 1253;
+        const int EquipmentRows = 6, EquipmentColumnsPerPage = 14, EquipmentPageCapacity = EquipmentRows * EquipmentColumnsPerPage;
+        int equipmentPage;
+        float EquipmentRailTop => MarketVisible || ShopPanelTransitioning ? FormationMarketRect.yMax + 5 : 103;
+        int EquipmentCount => (Campaign?.Inventory.Count ?? 0) + PendingGroundRewardItems;
+        int EquipmentPageCount => Mathf.Max(1, (EquipmentCount + EquipmentPageCapacity - 1) / EquipmentPageCapacity);
+        int EquipmentFirst => Mathf.Min(equipmentPage, EquipmentPageCount - 1) * EquipmentPageCapacity;
+        int EquipmentColumnCount => Mathf.Clamp((EquipmentCount - EquipmentFirst + EquipmentRows - 1) / EquipmentRows, 1, EquipmentColumnsPerPage);
+        float EquipmentRailLeft => EquipmentRailRight - EquipmentTileWidth - (EquipmentColumnCount - 1) * EquipmentTilePitch;
+        Rect EquipmentPageRect => new Rect(EquipmentRailRight - 132, EquipmentRailTop + EquipmentRows * EquipmentTilePitch - 4, 132, 21);
         Vector2 equipmentPointerStart, equipmentPointer;
         int equipmentPressedItem, equipmentCombinationFirst, equipmentCombinationSecond;
         bool equipmentDragging;
@@ -71,7 +79,7 @@ namespace YesterdayConvoy
                 groundRewardPage = 0;
                 rewardHistoryOpen = false;
                 rewardHistorySelected = -1;
-                equipmentRailScroll = Vector2.zero;
+                equipmentPage = 0;
                 CancelFormationEquipmentInteraction();
                 CloseFormationEquipmentDetails();
                 campaignSelectedItem = campaignCombineItem = campaignSelectedPiece = 0;
@@ -88,7 +96,8 @@ namespace YesterdayConvoy
         bool FormationSupplyBlocksPoint(Vector2 point) => Campaign != null &&
             (Campaign.PendingRewardChoices>0 && RewardChoiceRect.Contains(point) ||
              GroundRewardPages>1 && RewardPageRect.Contains(point) ||
-             EquipmentTileAt(point)!=null || FormationEquipmentDetailsRect.Contains(point) ||
+             EquipmentTileAt(point)!=null || EquipmentPageCount > 1 && EquipmentPageRect.Contains(point) ||
+             FormationEquipmentDetailsRect.Contains(point) ||
              EquipmentCombinationPending && EquipmentCombinationRect.Contains(point) ||
              rewardHistoryOpen && RewardHistoryRect.Contains(point));
 
@@ -109,7 +118,7 @@ namespace YesterdayConvoy
                 if (!CanUseEquipmentTiles || InspectedEquipment is not { } item) return Rect.zero;
                 const float width = 308, gap = 8;
                 float height = item.Key.Length == 1 ? 116 : 181;
-                float rightEdge = EquipmentTilesViewport.xMin - gap;
+                float rightEdge = EquipmentRailLeft - gap;
                 float x = rightEdge - width;
                 if (item.Owner > 0 && FormationInspectionAvailable)
                 {
@@ -240,29 +249,29 @@ namespace YesterdayConvoy
             return result.Success;
         }
 
-        static Rect EquipmentTile(int index) => new Rect(0, index * EquipmentTilePitch, EquipmentTileWidth, EquipmentTileHeight);
-
         Rect EquipmentTileOnScreen(int index)
         {
-            var slot = EquipmentTile(index);
-            slot.position += EquipmentTilesViewport.position - equipmentRailScroll;
-            return slot;
+            int visible = index - EquipmentFirst;
+            return new Rect(EquipmentRailRight - EquipmentTileWidth - (visible / EquipmentRows) * EquipmentTilePitch,
+                EquipmentRailTop + (visible % EquipmentRows) * EquipmentTilePitch, EquipmentTileWidth, EquipmentTileHeight);
         }
 
         Vector2 EquipmentFlightTarget(int index)
         {
-            Vector2 target = EquipmentTileOnScreen(index).center;
-            target.y = Mathf.Clamp(target.y,EquipmentTilesViewport.yMin+EquipmentTileHeight/2,
-                EquipmentTilesViewport.yMax-EquipmentTileHeight/2);
-            return target;
+            int visible = Mathf.Clamp(index, EquipmentFirst, EquipmentFirst + EquipmentPageCapacity - 1);
+            return EquipmentTileOnScreen(visible).center;
         }
 
-        int EquipmentTileIndex(Vector2 point) =>
-            Mathf.FloorToInt((point.y - EquipmentTilesViewport.y + equipmentRailScroll.y) / EquipmentTilePitch);
+        int EquipmentTileIndex(Vector2 point)
+        {
+            int column = Mathf.FloorToInt((EquipmentRailRight - point.x) / EquipmentTilePitch);
+            int row = Mathf.FloorToInt((point.y - EquipmentRailTop) / EquipmentTilePitch);
+            return column >= 0 && column < EquipmentColumnCount && row >= 0 && row < EquipmentRows
+                ? EquipmentFirst + column * EquipmentRows + row : -1;
+        }
 
         FormationCampaignRun.ItemInstance EquipmentTileAt(Vector2 point)
         {
-            if (!EquipmentTilesViewport.Contains(point)) return null;
             int index = EquipmentTileIndex(point);
             var inventory = Campaign.Inventory;
             return index >= 0 && index < inventory.Count && EquipmentTileOnScreen(index).Contains(point) ? inventory[index] : null;
@@ -276,15 +285,16 @@ namespace YesterdayConvoy
             for (int index = 0; index < inventory.Count; index++)
             {
                 if (inventory[index].Instance != itemInstance) continue;
+                if (index < EquipmentFirst || index >= EquipmentFirst + EquipmentPageCapacity) return false;
                 point = EquipmentTileOnScreen(index).center;
-                return EquipmentTilesViewport.Contains(point);
+                return true;
             }
             return false;
         }
 
         internal void RevealEquipmentSlot(int index)
         {
-            equipmentRailScroll.y = Mathf.Max(equipmentRailScroll.y,EquipmentTile(index).yMax-EquipmentTilesViewport.height);
+            equipmentPage = Mathf.Max(0, index / EquipmentPageCapacity);
         }
 
         void OpenFormationInventory()
@@ -374,27 +384,31 @@ namespace YesterdayConvoy
             if (Campaign == null) return;
             DrawRewardControls();
             var inventory = Campaign.Inventory;
-            int countIncludingFlights = inventory.Count + PendingGroundRewardItems;
-            if (countIncludingFlights == 0) { equipmentRailScroll = Vector2.zero; return; }
-            float contentHeight = Mathf.Max(EquipmentTilesViewport.height,countIncludingFlights * EquipmentTilePitch);
-            equipmentRailScroll = GUI.BeginScrollView(EquipmentTilesViewport,equipmentRailScroll,
-                new Rect(0,0,EquipmentTileWidth,contentHeight));
-            int first = Mathf.Max(0,Mathf.FloorToInt(equipmentRailScroll.y/EquipmentTilePitch));
-            int selected = FormationInspectedItemId;
-            for (int i = first; i < inventory.Count && EquipmentTile(i).y < equipmentRailScroll.y + EquipmentTilesViewport.height; i++)
+            equipmentPage = Mathf.Min(equipmentPage, EquipmentPageCount - 1);
+            if (EquipmentPageCount > 1)
             {
-                var slot = EquipmentTile(i);
+                var page = EquipmentPageRect;
+                if (Button(new Rect(page.x, page.y, 25, page.height), "‹", equipmentPage > 0)) equipmentPage--;
+                OperationsLabel(page, $"{equipmentPage + 1}/{EquipmentPageCount}", 11,
+                    OperationsInk, false, TextAnchor.MiddleCenter);
+                if (Button(new Rect(page.xMax - 25, page.y, 25, page.height), "›", equipmentPage + 1 < EquipmentPageCount))
+                    equipmentPage++;
+            }
+            int first = EquipmentFirst;
+            int selected = FormationInspectedItemId;
+            for (int i = first; i < inventory.Count && i < first + EquipmentPageCapacity; i++)
+            {
+                var slot = EquipmentTileOnScreen(i);
                 var item = inventory[i];
                 bool highlight = item.Instance == equipmentPressedItem || item.Instance == equipmentCombinationFirst ||
                     item.Instance == equipmentCombinationSecond || item.Instance == selected ||
-                    equipmentDragging && EquipmentTileOnScreen(i).Contains(equipmentPointer) &&
+                    equipmentDragging && slot.Contains(equipmentPointer) &&
                     PreviewEquipmentPair(equipmentPressedItem,item.Instance,out _);
                 Fill(slot,OperationsRail);
                 ApprovedUi.Border(slot,highlight?OperationsGold:OperationsEdge,highlight?2:1);
                 DrawSupplyItem(new Rect(slot.x+4,slot.y+3,39,38),item.Key);
                 GUI.Label(slot,new GUIContent(string.Empty,item.Name),GUIStyle.none);
             }
-            GUI.EndScrollView();
         }
 
         void DrawFormationEquipmentOverlay()
@@ -444,7 +458,7 @@ namespace YesterdayConvoy
                 var body = new Rect(panel.x + 13, panel.y + 73, panel.width - 22, panel.height - 83);
                 float width = body.width - 17;
                 float height = Mathf.Max(body.height, style.CalcHeight(description, width));
-                equipmentDetailsScroll = GUI.BeginScrollView(body, equipmentDetailsScroll, new Rect(0, 0, width, height));
+                equipmentDetailsScroll = ApprovedUi.BeginDragScrollView(body, equipmentDetailsScroll, new Rect(0, 0, width, height));
                 GUI.Label(new Rect(0, 0, width, height), description, style);
                 GUI.EndScrollView();
             }

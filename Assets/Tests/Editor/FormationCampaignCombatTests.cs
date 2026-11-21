@@ -118,7 +118,7 @@ namespace YesterdayConvoy.Tests
 
         [TestCase(71)]
         [TestCase(20261119)]
-        public void AuthoredCampaignUsesAllNamedDefendersOnCompactLegalFormations(int seed)
+        public void AuthoredCampaignUsesLegalGuardWingsAndOneHealthRewardDefenders(int seed)
         {
             var terrain = SavedTerrain();
             var run = NewDifficultyRun(seed);
@@ -129,12 +129,12 @@ namespace YesterdayConvoy.Tests
                 ["D09"] = "炎熔", ["D10"] = "芙蓉", ["D11"] = "安赛尔", ["D12"] = "梓兰",
                 ["D21"] = "荒芜拉普兰德", ["D22"] = "余", ["D23"] = "Mon3tr", ["D24"] = "新约能天使",
                 ["D25"] = "斩业星熊", ["D26"] = "凛御银灰", ["D27"] = "圣聆初雪", ["D28"] = "望",
-                ["D29"] = "塞雷娅"
+                ["D29"] = "塞雷娅", ["D30"] = "玛恩纳", ["D32"] = "赤刃明霄陈",
+                ["D33"] = "予愿安洁莉娜", ["D34"] = "克莱门莎", ["D35"] = "凯尔希·思衡托"
             };
             var north = new RectInt(15, 0, 5, 4);
             var south = new RectInt(15, 4, 5, 4);
             var seenNames = new HashSet<string>();
-            var seenSides = new HashSet<bool>();
 
             foreach (var node in FormationCampaignRules.Nodes)
             {
@@ -149,16 +149,19 @@ namespace YesterdayConvoy.Tests
                 Assert.That(actorCells.Distinct().Count(), Is.EqualTo(actorCells.Length), node.Id);
                 Assert.That(model.Defenders.Select(defender => defender.ArtId).Distinct().Count(), Is.EqualTo(actorCells.Length), node.Id);
                 Assert.That(model.Defenders.All(defender => terrain.CanPlaceDefender(defender.Position)), Is.True, node.Id);
-                bool inNorth = actorCells.All(north.Contains);
-                Assert.That(inNorth || actorCells.All(south.Contains), Is.True, node.Id);
-                seenSides.Add(inNorth);
+                Assert.That(actorCells.All(cell => north.Contains(cell) || south.Contains(cell)), Is.True, node.Id);
+                if (node.Kind == "奖励")
+                {
+                    Assert.That(model.Defenders.All(defender => defender.MaxHealth == 1 && defender.Health == 1), Is.True, node.Id);
+                    Assert.That(model.Defenders.All(defender => !defender.Healer && FormationCampaignRules.DefenderByArtId(defender.ArtId).Role != 2), Is.True, node.Id);
+                }
 
                 var reservedCells = model.Defenders.Where(defender => defender.SkillCell.HasValue)
                     .Select(defender => defender.SkillCell.Value).ToArray();
                 int expectedReserved = model.Defenders.Count(defender => defender.ArtId == "D23" || defender.ArtId == "D28");
                 Assert.That(reservedCells.Length, Is.EqualTo(expectedReserved), node.Id);
                 Assert.That(reservedCells.Concat(actorCells).Distinct().Count(), Is.EqualTo(reservedCells.Length + actorCells.Length), node.Id);
-                Assert.That(reservedCells.All(cell => (inNorth ? north : south).Contains(cell) && terrain.IsWalkable(cell)), Is.True, node.Id);
+                Assert.That(reservedCells.All(cell => (north.Contains(cell) || south.Contains(cell)) && terrain.IsWalkable(cell)), Is.True, node.Id);
                 foreach (var defender in model.Defenders)
                 {
                     Assert.That(expectedNames.ContainsKey(defender.ArtId), Is.True, $"{node.Id}: {defender.ArtId}");
@@ -174,7 +177,23 @@ namespace YesterdayConvoy.Tests
                     Assert.That(terrain.IsWalkable(Vector2Int.RoundToInt(boss.Position)), Is.True);
                 }
                 else
+                {
                     Assert.That(model.Defenders.Any(defender => defender.IsSnowBoss), Is.False, node.Id);
+                    Assert.That(actorCells.Any(north.Contains) && actorCells.Any(south.Contains), Is.True, node.Id);
+                    if (node.Kind != "奖励")
+                    {
+                        foreach (var wing in new[] { north, south })
+                        {
+                            var front = model.Defenders.First(defender => wing.Contains(Vector2Int.RoundToInt(defender.Position)));
+                            var approach = front.Position + Vector2.left * 3.5f;
+                            var ranged = model.Defenders.First(defender => wing.Contains(Vector2Int.RoundToInt(defender.Position)) &&
+                                FormationCampaignRules.DefenderByArtId(defender.ArtId).Role is 3 or 4);
+                            float coverage = Vector2.Distance(ranged.Position, approach);
+                            if (node.Id is "1-3" or "1-4") coverage = Mathf.Min(4.25f, coverage);
+                            Assert.That(ranged.Range, Is.GreaterThanOrEqualTo(coverage), node.Id);
+                        }
+                    }
+                }
 
                 var original = model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
                     defender.MaxHealth, defender.Attack)).ToArray();
@@ -186,8 +205,6 @@ namespace YesterdayConvoy.Tests
             }
 
             CollectionAssert.AreEquivalent(expectedNames.Keys, seenNames);
-            CollectionAssert.AreEquivalent(new[] { false, true }, seenSides);
-            Assert.That(FormationCampaignRules.DefenderByArtId("D30").Name, Is.EqualTo("玛恩纳"));
         }
 
         [TestCase("1-7")]
@@ -756,7 +773,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.BattleEvents.Count(e=>e.Contains("接棒:")),Is.EqualTo(1),"Native and mode returns must share a source credit.");
         }
 
-        static void ReachNode(FormationCampaignRun run,string nodeId,bool collectDrops=true)
+        internal static void ReachNode(FormationCampaignRun run,string nodeId,bool collectDrops=true)
         {
             int safety=0;
             while(run.CurrentNode.Id!=nodeId)

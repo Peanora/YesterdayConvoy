@@ -33,7 +33,7 @@ namespace YesterdayConvoy
             if(rows.Length==0)return;
             var viewport=new Rect(bounds.x,bounds.y+26,bounds.width,bounds.height-26);
             float width=rows.Length*48>viewport.height?156:174;
-            scroll=GUI.BeginScrollView(viewport,scroll,new Rect(0,0,width,Mathf.Max(1,rows.Length*48)),false,false);
+            scroll=ApprovedUi.BeginDragScrollView(viewport,scroll,new Rect(0,0,width,Mathf.Max(1,rows.Length*48)));
             try
             {
                 for(int i=0;i<rows.Length;i++)
@@ -49,7 +49,8 @@ namespace YesterdayConvoy
             }
             finally{GUI.EndScrollView();}
         }
-        public static void DrawRanking(IReadOnlyList<RankingRow> rows,float total,string state,Font font,ref Vector2 scroll,ref GUIStyle scrollbar,Vector2? panelPosition=null)
+        public static void DrawRanking(IReadOnlyList<RankingRow> rows,float total,string state,Font font,ref Vector2 scroll,
+            ref GUIStyle scrollbar,Vector2? panelPosition=null,bool showCaption=true)
         {
             GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)
                 =>ApprovedUi.Text(font,size,alignment,color??ApprovedUi.Ink,weight);
@@ -68,7 +69,7 @@ namespace YesterdayConvoy
                 bool scrolling=rows.Count>5;
                 if(scrollbar==null)scrollbar=new GUIStyle(GUI.skin.verticalScrollbar){fixedWidth=8,margin=new RectOffset(4,0,0,0)};
                 float width=viewport.width-(scrolling?18:0);
-                scroll=GUI.BeginScrollView(viewport,scroll,new Rect(0,0,width,Mathf.Max(viewport.height,rows.Count*32)),false,false,GUIStyle.none,scrollbar);
+                scroll=ApprovedUi.BeginDragScrollView(viewport,scroll,new Rect(0,0,width,Mathf.Max(viewport.height,rows.Count*32)),scrollbar);
                 try
                 {
                     float highest=rows.Count>0?rows[0].Damage:0;
@@ -95,8 +96,8 @@ namespace YesterdayConvoy
                     }
                 }
                 finally{GUI.EndScrollView();}
-                // A compact caption stays below the five visible rows at both supported window sizes.
-                GUI.Label(new Rect(10,214,panel.width-20,10),scrolling?"滚轮查看更多 · 仅计实际扣血":"本场累计 · 同名合并 · 仅计实际扣血",LoopText(7,TextAnchor.MiddleLeft,ApprovedUi.Muted));
+                if (showCaption)
+                    GUI.Label(new Rect(10,214,panel.width-20,10),"仅计实际扣血",LoopText(7,TextAnchor.MiddleLeft,ApprovedUi.Muted));
                 ShopBorder(new Rect(0,0,panel.width,panel.height),ApprovedUi.Rule,1);
             }
             finally{GUI.EndGroup();}

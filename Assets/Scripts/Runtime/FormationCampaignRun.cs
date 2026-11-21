@@ -452,7 +452,7 @@ namespace YesterdayConvoy
         {
             if (lockedReunionCount < 3) return 0;
             int earned = lockedReunionCount >= 9 ? 30 : lockedReunionCount >= 7 ? 14 : lockedReunionCount >= 5 ? 7 : 3;
-            earned += won && CurrentNode.Kind != "奖励" ? 2 : 0;
+            if (won) earned += 2;
             AddHope(earned);
             return earned;
         }
@@ -610,13 +610,15 @@ namespace YesterdayConvoy
                 }
             }
         }
+        static int OpeningRewardBallCount(string id) => id switch { "1-1" => 2, "1-2" => 3, _ => 0 };
+
         void RewardNode(string id)
         {
-            int[] counts={4,5,7,9,12};string[] ids={"1-1","1-2","1-8","2-6","3-6"};int[][] odds={new[]{70,28,2,0},new[]{55,40,5,0},new[]{40,48,11,1},new[]{30,50,18,2},new[]{22,48,27,3}};
+            int[] counts={OpeningRewardBallCount("1-1"),OpeningRewardBallCount("1-2"),7,9,12};string[] ids={"1-1","1-2","1-8","2-6","3-6"};int[][] odds={new[]{70,28,2,0},new[]{55,40,5,0},new[]{40,48,11,1},new[]{30,50,18,2},new[]{22,48,27,3}};
             int index=Array.IndexOf(ids,id);if(index<0)return;
             for(int i=0;i<counts[index];i++){int roll=random.Next(100),sum=0;for(int k=0;k<4;k++){sum+=odds[index][k];if(roll<sum){OpenBall(new[]{"白","蓝","金","彩"}[k]);break;}}}
             if(PreplanId=="P08"&&new[]{"1-1","2-6","3-6"}.Contains(id)) DropRewardComponent(id);
-            int floor = id == "1-1" ? 2 : id == "1-2" ? 5 : 0;
+            int floor = id == "1-1" ? 2 : id == "1-2" ? 3 : 0;
             int committed = equipmentGranted + pendingBalls.Sum(drop=>drop.Payout.EquipmentValue) +
                 rewardSelections.Sum(selection=>selection.Options.Min(option=>EquipmentWeight(option.Id)));
             for (int missing = floor-committed; missing>0; missing--) DropRewardComponent(id);
@@ -665,9 +667,11 @@ namespace YesterdayConvoy
             pendingBalls.Add(new RewardDrop(++ballSequence,node,color,RollBall(color,node=="1-1"||node=="1-2")));
         }
 
+        internal bool CanBeginBall => !HasBlockingChoice && !OpeningRewardsPending && !shop.ReserveFull;
+
         public BallPayout BeginBall(int id)
         {
-            if (HasBlockingChoice || OpeningRewardsPending || openingBalls.ContainsKey(id)) return null;
+            if (!CanBeginBall || openingBalls.ContainsKey(id)) return null;
             var drop = pendingBalls.Find(ball => ball.Id == id);
             if (drop == null) return null;
             openingBalls.Add(id, drop);
@@ -784,7 +788,11 @@ namespace YesterdayConvoy
         internal int GuardRewardCueLimit(float encounterProgress, int initialGuardCount)
         {
             if (IsPractice || Finished || NodeSettled) return 0;
-            if (CurrentNode.Kind == "奖励") return initialGuardCount;
+            if (CurrentNode.Kind == "奖励")
+            {
+                int openingCount = OpeningRewardBallCount(CurrentNode.Id);
+                return openingCount > 0 ? Math.Min(initialGuardCount, openingCount) : initialGuardCount;
+            }
             return EarnedEncounterBalls(encounterProgress)
                 ? EncounterBalls(CurrentEncounterTier).Length + (PreplanId == "P14" ? 1 : 0)
                 : 0;

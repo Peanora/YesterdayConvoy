@@ -139,11 +139,8 @@ namespace YesterdayConvoy.Tests
             shop.Preset(ids.Take(9).Append(ids[0]).Select(id => new ShopTrialModel.Piece { Id = id, Star = 1 }),
                 new[] { ids[0] }, level: 3, xp: 0, gold: 8);
             var model = Bind(session);
-            string untouched = ShopSnapshot(shop);
             Assert.That(session.Seats.ReserveFull, Is.True);
-            Assert.That(shop.PreviewPurchase(0).Success, Is.False, "Even a third copy requires a vacancy.");
-            Assert.That(session.Purchase(0).Success, Is.False);
-            Assert.That(ShopSnapshot(shop), Is.EqualTo(untouched));
+            Assert.That(shop.PreviewPurchase(0).Success, Is.True, "A third copy can free a full reserve seat.");
 
             int Instance(string id) => shop.Bench.First(piece => piece.Id == id).Instance;
             Assert.That(session.TryDeploy(Instance(ids[1]), new Vector2Int(1, 1)).Success, Is.True);
@@ -161,19 +158,22 @@ namespace YesterdayConvoy.Tests
             Assert.That(session.TryDeploy(Instance(ids[2]), new Vector2Int(4, 1)).Success, Is.True);
             Assert.That(session.Seats.At(false, vacated), Is.EqualTo(Instance(ids[10])));
             Assert.That(session.Seats.At(false, ShopSeatLayout.ReserveCapacity), Is.EqualTo(Instance(ids[11])));
-            Assert.That(session.Purchase(0).Success, Is.False);
+            Assert.That(shop.PreviewPurchase(0).Success, Is.True, "A merge can clear overflow by using fewer reserve seats.");
             Assert.That(model.StartBattle(), Is.False);
 
             Assert.That(session.TryDeploy(Instance(ids[11]), new Vector2Int(6, 4)).Success, Is.True);
             Assert.That(session.Seats.OverflowCount, Is.Zero);
             Assert.That(session.Seats.ReserveFull, Is.True);
-            Assert.That(session.Purchase(0).Success, Is.False);
             Assert.That(model.StartBattle(), Is.True, "A full reserve without overflow is battle-ready.");
 
             model.Retry();
             session.ApplyTo(model);
-            Assert.That(session.Sell(Instance(ids[3])).Success, Is.True);
-            Assert.That(session.Purchase(0).FinalStar, Is.EqualTo(2));
+            int gold = shop.Gold;
+            var purchase = session.Purchase(0);
+            Assert.That(purchase.Success, Is.True);
+            Assert.That(purchase.FinalStar, Is.EqualTo(2));
+            Assert.That(shop.Gold, Is.EqualTo(gold - shop.Definition(ids[0]).Cost));
+            Assert.That(session.Seats.ReserveFull, Is.False);
             AssertStock(shop);
         }
 

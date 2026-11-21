@@ -43,6 +43,7 @@ namespace YesterdayConvoy
         }
         readonly List<GroundBall> groundBalls = new List<GroundBall>();
         readonly List<GroundRewardFlight> rewardFlights = new List<GroundRewardFlight>();
+        readonly HashSet<int> rewardOverflowRecruits = new HashSet<int>();
         readonly List<Mesh> rewardMeshes = new List<Mesh>();
         readonly Dictionary<string,Sprite> componentDropSprites = new Dictionary<string,Sprite>();
         readonly Dictionary<string, Mesh> rewardShells = new Dictionary<string, Mesh>();
@@ -57,6 +58,13 @@ namespace YesterdayConvoy
         int groundRewardPage;
         int GroundRewardPages => Mathf.Max(1,Mathf.CeilToInt((Campaign?.PendingBalls.Count??0)/(float)LootScatter.Length));
         bool HasGroundRewards => Campaign?.PendingBalls.Count > 0;
+        bool GroundRewardOverflowWarning => rewardOverflowRecruits.Count != 0 &&
+            CurrentOverflowRecruits().Any(rewardOverflowRecruits.Contains);
+
+        IEnumerable<int> CurrentOverflowRecruits()
+        {
+            for (int i = 0; i < OverflowCount; i++) yield return Session.Seats.At(false, ShopSeatLayout.ReserveCapacity + i);
+        }
         int PendingGroundRewardItems => rewardFlights.Sum(flight=>flight.Arrived?0:flight.Payout.Items.Count);
         internal bool ActiveGroundRewardHasRecruits => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Count>0);
         internal bool ActiveGroundRewardHasTwoStar => rewardFlights.Any(flight=>!flight.Arrived&&flight.Payout.Recruits.Any(recruit=>recruit.Star==2));
@@ -128,6 +136,11 @@ namespace YesterdayConvoy
             if (!CanPickGroundRewards) return false;
             var ball = groundBalls.Find(candidate => candidate.Drop.Id == id);
             if (ball == null || ball.Flight != null) return false;
+            if (Session.Seats.ReserveFull)
+            {
+                notice = "腾出一个备战席空位后再开启奖励球。";
+                return false;
+            }
             var payout = Campaign.BeginBall(id);
             if (payout == null) return false;
             var targets = ReserveRewardTargets(payout.Recruits.Count);
@@ -227,8 +240,10 @@ namespace YesterdayConvoy
                 var ball = flight.Ball;
                 RemoveGroundBall(ball);
                 int firstItem = Campaign.Inventory.Count;
+                var previousOverflow = CurrentOverflowRecruits().ToHashSet();
                 var reward = Session.CompleteBall(ball.Drop.Id);
                 if (reward == null) continue;
+                rewardOverflowRecruits.UnionWith(CurrentOverflowRecruits().Where(instance => !previousOverflow.Contains(instance)));
                 flight.ArrivalGold = reward.Gold;
                 flight.ArrivalFirstItem = firstItem;
                 flight.ArrivalItems = Campaign.Inventory.Count - firstItem;
@@ -287,6 +302,7 @@ namespace YesterdayConvoy
         {
             pressedGroundBall = null;
             rewardFlights.Clear();
+            rewardOverflowRecruits.Clear();
             foreach (var ball in groundBalls)
             {
                 ball.Root.gameObject.SetActive(false);
@@ -510,8 +526,10 @@ namespace YesterdayConvoy
             }
             for (int index = 0; index < flight.ArrivalItems; index++)
             {
-                var slot = EquipmentTileOnScreen(flight.ArrivalFirstItem + index);
-                if (EquipmentTilesViewport.Overlaps(slot)) ApprovedUi.Border(slot,arrival,2);
+                int item = flight.ArrivalFirstItem + index;
+                int first = EquipmentFirst;
+                if (item >= first && item < first + EquipmentPageCapacity && item < Campaign.Inventory.Count)
+                    ApprovedUi.Border(EquipmentTileOnScreen(item), arrival, 2);
             }
         }
 

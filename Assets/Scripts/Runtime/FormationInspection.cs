@@ -98,11 +98,9 @@ namespace YesterdayConvoy
             var spec = FormationCampaignRules.Find(card);
             var piece = Shop.Bench.FirstOrDefault(entry => entry.Instance == formationInspectedInstance);
             var actor = Model.Units.FirstOrDefault(unit => unit.Instance == formationInspectedInstance);
-            var anchor = FormationInspectionTarget;
             var r = FormationInspectionRect;
             int star = piece?.Star ?? 1;
 
-            ApprovedUi.Border(anchor, OperationsFocus, 2);
             Fill(r, OperationsSurface);
             ApprovedUi.Border(r, OperationsEdge);
             Fill(new Rect(r.x, r.y, 2, r.height), OperationsFocus);
@@ -150,7 +148,8 @@ namespace YesterdayConvoy
             var description = new GUIContent(FormationInspectionSkill(spec));
             float bodyWidth = area.width - 18;
             float bodyHeight = Mathf.Max(area.height, style.CalcHeight(description, bodyWidth) + 2);
-            formationInspectionScroll = GUI.BeginScrollView(area, formationInspectionScroll, new Rect(0, 0, bodyWidth, bodyHeight));
+            formationInspectionScroll = ApprovedUi.BeginDragScrollView(area, formationInspectionScroll,
+                new Rect(0, 0, bodyWidth, bodyHeight));
             GUI.Label(new Rect(0, 0, bodyWidth, bodyHeight), description, style);
             GUI.EndScrollView();
         }

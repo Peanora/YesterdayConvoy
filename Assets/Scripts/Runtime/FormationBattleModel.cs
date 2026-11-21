@@ -77,7 +77,9 @@ namespace YesterdayConvoy
         public bool Secondary { get; internal set; }
         internal float ExpectedDamage { get; set; }
         internal bool IsOutgoingDamage { get; set; }
-        internal bool ShowDamageNumber => IsOutgoingDamage && !Heal && Amount >= Mathf.Max(100f, ExpectedDamage * 1.5f);
+        internal bool ShowPeriodicDamage { get; set; }
+        internal bool ShowDamageNumber => IsOutgoingDamage && !Heal && Amount > 0 &&
+            (ShowPeriodicDamage || Amount >= Mathf.Max(100f, ExpectedDamage * 1.5f));
     }
 
     public sealed class FormationRosterEntry
@@ -495,6 +497,7 @@ namespace YesterdayConvoy
                 float d = (defender.Position - unit.Position).sqrMagnitude;
                 if (Terrain != null && d > unit.Range * unit.Range &&
                     !Terrain.TryApproach(unit.Position, defender.Position, unit.Range, out _, out _)) continue;
+                if (defender.Id == unit.TargetId) return defender;
                 if (d < best - 1e-5f || Mathf.Abs(d - best) < 1e-5f && (nearest == null || defender.Id < nearest.Id)) { nearest = defender; best = d; }
             }
             return nearest;
@@ -650,8 +653,10 @@ namespace YesterdayConvoy
             Vector2 delta = goal - unit.Position;
             // Static corner turns must finish even the last sub-millimetre segment before turning.
             if (delta.sqrMagnitude < (Terrain == null ? .000001f : 1e-10f)) return;
-            Vector2 direction = delta.normalized;
-            if (avoid)
+            Vector2 routeHeading = delta.normalized;
+            Vector2 direction = routeHeading;
+            float travel = unit.MoveSpeed * dt;
+            if (avoid && travel < delta.magnitude)
             {
                 Vector2 separation = Vector2.zero;
                 foreach (var other in Units)
@@ -663,11 +668,13 @@ namespace YesterdayConvoy
                     else apart /= distance;
                     separation += apart * ((PersonalSpace - distance) / PersonalSpace);
                 }
-                // Local steering only: it creates readable spacing without a new navigation system.
-                direction = (direction + separation * 1.6f).normalized;
+                // Steer sideways around friends without reversing the route when crowded.
+                Vector2 sideways = Vector2.Perpendicular(routeHeading);
+                float slide = Mathf.Clamp(Vector2.Dot(separation, sideways) * 1.6f, -1, 1);
+                direction = (routeHeading + sideways * slide).normalized;
             }
             Vector2 before = unit.Position;
-            float travel = Mathf.Min(unit.MoveSpeed * dt, delta.magnitude);
+            travel = Mathf.Min(travel, delta.magnitude);
             Vector2 next = before + direction * travel;
             next.x = Mathf.Clamp(next.x, 0, Width - 1); next.y = Mathf.Clamp(next.y, 0, Height - 1);
             if (avoid)
@@ -685,14 +692,15 @@ namespace YesterdayConvoy
             {
                 // Local separation may point into a wall. Follow the already-clear static segment
                 // for this tick instead; never let a crowd push a body through the saved terrain.
-                next = before + delta.normalized * travel;
+                next = before + routeHeading * travel;
                 if (!Terrain.CanTravel(before, next)) next = before;
             }
             unit.Position = next; unit.IsMoving = (next - before).sqrMagnitude > .0000001f;
             if (unit.IsMoving)
             {
                 unit.GroundDistanceTravelled += Vector2.Distance(before, next);
-                unit.Facing = (next - before).normalized;
+                // Little horizontal side steps along a vertical leg should not flip the body.
+                if (Mathf.Abs(routeHeading.x) >= .01f) unit.Facing = routeHeading;
             }
         }
 

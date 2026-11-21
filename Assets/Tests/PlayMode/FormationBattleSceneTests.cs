@@ -210,7 +210,15 @@ namespace YesterdayConvoy.Tests
         }
         [UnityTest] public IEnumerator PauseFreezesSharedCombatClockAndConfiguredDeadlineUsesRealLossPath()
         {
-            yield return Ready();var m=controller.Model;yield return RosterReady();controller.StartBattle();m.Advance(.25f);m.Paused=true;
+            yield return Ready();var m=controller.Model;yield return RosterReady();controller.StartBattle();
+            Assert.That(Application.runInBackground,Is.True);
+            controller.SendMessage("OnApplicationFocus",false);
+            Assert.That(m.Paused,Is.False,"Losing focus should not pause an active fight.");
+            double beforeFocusLoss=m.Clock;m.Advance(.25f);
+            Assert.That(m.Clock,Is.GreaterThan(beforeFocusLoss));
+            m.Paused=true;
+            controller.SendMessage("OnApplicationFocus",true);
+            Assert.That(m.Paused,Is.True,"Regaining focus should respect manual pause.");
             double clock=m.Clock,remaining=m.TimeRemaining;
             var positions=m.Units.Select(u=>u.Position).ToArray();var hp=m.Units.Select(u=>u.Health).ToArray();
             var charge=m.Units.Select(u=>u.SkillCharge).ToArray();var revive=m.Units.Select(u=>u.RespawnRemaining).ToArray();

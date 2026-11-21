@@ -114,8 +114,7 @@ namespace YesterdayConvoy
             bool scoutHover = GUI.enabled && scout.Contains(Event.current.mousePosition);
             if (scoutHover) Fill(scout, OperationsRail);
             Fill(new Rect(scout.x, scout.y + 2, 1, 32), OperationsEdge);
-            OperationsLabel(new Rect(scout.x + 10, scout.y, 73, 20), "怪物信息", 12, OperationsInk, true);
-            OperationsLabel(new Rect(scout.x + 10, scout.y + 19, 82, 16), "阵容与属性", 9, OperationsMuted);
+            OperationsLabel(new Rect(scout.x + 10, scout.y, 73, scout.height), "怪物信息", 12, OperationsInk, true);
             OperationsLabel(new Rect(scout.xMax - 26, scout.y, 23, 36),
                 Model.RemainingDefenders.ToString(), 19, OperationsFocus, true, TextAnchor.MiddleRight);
             if (GUI.Button(scout, GUIContent.none, GUIStyle.none))

@@ -46,23 +46,31 @@ namespace YesterdayConvoy
         {
             bool enabled = GUI.enabled;
             var xp = FormationExperienceRect;
-            Fill(xp, FormationPreparationPalette.Surface);
-            ApprovedUi.Border(xp, FormationPreparationPalette.Edge);
-            Fill(new Rect(xp.x, xp.y, xp.width, 2), FormationPreparationPalette.Muted);
+            bool maxLevel = Shop.Level >= ShopTrialModel.Odds.Length;
+            bool canBuyExperience = enabled && preparing && CanTrade && !maxLevel && Shop.CanAfford(4);
+            bool xpHovered = canBuyExperience && xp.Contains(Event.current.mousePosition);
+            var xpAccent = maxLevel ? FormationPreparationPalette.Amber : FormationPreparationPalette.Muted;
+            Fill(xp, xpHovered ? FormationPreparationPalette.Hover : FormationPreparationPalette.Surface);
+            ApprovedUi.Border(xp, xpHovered || maxLevel ? xpAccent : FormationPreparationPalette.Edge);
+            Fill(new Rect(xp.x, xp.y, xp.width, 2), xpAccent);
             EconomyLabel(new Rect(xp.x + 7, xp.y + 6, xp.width - 14, 14), "团队等级", 10, FormationPreparationPalette.Muted);
             EconomyLabel(new Rect(xp.x + 7, xp.y + 20, 42, 27), Shop.Level + "级", 20, FormationPreparationPalette.Text, true);
             EconomyLabel(new Rect(xp.x + 44, xp.y + 23, xp.width - 51, 22),
-                Shop.Level == 10 ? "已满级" : $"{Shop.XP}/{Shop.NextLevelXP}", 11, FormationPreparationPalette.Muted, false, TextAnchor.MiddleRight);
+                maxLevel ? "已满级" : $"{Shop.XP}/{Shop.NextLevelXP}", 11, xpAccent, false, TextAnchor.MiddleRight);
             var track = new Rect(xp.x + 7, xp.y + 51, xp.width - 14, 2);
             Fill(track, FormationPreparationPalette.Line);
-            float progress = Shop.Level == 10 ? 1 : Mathf.Clamp01((float)Shop.XP / Shop.NextLevelXP);
-            Fill(new Rect(track.x, track.y, track.width * progress, track.height), FormationPreparationPalette.Muted);
-            GUI.enabled = enabled && preparing && CanTrade && Shop.Level < 10 && Shop.CanAfford(4);
-            string xpPrice = Shop.UnlimitedGold ? "免费" : "4金";
-            if (EconomyButton(new Rect(xp.x + 5, xp.y + 58, xp.width - 10, 22),
-                $"经验 +{Shop.PurchasedXP}  {xpPrice}", "购买团队经验",
-                FormationPreparationPalette.Surface, FormationPreparationPalette.Text, 10))
-                BuyExperience();
+            float progress = maxLevel ? 1 : Mathf.Clamp01((float)Shop.XP / Shop.NextLevelXP);
+            Fill(new Rect(track.x, track.y, track.width * progress, track.height), xpAccent);
+            if (!maxLevel)
+            {
+                string xpPrice = Shop.UnlimitedGold ? "免费" : "4金";
+                EconomyLabel(new Rect(xp.x + 5, xp.y + 58, xp.width - 10, 22),
+                    $"经验 +{Shop.PurchasedXP}  {xpPrice}", 11,
+                    canBuyExperience ? FormationPreparationPalette.Text : FormationPreparationPalette.Muted,
+                    true, TextAnchor.MiddleCenter);
+                GUI.enabled = canBuyExperience;
+                if (TraitHit(xp, "购买团队经验")) BuyExperience();
+            }
             GUI.enabled = enabled && preparing;
 
             var coin = FormationCoinRect;
@@ -82,7 +90,6 @@ namespace YesterdayConvoy
             Fill(new Rect(coin.x + 7, coin.y + 37, coin.width - 14, 1), FormationPreparationPalette.Line);
             EconomyLabel(new Rect(coin.x + 8, coin.y + 38, coin.width - 17, 20),
                 marketVisible ? "收起商店" : "招募商店", 11, FormationPreparationPalette.Text, true);
-            EconomyLabel(new Rect(coin.xMax - 28, coin.y + 38, 19, 20), "Tab", 9, FormationPreparationPalette.Muted, false, TextAnchor.MiddleRight);
             if (GUI.Button(wallet, new GUIContent(string.Empty,
                 "招募商店 · 点击或按 Tab 切换"), GUIStyle.none))
                 ToggleFormationMarket();

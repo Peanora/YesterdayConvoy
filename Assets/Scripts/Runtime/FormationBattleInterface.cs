@@ -34,6 +34,7 @@ namespace YesterdayConvoy
         void OnGUI()
         {
             var input=Event.current;
+            if (input?.type == EventType.KeyDown && input.keyCode == KeyCode.Escape) ApprovedUi.ReleaseScrollDrag();
             if(Ready&&input!=null&&input.button==0&&(input.type==EventType.MouseDown||input.type==EventType.MouseDrag||input.type==EventType.MouseUp))
             {
                 var point=TacticalViewport.Current.FromTopLeft(input.mousePosition);
@@ -95,7 +96,11 @@ namespace YesterdayConvoy
                 GUI.enabled=enabled;
                 if (!formationExitOpen) DrawFormationMenuControls();
             }
-            finally{GUI.enabled=enabled;GUI.matrix=previous;TacticalViewport.Current.DrawBars();}
+            finally
+            {
+                if (input?.rawType == EventType.MouseUp && input.button == 0) ApprovedUi.ReleaseScrollDrag();
+                GUI.enabled=enabled;GUI.matrix=previous;TacticalViewport.Current.DrawBars();
+            }
         }
         void DrawFormationHeader()
         {
@@ -150,7 +155,7 @@ namespace YesterdayConvoy
             string state = combat ? (Model.Paused ? "已暂停" : "实时统计") : "本场结算";
             Vector2? panelPosition = combat ? new Vector2(ApprovedUi.RecruitList.x, 72) : null;
             ApprovedShopWidgets.DrawRanking(rows, rows.Sum(row => row.Damage), state, ApprovedUi.Font(null),
-                ref formationRankingScroll, ref formationRankingScrollbar, panelPosition);
+                ref formationRankingScroll, ref formationRankingScrollbar, panelPosition, showCaption: false);
         }
         void DrawFormationCombatRoster()
         {
@@ -326,26 +331,18 @@ namespace YesterdayConvoy
             {
                 double age=Model.Clock-h.At;if(age<0||age>.8)continue;
                 if(!FormationPointVisibleInView(h.To))continue;
-                if(h.ShowDamageNumber)
-                {
-                    DrawFormationDamageNumber(h,(float)age,labelFrame);
-                    continue;
-                }
-                if(!h.Heal)continue;
-                var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(ActorWorldPoint(h.To)+Vector3.up*(1.35f+(float)age*.35f)));
-                if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
-                Label(new Rect(p.x-48,p.y-10,96,24),"+"+h.Amount.ToString("0"),h.Skill?20:15,Cyan,TextAnchor.MiddleCenter);
+                if(h.ShowDamageNumber||h.Heal)DrawFormationHealthPopup(h,(float)age,labelFrame);
             }
         }
 
-        void DrawFormationDamageNumber(FormationHit hit, float age, Rect labelFrame)
+        void DrawFormationHealthPopup(FormationHit hit, float age, Rect labelFrame)
         {
             var anchor=FormationFeedbackContactPoint(FormationFeedbackActor(hit.ToId),hit.To,.68f);
             var point=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(anchor));
             if(!labelFrame.Contains(point))return;
             float remaining=1-age/.8f;
             float rise=12+48*(1-remaining*remaining);
-            int lane=((int)Math.Round(hit.At*20)+hit.FromId*2)%3-1;
+            int lane=(int)Mathf.Repeat((int)Math.Round(hit.At*20)+hit.FromId*2,3)-1;
             const float width=208, height=50;
             float x=Mathf.Clamp(point.x+lane*25-width*.5f,labelFrame.xMin+2,labelFrame.xMax-width-2);
             float y=Mathf.Clamp(point.y-rise-height*.5f,labelFrame.yMin+2,labelFrame.yMax-height-2);
@@ -357,11 +354,12 @@ namespace YesterdayConvoy
             formationDamageNumberStyle??=ApprovedUi.Text(null,32,TextAnchor.MiddleCenter,Color.white,650);
             var style=formationDamageNumberStyle;
             style.fontSize=Mathf.RoundToInt(size);
-            string number=hit.Amount.ToString("0");
-            style.normal.textColor=new Color(.13f,.025f,.035f,alpha);
+            string amount=hit.Amount is > 0 and < 1 ? hit.Amount.ToString("0.0#") : hit.Amount.ToString("0");
+            string number=hit.Heal?"+"+amount:amount;
+            style.normal.textColor=hit.Heal?new Color(.035f,.13f,.045f,alpha):new Color(.13f,.025f,.035f,alpha);
             foreach(var offset in DamageNumberOutline)
                 GUI.Label(new Rect(rect.position+offset,rect.size),number,style);
-            style.normal.textColor=new Color(1f,.30f,.28f,alpha);
+            style.normal.textColor=hit.Heal?new Color(.35f,1f,.43f,alpha):new Color(1f,.30f,.28f,alpha);
             GUI.Label(rect,number,style);
         }
 

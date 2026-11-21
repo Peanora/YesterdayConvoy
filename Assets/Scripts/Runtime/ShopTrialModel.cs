@@ -80,6 +80,7 @@ namespace YesterdayConvoy
         }
         public void BeginPreparation(){CommissionUsed=false;}
         int ReserveCount(IReadOnlyList<Piece> pieces) => pieces.Count - lineup.Count(id => pieces.Any(piece => piece.Id == id));
+        internal bool ReserveFull => ReserveCount(bench) >= ShopSeatLayout.ReserveCapacity;
         internal int ReserveOverflowCount => Math.Max(0, ReserveCount(bench) - ShopSeatLayout.ReserveCapacity);
         internal string GuaranteedRefreshOffer {get;set;}
         public int Gold {get;private set;}=80;
@@ -126,9 +127,10 @@ namespace YesterdayConvoy
         {
             planned=null;
             if(index<0||index>=5||offers[index]==null)return Fail("该位置没有可购买棋子");
-            if (FormationEconomy && ReserveCount(bench) >= ShopSeatLayout.ReserveCapacity)
-                return Fail("备战席已满，请腾出空位后再招募");
-            return PlanIncoming(offers[index],out planned);
+            var result = PlanIncoming(offers[index], out planned);
+            if (FormationEconomy && ReserveFull && ReserveCount(planned) >= ReserveCount(bench))
+                return Fail("备战席已满，本次招募不能通过升星腾出位置");
+            return result;
         }
         Result PlanIncoming(string id,out List<Piece> planned,int incomingStar=1)
         {

@@ -236,44 +236,77 @@ namespace YesterdayConvoy
             var north = Terrain?.FirstGuardFormation ?? FormationCampaignRules.NorthGuardFormation;
             var south = Terrain?.SecondGuardFormation ?? FormationCampaignRules.SouthGuardFormation;
             bool preferNorth = rng.Next(2) == 0;
-            var formation = preferNorth ? north : south;
-            if (!CanPlaceGuardFormation(node, formation))
-            {
-                formation = preferNorth ? south : north;
-                if (!CanPlaceGuardFormation(node, formation))
-                    throw new InvalidOperationException($"No legal guard formation for campaign node {node.Id}.");
-            }
+            var primary = preferNorth ? north : south;
+            var secondary = preferNorth ? south : north;
+            var guards = PlanCampaignGuards(node, primary, secondary);
+            if (!CanPlaceGuardFormation(guards)) guards = PlanCampaignGuards(node, primary, primary);
+            if (!CanPlaceGuardFormation(guards)) guards = PlanCampaignGuards(node, secondary, secondary);
+            if (!CanPlaceGuardFormation(guards))
+                throw new InvalidOperationException($"No legal guard formation for campaign node {node.Id}.");
 
             int tier = node.Kind == "遭遇" ? Campaign.CurrentEncounterTier : 1;
-            for (int i = 0; i < node.Front.Length; i++)
-                AddCampaignDefender(node, formation, node.Front[i], formation.Front[i], tier, boss);
-            for (int i = 0; i < node.Rear.Length; i++)
-                AddCampaignDefender(node, formation, node.Rear[i], formation.Rear[i], tier, boss);
+            foreach (var guard in guards)
+                AddCampaignDefender(node, guard.Wing, guard.ArtId, guard.Cell, tier, boss, guard.WatchesApproach);
         }
 
-        bool CanPlaceGuardFormation(FormationCampaignRules.NodeDefinition node, FormationCampaignRules.GuardFormation formation)
+        static bool IsRangedGuard(string id) => FormationCampaignRules.DefenderByArtId(id).Role is 3 or 4;
+
+        static CampaignGuardPlacement[] PlanCampaignGuards(FormationCampaignRules.NodeDefinition node,
+            FormationCampaignRules.GuardFormation primary, FormationCampaignRules.GuardFormation secondary)
         {
-            if (Terrain == null) return true;
-            for (int i = 0; i < node.Front.Length; i++)
+            var result = new List<CampaignGuardPlacement>(node.DefenderCount);
+            bool split = primary != secondary;
+            AddLine(node.Front, true);
+            AddLine(node.Rear.OrderByDescending(IsRangedGuard).ToArray(), false);
+            return result.ToArray();
+
+            void AddLine(string[] artIds, bool front)
             {
-                Vector2 cell = formation.Front[i];
-                if (!Terrain.CanPlaceDefender(cell) || Terrain.HeightAt(cell) > 0) return false;
+                for (int i = 0; i < artIds.Length; i++)
+                {
+                    var wing = split && i % 2 == 1 ? secondary : primary;
+                    int slot = split ? i / 2 : i;
+                    var cell = front ? wing.Front[slot] : wing.Rear[slot];
+                    bool watchesApproach = !front && slot == 0 && node.Kind != "奖励" && IsRangedGuard(artIds[i]);
+                    result.Add(new CampaignGuardPlacement(artIds[i], cell, wing, front, watchesApproach));
+                }
             }
-            for (int i = 0; i < node.Rear.Length; i++)
+        }
+
+        readonly struct CampaignGuardPlacement
+        {
+            public readonly string ArtId;
+            public readonly Vector2Int Cell;
+            public readonly FormationCampaignRules.GuardFormation Wing;
+            public readonly bool Front, WatchesApproach;
+
+            public CampaignGuardPlacement(string artId, Vector2Int cell, FormationCampaignRules.GuardFormation wing,
+                bool front, bool watchesApproach)
             {
-                Vector2 cell = formation.Rear[i];
-                if (!Terrain.CanPlaceDefender(cell)) return false;
+                ArtId = artId;
+                Cell = cell;
+                Wing = wing;
+                Front = front;
+                WatchesApproach = watchesApproach;
             }
-            foreach (var id in node.Front.Concat(node.Rear))
+        }
+
+        bool CanPlaceGuardFormation(CampaignGuardPlacement[] guards)
+        {
+            var occupied = new HashSet<Vector2Int>();
+            foreach (var guard in guards)
             {
-                var cell = formation.SkillCell(id);
-                if (cell.HasValue && !Terrain.IsWalkable(cell.Value)) return false;
+                if (!occupied.Add(guard.Cell) || Terrain != null && (!Terrain.CanPlaceDefender(guard.Cell) ||
+                    guard.Front && Terrain.HeightAt(guard.Cell) > 0)) return false;
+                var skillCell = guard.Wing.SkillCell(guard.ArtId);
+                if (skillCell is { } cell && (!occupied.Add(cell) || Terrain != null && !Terrain.IsWalkable(cell)))
+                    return false;
             }
             return true;
         }
 
         void AddCampaignDefender(FormationCampaignRules.NodeDefinition node, FormationCampaignRules.GuardFormation formation,
-            string artId, Vector2Int cell, int tier, FormationCampaignRules.BossDefinition boss)
+            string artId, Vector2Int cell, int tier, FormationCampaignRules.BossDefinition boss, bool watchesApproach = false)
         {
             var guard = FormationCampaignRules.DefenderByArtId(artId);
             var role = FormationCampaignRules.Defenders[guard.Role];
@@ -296,7 +329,8 @@ namespace YesterdayConvoy
                 SupernovaBossPhase = isBoss && artId == "D31" ? 1 : 0,
                 IsMakotoBoss = isBoss && artId == FormationCampaignRules.MakotoBossArtId,
                 MakotoBossPhase = isBoss && artId == FormationCampaignRules.MakotoBossArtId ? 1 : 0,
-                MaxHealth = isBoss ? boss.Health : FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
+                MaxHealth = isBoss ? boss.Health : node.Kind == "奖励" ? 1f :
+                    FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
                 Armor = isBoss ? boss.Armor : role.Armor,
                 MagicResistance = isBoss ? boss.MagicResistance : role.MagicResistance,
@@ -305,6 +339,15 @@ namespace YesterdayConvoy
                 SkillRequired = isBoss ? boss.RequiredSP : guard.RequiredSP ?? role.RequiredSP,
             };
             if (!d.IsSupernovaBoss && !d.IsMakotoBoss) ConfigureArchivedGuard(d);
+            if (watchesApproach)
+            {
+                // Cover a 3.5-cell attacker on the approach to this wing's first frontliner.
+                Vector2 approach = (Vector2)formation.Front[0] - Vector2.right * 3.5f;
+                float coverage = Vector2.Distance(cell, approach);
+                // Opening lineups still have room to approach the first two full defenses.
+                if (node.Id is "1-3" or "1-4") coverage = Mathf.Min(4.25f, coverage);
+                d.Range = Mathf.Max(d.Range, coverage);
+            }
             ResetActor(d, true, Vector2.left);
             var state = State(d);
             state.Template = guard.Role;

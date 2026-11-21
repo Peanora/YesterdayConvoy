@@ -79,7 +79,8 @@ namespace YesterdayConvoy
             int selected = Array.IndexOf(costs, 3);
             string selectedId = ids[selected];
             string selectedComponent = options[selected].SupplyComponent;
-            var available = ids.ToDictionary(id => id, shop.Available);
+            int UnownedOutsideRewards(string id) => shop.Available(id) + shop.Offers.Count(offer => offer == id);
+            var available = ids.ToDictionary(id => id, UnownedOutsideRewards);
             int ownedCopies = shop.Bench.Sum(piece => ShopTrialModel.Copies(piece.Star));
             int selectedCopies = shop.Bench.Where(piece => piece.Id == selectedId).Sum(piece => ShopTrialModel.Copies(piece.Star));
             var itemInstances = run.Inventory.Select(item => item.Instance).ToHashSet();
@@ -99,22 +100,21 @@ namespace YesterdayConvoy
 
             yield return ClickStrategyUi(new Vector2(640, 637));
             if (captureFrames) yield return CaptureInterfaceClip("04-supply-confirm", 27);
-            yield return WaitForStrategyUi(() => run.NodeSettled && !run.HasBlockingChoice,
-                "The production confirmation settles the supply");
+            yield return WaitForStrategyUi(() => run.CurrentNode.Id == "1-6" && !run.HasBlockingChoice,
+                "The production confirmation automatically reaches the next battle without another click");
             var delivered = run.Inventory.Where(item => !itemInstances.Contains(item.Instance)).ToArray();
             Assert(delivered.Length == 1 && delivered[0].Key == selectedComponent &&
                 shop.Bench.Sum(piece => ShopTrialModel.Copies(piece.Star)) == ownedCopies + 1 &&
                 shop.Bench.Where(piece => piece.Id == selectedId).Sum(piece => ShopTrialModel.Copies(piece.Star)) == selectedCopies + 1,
                 "Exactly one copy of the selected character and its displayed component reach the player");
             Assert(shop.RewardReservations.Count == 0 &&
-                ids.All(id => shop.Available(id) == available[id] + (id == selectedId ? 0 : 1)) &&
+                ids.All(id => UnownedOutsideRewards(id) == available[id] + (id == selectedId ? 0 : 1)) &&
                 shop.Gold == gold && shop.XP == xp,
                 "Unchosen stock returns once and the supply neither charges nor awards gold or XP");
             shop.Validate();
-            yield return Frame("05-supply-return-to-board");
-            Assert(controller.ContinueCampaign() && run.CurrentNode.Id == "1-6",
-                "The normal next-node action remains available after the supply closes");
-            yield return Frame("06-next-battle-preparation");
+            Assert(controller.Model.Phase == FormationPhase.Preparation,
+                "Automatic progression leaves the next node ready for normal deployment");
+            yield return Frame("05-next-battle-preparation");
             yield return new WaitForSecondsRealtime(.65f);
         }
     }

@@ -41,6 +41,7 @@ namespace YesterdayConvoy
 
         IEnumerator Start()
         {
+            Application.runInBackground = true;
             FormationUnitArt.RegisterCards(formationCards);
             bool fullCampaign=!FormationBattleSmokeDriver.Requested&&Array.IndexOf(Environment.GetCommandLineArgs(),"-formationLegacyDemo")<0;
             Session=FormationShopSession.Current??FormationShopSession.StartNew(
@@ -84,7 +85,7 @@ namespace YesterdayConvoy
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             RefreshFormationAnimationProfiles();
             if(!FormationShowcaseRecorder.Drives(this))
-            {Model.Advance(Time.unscaledDeltaTime);TickCampaignSettlement();}
+            {Model.Advance(Time.unscaledDeltaTime);TickCampaignSettlement();TickCampaignSupplyAdvance();}
             RefreshFormationOperatingVisibility();
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
@@ -105,7 +106,12 @@ namespace YesterdayConvoy
             }
         }
         void OnApplicationFocus(bool focus)
-        {if(!focus){pressedGroundBall=null;CancelFormationEquipmentInteraction();CancelFormationDrag();if(Ready&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting))Model.Paused=true;}}
+        {
+            if (focus) return;
+            pressedGroundBall = null;
+            CancelFormationEquipmentInteraction();
+            CancelFormationDrag();
+        }
 
         void DismissFormationInteraction()
         {
@@ -157,6 +163,10 @@ namespace YesterdayConvoy
         public void ProcessPointer(EventType type,Vector2 point)
         {
             if(!Ready||formationMenuOpen||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked)return;
+            if (type == EventType.MouseDown && FormationInspectionAvailable &&
+                !FormationInspectionTarget.Contains(point) && !FormationInspectionBlocksPoint(point) &&
+                !FormationEquipmentDetailsRect.Contains(point))
+                CloseFormationInspection();
             bool heldPiece=pointerHeld&&shopDragInstance>0;
             if(type!=EventType.MouseDrag||!heldPiece)
             {
@@ -199,9 +209,8 @@ namespace YesterdayConvoy
                     if(!FormationShopPointerUp(point)&&TryCell(point,out var cell))
                         PlaceFormationPiece(shopDragInstance,DeploymentAnchor(cell));
                 }
-                else if(pointerHeld&&!heldPiece&&Vector2.Distance(point,pointerStart)<=6&&
-                        (FormationTraitDetailsOpen||FormationInspectedItemId>0)&&BoardInputRect.Contains(point))
-                { CloseFormationTraitDetails(); CloseFormationEquipmentDetails(); }
+                else if(pointerHeld&&!heldPiece&&Vector2.Distance(point,pointerStart)<=6&&BoardInputRect.Contains(point))
+                { CloseFormationTraitDetails(); CloseFormationInspection(); CloseFormationEquipmentDetails(); }
                 else if(heldPiece)
                     ToggleFormationPieceInspection(shopDragInstance);
                 CancelFormationDrag();SyncActors();
