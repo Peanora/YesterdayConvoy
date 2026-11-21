@@ -9,13 +9,11 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         internal enum ImpactStyle { Slash, Bite, Bolt, Fire, Shield, Blast, Magic, Heal, FireRain }
-        readonly Dictionary<ImpactStyle, AudioClip> impactSounds = new Dictionary<ImpactStyle, AudioClip>();
         readonly HashSet<FormationHit> formationImpactOwners = new HashSet<FormationHit>();
         readonly Dictionary<int, FormationHit> formationContactReactions = new Dictionary<int, FormationHit>();
         readonly HashSet<int> formationPulsingBodies = new HashSet<int>();
         MaterialPropertyBlock formationContactProperties;
         static readonly int FormationContactPulse = Shader.PropertyToID("_ContactPulse");
-        const int ImpactSampleRate = 22050;
 
         FormationActor FormationFeedbackActor(int id)
         {
@@ -98,62 +96,6 @@ namespace YesterdayConvoy
             formationContactProperties.SetVector(FormationContactPulse, pulse);
             body.SetPropertyBlock(formationContactProperties);
         }
-
-        // The effects are generated locally from envelopes, filtered noise and
-        // tones. The recorder uses these same samples when exporting shot audio.
-        internal static float[] FormationImpactSamples(ImpactStyle style)
-        {
-            float length = style == ImpactStyle.FireRain ? .30f :
-                style == ImpactStyle.Fire || style == ImpactStyle.Blast || style == ImpactStyle.Heal ? .26f : .16f;
-            var result = new float[Mathf.RoundToInt(length * ImpactSampleRate)];
-            var noise = new System.Random(7863 + (int)style * 71);
-            float low = 0;
-            for (int i = 0; i < result.Length; i++)
-            {
-                float t = i / (float)ImpactSampleRate;
-                float raw = (float)(noise.NextDouble() * 2 - 1);
-                low += (raw - low) * .20f;
-                float treble = raw - low;
-                float sample;
-                switch (style)
-                {
-                    case ImpactStyle.Bite:
-                        sample = (low*.68f+treble*.30f)*(Decay(t,39)+.43f*Decay(Mathf.Abs(t-.045f),81));
-                        break;
-                    case ImpactStyle.Bolt:
-                        sample = treble*.55f*Decay(t,110)+Tone(t,670,-2800)*.41f*Decay(t,62);
-                        break;
-                    case ImpactStyle.Fire:
-                        sample = (low*.9f+Tone(t,92,-120)*.34f)*Decay(t,12)+treble*.27f*Decay(t,39);
-                        break;
-                    case ImpactStyle.FireRain:
-                        sample = (low*.75f+Tone(t,103,-185)*.66f)*Decay(t,17)+
-                            Tone(t,57,-48)*.27f*Decay(t,10)+treble*.37f*Decay(t,46);
-                        break;
-                    case ImpactStyle.Shield:
-                        sample = (Tone(t,243,-310)*.46f+Tone(t,1113,-1000)*.23f+Tone(t,1711,-2500)*.12f)*Decay(t,29)+raw*.34f*Decay(t,112);
-                        break;
-                    case ImpactStyle.Blast:
-                        sample = (Tone(t,99,-250)*.68f+low*.65f)*Decay(t,19)+treble*.49f*Decay(t,81);
-                        break;
-                    case ImpactStyle.Magic:
-                        sample = (Tone(t,425,2100)*.43f+Tone(t,693,2600)*.23f)*Decay(t,22)+low*.27f*Decay(t,59);
-                        break;
-                    case ImpactStyle.Heal:
-                        sample = (Tone(t,493,325)*.32f+Tone(t,740,490)*.22f)*Decay(t,13);
-                        break;
-                    default:
-                        sample = treble*.60f*Decay(Mathf.Abs(t-.022f),42)+Tone(t,281,-1050)*.24f*Decay(t,45);
-                        break;
-                }
-                float envelope = Mathf.Min(1,t*700f) * Mathf.Min(1,(length-t)*75f);
-                result[i] = Mathf.Clamp(sample*envelope,-1,1);
-            }
-            return result;
-        }
-
-        static float Tone(float t,float frequency,float sweep) => Mathf.Sin(2*Mathf.PI*(frequency*t+sweep*t*t*.5f));
-        static float Decay(float t,float rate) => Mathf.Exp(-t*rate);
 
         void DrawFormationContactFeedback()
         {

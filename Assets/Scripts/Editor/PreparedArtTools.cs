@@ -17,7 +17,7 @@ namespace YesterdayConvoy.Editor
         static bool verifiedThisSession;
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
         static readonly string[] Roots={"MonsterCombatArt","DefenderArt","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
-        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
+        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","original-fire-screen-left","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
         public void OnPreprocessBuild(BuildReport report)=>Prepare(!verifiedThisSession);
         public void OnPostprocessBuild(BuildReport report)
         {

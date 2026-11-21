@@ -116,8 +116,10 @@ namespace YesterdayConvoy
 
         void PresentFormationGuardEffects()
         {
-            if(Campaign==null||!ViewingDefenders)return;
+            if(Campaign==null||!ViewingDefenders){formationSixStarFx?.Clear();return;}
             double now=Model.Clock;
+            formationSixStarFx??=new OriginalNativeFxLayer(actorRoot);
+            formationSixStarFx.Begin(now,battleCamera);
             foreach(var guard in Model.Defenders)
             {
                 if(!guard.Alive)continue;
@@ -127,11 +129,13 @@ namespace YesterdayConvoy
                     continue;
                 }
                 string id=guard.ArtId;
+                PresentFormationSixStarFields(guard);
                 var effect=Model.GuardEffect(guard);
                 if(effect!=null&&now>=effect.StartedAt&&now<=effect.EndsAt)
                 {
                     double age=(now-effect.StartedAt)*FormationVisualRate;
                     Vector2 origin=effect.Origin;
+                    string instance="field/"+FxTime(effect.StartedAt);
                     switch(effect.Kind)
                     {
                         case "firewall":
@@ -142,13 +146,14 @@ namespace YesterdayConvoy
                             {
                                 var cell=origin+axis*(((i+.5f)/children-.5f)*effect.Length);
                                 if(cell.x>=FormationBattleModel.BattleAreaStart&&cell.x<FormationBattleModel.Width&&cell.y>=0&&cell.y<FormationBattleModel.Height)
-                                    LegacyOriginal("defender/D22/"+wall,age,cell,11,true,true);
+                                    ShowFormationGuardEffect(guard,wall,instance+"/"+i,age,cell,11,true,true);
                             }
-                            LegacyOriginal("defender/D22/yu_skill3_buff_01",age,guard.Position,18,true,true);
+                            ShowFormationGuardEffect(guard,"yu_skill3_buff_01",instance,age,guard.Position,18,true,true);
                             break;
                         case "hunt":
-                            LegacyOriginal("defender/D21/whitw2_skill_03_buff_start",age,guard.Position,12,true,true);
-                            LegacyOriginal("defender/D21/whitw2_skill_03_token_trail_01",age,origin,23,true,explicitPosition:ActorWorldPoint(origin)+Vector3.up*.7f);
+                            ShowFormationGuardEffect(guard,"whitw2_skill_03_buff_start",instance,age,guard.Position,12,flat:true);
+                            ShowFormationGuardEffect(guard,"whitw2_skill_03_token_trail_01",instance,age,origin,23,true,
+                                point:ActorWorldPoint(origin)+Vector3.up*.7f);
                             break;
                         case "snow":
                             LegacyOriginal("defender/D27/sbell2_skill_03_start_01",age,origin,24,flat:true);
@@ -156,23 +161,17 @@ namespace YesterdayConvoy
                             break;
                         case "chess":
                         case "chess_hit":
-                            PresentFormationGuardChess(origin,age,effect.Kind=="chess_hit",combat: CombatViewActive);
+                            PresentFormationGuardChess(guard,origin,instance,age,effect.Kind=="chess_hit",combat: CombatViewActive);
                             break;
                         case "slash":
                             if(id=="D30")
                             {
-                                LegacyOriginal("defender/D30/mlynar_skill_03_buff_03",age,guard.Position,12,true,true);
+                                ShowFormationGuardEffect(guard,"mlynar_skill_03_buff_03",instance,age,guard.Position,12,true,true);
                                 if(now<effect.ImpactAt)PresentGuardSlashWarning(effect,now);
                             }
                             break;
                     }
                 }
-                if(Model.GuardTransformed(guard))
-                    LegacyOriginal("defender/D23/monstr_skill_03_buff_01",now*FormationVisualRate,guard.Position,12,true,true);
-                if(guard.Shield>0&&id=="D25")
-                    LegacyOriginal("defender/D25/hsgma2_skill_03_buff_01",now*FormationVisualRate,guard.Position,12,true,true);
-                if(guard.Shield>0&&id=="D29")
-                    LegacyOriginal("defender/D29/demkni_skill_03_self",now*FormationVisualRate,guard.Position,12,true,true);
             }
             foreach(var action in Model.PresentationActions)
             {
@@ -192,7 +191,11 @@ namespace YesterdayConvoy
                             flat:true,scale:1.45f,gammaOutput:true);
                     continue;
                 }
-                if(!action.ProjectileOnly)PresentFormationGuardCast(guard, action, now);
+                if(!action.ProjectileOnly)
+                {
+                    PresentFormationSixStarSignatureAction(guard,action,now);
+                    PresentFormationGuardCast(guard, action, now);
+                }
                 PresentFormationGuardProjectile(guard, action, now);
             }
             guardHitSprites.Clear();
@@ -213,8 +216,9 @@ namespace YesterdayConvoy
                     var target=FormationFeedbackActor(hit.ToId);
                     var contactPoint=FormationFeedbackContactPoint(target,hit.To,hit.Heal ? .62f : .52f);
                     bool left=Vector3.Dot(ActorWorldPoint(hit.To)-ActorWorldPoint(hit.From),battleCamera.transform.right)<0;
-                    if (LegacyOriginal(FormationGuardFxKey(hit.SourceArtId,clip),age,hit.To,35,
-                        explicitPosition:contactPoint,flip:left)!=null)
+                    var sourceGuard=Model.Defenders.FirstOrDefault(d=>d.Id==hit.FromId);
+                    if (sourceGuard!=null && ShowFormationGuardEffect(sourceGuard,clip,
+                        "hit/"+hit.ToId+"/"+FxTime(hit.At),age,hit.To,35,point:contactPoint,flip:left,recipient:target))
                     {
                         guardHitSprites.Add(stamp);
                         formationImpactOwners.Add(hit);
@@ -232,6 +236,7 @@ namespace YesterdayConvoy
                 var impact=LegacyOriginal(PramanixEffects+clip,age,hit.To,24,explicitPosition:contact,gammaOutput:true);
                 if(impact!=null)impact.name=PramanixImpactRendererPrefix+hit.ToId;
             }
+            formationSixStarFx.End();
         }
 
         void PresentFormationGuardCast(FormationDefender guard, FormationPresentationAction action, double now)
@@ -270,10 +275,10 @@ namespace YesterdayConvoy
             bool left = Vector3.Dot(ActorWorldPoint(action.To)-ActorWorldPoint(action.From),battleCamera.transform.right)<0;
             double age = (now-startedAt)*action.Rate;
             var anchor = guard.ArtId == "D24" ? FormationGuardMuzzle(guard, action, left) : LegacyOwnerPoint(guard,action.From);
-            LegacyOriginal(FormationGuardFxKey(guard.ArtId,clip),age,action.From,23,explicitPosition:anchor,flip:left);
+            ShowFormationGuardEffect(guard,clip,"cast/"+action.Sequence,age,action.From,23,point:anchor,flip:left);
             if(guard.ArtId=="D26")
-                LegacyOriginal(FormationGuardFxKey(guard.ArtId,ordinary?"svash2_attack_start_a_02":"svash2_skill_03_combat_start_02"),
-                    age,action.From,24,explicitPosition:anchor,flip:left);
+                ShowFormationGuardEffect(guard,ordinary?"svash2_attack_start_a_02":"svash2_skill_03_combat_start_02",
+                    "cast/"+action.Sequence,age,action.From,24,point:anchor,flip:left);
         }
 
         Vector3 FormationGuardMuzzle(FormationDefender guard, FormationPresentationAction action, bool left)
@@ -294,7 +299,7 @@ namespace YesterdayConvoy
             var foot = LegacyOwnerPoint(guard, action.From);
             if(!art.TryGetValue(guard.ArtId, out var source))return foot;
             // The front body export sampled .38 atlas pixels per skeleton pixel.
-            float worldPerSourcePixel = .38f / source.Ppu;
+            float worldPerSourcePixel = .38f / source.Ppu * FormationGuardBodyScale(guard,source);
             return foot + battleCamera.transform.right * (bone.x * worldPerSourcePixel * (left ? -1 : 1)) +
                 battleCamera.transform.up * (bone.y * worldPerSourcePixel);
         }
@@ -322,8 +327,8 @@ namespace YesterdayConvoy
             double elapsed = now - action.LaunchedAt;
             float progress = (float)(elapsed / (action.ContactAt-action.LaunchedAt));
             Vector2 cell = Vector2.Lerp(action.From,target.Position,progress);
-            LegacyOriginal(FormationGuardFxKey(guard.ArtId,trail),elapsed*action.Rate,cell,32,loop:guard.ArtId!="D07",
-                explicitPosition:Vector3.Lerp(start,end,progress),direction:guard.ArtId=="D08" ? null : end-start);
+            ShowFormationGuardEffect(guard,trail,"flight/"+action.Sequence,elapsed*action.Rate,cell,32,loop:guard.ArtId!="D07",
+                point:Vector3.Lerp(start,end,progress),direction:guard.ArtId=="D08" ? null : end-start);
         }
 
         static string FormationGuardHitClip(FormationHit hit) => hit.SourceArtId switch
@@ -339,9 +344,9 @@ namespace YesterdayConvoy
             "D23" => hit.Heal ? "monstr_attack_hit_01" : "monstr_skill_03_hit",
             "D24" => hit.Skill ? "angel2_skill_3_loop_hit_01" : "angel2_attack_loop_hit_01",
             "D25" => hit.Action?.Animation == "skill_attack" ? "hsgma2_skill_03_hit_01" : "hsgma2_attack_01_hit_01",
-            "D26" => "svash2_attack_hit_01",
+            "D26" => hit.Action?.Animation == "skill_attack" ? "svash2_skill_03_hit_01" : "svash2_attack_hit_01",
             "D27" => "sbell2_skill_03_hit",
-            "D29" => hit.Heal ? GuardHealHit : "demkni_attack_01_hit",
+            "D29" => hit.Heal ? "common_heal_hit_01" : "demkni_attack_01_hit",
             "D30" => "mlynar_skill_03_hit_01",
             _ => null
         };
@@ -466,21 +471,22 @@ namespace YesterdayConvoy
             }
         }
 
-        void PresentFormationGuardChess(Vector2 cell,double age,bool hitting,bool combat)
+        void PresentFormationGuardChess(FormationDefender guard,Vector2 cell,string instance,double age,bool hitting,bool combat)
         {
             if(!art.TryGetValue("D28Chess",out var chess)||!FormationArtAvailable("D28Chess"))return;
-            var clip=chess.Clips[hitting?"attack":"idle"];
-            int frame=(int)(age*clip.Fps);
-            var position=ActorWorldPoint(cell);
-            LegacyDraw(clip.Frames[hitting?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count],
-                actorMaterial,position,cell,1,6);
             if(hitting)
-                LegacyOriginal(FormationGuardFxKey("D28",GuardChessTriggered),age,cell,12,flat:true);
+            {
+                ShowFormationGuardEffect(guard,"token_wang_skill_03_hit",instance,age,cell,12,flat:true);
+                ShowFormationGuardEffect(guard,GuardChessTriggered,instance,age,cell,13,flat:true);
+            }
             else
             {
-                LegacyOriginal(FormationGuardFxKey("D28",GuardChessArmed),age,cell,12,true,true);
+                var clip=chess.Clips["idle"];
+                int frame=(int)(age*clip.Fps);
+                LegacyDraw(clip.Frames[frame%clip.Count],actorMaterial,ActorWorldPoint(cell),cell,1,6);
+                ShowFormationGuardEffect(guard,GuardChessArmed,instance,age,cell,12,true,true);
                 if(combat)
-                    LegacyOriginal(FormationGuardFxKey("D28",GuardChessPlaced),age,cell,13,flat:true);
+                    ShowFormationGuardEffect(guard,GuardChessPlaced,instance,age,cell,13,flat:true);
             }
         }
 
@@ -502,11 +508,14 @@ namespace YesterdayConvoy
             if(artId=="M38")
                 foreach(string key in new[]{"common/common_magic_trail_01_m","common/common_magic_hit_01_m"})yield return OriginalCombatVfxArt.Get(key).Sequence;
             if(artId=="TALULAH_TRIAL")
+            {
                 foreach(string key in new[]{"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing",
                     "first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
                     "ignite-B-caster","ignite-B-target","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target",
                     "target-burn-loop","original-fire-stream","original-fire-impact"})
                     yield return BossRosterSupplementArt.Talulah(key).Sequence;
+                if(Campaign?.TalulahCost==5)yield return BossRosterSupplementArt.Talulah(TalulahLeftFireKey).Sequence;
+            }
         }
         internal bool FormationHasLegacyImpact(string artId,bool skill)
         {
@@ -1045,7 +1054,7 @@ namespace YesterdayConvoy
         {
             if(Model==null||actorRoot==null||battleCamera==null)return;
             if(legacyObservedModel!=Model||Model.Clock<legacyLastClock)
-            {legacyObservedModel=Model;legacyPreviousShield.Clear();legacyShieldBroken.Clear();legacyShieldRefreshed.Clear();legacyFlightOrigins.Clear();legacyComicFaceIds.Clear();legacyComicFaceSequence=0;legacySeaBorn.Clear();ResetFormationSynergyEffects();}
+            {legacyObservedModel=Model;legacyPreviousShield.Clear();legacyShieldBroken.Clear();legacyShieldRefreshed.Clear();legacyFlightOrigins.Clear();legacyComicFaceIds.Clear();legacyComicFaceSequence=0;legacySeaBorn.Clear();ResetFormationSynergyEffects();formationSixStarFx?.Clear();}
             legacyLastClock=Model.Clock;
             EnsureLegacyMaterials();legacyFxUsed=0;legacyComicUsed=0;wisadelOrdinaryTrailsUsed=0;
             foreach(var action in Model.PresentationActions)PresentLegacyAction(action);
@@ -1058,13 +1067,22 @@ namespace YesterdayConvoy
                 if(at>=0)LegacyOriginal("common/common_nerve_injury_01_hit",(Model.Clock-at)*LegacyVisualRate,defender.Position,38);
             }
             // Fire/snow domains are real v0.7 state, not guessed from damage counters.
+            bool drewTalulahLeftFire = false;
             foreach(var zone in Model.LegacyZones())
             {
                 var source=Model.Units.FirstOrDefault(u=>u.Id==zone.SourceId);if(source==null)continue;
                 double age=(Model.Clock-zone.At)*LegacyVisualRate;
                 if(source.ArtId=="TALULAH_TRIAL"&&zone.Kind=="burn")
                 {
-                    if(Campaign.TalulahCost==5)PresentFormationTalulahRain(zone,source);
+                    if(Campaign.TalulahCost==5)
+                    {
+                        PresentFormationTalulahRain(zone,source);
+                        if(!drewTalulahLeftFire)
+                        {
+                            PresentFormationTalulahLeftFire(zone);
+                            drewTalulahLeftFire = true;
+                        }
+                    }
                     else LegacyTalulah("target-burn-loop",age,zone.Center,source,-2,true);
                 }
                 else if(source.ArtId=="B15"&&zone.Kind=="kingdom")PresentFormationKingdomTiles(zone.Cells,age);
@@ -1134,6 +1152,8 @@ namespace YesterdayConvoy
         }
         internal void DisposeFormationLegacyEffects()
         {
+            formationSixStarFx?.Dispose();
+            formationSixStarFx=null;
             if(formationFlameSprayMaterial!=null)Destroy(formationFlameSprayMaterial);
             if(formationFlameCoreMaterial!=null)Destroy(formationFlameCoreMaterial);
             if(formationFlameSprayFrames!=null)

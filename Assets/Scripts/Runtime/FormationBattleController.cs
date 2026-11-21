@@ -323,7 +323,6 @@ namespace YesterdayConvoy
             approvedShop?.Dispose();if(formationCoin!=null)Destroy(formationCoin);if(formationStar!=null)Destroy(formationStar);
             ArtMemoryCache.Pin(Array.Empty<string>());
             if(actorMaterial!=null)Destroy(actorMaterial);if(lineMaterial!=null)Destroy(lineMaterial);
-            foreach(var clip in impactSounds.Values)Destroy(clip);
         }
     }
 }

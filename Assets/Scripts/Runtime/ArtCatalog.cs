@@ -7,11 +7,12 @@ namespace YesterdayConvoy
 {
     internal sealed class ArtCatalog
     {
-        [Serializable] sealed class Manifest {public int version;public string task,cardId;public float ppu,referenceSpeed,height,attackContact;public bool noAttackClip,noOrdinaryAttack,rearVariant,auxiliary;public Item[] clips;}
-        [Serializable] sealed class Item {public string key;public int count,cell,cellWidth,cellHeight,columns;public float duration,fps,pivotX,pivotY,pixelsPerUnit;public ArtSequence.Page[] pages;}
+        [Serializable] sealed class Manifest {public int version;public string task,cardId;public float ppu,referenceSpeed,height,attackContact,idleVisibleTop;public bool noAttackClip,noOrdinaryAttack,rearVariant,auxiliary;public Item[] clips;}
+        [Serializable] sealed class Item {public string key;public int count,cell,cellWidth,cellHeight,columns;public float duration,fps,pivotX,pivotY,pixelsPerUnit,scale;public ArtSequence.Page[] pages;}
         static readonly Dictionary<string,ArtCatalog> catalogs=new Dictionary<string,ArtCatalog>();
         public readonly Dictionary<string,ArtSequence> Clips=new Dictionary<string,ArtSequence>();
         public string Root;public float Ppu,Speed,Height,Contact;public bool Rear,Auxiliary;
+        public float IdleVisibleTop, IdleCaptureScale;
         public static ArtCatalog Read(string root)
         {
             root=root.Replace('\\','/');
@@ -21,7 +22,7 @@ namespace YesterdayConvoy
             string id=Path.GetFileName(root);
             if((root.StartsWith("DefenderArt/")||root.StartsWith("MonsterCombatArt/"))&&data.task!=id)throw new InvalidDataException("Art ID mismatch: "+root);
             if(root=="TalulahOriginal"&&(data.cardId!="CARD_TALULAH_TRIAL"||data.clips.Length!=4)||root=="OriginiumSlugOriginal"&&(data.cardId!="CARD_ORIGINIUM_SLUG"||data.clips.Length!=6))throw new InvalidDataException("Original art identity mismatch.");
-            found=new ArtCatalog{Root=root,Ppu=data.ppu,Speed=data.referenceSpeed,Height=data.height,Contact=data.attackContact,Rear=data.rearVariant,Auxiliary=data.auxiliary};
+            found=new ArtCatalog{Root=root,Ppu=data.ppu,Speed=data.referenceSpeed,Height=data.height,Contact=data.attackContact,Rear=data.rearVariant,Auxiliary=data.auxiliary,IdleVisibleTop=data.idleVisibleTop};
             found.Add(root,data.clips);
             string[] required=root.StartsWith("DefenderArt/")?data.auxiliary?new[]{"start","idle","attack"}:data.noOrdinaryAttack?data.rearVariant?new[]{"idle"}:new[]{"idle","death"}:data.rearVariant?new[]{"idle","attack"}:new[]{"idle","attack","death"}:root.StartsWith("MonsterCombatArt/")?data.noAttackClip?new[]{"idle","walk","death"}:new[]{"idle","walk","attack","death"}:root=="TalulahOriginal"?new[]{"idle","walk","attack","cast"}:new[]{"idle","walk","start","stop","attack","death"};
             foreach(string key in required)if(!found.Clips.ContainsKey(key))throw new InvalidDataException("Missing art clip: "+root+"/"+key);
@@ -46,6 +47,7 @@ namespace YesterdayConvoy
                     string file=ArtSourcePaths.Resolve(root+"/"+page.file);
                     if(!File.Exists(file)&&!File.Exists(file+".ycart"))throw new FileNotFoundException("Art page is missing",file);
                 }
+                if (item.key == "idle") IdleCaptureScale = item.scale;
                 Clips.Add(item.key,new ArtSequence{Root=root,Key=item.key,Name=Path.GetFileName(Root)+"/"+item.key,Count=item.count,Duration=item.duration,Fps=item.fps,Ppu=item.pixelsPerUnit>0?item.pixelsPerUnit:Ppu,PivotX=item.pivotX,PivotY=item.pivotY,Width=item.cell>0?item.cell:item.cellWidth,Height=item.cell>0?item.cell:item.cellHeight,Columns=item.columns,Pages=item.pages});
             }
         }

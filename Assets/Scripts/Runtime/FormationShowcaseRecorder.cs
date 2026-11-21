@@ -488,7 +488,7 @@ namespace YesterdayConvoy
                     for(int i=0;i<pending.Count;i++)
                     {
                         var previous=pending[i];
-                        if(previous.cue.Clip!=cue.Clip||previous.end<=sound.sample)continue;
+                        if(!cue.SharesVoiceLimitWith(previous.cue)||previous.end<=sound.sample)continue;
                         active++;
                         if(oldest<0)oldest=i;
                     }
@@ -534,11 +534,6 @@ namespace YesterdayConvoy
         }
         ReviewSamples ReadReviewSamples(AudioClip source)
         {
-            const string fallbackPrefix="Formation ";
-            if(source.name.StartsWith(fallbackPrefix,StringComparison.Ordinal)&&
-                Enum.TryParse<FormationBattleController.ImpactStyle>(source.name.Substring(fallbackPrefix.Length),out var style))
-                return new ReviewSamples(FormationBattleController.FormationImpactSamples(style),22050);
-
             // Use the same retained PCM used by the build if its platform import
             // cannot expose sample data at the moment of recording.
             if(source.loadState==AudioDataLoadState.Unloaded)source.LoadAudioData();

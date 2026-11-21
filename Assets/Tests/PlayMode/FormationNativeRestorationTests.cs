@@ -148,6 +148,29 @@ namespace YesterdayConvoy.Tests
             Assert.That(bodyHit.sortingOrder, Is.GreaterThan(floor.sortingOrder));
         }
 
+        [UnityTest] public IEnumerator SixStarGuardUsesTheRestoredNativeMuzzleAndCalibratedBody()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B10" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "B10" }, 3, 3, "D24", false, true);
+            Begin();
+            var guard = controller.Model.Defenders.Single();
+            var body = Body(guard);
+            Assert.That(body.transform.localScale.x, Is.InRange(1.35f, 1.66f));
+            Transform native = null;
+            yield return Until(() =>
+            {
+                native = controller.GetComponentsInChildren<Transform>().FirstOrDefault(node =>
+                    node.name.StartsWith("Original Native FX / defender/D24/angel2_attack_loop_start_01 /", StringComparison.Ordinal));
+                return native != null && native.GetComponentsInChildren<Renderer>().Any(renderer => renderer.enabled);
+            }, 5);
+            var tag = native.GetComponents<MonoBehaviour>().Single(component => component.GetType().Name == "OriginalNativeFxTag");
+            double age = Field<double>(tag, "SampleAge");
+            controller.Model.Paused = true;
+            Step(.3f);
+            Assert.That(Field<double>(tag, "SampleAge"), Is.EqualTo(age));
+        }
+
         [UnityTest] public IEnumerator OriginalCampaignContactDoesNotAddAGenericBodyFlash()
         {
             RequireGpu();
@@ -339,6 +362,9 @@ namespace YesterdayConvoy.Tests
             Begin();
             var model=controller.Model;
             var caster=model.Units.Single();
+            SpriteRenderer LeftFire()=>controller.GetComponentsInChildren<SpriteRenderer>().SingleOrDefault(r=>
+                r.enabled&&r.name=="Formation Talulah / left screen fire");
+            Assert.That(LeftFire(),Is.Null);
             SpriteRenderer[] fire=Array.Empty<SpriteRenderer>();
             float first=float.PositiveInfinity,last=float.NegativeInfinity;
             double waveStart=double.PositiveInfinity;
@@ -358,6 +384,13 @@ namespace YesterdayConvoy.Tests
             },45);
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1));
             Assert.That(model.Clock-waveStart,Is.InRange(.99,1.18),"The next front overlaps the first one second later at 2x.");
+            var leftFire=LeftFire();
+            Assert.That(leftFire,Is.Not.Null);
+            Assert.That(leftFire.sprite.name,Does.StartWith("TalulahNative/original-fire-screen-left/"));
+            var view=Field<Camera>(controller,"battleCamera");
+            Vector3 leftViewport=view.WorldToViewportPoint(leftFire.transform.position);
+            Assert.That(leftViewport.x,Is.InRange(.02f,.14f));
+            var leftFrame=leftFire.sprite;
             Assert.That(fire.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahNative"&&r.color==Color.white),Is.True);
             Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));
             foreach(var stream in fire)
@@ -373,9 +406,11 @@ namespace YesterdayConvoy.Tests
             Step(.4f);
             Assert.That(fire[0].transform.position,Is.EqualTo(point));
             Assert.That(fire[0].sprite,Is.SameAs(sprite));
+            Assert.That(LeftFire()?.sprite,Is.SameAs(leftFrame));
             model.Paused=false;
             var idleBody=Body(caster).sprite;
             yield return Until(()=>Body(caster).sprite!=idleBody,.6);
+            Assert.That(LeftFire()?.sprite,Is.Not.SameAs(leftFrame));
             var cast=model.PresentationActions.Single(a=>a.ActorId==caster.Id&&a.Skill);
             double rainEnd=(double)Invoke(model,"TalulahRainEnd",caster);
             Assert.That(rainEnd-cast.ContactAt,Is.EqualTo(8).Within(.026));
@@ -386,6 +421,7 @@ namespace YesterdayConvoy.Tests
                 Assert.That(OrdinaryDuringRain(),Is.False);
                 return model.Clock>=rainEnd;
             },10);
+            Assert.That(LeftFire(),Is.Null);
             yield return Until(()=>model.PresentationActions.Any(a=>a.ActorId==caster.Id&&!a.Skill&&a.At>=rainEnd),5);
 
             yield return Fixture(new[]{"TAL"},talulahCost:4);
@@ -394,6 +430,7 @@ namespace YesterdayConvoy.Tests
             yield return Until(()=>LegacyLayers().Any(r=>r.sprite.name.Contains("explode-A-target")&&HasPaint(r.sprite)),45);
             Assert.That(controller.Model.Clock,Is.LessThan(controller.Model.PresentationActions.Single(a=>a.Skill).ContactAt));
             Assert.That(LegacyLayers().Any(r=>r.sprite.name.Contains("original-energy-stream")||r.sprite.name.Contains("original-fire-stream")),Is.False);
+            Assert.That(LeftFire(),Is.Null);
 
             yield return Fixture(new[]{"TAL"},talulahCost:3);
             Begin();

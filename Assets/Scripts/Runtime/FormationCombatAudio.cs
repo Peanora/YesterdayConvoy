@@ -13,12 +13,13 @@ namespace YesterdayConvoy
             internal readonly AudioClip Clip;
             internal readonly float Gain, Pitch;
             internal readonly int Priority;
-            internal readonly string SourceEvent;
+            internal readonly string SourceEvent, VoiceBank;
             internal readonly int MaxSoundAllowed, ActionSequence;
             internal readonly bool PopOldest;
 
             internal FormationAudioCue(double at, int actorId, AudioClip clip, float gain, float pitch, int priority,
-                string sourceEvent = null, int maxSoundAllowed = 0, bool popOldest = false, int actionSequence = 0)
+                string sourceEvent = null, int maxSoundAllowed = 0, bool popOldest = false, int actionSequence = 0,
+                string voiceBank = null)
             {
                 At = at;
                 ActorId = actorId;
@@ -27,19 +28,30 @@ namespace YesterdayConvoy
                 Pitch = pitch;
                 Priority = priority;
                 SourceEvent = sourceEvent;
+                VoiceBank = voiceBank;
                 MaxSoundAllowed = maxSoundAllowed;
                 PopOldest = popOldest;
                 ActionSequence = actionSequence;
             }
+
+            internal bool SharesVoiceLimitWith(FormationAudioCue other) =>
+                VoiceBank == null ? Clip == other.Clip : VoiceBank == other.VoiceBank;
         }
 
         [Serializable]
-        sealed class FormationOriginalCue
+        class FormationOriginalSample
         {
-            public string artId, trigger, resource, animation, sourceEvent;
+            public string resource;
+            public float delay, minPitch = 1, maxPitch = 1, minVolume = 1, maxVolume = 1, weight = 1;
+        }
+
+        [Serializable]
+        sealed class FormationOriginalCue : FormationOriginalSample
+        {
+            public string artId, trigger, animation, sourceEvent;
             public int abilityIndex = -1, hitIndex = -1, nativePhase = -1, talulahCost, maxSoundAllowed;
-            public bool oncePerAction, parentOnly, popOldest;
-            public float delay, minPitch = 1, maxPitch = 1, minVolume = 1, maxVolume = 1;
+            public bool oncePerAction, parentOnly, popOldest, damageOnly;
+            public FormationOriginalSample[] choices;
         }
 
         [Serializable]
@@ -55,8 +67,7 @@ namespace YesterdayConvoy
         readonly Dictionary<string, List<FormationOriginalCue>> formationOriginalCues = new();
         readonly Dictionary<string, AudioClip> formationOriginalClips = new();
         readonly AudioSource[] formationCombatVoices = new AudioSource[FormationVoiceLimit];
-        readonly int[] formationCombatVoicePriorities = new int[FormationVoiceLimit];
-        readonly double[] formationCombatVoiceStartedAt = new double[FormationVoiceLimit];
+        readonly FormationAudioCue[] formationPlayingCues = new FormationAudioCue[FormationVoiceLimit];
         bool formationCueBankLoaded, formationAudioPaused;
         FormationBattleModel formationAudioModel;
         float formationMaxCueDelay;
@@ -77,19 +88,30 @@ namespace YesterdayConvoy
                             formationOriginalCues.Add(cue.artId, entries = new List<FormationOriginalCue>());
                         entries.Add(cue);
                         formationMaxCueDelay = Mathf.Max(formationMaxCueDelay, cue.delay);
+                        if (cue.choices != null)
+                            foreach (var sample in cue.choices)
+                                formationMaxCueDelay = Mathf.Max(formationMaxCueDelay, sample.delay);
                     }
             }
             if (formationOriginalCues.TryGetValue(artId, out var rows))
                 foreach (var cue in rows)
-                    if (!formationOriginalClips.ContainsKey(cue.resource))
-                    {
-                        var clip = Resources.Load<AudioClip>(cue.resource);
-                        if (clip != null && clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
-                        formationOriginalClips.Add(cue.resource, clip);
-                    }
+                {
+                    if (cue.choices is { Length: > 0 })
+                        foreach (var sample in cue.choices) WarmFormationOriginalClip(sample.resource);
+                    else WarmFormationOriginalClip(cue.resource);
+                }
         }
 
-        FormationOriginalCue FindFormationOriginalCue(string artId, string trigger, string animation, int hitIndex, int nativePhase = 0)
+        void WarmFormationOriginalClip(string resource)
+        {
+            if (string.IsNullOrEmpty(resource) || formationOriginalClips.ContainsKey(resource)) return;
+            var clip = Resources.Load<AudioClip>(resource);
+            if (clip != null && clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
+            formationOriginalClips.Add(resource, clip);
+        }
+
+        FormationOriginalCue FindFormationOriginalCue(string artId, string trigger, string animation, int hitIndex,
+            int nativePhase = 0, bool heal = false)
         {
             if (string.IsNullOrEmpty(artId)) return null;
             WarmFormationCombatAudio(artId);
@@ -98,7 +120,8 @@ namespace YesterdayConvoy
             FormationOriginalCue best = null;
             foreach (var cue in rows)
             {
-                if (cue.trigger != trigger || formationOriginalClips[cue.resource] == null) continue;
+                if (cue.trigger != trigger || cue.damageOnly && heal ||
+                    cue.choices is not { Length: > 0 } && formationOriginalClips[cue.resource] == null) continue;
                 bool preciseMotion = !string.IsNullOrEmpty(cue.animation);
                 bool preciseHit = cue.hitIndex >= 0, preciseVariant = cue.talulahCost > 0;
                 if (preciseMotion && !string.Equals(cue.animation, animation, StringComparison.OrdinalIgnoreCase) ||
@@ -133,25 +156,32 @@ namespace YesterdayConvoy
             double at, double after, double through, int actorId, int sequence, int priority)
         {
             if (cue == null) return;
-            at += Math.Max(0, cue.delay);
-            if (!FormationAudioInWindow(at, after, through)) return;
             uint salt = unchecked((uint)(sequence * 1664525 + actorId * 1013904223));
             salt ^= salt >> 16;
-            float pitch = Mathf.Lerp(cue.minPitch, cue.maxPitch, (salt & 65535) / 65535f);
-            float volume = Mathf.Lerp(cue.minVolume, cue.maxVolume, (salt >> 16) / 65535f);
-            AddFormationAudio(destination, new FormationAudioCue(at, actorId, formationOriginalClips[cue.resource],
+            var sample = ChooseFormationOriginalSample(cue, salt);
+            if (sample == null || string.IsNullOrEmpty(sample.resource)) return;
+            at += Math.Max(0, sample.delay);
+            if (!FormationAudioInWindow(at, after, through)) return;
+            float pitch = Mathf.Lerp(sample.minPitch, sample.maxPitch, (salt & 65535) / 65535f);
+            float volume = Mathf.Lerp(sample.minVolume, sample.maxVolume, (salt >> 16) / 65535f);
+            AddFormationAudio(destination, new FormationAudioCue(at, actorId, formationOriginalClips[sample.resource],
                 Mathf.Clamp01(FormationAudioVolume * volume), Mathf.Clamp(pitch, .2f, 3f), priority, cue.sourceEvent,
-                cue.maxSoundAllowed, cue.popOldest, sequence));
+                cue.maxSoundAllowed, cue.popOldest, sequence, cue.choices is { Length: > 0 } ? cue.sourceEvent : null));
         }
 
-        AudioClip FormationFallbackContactClip(ImpactStyle style)
+        static FormationOriginalSample ChooseFormationOriginalSample(FormationOriginalCue cue, uint salt)
         {
-            if (impactSounds.TryGetValue(style, out var clip)) return clip;
-            var samples = FormationImpactSamples(style);
-            clip = AudioClip.Create("Formation " + style, samples.Length, 1, ImpactSampleRate, false);
-            clip.SetData(samples, 0);
-            impactSounds.Add(style, clip);
-            return clip;
+            if (cue.choices is not { Length: > 0 }) return cue;
+            float total = 0;
+            foreach (var choice in cue.choices) total += Mathf.Max(0, choice.weight);
+            // Each board action chooses once, even if live and recorder revisit its time window.
+            float pick = (unchecked(salt * 0x9E3779B9u) >> 8) / 16777216f * total;
+            foreach (var choice in cue.choices)
+            {
+                pick -= Mathf.Max(0, choice.weight);
+                if (pick < 0) return choice;
+            }
+            return null;
         }
 
         // Both the live mixer and the fixed-step video tool consume the same real
@@ -194,15 +224,13 @@ namespace YesterdayConvoy
                     (includeSnowBoss ? SnowBossContactCue(hit) is string key && snowBossEffectClips.ContainsKey(key) : HasSnowBossImpactAudio(hit))) continue;
                 string artId = hit.SourceArtId ?? actor?.ArtId;
                 var cue = (hit.Amount > 0 || hit.Absorbed) && !hit.Secondary && hit.Action != null
-                    ? FindFormationOriginalCue(artId, hit.Skill ? "skillHit" : "attackHit", hit.Action?.Animation, hit.ImpactIndex, hit.Action?.NativePhase ?? 0)
+                    ? FindFormationOriginalCue(artId, hit.Skill ? "skillHit" : "attackHit", hit.Action.Animation,
+                        hit.ImpactIndex, hit.Action.NativePhase, hit.Heal)
                     : null;
                 int priority = hit.Absorbed || hit.Killed || hit.ShowDamageNumber ? 4 : hit.Skill ? 3 : 2;
                 if (cue != null)
                     AddFormationOriginalAudio(destination, cue, hit.At, after, through, hit.FromId,
                         hit.Action.Sequence, priority);
-                else if (Campaign == null && FormationAudioInWindow(hit.At, after, through))
-                    AddFormationAudio(destination, new FormationAudioCue(hit.At, hit.FromId, FormationFallbackContactClip(FormationHitStyle(hit)),
-                        FormationAudioVolume * (hit.Heal ? .46f : hit.Skill ? .78f : .61f), 1, priority));
                 if (hit.Killed)
                 {
                     var victim = FormationFeedbackActor(hit.ToId);
@@ -259,9 +287,9 @@ namespace YesterdayConvoy
                 for (int i = 0; i < formationCombatVoices.Length; i++)
                 {
                     var voice = formationCombatVoices[i];
-                    if (voice == null || !voice.isPlaying || voice.clip != cue.Clip) continue;
+                    if (voice == null || !voice.isPlaying || !cue.SharesVoiceLimitWith(formationPlayingCues[i])) continue;
                     count++;
-                    if (oldest < 0 || formationCombatVoiceStartedAt[i] < formationCombatVoiceStartedAt[oldest]) oldest = i;
+                    if (oldest < 0 || formationPlayingCues[i].At < formationPlayingCues[oldest].At) oldest = i;
                 }
                 if (count >= cue.MaxSoundAllowed)
                 {
@@ -274,12 +302,12 @@ namespace YesterdayConvoy
             {
                 var voice = formationCombatVoices[i];
                 if (voice == null || !voice.isPlaying) { chosen = i; break; }
-                if (lowest < 0 || formationCombatVoicePriorities[i] < formationCombatVoicePriorities[lowest])
+                if (lowest < 0 || formationPlayingCues[i].Priority < formationPlayingCues[lowest].Priority)
                     lowest = i;
             }
             if (chosen < 0)
             {
-                if (lowest < 0 || formationCombatVoicePriorities[lowest] >= cue.Priority) return;
+                if (lowest < 0 || formationPlayingCues[lowest].Priority >= cue.Priority) return;
                 chosen = lowest;
             }
             var source = formationCombatVoices[chosen];
@@ -295,8 +323,7 @@ namespace YesterdayConvoy
             source.volume = cue.Gain;
             source.pitch = cue.Pitch;
             source.mute = !soundEnabled;
-            formationCombatVoicePriorities[chosen] = cue.Priority;
-            formationCombatVoiceStartedAt[chosen] = cue.At;
+            formationPlayingCues[chosen] = cue;
             source.Play();
         }
     }

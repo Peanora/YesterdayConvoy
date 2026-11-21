@@ -11,6 +11,8 @@ namespace YesterdayConvoy
         const float TalulahSourceScale = 1.60714286f;
         const float TalulahSourceWaveInterval = 2f;
         const float TalulahScreenSpawnWindow = .1f;
+        const string TalulahLeftFireKey = "original-fire-screen-left";
+        const string TalulahLeftFireName = "Formation Talulah / left screen fire";
 
         bool IsFormationTalulahRainContact(FormationHit hit)
         {
@@ -65,6 +67,29 @@ namespace YesterdayConvoy
                     LegacyDraw(stream.At(sourceAge), legacyHdrMaterial, point, cell, scale, -5, hdr: stream.HdrRange);
                 }
             }
+        }
+
+        void PresentFormationTalulahLeftFire(FormationBattleModel.LegacyZoneSnapshot zone)
+        {
+            if (!ViewingDefenders || !UseFormationBattleCamera || battleCamera == null) return;
+            var clip = BossRosterSupplementArt.Talulah(TalulahLeftFireKey);
+            if (!clip.Sequence.Ready) return;
+            var frame = clip.At((Model.Clock - zone.At) * LegacyVisualRate);
+            if (frame == null) return;
+
+            // The original screen emitter plays separately from the projectile fronts.
+            // Fit the source flames inside the left margin of the combat view.
+            float depth = battleCamera.nearClipPlane + 1;
+            var screenSpan = battleCamera.ViewportToWorldPoint(new Vector3(1, 1, depth)) -
+                battleCamera.ViewportToWorldPoint(new Vector3(0, 0, depth));
+            float width = Vector3.Dot(screenSpan, battleCamera.transform.right);
+            float height = Vector3.Dot(screenSpan, battleCamera.transform.up);
+            float scale = Mathf.Min(.23f * width / frame.bounds.size.x, .67f * height / frame.bounds.size.y);
+            float centerX = .02f + frame.bounds.size.x * scale / width * .5f;
+            var point = battleCamera.ViewportToWorldPoint(new Vector3(centerX, .5f, depth));
+            var visibleCell = new Vector2(FormationBattleModel.BattleAreaStart, (FormationBattleModel.Height - 1) * .5f);
+            var effect = LegacyDraw(frame, legacyHdrMaterial, point, visibleCell, scale, 600, hdr: clip.HdrRange, gammaOutput: true);
+            if (effect != null) effect.name = TalulahLeftFireName;
         }
 
         void PresentFormationTalulahHit(FormationHit hit, FormationFighter source)

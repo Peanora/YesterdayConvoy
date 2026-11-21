@@ -181,18 +181,17 @@ namespace YesterdayConvoy.Tests
             string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
                 "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
                 "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
-                "ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact",
+                "ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","original-fire-screen-left",
                 "explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
             var manifest=JsonUtility.FromJson<PhaseManifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
             CollectionAssert.IsSubsetOf(boundKeys,manifest.clips.Select(clip=>clip.key).ToArray());
             var expectedPages=manifest.clips.Where(clip=>boundKeys.Contains(clip.key))
                 .SelectMany(clip=>clip.pages.Select(page=>page.file)).ToArray();
-            Assert.That(pages.Length,Is.EqualTo(56));
             CollectionAssert.AreEquivalent(expectedPages,pages,"Include all and only the actually bound source/HDR pages.");
             foreach(var unused in manifest.clips.Where(clip=>!boundKeys.Contains(clip.key)).SelectMany(clip=>clip.pages.Select(page=>page.file)))
                 CollectionAssert.DoesNotContain(pages,unused,"Unbound source page leaked into the Player: "+unused);
             foreach(string page in new[]{"ignite-A-caster-00.png","ignite-A-target-00.png","ignite-B-target-00.png",
-                "explode-A-target-00.png","explode-B-target-00.png","original-fire-stream-00.png","original-fire-impact-00.png"})
+                "explode-A-target-00.png","explode-B-target-00.png","original-fire-stream-00.png","original-fire-impact-00.png","original-fire-screen-left-00.png"})
                 Assert.That(pages,Does.Contain(page),"New formation mode's actual point-of-hit/caster dependency.");
             Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
             Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);

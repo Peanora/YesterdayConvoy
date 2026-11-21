@@ -85,6 +85,8 @@ namespace YesterdayConvoy
                 if(id==PramanixBossBodyArt)WarmSnowBossAudio();
                 foreach(var clip in source.Clips.Values.Where(FormationGuardClip))yield return clip.Warm();
                 foreach(var clip in effects)if(!clip.Ready)yield return clip.Warm();
+                if(UsesFormationSixStarNativeFx(id))
+                    yield return OriginalNativeFxCatalog.Prepare(OriginalNativeFxCatalog.KeysFor(id));
             }
             else
             {
@@ -126,7 +128,18 @@ namespace YesterdayConvoy
         {
             if(actor is FormationFighter)return FormationUnitCatalog.Find(actor.ArtId)?.VisualHeight??1.12f;
             float height = art.TryGetValue(FormationBodyArtId(actor),out var source)&&source.Height>0?source.Height:1.12f;
-            return actor is FormationDefender guard && guard.IsSnowBoss ? height * PramanixBossScale : height;
+            if (actor is not FormationDefender guard) return height;
+            if (!guard.IsSnowBoss && source?.IdleVisibleTop > 0) height = source.IdleVisibleTop;
+            return height * FormationGuardBodyScale(guard, source);
+        }
+
+        // Use the same board-unit scale per source skeleton unit as the native monsters.
+        const float GuardWorldUnitsPerSourceUnit = .0045f;
+        static float FormationGuardBodyScale(FormationDefender guard, ArtCatalog source)
+        {
+            if (guard.IsSnowBoss) return PramanixBossScale;
+            if (source == null || source.IdleCaptureScale <= 0 || !source.Clips.TryGetValue("idle", out var idle)) return 1;
+            return idle.Ppu * GuardWorldUnitsPerSourceUnit / source.IdleCaptureScale;
         }
 
         const float PramanixBossScale = 3.65f;
@@ -260,7 +273,8 @@ namespace YesterdayConvoy
             }
             else
             {
-                var source=art[bodyArtId];sourceHeight=source.Height;labelTop=source.Height;
+                var source=art[bodyArtId];sourceHeight=source.Height;
+                labelTop=source.IdleVisibleTop>0?source.IdleVisibleTop:source.Height;
                 bool singleFrameSequence=false;
                 if(actor is FormationDefender guard&&Campaign!=null&&actor.Alive)
                 {
@@ -311,8 +325,12 @@ namespace YesterdayConvoy
             body.enabled=body.sprite!=null;if(!body.enabled)return;
             if(!pramanix||!frozen)body.flipX=actor.Facing.x<-.01f;
             body.transform.position=FormationDisplayPoint(actor);body.transform.rotation=battleCamera.transform.rotation;
-            float scale=ActorPresentationHeight(actor)/Mathf.Max(.5f,sourceHeight>0?sourceHeight:1.4f);
+            float scale = actor is FormationDefender presentedGuard
+                ? FormationGuardBodyScale(presentedGuard, art[bodyArtId])
+                : ActorPresentationHeight(actor) / Mathf.Max(.5f, sourceHeight > 0 ? sourceHeight : 1.4f);
             body.transform.localScale=Vector3.one*(scale*actionScale);
+            // The grounding component and its shadow use renderer-local height.
+            if (defender && !pramanix) ActorGrounding.Attach(body, labelTop);
             formationLabelHeights[actor.Id]=(labelTop>0?labelTop:sourceHeight)*scale;
             body.sortingOrder=5000-Mathf.RoundToInt(actor.Position.y*50)+(actor is FormationFighter rider&&Model.PresentationCarrier(rider)!=null?8:0);
             Color color=frozen ? new Color(.67f,.83f,1f) : Color.white;

@@ -9,6 +9,7 @@ import argparse,hashlib,io,json,math,uuid
 from PIL import Image
 
 BOUND={"attack-A-caster","attack-A-hit","ambient-A-foot","movement-A-foot","current-firecast-A-hand"}
+LEFT_SCREEN_FIRE="original-fire-screen-left"
 NATIVE_TO_GAME=1.60714285694
 MAX_PAGE=2048
 
@@ -47,6 +48,8 @@ def entries(source,core_only=False):
         # Resolve recorded external references against this source tree, not an old checkout.
         folder=source/folder.relative_to(source)
         result.append((key,folder,False,None))
+    if not core_only:
+        result.append((LEFT_SCREEN_FIRE,source/"native-probe"/"screen-bsnake"/"screen-left-fire",False,None))
     if len({r[0] for r in result})!=len(result):raise ValueError("Duplicate runtime clip key")
     return result
 
@@ -69,10 +72,15 @@ def pack_clip(key,folder,bound,job,out,project,source):
     # dimensions, losing the last logical sprite row. Pad each cell on right/bottom;
     # preserve every original encoded pixel at the top-left without resampling.
     width,height=(crop_width+3)//4*4,(crop_height+3)//4*4
+    screen_space=key==LEFT_SCREEN_FIRE
+    if screen_space:
+        # Keep the native screen effect orientation and center its cropped sprite.
+        right,bottom=min(size,left+width),min(size,top+height)
+        crop_width,crop_height=right-left,bottom-top
     if not 0<width<=MAX_PAGE or not 0<height<=MAX_PAGE:raise ValueError(f"{key}: invalid whole-clip crop")
-    pivot_x=(right-float(report["pivotX"])*size)/width
-    pivot_y=(height+top-(1-float(report["pivotY"]))*size)/height
-    ppu=float(report["pixelsPerWorldUnit"])/NATIVE_TO_GAME
+    pivot_x=.5 if screen_space else (right-float(report["pivotX"])*size)/width
+    pivot_y=.5 if screen_space else (height+top-(1-float(report["pivotY"]))*size)/height
+    ppu=float(report["pixelsPerWorldUnit"])/(1 if screen_space else NATIVE_TO_GAME)
     if not ppu>0:raise ValueError(f"{key}: invalid orthographic capture PPU")
     columns=min(MAX_PAGE//width,count);rows_capacity=MAX_PAGE//height;per_page=columns*rows_capacity
     pages=[];source_hash=hashlib.sha256();page_info=[];checked=0
@@ -83,25 +91,26 @@ def pack_clip(key,folder,bound,job,out,project,source):
             path=folder/f"{first+i:04d}-hdr.png";data=path.read_bytes();source_hash.update(data)
             with Image.open(io.BytesIO(data)) as frame:
                 if frame.mode!="RGBA" or frame.size!=(size,size):raise ValueError(f"{key}: unexpected source PNG format {path}")
-                cropped=frame.crop((left,top,right,bottom)).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+                cropped=frame.crop((left,top,right,bottom))
+                if not screen_space:cropped=cropped.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
             x,y=i%columns*width,i//columns*height
             # No alpha mask: copying with a mask would destroy original additive RGB at A=0.
             atlas.paste(cropped,(x,y))
             if atlas.crop((x,y,x+crop_width,y+crop_height)).tobytes()!=cropped.tobytes():raise ValueError(f"{key}: encoded pixel copy failed")
             checked+=1
         name=f"{key}-{len(pages):02d}.png";output=out/name
-        data=io.BytesIO();atlas.save(data,format="PNG",compress_level=6);binary=data.getvalue();write_bytes(output,binary);meta(output,project)
+        data=io.BytesIO();atlas.save(data,format="PNG",compress_level=6,optimize=screen_space);binary=data.getvalue();write_bytes(output,binary);meta(output,project)
         with Image.open(output) as saved:
             if saved.mode!="RGBA" or saved.size!=atlas.size or saved.tobytes()!=atlas.tobytes():raise ValueError(f"{key}: lossless atlas roundtrip failed")
         pages.append(dict(file=name,count=page_count))
         page_info.append(dict(file=name,bytes=len(binary),width=atlas.width,height=atlas.height,sha256=hashlib.sha256(binary).hexdigest()))
     clip=dict(key=key,count=count,width=width,height=height,columns=columns,ppu=ppu,pivotX=pivot_x,pivotY=pivot_y,
-              duration=float(job["duration"]),hdrRange=float(report["hdrRange"]),status="BOUND" if bound else "IMPORTED_NOT_BOUND",pages=pages)
+              duration=float(job["duration"]),hdrRange=float(report["hdrRange"]),status="BOUND" if bound or screen_space else "IMPORTED_NOT_BOUND",pages=pages)
     info=dict(key=key,status=clip["status"],source=folder.relative_to(source).as_posix(),sourceCount=count,
               sourceCrop=[left,top,right,bottom],sourcePPU=float(report["pixelsPerWorldUnit"]),runtimePPU=ppu,
               cellAlignment=4,paddingRight=width-crop_width,paddingBottom=height-crop_height,
               runtimeCellWidth=width,runtimeCellHeight=height,
-              sourcePivot=[report["pivotX"],report["pivotY"]],runtimePivot=[pivot_x,pivot_y],mirrorX=True,
+              sourcePivot=[report["pivotX"],report["pivotY"]],runtimePivot=[pivot_x,pivot_y],mirrorX=not screen_space,
               sourceFrameSetSha256=source_hash.hexdigest(),sourceReportSha256=hashlib.sha256(report_path.read_bytes()).hexdigest(),
               encodedFramesLosslesslyChecked=checked,pages=page_info)
     return clip,info
@@ -123,10 +132,12 @@ def verify_package(project,source):
             if hashlib.sha256(report_path.read_bytes()).hexdigest()!=info["sourceReportSha256"]:raise ValueError("Source report changed")
             width,height=clip["width"],clip["height"];left,top,right,bottom=info["sourceCrop"];cw,ch=right-left,bottom-top;size=report["size"]
             if width%4 or height%4 or width!=(cw+3)//4*4 or height!=(ch+3)//4*4:raise ValueError(f"{clip['key']}: BC7 cell alignment mismatch")
-            px=(right-report["pivotX"]*size)/width;py=(height+top-(1-report["pivotY"])*size)/height
+            screen_space=clip["key"]==LEFT_SCREEN_FIRE
+            px=.5 if screen_space else (right-report["pivotX"]*size)/width
+            py=.5 if screen_space else (height+top-(1-report["pivotY"])*size)/height
             if not math.isclose(clip["pivotX"],px,abs_tol=1e-10) or not math.isclose(clip["pivotY"],py,abs_tol=1e-10):raise ValueError("Padded pivot mismatch")
-            if not math.isclose(clip["ppu"],report["pixelsPerWorldUnit"]/NATIVE_TO_GAME,abs_tol=1e-10):raise ValueError("Runtime PPU changed")
-            if clip["status"]!=("BOUND" if root==roots[0] else "IMPORTED_NOT_BOUND"):raise ValueError("Binding status mismatch")
+            if not math.isclose(clip["ppu"],report["pixelsPerWorldUnit"]/(1 if screen_space else NATIVE_TO_GAME),abs_tol=1e-10):raise ValueError("Runtime PPU changed")
+            if clip["status"]!=("BOUND" if root==roots[0] or screen_space else "IMPORTED_NOT_BOUND"):raise ValueError("Binding status mismatch")
             source_hash=hashlib.sha256();n=0
             page_infos={p["file"]:p for p in info["pages"]}
             for page in clip["pages"]:
@@ -137,7 +148,8 @@ def verify_package(project,source):
                     if atlas.width!=clip["columns"]*width or atlas.height%height or page["count"]>clip["columns"]*(atlas.height//height):raise ValueError("Sprite grid capacity mismatch")
                     for i in range(page["count"]):
                         frame_bytes=(folder/f"{n:04d}-hdr.png").read_bytes();source_hash.update(frame_bytes)
-                        with Image.open(io.BytesIO(frame_bytes)) as frame:expected=frame.crop((left,top,right,bottom)).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+                        with Image.open(io.BytesIO(frame_bytes)) as frame:expected=frame.crop((left,top,right,bottom))
+                        if not screen_space:expected=expected.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
                         x,y=i%clip["columns"]*width,i//clip["columns"]*height
                         if atlas.crop((x,y,x+cw,y+ch)).tobytes()!=expected.tobytes():raise ValueError("Original encoded pixel mismatch")
                         if width>cw:

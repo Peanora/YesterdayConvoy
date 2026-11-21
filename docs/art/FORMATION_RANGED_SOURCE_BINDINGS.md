@@ -54,3 +54,9 @@ M11两条共用资源原本就已存在于正式 `OriginalCombatVfx/Monsters` �
 本作仍按原有六段直伤与八秒灼烧结算。原 `ScreenAttack` 配置的波间距为 2 源秒。以 30 fps 分析留存的原作 2× 实录，橙色火流跨同一区域的相关峰值相隔 30 帧，关键通过时间为 2.967、3.967、4.967、5.967 和 6.967 秒。棋盘以相同的 2× 表现速率每 1 对局秒发射下一波视觉，发射边界及行间相位适配当前场地。首波从本作烧区开始，原作复生到首波的绝对偏移仍缺确证。原 `ScreenAttack` 属复生阶段并依源投射物拦截，本作用作独立渲染层，火流位置不产生新的伤害、声音或命中。四费保留真实烧区中心持续层，使用 `enemy_bsnake_skill_01_buff` 的既有循环采样。
 
 `tools/package_talulah_native.py --verify-only` 回读原 30 fps HDR 采样和 Git PNG，以记录中的镜像、裁切及补边逐帧校对，39 段、83 页、4218 帧一致。Windows Player 仅导出已绑定的补充包 56 页。火流及命中保留 RGBA32 预处理，避免压缩改变源 HDR 梯度。原资源片段、2× 对照和关键帧位于 `artifacts/formation-original-fidelity/reference`。场景播放与复核结果见本轮 QA。
+
+### 2026-11-21 左侧原版恶火
+
+留存的原作 JT8-3 录屏在约 2–13 秒显示左缘动态火焰。同版本塔露拉 `ScreenAttack/EffectAura` 与 `FinalScreenAttack/EffectAura` 的 `ScreenEffectEmitter` 都引用 `screen_bsnake`，起止枚举为 0 和 1，`_isCameraEffect=0`。本机 Windows `battle/prefabs/effects/screen.ab` 的 SHA-256 为 `6d3709fd9a9bdb5fe5204de1483c7b18336380b4ed54f7397c123c5642370248`，内含此原 Prefab。使用原 `fire_1` 和父节点 `fixed` 的火粒子、材质与贴图。采样时隔离了全屏暗色、流光、速度线和补光等其他层。
+
+在 Direct3D11 用原 `Torappu/Particles/Additive` 烘焙 16 源秒、480 帧。源图无边缘裁失或 HDR 截断，480 帧原样裁切的 RGBA 与两页运行图集逐像素一致。正式棋盘在五费真实八秒灼烧内按已有 2× 模拟时钟把这层播放在左侧视口，暂停时可同步冻结。屏幕位置按本作镜头安全范围映射。原火浪弹道及真实结算继续独立运行。[原作实录](../../artifacts/formation-original-fidelity/reference/talulah-original-gameplay.mp4) · [源火焰抽帧](../../artifacts/formation-talulah-left-fire/screen-fire-source-keyframes.jpg) · [采样证据](../../artifacts/formation-talulah-left-fire/screen-fire-atlas-proof.json)

@@ -71,6 +71,10 @@ namespace YesterdayConvoy
 
         internal bool GuardTransformed(FormationDefender guard) => guard.ArtId == "D23" && GuardSkillActive(guard);
 
+        internal double GuardSignatureStart(FormationDefender guard) =>
+            guardKits.TryGetValue(guard.Id, out var kit) && kit.Guard == guard && kit.Casts > 0
+                ? kit.LastCast : guard.LastSkillAt >= 0 ? guard.LastSkillAt : double.NegativeInfinity;
+
         static bool UsesGuardTimeCharge(FormationDefender guard)
         {
             switch (guard.ArtId)
