@@ -110,6 +110,13 @@ namespace YesterdayConvoy
         internal static IEnumerator Prepare(IEnumerable<string> keys)
         {
             Read();var requested=(keys??Array.Empty<string>()).Where(Supports).Distinct().Select(k=>effects[k]).ToArray();
+            // Archived bundles are loaded before their platform material adapters run.
+            // Keep their diagnostic messages in the Player log and out of the battle HUD.
+            if(!Application.isEditor&&requested.Length>0)
+            {
+                Debug.developerConsoleEnabled=false;
+                Debug.developerConsoleVisible=false;
+            }
             var needed=new HashSet<string>(StringComparer.Ordinal);
             void Include(string id){if(!needed.Add(id))return;foreach(var dep in sources[id].dependencies??Array.Empty<string>())Include(dep);}
             foreach(var effect in requested)Include(effect.bundle);
