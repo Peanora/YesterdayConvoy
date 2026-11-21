@@ -1,0 +1,95 @@
+{
+  "task": "D33B",
+  "unitId": "D33",
+  "name": "予愿安洁莉娜",
+  "variant": "battle-back",
+  "characterId": "char_1015_aglna2",
+  "model": "char_1015_aglna2",
+  "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1015_aglna2/defaultskin/back/",
+  "files": [
+    {
+      "file": "char_1015_aglna2.skel",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1015_aglna2/defaultskin/back/char_1015_aglna2.skel",
+      "bytes": 520894,
+      "sha256": "d8091827f2d39e2069e139724d2c2b53e4e8c84c190baaec0714c327072df0d1"
+    },
+    {
+      "file": "char_1015_aglna2.atlas",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1015_aglna2/defaultskin/back/char_1015_aglna2.atlas",
+      "bytes": 8399,
+      "sha256": "b5a2346691dda712e439425a3fd4ba3614d967ec201f42eba3867da9b1f6327d"
+    },
+    {
+      "file": "char_1015_aglna2.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1015_aglna2/defaultskin/back/char_1015_aglna2.png",
+      "bytes": 129159,
+      "sha256": "4b3693c4082adc85af611e627451d2990e09cf6fd7a80524c6b54f4969389ea5"
+    }
+  ],
+  "reference": "https://prts.wiki/w/%E4%BA%88%E6%84%BF%E5%AE%89%E6%B4%81%E8%8E%89%E5%A8%9C",
+  "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1015_aglna2/meta.json",
+  "rights": "Original proprietary art, rights remain with rightsholders. User authorized direct import/upload, not an open redistribution license.",
+  "authorization": "2026-11-12 user explicitly requested direct integration without preview; recommended selected skill.",
+  "rasterization": {
+    "spineVersion": "3.8.99",
+    "fps": 60,
+    "coreScale": 0.38,
+    "corePixelsPerUnit": 130.4,
+    "idleAlphaHeight": 163,
+    "commonWorldIdleAlphaHeight": 1.25,
+    "notes": "Per-clip PPU compensates source raster scale; source origin pivots retained; technical portrait crop from exact idle frame."
+  },
+  "nativeMounts": {
+    "officialModelBundleURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/chararts_char_1015_aglna2.dat",
+    "officialModelBundleMD5": "1590b0baccb71b37d730e819c922669a",
+    "officialModelBundleSHA256": "6871bb864a92d89011fa11f6b6cfc4238230d653dd430a436229caf42a1d5b37",
+    "sourceModelVersion": "26-10-29-15-36-11-33649006",
+    "enumEvidence": {
+      "verified": true,
+      "status": "CONFIRMED_ORIGINAL_ENUM_CONSTANTS_FROM_IL2CPP_METADATA",
+      "enumType": "Torappu.Battle.Entity/MountPointType",
+      "mapping": {
+        "5": "specialPoint0",
+        "6": "specialPoint1",
+        "8": "specialPoint2",
+        "10": "specialPoint4",
+        "13": "specialPoint7"
+      },
+      "constants": {
+        "FOOT": 0,
+        "HIT": 1,
+        "MUZZLE": 2,
+        "HEAD": 3,
+        "UI": 4,
+        "SPECIAL_0": 5,
+        "SPECIAL_1": 6,
+        "GROUND": 7,
+        "SPECIAL_2": 8,
+        "SPECIAL_3": 9,
+        "SPECIAL_4": 10,
+        "SPECIAL_7": 13
+      },
+      "source": "https://github.com/Tim23333/Arknights_timer/blob/5734c30bf54780056ff758505380322c0cf519fe/Ark_data/Cpp2IL_DummyDll/Assembly-CSharp.dll",
+      "sourceSHA256": "adc1ceff7c662c0c52fcc5b8e854e55617f20a9f6f80d40858525db4611c0674",
+      "verification": "Pipeline owner read enum constants with Cecil from the IL2CPP DummyDLL; FollowMountPoint._mountPointType directly references this enum. Non-contiguous GROUND=7 is preserved. No DLL code executed.",
+      "currentModelProof": "Each actual mount is independently resolved through current official 26-10-29 chararts CharacterAnimator front/back Transform references and BoneFollower boneName; frame tracks come from those same original default Spine files.",
+      "limitations": "Serialized enum/model/source-frame contract; full original-client effect manager behaviour is not asserted."
+    },
+    "bindingScope": [
+      {
+        "effect": "aglna2_skill_03_buff_weapon_01",
+        "point": "SpecialPoint4",
+        "sourceMountPointType": 10,
+        "keepOriginRotation": false
+      },
+      {
+        "effect": "aglna2_skill_03_fly_trail_01",
+        "point": "SpecialPoint7",
+        "sourceMountPointType": 13,
+        "keepOriginRotation": true
+      }
+    ],
+    "trackSource": "Original Spine 3.8.99 same selected action frame sampled at 60Hz; no pose fitting or hand-authored offset.",
+    "rights": "Original proprietary source, user integration authorization does not establish an open redistribution license."
+  }
+}

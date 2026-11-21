@@ -89,7 +89,7 @@ namespace YesterdayConvoy
             Model.Speed = 1;
             showcaseTargetPressure = 0;
             if (guardArt == null) PrepareShowcaseTargets();
-            else Model.PrepareShowcaseGuard(guardArt);
+            else Model.PlaceSingleGuard(guardArt, showcase: true);
             campaignResultSettled = false;
             campaignInventoryOpen = campaignFormationOpen = campaignRouteOpen = campaignScoutingOpen = false;
             campaignSeaPainting = false;
@@ -140,10 +140,6 @@ namespace YesterdayConvoy
 
         internal void SetShowcaseTargetPressure(float attack, float interval = 1.5f) =>
             SetShowcaseTargetPressureInRange(attack,interval,100);
-
-        internal float ShowcaseGuardMotionDuration(FormationDefender guard, string key) =>
-            art.TryGetValue(FormationBodyArtId(guard), out var source) && source.Clips.TryGetValue(key, out var sequence)
-                ? sequence.Duration : 0;
 
         internal void SetShowcaseTargetPressureInRange(float attack, float interval, float range)
         {
@@ -207,10 +203,7 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleModel
     {
-        internal FormationPresentationAction ShowcaseGuardVisualAction { get; private set; }
-        internal FormationPresentationAction ShowcaseChenLaunch { get; private set; }
-
-        internal void PrepareShowcaseGuard(string artId)
+        internal void PlaceSingleGuard(string artId, bool showcase = false)
         {
             var node = Campaign.CurrentNode;
             var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id && entry.ArtId == artId);
@@ -222,8 +215,8 @@ namespace YesterdayConvoy
             if (Terrain != null && (!Terrain.CanPlaceDefender(cell) || !Terrain.IsWalkable(cell) ||
                 reserved && (!Terrain.CanPlaceDefender(skillCell) || !Terrain.IsWalkable(skillCell) ||
                     Terrain.HeightAt(skillCell) != 0) || !Terrain.IsWalkable(targetCell) ||
-                (artId == "D10" || artId == "D11" || artId == "D29") && !Terrain.CanPlaceDefender(allyCell)))
-                throw new InvalidOperationException("Showcase guard fixture cells are unavailable.");
+                (artId is "D10" or "D11" or "D29" or "D35") && !Terrain.CanPlaceDefender(allyCell)))
+                throw new InvalidOperationException("The guard trial cells are unavailable.");
             foreach (var key in combat.Keys.Where(key => key >= 100).ToArray()) combat.Remove(key);
             Defenders.Clear();
             AddCampaignDefender(node, null, artId, cell, 1, boss);
@@ -231,9 +224,12 @@ namespace YesterdayConvoy
             if (Defenders[0].Healer && artId != "D23" || artId == "D29")
             {
                 AddCampaignDefender(node, null, "D01", allyCell, 1, null);
-                Defenders[1].Attack = 0;
-                Defenders[1].Range = 0;
-                Defenders[1].MaxHealth = 100000;
+                if (showcase)
+                {
+                    Defenders[1].Attack = 0;
+                    Defenders[1].Range = 0;
+                    Defenders[1].MaxHealth = 100000;
+                }
             }
         }
 
@@ -241,9 +237,7 @@ namespace YesterdayConvoy
         {
             // StartBattle reprojects the campaign roster. Replace its freshly created
             // guards and immediately run their regular initialization before the first tick.
-            ShowcaseGuardVisualAction = null;
-            ShowcaseChenLaunch = null;
-            PrepareShowcaseGuard(artId);
+            PlaceSingleGuard(artId, showcase: true);
             BeginCampaignBattle();
             LimitSeconds = double.PositiveInfinity;
             var guard = Defenders[0];
@@ -251,7 +245,7 @@ namespace YesterdayConvoy
             target.Position = guard.ArtId switch
             {
                 "D23" => (Vector2)guard.SkillCell.Value + Vector2.left * .5f,
-                "D28" => (Vector2)guard.SkillCell.Value + Vector2.left * 1.7f,
+                "D28" => (Vector2)guard.SkillCell.Value + Vector2.left * 3,
                 _ => guard.Position + Vector2.left * Mathf.Min(.8f, guard.Range * .8f)
             };
             // Separate the reviewed muzzle, flight and target from each other on the capture board.
@@ -264,6 +258,7 @@ namespace YesterdayConvoy
             target.Facing = Vector2.right;
             target.Health = target.MaxHealth = 100000;
             target.NextAttackAt = double.PositiveInfinity;
+            if (guard.ArtId == "D28") target.ActionUntil = double.PositiveInfinity;
             if (Defenders.Count > 1) Defenders[1].Health *= .55f;
             if (guard.ArtId == "D23") guard.Health *= .18f;
         }
@@ -276,56 +271,11 @@ namespace YesterdayConvoy
             Units.First(unit => unit.Enabled).NextAttackAt = Clock;
         }
 
-        internal void PreviewShowcaseGuardMotion(string motion, float sourceSeconds)
+        internal void ShowcasePlaceWangTarget(Vector2 cell)
         {
-            var guard = Defenders[0];
-            guard.LastActionAt = guard.LastSkillAt = Clock;
-            guard.PresentationStartedAt = Clock;
-            guard.PresentationDuration = sourceSeconds / FormationBattleController.FormationVisualRate;
-            guard.PresentationRate = FormationBattleController.FormationVisualRate;
-            guard.PresentationAction = motion;
-            if (guard.ArtId == "D32")
-            {
-                guard.NextAttackAt = double.PositiveInfinity;
-                guard.SkillRequired = 999;
-                var target = Units.First(unit => unit.Enabled);
-                if (motion == "skill_begin")
-                {
-                    var kit = Kit(guard);
-                    kit.ActiveUntil = Clock + 20;
-                    double launch = Clock + sourceSeconds / guard.PresentationRate;
-                    ShowcaseChenLaunch = new FormationPresentationAction
-                    {
-                        Sequence = ++presentationSequence, ActorId = guard.Id, Skill = true,
-                        At = Clock, LaunchedAt = launch, ContactAt = launch, EndAt = kit.ActiveUntil,
-                        Rate = guard.PresentationRate, Animation = motion, From = guard.Position,
-                        To = guard.Position + guard.Facing
-                    };
-                }
-                else if (motion == "skill_attack")
-                {
-                    double contact = Clock + (16d / 30) / guard.PresentationRate;
-                    ShowcaseGuardVisualAction = new FormationPresentationAction
-                    {
-                        Sequence = ++presentationSequence, ActorId = guard.Id, Skill = true,
-                        At = Clock, LaunchedAt = contact, ContactAt = contact, EndAt = Clock + guard.PresentationDuration,
-                        Rate = guard.PresentationRate, Animation = motion, From = guard.Position,
-                        To = target.Position, TargetId = target.Id
-                    };
-                }
-            }
-            else if (guard.ArtId == "D30" && motion == "skill_attack")
-            {
-                const double sourceContact = 32d / 60;
-                double contact = Clock + sourceContact / guard.PresentationRate;
-                ShowcaseGuardVisualAction = new FormationPresentationAction
-                {
-                    Sequence = ++presentationSequence, ActorId = guard.Id, Skill = true,
-                    At = Clock, LaunchedAt = contact, ContactAt = contact,
-                    EndAt = Clock + guard.PresentationDuration, Rate = guard.PresentationRate,
-                    Animation = motion, From = guard.Position, To = guard.Position + guard.Facing * 2
-                };
-            }
+            var target = Units.First(unit => unit.Enabled);
+            target.Position = cell;
+            target.ActionUntil = double.PositiveInfinity;
         }
 
         // Source-animation review only: no combat simulation or skill/SP alteration.

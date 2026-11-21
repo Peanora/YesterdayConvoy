@@ -9,7 +9,7 @@ namespace YesterdayConvoy
         OriginalNativeFxLayer formationSixStarFx;
 
         static bool UsesFormationSixStarNativeFx(string artId) => artId is
-            "D21" or "D22" or "D23" or "D24" or "D25" or "D26" or "D28" or "D29" or "D30" or "D32";
+            "D21" or "D22" or "D23" or "D24" or "D25" or "D26" or "D28" or "D29" or "D30" or "D32" or "D33" or "D34" or "D35";
 
         static string FxTime(double time) => time.ToString("R", CultureInfo.InvariantCulture);
 
@@ -81,6 +81,11 @@ namespace YesterdayConvoy
         void PresentFormationSixStarFields(FormationDefender guard)
         {
             if (!UsesFormationSixStarNativeFx(guard.ArtId)) return;
+            if (FormationBattleModel.IsArchivedSignatureGuard(guard.ArtId))
+            {
+                PresentArchivedGuardFields(guard);
+                return;
+            }
             if (guard.ArtId == "D21")
             {
                 PresentFormationLapplandWolves(guard);
@@ -113,6 +118,17 @@ namespace YesterdayConvoy
                 ShowFormationGuardEffect(guard, "hsgma2_skill_03_buff_01", instance, age, position, 12, true, true);
                 ShowFormationGuardEffect(guard, "hsgma2_skill_03_buff_02", instance, age, position, 13, true, true);
             }
+            else if (guard.ArtId == "D26" && Model.GuardEffect(guard) is { Kind: "silverash" } field)
+            {
+                // The source aura, weapon and terrain range ignore animation playback speed.
+                double fieldAge = Model.Clock - startedAt;
+                var facing = new Vector3(field.Direction.x, 0, field.Direction.y);
+                ShowFormationGuardEffect(guard, "svash2_skill_03_buff_01", instance, fieldAge, position, 18,
+                    loop: true, flat: true, direction: facing);
+                ShowFormationGuardEffect(guard, "svash2_skill_03_buff_weapon_01", instance, fieldAge, position, 22, loop: true);
+                ShowFormationGuardEffect(guard, "svash2_skill_03_range_01", instance, fieldAge, position, 11,
+                    loop: true, flat: true, point: WorldPoint(position) + Vector3.up * .025f, direction: facing);
+            }
             else if (guard.ArtId == "D29" && guard.Shield > 0)
                 ShowFormationGuardEffect(guard, "demkni_skill_03_self", instance, age, position, 12, true, true);
         }
@@ -121,44 +137,26 @@ namespace YesterdayConvoy
         {
             if (Model.Phase is not (FormationPhase.Preparation or FormationPhase.Fighting)) return;
             double sinceCast = Model.Clock - Model.GuardSignatureStart(guard);
-            bool opening = sinceCast >= 0 && sinceCast < .5;
-            if (!opening && !Model.GuardSkillActive(guard))
+            if (!Model.GuardSkillActive(guard))
             {
                 double begun = Model.GuardSignatureEnd(guard);
-                // The archived idle wolf follows the source SpecialPoint0 on the displayed body frame.
+                // Normal-mode SpecialPoint0 remains attached as in the source. Each separate wolf hit has its own contact cue.
                 ShowFormationGuardEffect(guard, "whitw2_token_01", "ordinary-token/" + FxTime(begun),
                     (Model.Clock - begun) * FormationVisualRate, guard.Position, 32, loop: true);
                 return;
             }
 
-            const int sourceWolfCount = 3;
-            const float sourceScatterSeconds = 1.3f;
+            var wolves = Model.GuardHuntWolves(guard);
             string instance = "hunt/" + FxTime(Model.GuardSignatureStart(guard));
-            double age = sinceCast * FormationVisualRate;
+            double age = sinceCast;
             ShowFormationGuardEffect(guard, "whitw2_skill_03_buff_start", instance, age, guard.Position, 12);
-            var hunt = Model.GuardEffect(guard);
-            Vector2 destination = hunt?.Origin ?? FormationFeedbackActor(guard.TargetId)?.Position ?? (guard.Position + guard.Facing);
-            float waiting = (float)Math.Min(sourceScatterSeconds, sinceCast);
-            float pursuing = (float)Math.Max(0, sinceCast - sourceScatterSeconds);
-            // The old skill scatters three wolves at unit speed, then closes at 2–4 cells/s.
-            // The current skill has one authoritative hunt anchor for all damage settlement.
-            float travel = pursuing < 2 ? 2 * pursuing + .5f * pursuing * pursuing : 6 + 4 * (pursuing - 2);
-            Vector3 casterPoint = ActorWorldPoint(guard.Position);
-            Vector3 targetPoint = ActorWorldPoint(destination);
-            for (int i = 0; i < sourceWolfCount; i++)
+            for (int i = 0; i < wolves.Count; i++)
             {
-                float angle = i * Mathf.PI * 2 / sourceWolfCount;
-                Vector2 start = guard.Position + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * waiting;
-                float distance = Vector2.Distance(start, destination);
-                float progress = distance > .0001f ? Mathf.Clamp01(travel / distance) : 0;
-                Vector2 cell = Vector2.Lerp(start, destination, progress);
-                Vector3 point = WorldPoint(cell);
-                point.y = Mathf.Lerp(casterPoint.y, targetPoint.y, progress);
-                Vector3 aim = targetPoint - point;
-                aim.y = 0;
-                if (aim.sqrMagnitude < 1e-6f) aim = Vector3.right;
+                var wolf = wolves[i];
+                Vector3 origin = wolf.Locked ? ActorWorldPoint(wolf.Position) : WorldPoint(wolf.Position);
+                Vector3 aim = new Vector3(wolf.Direction.x, 0, wolf.Direction.y);
                 ShowFormationGuardEffect(guard, "whitw2_skill_03_token_trail_01", instance + "/wolf/" + i,
-                    age, cell, 33, loop: true, point: point, direction: aim);
+                    age, wolf.Position, 33, loop: true, point: origin, direction: aim);
             }
         }
 
@@ -184,11 +182,16 @@ namespace YesterdayConvoy
         void PresentFormationSixStarSignatureAction(FormationDefender guard, FormationPresentationAction action, double now)
         {
             if (!UsesFormationSixStarNativeFx(guard.ArtId)) return;
+            if (FormationBattleModel.IsArchivedSignatureGuard(guard.ArtId))
+            {
+                PresentArchivedGuardAction(guard, action, now);
+                return;
+            }
             string instance = "cast/" + action.Sequence;
             double age = (now - action.At) * action.Rate;
             var direction = ActorWorldPoint(action.To) - ActorWorldPoint(action.From);
             if (guard.ArtId == "D32" && action.Animation == "skill_attack")
-                PresentFormationChenSlash(guard, action, now, instance, age);
+                PresentFormationChenSlash(guard, action, instance, age);
             else if (guard.ArtId == "D23" && action.Animation == "skill_end")
             {
                 ShowFormationGuardEffect(guard, "monstr_skill_03_end_01", instance, age, action.From, 24);
@@ -197,19 +200,10 @@ namespace YesterdayConvoy
             }
             else if (guard.ArtId == "D26" && action.Animation == "skill_attack")
             {
-                // The archive's BirdAura_Self range is owned by this cast. The
-                // current board has one self cast and no partner field.
-                if (now < action.LaunchedAt + 1.25)
-                {
-                    ShowFormationGuardEffect(guard, "svash2_skill_03_buff_01", instance, age, action.From, 18, true, true);
-                    ShowFormationGuardEffect(guard, "svash2_skill_03_buff_weapon_01", instance, age, action.From, 22, true);
-                    ShowFormationGuardEffect(guard, "svash2_skill_03_range_01", instance, age, action.From, 11, true, true,
-                        direction: direction);
-                }
                 ShowFormationGuardEffect(guard, "svash2_skill_03_combat_start_01", instance, age, action.From, 23,
                     direction: direction);
                 // This original projectile owns its tip motion. The board supplies a fixed launch point and direction.
-                double travelAge = (now - action.LaunchedAt) * action.Rate;
+                double travelAge = now - action.LaunchedAt;
                 ShowFormationGuardEffect(guard, "svash2_skill_03_trail_02", instance, travelAge, action.From, 30,
                     flat: true, direction: direction);
             }

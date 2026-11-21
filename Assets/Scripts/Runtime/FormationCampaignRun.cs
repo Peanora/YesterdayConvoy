@@ -109,6 +109,7 @@ namespace YesterdayConvoy
         public FormationCampaignRules.NodeDefinition CurrentNode=>FormationCampaignRules.Nodes[NodeIndex];
         public bool IsPractice {get;}
         public bool IsPramanixBossTrial { get; }
+        internal string GuardTrialArt { get; set; }
         public FormationSynergyTrial SynergyTrial { get; }
         public string LastTrialProgress { get; private set; }
         internal bool ShowsHopeRewards => SynergyTrial?.Trait.Id == "整合";

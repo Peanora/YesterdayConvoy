@@ -49,6 +49,69 @@ namespace YesterdayConvoy.Tests
             }
         }
 
+        static T InvokeGuardTestHook<T>(FormationBattleModel model, string method, object argument) =>
+            (T)typeof(FormationBattleModel).GetMethod(method, BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(model, new[] { argument });
+
+        [Test]
+        public void LapplandOrdinaryWolfRampsAndThreeHuntWolvesDealRealContactsForFortySeconds()
+        {
+            var model = Fixture(out _, "B10");
+            Assert.That(model.StartBattle(), Is.True);
+            InvokeGuardTestHook<object>(model, "BeginShowcaseGuard", "D21");
+            var caster = model.Defenders.Single();
+            Advance(model, 4);
+            var ordinary = model.Hits.Where(hit => hit.FromId == caster.Id &&
+                hit.Action?.Animation == "lappland_wolf_attack").ToArray();
+            Assert.That(ordinary.Length, Is.GreaterThanOrEqualTo(2));
+            Assert.That(ordinary.Last().Amount, Is.GreaterThan(ordinary.First().Amount));
+
+            for (int i = 0; i < 600 && !InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster); i++) model.Advance(.025f);
+            Assert.That(InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster), Is.True);
+            double start = InvokeGuardTestHook<double>(model, "GuardSignatureStart", caster);
+            Assert.That(InvokeGuardTestHook<double>(model, "GuardSignatureEnd", caster) - start, Is.EqualTo(40).Within(.001));
+            Advance(model, 1.2f);
+            Assert.That(InvokeGuardTestHook<System.Collections.IEnumerable>(model, "GuardHuntWolves", caster).Cast<object>().Select(wolf => (Vector2)wolf.GetType().GetField("Position", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(wolf)).Distinct().Count(), Is.EqualTo(3));
+            Advance(model, 5);
+            Assert.That(model.Hits.Count(hit => hit.FromId == caster.Id &&
+                hit.Action?.Animation == "lappland_hunt_attack"), Is.GreaterThan(3));
+            Advance(model, (float)(start + 39.8 - model.Clock));
+            Assert.That(InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster), Is.True);
+            Advance(model, 1);
+            Assert.That(InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster), Is.False);
+            Assert.That(InvokeGuardTestHook<System.Collections.IEnumerable>(model, "GuardHuntWolves", caster), Is.Empty);
+            Assert.That(model.Hits.Any(hit => hit.At > start + 40 &&
+                hit.Action?.Animation == "lappland_hunt_attack"), Is.False);
+        }
+
+        [Test]
+        public void SilverAshKeepsSkillForFortyEightSecondsAndSlashesAtSourceCadence()
+        {
+            var model = Fixture(out _, "B10");
+            Assert.That(model.StartBattle(), Is.True);
+            InvokeGuardTestHook<object>(model, "BeginShowcaseGuard", "D26");
+            var caster = model.Defenders.Single();
+            for (int i = 0; i < 650 && !InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster); i++) model.Advance(.025f);
+            Assert.That(InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster), Is.True);
+            double start = InvokeGuardTestHook<double>(model, "GuardSignatureStart", caster);
+            Assert.That(InvokeGuardTestHook<double>(model, "GuardSignatureEnd", caster) - start, Is.EqualTo(48).Within(.001));
+            Advance(model, 5);
+            var waves = model.PresentationActions.Where(action => action.ActorId == caster.Id &&
+                action.Animation == "skill_attack").ToArray();
+            Assert.That(waves.Length, Is.GreaterThanOrEqualTo(4));
+            for (int i = 1; i < waves.Length; i++)
+                Assert.That(waves[i].At - waves[i - 1].At, Is.EqualTo(1.2).Within(.05));
+            Assert.That(model.Hits.Count(hit => hit.FromId == caster.Id &&
+                hit.Action?.Animation == "skill_attack"), Is.GreaterThanOrEqualTo(2));
+            Assert.That(waves.All(action => action.ContactAt >= action.LaunchedAt), Is.True);
+            Assert.That(waves.All(action => Math.Abs((action.LaunchedAt - action.At) * action.Rate - .5) < .001), Is.True);
+            Advance(model, (float)(start + 47.8 - model.Clock));
+            Assert.That(InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster), Is.True);
+            Advance(model, 1);
+            Assert.That(InvokeGuardTestHook<bool>(model, "GuardSkillActive", caster), Is.False);
+            Assert.That(model.PresentationActions.Any(action => action.ActorId == caster.Id && action.Animation == "skill_end"), Is.True);
+        }
+
         [TestCase(71)]
         [TestCase(20261119)]
         public void AuthoredCampaignUsesAllNamedDefendersOnCompactLegalFormations(int seed)
@@ -935,7 +998,10 @@ namespace YesterdayConvoy.Tests
             var fighter = model.Units.Single();
             fighter.Position = guard.SkillCell.Value;
             fighter.MaxHealth = fighter.Health = 100000;
+            fighter.ActionUntil = double.PositiveInfinity;
             Advance(model, .025f);
+            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.False);
+            Advance(model, .125f);
             Assert.That(model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.EqualTo(1));
             Advance(model, 2);
             Assert.That(model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.EqualTo(1));

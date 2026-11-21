@@ -72,6 +72,7 @@ namespace YesterdayConvoy
             if(target==null||!target.Alive||raw<=0||target is FormationDefender snowBoss&&SnowBossTransitionActive(snowBoss))return 0;var t=State(target);var s=State(source);
             float armor=target.Armor+Buff(target,"mandra_armor")+Buff(target,"blast_armor")+Buff(target,"kingdom_armor");
             if(Buff(target,"armorbreak")>0)armor-=Mathf.Min(5,Stack(target,"armorbreak"))*2;
+            armor-=Stack(target,"guard_corrosion_defense");
             if(source is FormationFighter sf&&HasItem(sf,"AA")&&armor>0)armor*=1-Stack(source,"saw")*.02f;
             float mr=target.MagicResistance+Buff(target,"mandra_mr")+Buff(target,"blast_mr")+Buff(target,"kingdom_mr")+Buff(target,"king_mr")+Buff(target,"burn_mr");
             float baseDamage=DamageAfterDefense(raw,type,armor,mr);

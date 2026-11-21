@@ -222,11 +222,11 @@ namespace YesterdayConvoy
         }
         public void ResetDemo()
         {
-            if (Campaign?.IsPramanixBossTrial == true || Campaign?.SynergyTrial != null)
+            if (Campaign?.GuardTrialArt != null || Campaign?.IsPramanixBossTrial == true || Campaign?.SynergyTrial != null)
             {
                 if (openingGroundBall != null) return;
                 Model = Session.PreparePracticeBattle(Campaign.NodeIndex);
-                ResetFormationPreparation(Campaign.SynergyTrial?.Hint ?? PramanixTrialHint);
+                ResetFormationPreparation(Campaign.GuardTrialArt != null ? GuardTrialHint : Campaign.SynergyTrial?.Hint ?? PramanixTrialHint);
                 return;
             }
             if(Campaign?.IsPractice==true){SelectPracticeBattle(Campaign.NodeIndex);return;}
@@ -245,7 +245,7 @@ namespace YesterdayConvoy
 
         internal void SelectPracticeBattle(int node)
         {
-            if(Campaign?.IsPractice==true && Campaign.SynergyTrial==null && !Campaign.IsPramanixBossTrial)
+            if(Campaign?.IsPractice==true && Campaign.GuardTrialArt==null && Campaign.SynergyTrial==null && !Campaign.IsPramanixBossTrial)
             {
                 var next=Session.PreparePracticeBattle(node);
                 if(next==null)return;
@@ -271,6 +271,16 @@ namespace YesterdayConvoy
         }
 
         const string PramanixTrialHint = "预设阵容已上阵，可直接开战或先调整站位。";
+        const string GuardTrialHint = "预设阵容已上阵，可开战观察所选守军的攻击和技能。";
+
+        internal void SelectGuardTrial(string artId)
+        {
+            if (!Ready || FormationCampaignRules.DefenderByArtId(artId) == null) return;
+            Session = FormationShopSession.StartGuardTrial(seed, artId);
+            Model = new FormationBattleModel(seed, Model.Terrain);
+            Session.ApplyTo(Model);
+            ResetFormationPreparation(GuardTrialHint);
+        }
 
         internal void SelectPramanixBossTrial()
         {

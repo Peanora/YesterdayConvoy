@@ -37,6 +37,15 @@ namespace YesterdayConvoy
             Current = new FormationShopSession(seed,true,node); return Current;
         }
 
+        internal static FormationShopSession StartGuardTrial(int seed, string artId)
+        {
+            string nodeId = artId == "D25" ? "1-9" : artId == "D29" ? "2-7" : "1-1";
+            int node = Array.FindIndex(FormationCampaignRules.Nodes, entry => entry.Id == nodeId);
+            var session = StartPractice(seed, node);
+            session.Run.GuardTrialArt = artId;
+            return session;
+        }
+
         internal static FormationShopSession StartSynergyTrial(int seed, FormationSynergyTrial trial)
         {
             Current = new FormationShopSession(seed, true, trial.NodeIndex, trial);

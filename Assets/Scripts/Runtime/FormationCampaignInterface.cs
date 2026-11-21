@@ -194,13 +194,15 @@ namespace YesterdayConvoy
             bool showProgress=!string.IsNullOrEmpty(progress);
             var r=new Rect(350,198,580,showProgress?270:234);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
             string outcome=Model.Phase==FormationPhase.Won?"蓝门突破":"本关失利";
-            string title=Campaign.IsPramanixBossTrial ? "圣聆初雪" : trial?.Trait.Name??Campaign.CurrentNode.Id;
+            string title=Campaign.GuardTrialArt is { } guardArt ? FormationCampaignRules.DefenderByArtId(guardArt).Name :
+                Campaign.IsPramanixBossTrial ? "圣聆初雪" : trial?.Trait.Name??Campaign.CurrentNode.Id;
             CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,40),$"{title}  ·  {outcome}",25,true);
             CampaignLabel(new Rect(r.x+25,r.y+84,r.width-50,35),$"用时 {Model.Clock:0.0} 秒  ·  剩余守军 {Model.RemainingDefenders}/{Model.InitialDefenderCount}  ·  守军生命削减 {Model.EncounterProgress:P0}",15);
             if(showProgress)CampaignLabel(new Rect(r.x+25,r.y+122,r.width-50,67),progress,14,true);
             if(Button(new Rect(r.x+25,r.yMax-72,254,46),"重试本关",true,true)){ResetDemo();return;}
-            if(Button(new Rect(r.x+296,r.yMax-72,259,46),trial==null?"选择其他关卡":"选择其他羁绊"))
-                OpenFormationTrialPicker(trial==null?FormationMenuPage.DifficultyTrials:FormationMenuPage.SynergyTrials);
+            bool guardTrial = Campaign.GuardTrialArt != null;
+            if(Button(new Rect(r.x+296,r.yMax-72,259,46),guardTrial?"选择其他守军":trial==null?"选择其他关卡":"选择其他羁绊"))
+                OpenFormationTrialPicker(guardTrial?FormationMenuPage.GuardTrials:trial==null?FormationMenuPage.DifficultyTrials:FormationMenuPage.SynergyTrials);
         }
         void DrawCampaignInventory()
         {

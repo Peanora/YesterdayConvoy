@@ -171,17 +171,107 @@ namespace YesterdayConvoy.Tests
             Assert.That(Field<double>(tag, "SampleAge"), Is.EqualTo(age));
         }
 
-        [UnityTest] public IEnumerator ArchivedChessBoardRemainsVisibleThroughTheRealTrigger()
+        [UnityTest] public IEnumerator ChenUsesSourceOrdinaryCadenceAndRepeatsThreeRealSkillHits()
         {
             RequireGpu();
-            yield return Fixture(new[] { "SLUG" });
-            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "SLUG" }, 3, 3, "D28", false, true);
+            yield return Fixture(new[] { "B10" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "B10" }, 3, 3, "D32", false, true);
             Begin();
-            var guard = controller.Model.Defenders.Single();
+            var model = controller.Model;
+            var guard = model.Defenders.Single();
+            var target = model.Units.Single(unit => unit.Enabled);
+            yield return Until(() => model.PresentationActions.Count(a => a.ActorId == guard.Id && a.Animation == "attack") >= 2, 3);
+            var ordinary = model.PresentationActions.Where(a => a.ActorId == guard.Id && a.Animation == "attack").Take(2).ToArray();
+            Assert.That(ordinary[1].At - ordinary[0].At, Is.EqualTo(1.25 / 1.13).Within(.025));
+            Assert.That((ordinary[0].ContactAt - ordinary[0].At) * ordinary[0].Rate, Is.EqualTo(13d / 30).Within(.0001));
+            Assert.That(model.Hits.Any(h => h.Action == ordinary[0] && h.ToId == target.Id && h.Amount > 0), Is.True);
+
+            yield return Until(() => model.PresentationActions.Any(a => a.ActorId == guard.Id && a.Animation == "skill_begin"), 16);
+            var cast = model.PresentationActions.Single(a => a.ActorId == guard.Id && a.Animation == "skill_begin");
+            Assert.That(cast.LaunchedAt - cast.At, Is.EqualTo(13d / 60).Within(.0001));
+            yield return Until(() => model.Hits.Any(h => h.Action == cast && h.ImpactIndex == 3 && h.ToId == target.Id), 2);
+            yield return Until(() => model.Hits.Where(h => h.FromId == guard.Id && h.Action?.Animation == "skill_attack" &&
+                h.ImpactIndex == 2).Select(h => h.Action.Sequence).Distinct().Count() >= 2, 3);
+            var slashes = model.PresentationActions.Where(a => a.ActorId == guard.Id && a.Animation == "skill_attack").Take(2).ToArray();
+            Assert.That(slashes[1].At - slashes[0].At, Is.EqualTo(1.25 / 1.13).Within(.025));
+            foreach (var slash in slashes)
+            {
+                var beats = model.Hits.Where(h => h.Action == slash && h.ToId == target.Id).OrderBy(h => h.ImpactIndex).ToArray();
+                Assert.That(beats.Select(h => h.ImpactIndex), Is.EqualTo(new[] { 0, 1, 2 }));
+                foreach (var beat in beats)
+                {
+                    double at = slash.At + (16d + 2 * beat.ImpactIndex) / 30 / slash.Rate;
+                    Assert.That(beat.At, Is.InRange(at - .0001, at + .0251));
+                }
+            }
+            Assert.That(cast.At + 20 - model.Clock, Is.GreaterThan(15));
+        }
+
+        [UnityTest] public IEnumerator RestoredGuardCanBeSelectedAndRetriedOnTheCurrentBoard()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B10" });
+            Invoke(controller, "SelectGuardTrial", "D34");
+            Assert.That(controller.Model.Defenders.Single().ArtId, Is.EqualTo("D34"));
+            Assert.That(controller.Model.Phase, Is.EqualTo(FormationPhase.Preparation));
+            var previous = controller.Model;
+            Invoke(controller, "ResetDemo");
+            Assert.That(controller.Model, Is.Not.SameAs(previous));
+            Assert.That(controller.Model.Defenders.Single().ArtId, Is.EqualTo("D34"));
+            int node = Array.FindIndex(FormationCampaignRules.Nodes, entry => entry.Id == "3-7");
+            Invoke(controller, "SelectPracticeBattle", node);
+            Assert.That(controller.Model.Defenders.Single().IsSnowBoss, Is.True);
+        }
+
+        [UnityTest] public IEnumerator ArchivedChessBoardRemainsVisibleThroughAllFiveRealTriggers()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B10" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "B10" }, 3, 3, "D28", false, true);
+            Begin();
+            var model = controller.Model;
+            var guard = model.Defenders.Single();
+            var pieces = ((Array)Invoke(model, "GuardChessPieces", guard)).Cast<object>().ToArray();
+            Assert.That(pieces.Length, Is.EqualTo(5));
+            Assert.That(pieces.Select(piece => Field<Vector2>(piece, "Origin")).Distinct().Count(), Is.EqualTo(5));
             yield return Until(() => NativeLayerIsVisible("D28", "wang_skill_03_range"), 2);
-            Assert.That(controller.Model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill), Is.False);
-            yield return Until(() => controller.Model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill), 5);
-            Assert.That(NativeLayerIsVisible("D28", "wang_skill_03_range"), Is.True);
+            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill), Is.False);
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                Invoke(model, "ShowcasePlaceWangTarget", Field<Vector2>(pieces[i], "Origin"));
+                yield return Until(() => Field<string>(pieces[i], "Kind") == "chess_hit", 1);
+                Assert.That(pieces.Count(piece => Field<string>(piece, "Kind") == "chess_hit"), Is.EqualTo(i + 1));
+                Assert.That(NativeLayerIsVisible("D28", "wang_skill_03_range"), Is.True);
+                Assert.That(model.Hits.Last().FromId, Is.EqualTo(guard.Id));
+            }
+            yield return Until(() => Invoke(model, "GuardEffect", guard) == null, 1);
+        }
+
+        [UnityTest] public IEnumerator MlynarKeepsRealSourceSlashesAcrossTheActiveSkill()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B10" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "B10" }, 3, 3, "D30", false, true);
+            Begin();
+            var model = controller.Model;
+            var guard = model.Defenders.Single();
+            Assert.That(model.PresentationActions.Any(action => action.ActorId == guard.Id && !action.Skill), Is.False);
+            yield return Until(() => (bool)Invoke(model, "GuardSkillActive", guard), 30);
+            double start = model.Clock;
+            var slashes = new List<FormationPresentationAction>();
+            yield return Until(() =>
+            {
+                foreach (var action in model.PresentationActions)
+                    if (action.ActorId == guard.Id && action.Animation == "skill_attack" &&
+                        model.Hits.Any(hit => hit.Action == action) && !slashes.Contains(action))
+                        slashes.Add(action);
+                return !(bool)Invoke(model, "GuardSkillActive", guard);
+            }, 27);
+            Assert.That(model.Clock - start, Is.EqualTo(26).Within(.05));
+            Assert.That(slashes.Count, Is.InRange(20, 22));
+            Assert.That(slashes.Last().At - start, Is.GreaterThan(24));
+            Assert.That(slashes[1].At - slashes[0].At, Is.EqualTo(1.2).Within(.03));
+            Assert.That(slashes[0].ContactAt - slashes[0].At, Is.EqualTo(32d / 120).Within(.001));
         }
 
         [UnityTest] public IEnumerator ReconstructedMon3trSwingsAtTheArchivedCadenceAndSourceMarker()

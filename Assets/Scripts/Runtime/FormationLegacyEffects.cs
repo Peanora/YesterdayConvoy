@@ -87,6 +87,7 @@ namespace YesterdayConvoy
             ["D28"]=new[]{GuardChessPlaced,GuardChessArmed,GuardChessTriggered},
             ["D29"]=new[]{"demkni_skill_03_self","demkni_attack_01_hit",GuardHealHit},
             ["D30"]=new[]{"mlynar_skill_03_buff_03","mlynar_skill_03_start_01","mlynar_skill_03_hit_01"},
+            ["D31"]=new[]{GuardPhysicalHit},
         };
 
         const string PramanixEffects = "defender/D27/";
@@ -145,11 +146,21 @@ namespace YesterdayConvoy
                             LegacyOriginal("defender/D27/sbell2_skill_03_start_01",age,origin,24,flat:true);
                             PresentGuardSnowField(effect);
                             break;
-                        case "chess":
-                        case "chess_hit":
-                            if(CombatViewActive)PresentFormationWangBoard(guard,"board/"+FxTime(effect.PlacedAt),
+                        case "chess_board":
+                            PresentFormationWangBoard(guard,"board/"+FxTime(effect.PlacedAt),
                                 (now-effect.PlacedAt)*FormationVisualRate);
-                            PresentFormationGuardChess(guard,origin,instance,age,effect.Kind=="chess_hit",combat: CombatViewActive);
+                            foreach(var stone in Model.GuardChessPieces(guard))
+                                if(now < stone.EndsAt)
+                                    PresentFormationGuardChess(guard,stone.Origin,
+                                        instance+"/"+stone.Origin.x+"/"+stone.Origin.y,
+                                        (now-stone.StartedAt)*FormationVisualRate,stone.Kind=="chess_hit",combat:true);
+                            break;
+                        case "chess":
+                            PresentFormationGuardChess(guard,origin,instance,age,false,combat:false);
+                            break;
+                        case "mlynar":
+                            ShowFormationGuardEffect(guard,"mlynar_skill_03_buff_03",instance,age,origin,12,true,true,
+                                direction:new Vector3(effect.Direction.x,0,effect.Direction.y));
                             break;
                         case "slash":
                             if(id=="D30")
@@ -185,12 +196,6 @@ namespace YesterdayConvoy
                     PresentFormationGuardCast(guard, action, now);
                 }
                 PresentFormationGuardProjectile(guard, action, now);
-            }
-            if (Model.ShowcaseGuardVisualAction is { } preview && now <= preview.EndAt + .6 &&
-                Model.Defenders.FirstOrDefault(guard => guard.Id == preview.ActorId) is { } previewGuard)
-            {
-                PresentFormationSixStarSignatureAction(previewGuard, preview, now);
-                PresentFormationGuardCast(previewGuard, preview, now);
             }
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
@@ -313,11 +318,24 @@ namespace YesterdayConvoy
                 "D21" => action.Animation == "skill_attack" ? "whitw2_skill_03_trail_01" : "whitw2_attack_01_trail",
                 "D23" => "monstr_attack_trail",
                 "D24" => action.Skill ? "angel2_skill_3_loop_trail_01" : "angel2_attack_loop_trail_01",
+                "D33" => action.Skill ? "aglna2_skill_03_trail_01" : "aglna2_attack_trail_01",
+                "D35" => !action.Skill ? "kalts2_skill_01_trail_01" :
+                    action.Heal ? "kalts2_skill_02_trail_heal_01" : "kalts2_skill_02_trail_damage_01",
                 _ => null
             };
             if(trail == null)return;
             bool left = Vector3.Dot(ActorWorldPoint(action.To)-ActorWorldPoint(action.From),battleCamera.transform.right)<0;
             var start = FormationGuardMuzzle(guard, action, left);
+            if (FormationBattleModel.IsArchivedSignatureGuard(guard.ArtId))
+            {
+                if (!legacyFlightOrigins.TryGetValue(action.Sequence, out start))
+                {
+                    start = bodies.TryGetValue(guard.Id, out var body) &&
+                        DefenderNativeMounts.TryResolvePoint(guard.ArtId, "Muzzle", body, out var muzzle, out _)
+                        ? muzzle : LegacyOwnerPoint(guard, action.From);
+                    legacyFlightOrigins[action.Sequence] = start;
+                }
+            }
             var end = FormationFeedbackContactPoint(target,target.Position,action.Heal ? .62f : .52f);
             double elapsed = now - action.LaunchedAt;
             float progress = (float)(elapsed / (action.ContactAt-action.LaunchedAt));
@@ -334,7 +352,9 @@ namespace YesterdayConvoy
             "D09" => GuardFireHit,
             "D10" or "D11" when hit.Heal => GuardHealHit,
             "D12" => "orchid_attack_01_hit",
-            "D21" => hit.Skill ? "whitw2_skill_03_token_hit_01" : "whitw2_hit_01",
+            "D21" when hit.Action?.Animation == FormationBattleModel.LapplandWolfAttack => "whitw2_token_hit_01",
+            "D21" when hit.Action?.Animation == FormationBattleModel.LapplandHuntAttack => "whitw2_skill_03_token_hit_01",
+            "D21" => "whitw2_hit_01",
             "D22" => hit.Action?.Animation == "skill_attack" ? "yu_skill3_hit_01" : "yu_hit_01",
             "D23" => hit.Heal ? "monstr_attack_hit_01" : "monstr_skill_03_hit",
             "D24" => hit.Skill ? "angel2_skill_3_loop_hit_01" : "angel2_attack_loop_hit_01",
@@ -343,7 +363,12 @@ namespace YesterdayConvoy
             "D27" => "sbell2_skill_03_hit",
             "D29" => hit.Heal ? "common_heal_hit_01" : "demkni_attack_01_hit",
             "D30" => "mlynar_skill_03_hit_01",
+            "D31" => GuardPhysicalHit,
+            "D32" when hit.Skill => "chen3_skill_03_hit_0" + (hit.ImpactIndex + 1),
             "D32" when !hit.Skill => "chen3_attack_hit_01",
+            "D33" => hit.Skill ? "aglna2_skill_03_hit_01" : "aglna2_attack_hit_01",
+            "D34" => hit.Skill ? "clemnt_skill_03_hit_01" : "clemnt_attack_01_hit_01",
+            "D35" when !hit.Skill && hit.Heal => "kalts2_skill_01_hit_01",
             _ => null
         };
 

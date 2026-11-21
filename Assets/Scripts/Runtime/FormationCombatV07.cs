@@ -208,6 +208,11 @@ namespace YesterdayConvoy
             Defenders.Clear();
             var node = Campaign.CurrentNode;
             LimitSeconds = node.TimeLimit;
+            if (Campaign.GuardTrialArt is { } trialArt)
+            {
+                PlaceSingleGuard(trialArt);
+                return;
+            }
             if (node.DefenderCount == 0) return;
 
             var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
@@ -285,9 +290,10 @@ namespace YesterdayConvoy
                 Armor = isBoss ? boss.Armor : role.Armor,
                 MagicResistance = isBoss ? boss.MagicResistance : role.MagicResistance,
                 Range = isBoss ? boss.Range : role.Range,
-                Interval = isBoss ? boss.Interval : role.Interval,
+                Interval = isBoss ? boss.Interval : artId == "D32" ? ChenAttackInterval : role.Interval,
                 SkillRequired = isBoss ? boss.RequiredSP : guard.RequiredSP ?? role.RequiredSP,
             };
+            ConfigureArchivedGuard(d);
             ResetActor(d, true, Vector2.left);
             var state = State(d);
             state.Template = guard.Role;
@@ -334,7 +340,9 @@ namespace YesterdayConvoy
                     if(Key(a)=="M21")CombatHeal(a,(FormationFighter)a,a.MaxHealth*.02f*dt,false,false,showFeedback:false);
                     if(Key(a)=="M34"&&(Clock>=5||a.LastHitAt>=0||a.Health<a.MaxHealth)) { if(Stack(a,"awake")==0)AddStack(a,"awake",1,1);SelfLoss((FormationFighter)a,a.MaxHealth*.02f*dt); }
                 }
-                else if(a is FormationDefender defender && UsesGuardTimeCharge(defender))a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+dt);
+                else if(a is FormationDefender defender && UsesGuardTimeCharge(defender) &&
+                    (defender.ArtId is not ("D30" or "D32") && !IsArchivedSignatureGuard(defender.ArtId) || !GuardSkillActive(defender)))
+                    a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+dt);
                 if(s.RecordUntil>0&&Clock>=s.RecordUntil){s.RecordUntil=0;var target=(s.RecordOwner as FormationFighter)!=null?FighterTarget((FormationFighter)s.RecordOwner):null;if(target!=null)CombatDamage(a,target,s.RecordDamage,0,true,false);s.RecordDamage=0;}
             }
             // A fixed ordered queue prevents action haste, multihit, or deaths from recursing.

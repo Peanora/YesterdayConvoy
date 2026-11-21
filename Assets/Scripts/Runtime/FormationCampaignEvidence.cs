@@ -1329,7 +1329,7 @@ namespace YesterdayConvoy
                             {
                                 "D22" => model.GuardEffect(guard)?.Kind == "firewall",
                                 "D23" => model.GuardTransformed(guard),
-                                "D28" => model.GuardEffect(guard)?.Kind == "chess_hit",
+                                "D28" => model.GuardChessPieces(guard).Any(piece => piece.Kind == "chess_hit"),
                                 _ => guard.LastSkillAt >= 0 || model.GuardEffect(guard) != null,
                             };
                             bool firstHit = model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill) && skillHits.Add(guard.ArtId);

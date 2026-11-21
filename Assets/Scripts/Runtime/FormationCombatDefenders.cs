@@ -27,12 +27,20 @@ namespace YesterdayConvoy
         {
             internal FormationDefender Guard;
             internal Vector2 OriginalPosition;
+            internal Vector2 ArchivedFacing;
             internal int Casts, EffectiveHeals, VolleyRounds;
+            internal int ArchivedAmmo;
             internal double FirstContact = double.PositiveInfinity;
             internal double LastCast, ActiveUntil, NextPlacement;
             internal float OutsideHealing;
-            internal FormationFighter HuntTarget;
+            internal int OrdinaryWolfTarget = -1;
+            internal float OrdinaryWolfDamageScale;
+            internal GuardHuntWolf[] HuntWolves;
+            internal double HuntAdvancedAt, HuntNextAuraAt;
+            internal bool SignatureEnded;
             internal FormationGuardEffect Effect;
+            internal FormationGuardEffect[] ChessPieces;
+            internal ChenDawnCast ChenDawn;
             internal Dictionary<Vector2Int, int> SnowTiles;
             internal HashSet<int> InSnow;
             internal Dictionary<int, Vector2Int> SnowInduction;
@@ -170,10 +178,9 @@ namespace YesterdayConvoy
         {
             var action = BeginAction(guard, duration, skill, target, heal);
             if (motion != null) action.Animation = guard.PresentationAction = motion;
-            if (guard.ArtId == "D23" && motion != null)
+            if ((guard.ArtId is "D23" or "D26" or "D28" or "D30" || guard.ArtId == "D21" && motion == "skill_end") && motion != null)
             {
-                // The generic guard profile uses the long healing clip. The relay and each
-                // reconstructed slash use their own motion length before returning to idle.
+                // These signatures supply individual source motion lengths.
                 guard.PresentationDuration = duration;
                 action.EndAt = action.At + duration;
             }
@@ -248,13 +255,29 @@ namespace YesterdayConvoy
                 TickGuardChess(guard, kit);
                 return;
             }
+            if (guard.ArtId == "D30")
+            {
+                TickGuardMlynar(guard, kit);
+                return;
+            }
+            if (guard.ArtId == "D32")
+            {
+                TickChenDawn(guard, kit);
+                return;
+            }
 
-            if (kit.Effect?.Kind == "hunt" && kit.Effect.EndsAt > Clock)
-                TrackGuardHunt(kit);
-
+            if (guard.ArtId == "D21" && GuardSkillActive(guard)) TickGuardHunt(guard, kit);
             if (Buff(guard, "stun") > 0 || Buff(guard, "freeze") > 0) return;
-            var candidates = GuardTargets().Where(u => GuardInRange(guard.Position, u, guard.Range) &&
-                !(guard.Range < 2 && State(u).RidingCarrier != 0)).ToArray();
+            if (guard.ArtId == "D31" || IsArchivedSignatureGuard(guard.ArtId))
+            {
+                TickArchivedGuard(guard, kit);
+                return;
+            }
+            if ((guard.ArtId is "D21" or "D26") && TryEndRecurringGuardSkill(guard, kit)) return;
+            bool silverAshSkill = guard.ArtId == "D26" && GuardSkillActive(guard);
+            var candidates = GuardTargets().Where(u => silverAshSkill
+                ? SilverAshFieldContains(kit.Effect, u.Position)
+                : GuardInRange(guard.Position, u, guard.Range) && !(guard.Range < 2 && State(u).RidingCarrier != 0)).ToArray();
             var target = candidates.Where(u => Buff(u, "taunt") > 0)
                 .OrderBy(u => (u.Position - guard.Position).sqrMagnitude).ThenBy(u => u.Id).FirstOrDefault()
                 ?? candidates.FirstOrDefault(u => u.Id == guard.TargetId)
@@ -292,7 +315,7 @@ namespace YesterdayConvoy
             }
             if (target == null) return;
             guard.TargetId = target.Id;
-            Face(guard, target.Position);
+            if (!silverAshSkill) Face(guard, target.Position);
 
             if (!UsesGuardTimeCharge(guard))
             {
@@ -301,11 +324,11 @@ namespace YesterdayConvoy
                 ready = false;
             }
 
-            if (!attackReady || guard.ArtId == "D30") return;
+            if (!attackReady) return;
             bool activeMotion = (guard.ArtId == "D21" || guard.ArtId == "D22" || guard.ArtId == "D25") && GuardSkillActive(guard);
             var basic = BeginGuardAction(guard, ready, ready ? state.GuardActionSeconds : .35f, target,
                 motion: activeMotion ? "skill_attack" : null);
-            guard.NextAttackAt = Clock + guard.Interval / Mathf.Max(.1f, 1 - (Buff(guard, "cold") > 0 ? .2f : 0) - Buff(guard, "nerve_slow"));
+            guard.NextAttackAt = Clock + (guard.ArtId == "D21" ? LapplandAttackInterval : guard.Interval) / GuardAttackFrequency(guard);
             if (ready) guard.SkillCharge = 0;
             GuardContact(guard, basic, () =>
             {
@@ -327,6 +350,7 @@ namespace YesterdayConvoy
                 for (int i = 0; i < hits; i++)
                     foreach (var unit in targets) CombatDamage(guard, unit, guard.Attack * multiplier, type, ready, false);
             }, trackedTarget: basic.ProjectileMovement != null || guard.ArtId == "D09" ? target : null);
+            if (guard.ArtId == "D21" && !activeMotion) QueueLapplandOrdinaryWolf(guard, kit, target, basic);
         }
 
         FormationDefender[] WoundedGuards(Vector2 origin, float radius, int cap, FormationDefender source) =>
@@ -397,7 +421,8 @@ namespace YesterdayConvoy
         {
             if (UsesGuardTimeCharge(guard) || guard.ArtId == "D23" || double.IsPositiveInfinity(kit.FirstContact)) return;
             if (guard.ArtId == "D22" && kit.Casts > 0 && Campaign.CurrentNode.Id == "1-6") return;
-            double charge = kit.Casts == 0 ? State(guard).GuardInitialSP + Clock - kit.FirstContact : Clock - kit.LastCast;
+            double recharge = guard.ArtId is "D21" or "D26" ? kit.ActiveUntil : kit.LastCast;
+            double charge = kit.Casts == 0 ? State(guard).GuardInitialSP + Clock - kit.FirstContact : Clock - recharge;
             guard.SkillCharge = Mathf.Clamp((float)charge, 0, guard.SkillRequired);
         }
 
@@ -414,7 +439,7 @@ namespace YesterdayConvoy
             switch (guard.ArtId)
             {
                 case "D21":
-                    if (!GuardCastReady(kit, Clock, 12, 30)) return false;
+                    if (!RecurringGuardCastReady(kit, 12, 30)) return false;
                     StartGuardHunt(guard, kit, target);
                     return true;
                 case "D22":
@@ -435,8 +460,13 @@ namespace YesterdayConvoy
                     kit.ActiveUntil = Clock + 12;
                     return true;
                 case "D26":
-                    if (!GuardCastReady(kit, Clock, 12, 24)) return false;
-                    StartGuardLineAttack(guard, kit, target);
+                    if (GuardSkillActive(guard))
+                    {
+                        if (attackReady) FireGuardSilverAshWave(guard, kit, target);
+                        return true;
+                    }
+                    if (!RecurringGuardCastReady(kit, 12, 24)) return false;
+                    StartGuardSilverAshSkill(guard, kit, target);
                     return true;
                 case "D27":
                     if (!GuardCastReady(kit, Clock, 10, 24)) return false;
@@ -444,41 +474,6 @@ namespace YesterdayConvoy
                     return true;
                 default: return false;
             }
-        }
-
-        void StartGuardHunt(FormationDefender guard, GuardKit kit, FormationFighter target)
-        {
-            var action = StartGuardCast(guard, kit, target, .5);
-            GuardContact(guard, action, () =>
-            {
-                var hunt = new FormationGuardEffect
-                {
-                    Kind = "hunt", Origin = target.Position, Radius = 1.5f,
-                    StartedAt = Clock, EndsAt = Clock + 8
-                };
-                kit.Effect = hunt;
-                kit.HuntTarget = target;
-                kit.ActiveUntil = hunt.EndsAt;
-                for (int tick = 1; tick <= 8; tick++)
-                {
-                    ScheduleOwned(guard, hunt.StartedAt + tick, () =>
-                    {
-                        if (!TrackGuardHunt(kit)) return;
-                        foreach (var unit in GuardVictims(hunt.Origin, hunt.Radius, 2))
-                            CombatDamage(guard, unit, guard.Attack * .75f, 1, true, false);
-                    });
-                }
-            }, .5);
-        }
-
-        bool TrackGuardHunt(GuardKit kit)
-        {
-            var target = kit.HuntTarget;
-            if (target == null || !target.Alive || !target.Enabled || !HasEnteredBattleArea(target))
-                kit.HuntTarget = target = GuardTargets().OrderBy(u => (u.Position - kit.Effect.Origin).sqrMagnitude).ThenBy(u => u.Id).FirstOrDefault();
-            if (target == null) return false;
-            kit.Effect.Origin = target.Position;
-            return true;
         }
 
         void StartGuardWall(FormationDefender guard, GuardKit kit, FormationFighter target)
@@ -593,22 +588,6 @@ namespace YesterdayConvoy
             }
         }
 
-        void StartGuardLineAttack(FormationDefender guard, GuardKit kit, FormationFighter target)
-        {
-            kit.Casts++;
-            kit.LastCast = Clock;
-            guard.SkillCharge = 0;
-            var action = BeginGuardAction(guard, true, .6, target, motion: "skill_attack");
-            var line = new FormationGuardEffect
-            {
-                Origin = guard.Position, Direction = guard.Facing, Radius = 1, Length = guard.Range
-            };
-            GuardContact(guard, action, () =>
-            {
-                foreach (var unit in GuardLine(line, 3)) CombatDamage(guard, unit, guard.Attack * 2.4f, 0, true, false);
-            }, .3);
-        }
-
         void StartGuardSnow(FormationDefender guard, GuardKit kit, FormationFighter target)
         {
             var action = StartGuardCast(guard, kit, target, 1d / 6);
@@ -629,35 +608,6 @@ namespace YesterdayConvoy
                             CombatDamage(guard, unit, guard.Attack * .60f, 1, true, false);
                     });
             }, 1d / 6);
-        }
-
-        void PlaceGuardChess(FormationDefender guard, GuardKit kit)
-        {
-            kit.Effect = new FormationGuardEffect
-            {
-                Kind = "chess", Origin = guard.SkillCell.Value, Radius = 1.4f,
-                PlacedAt = Clock, StartedAt = Clock, EndsAt = double.PositiveInfinity
-            };
-        }
-
-        void TickGuardChess(FormationDefender guard, GuardKit kit)
-        {
-            var chess = GuardEffect(guard);
-            if (chess == null)
-            {
-                if (Clock >= kit.NextPlacement && GuardSkillCellIsFree(guard)) PlaceGuardChess(guard, kit);
-                return;
-            }
-            if (chess.Kind != "chess" || !GuardTargets().Any(u => GuardInRange(chess.Origin, u, .8f))) return;
-            foreach (var unit in GuardVictims(chess.Origin, chess.Radius, 3))
-            {
-                CombatDamage(guard, unit, guard.Attack * 1.8f, 1, true, false);
-                if (unit.Alive) GiveBuff(unit, "guard_chess_slow", .25f, 2);
-            }
-            chess.Kind = "chess_hit";
-            chess.StartedAt = chess.ImpactAt = Clock;
-            chess.EndsAt = Clock + .55;
-            kit.NextPlacement = Clock + 24;
         }
 
         void StartGuardBossSlash(FormationDefender guard, CombatState state, GuardKit kit, FormationFighter target)

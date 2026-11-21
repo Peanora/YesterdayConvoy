@@ -138,6 +138,7 @@ namespace YesterdayConvoy
         static float FormationGuardBodyScale(FormationDefender guard, ArtCatalog source)
         {
             if (guard.IsSnowBoss) return PramanixBossScale;
+            if (guard.ArtId == "D31") return 2.6f;
             if (source == null || source.IdleCaptureScale <= 0 || !source.Clips.TryGetValue("idle", out var idle)) return 1;
             return idle.Ppu * GuardWorldUnitsPerSourceUnit / source.IdleCaptureScale;
         }

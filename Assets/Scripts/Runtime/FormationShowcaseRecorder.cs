@@ -109,13 +109,12 @@ namespace YesterdayConvoy
                 yield return new Plan{Id=unit.Id,Kind="monster",Name=unit.Name,Units=new[]{unit.Id}};
             if(RoleVideos)
             {
-                foreach(int number in Enumerable.Range(1,12).Concat(Enumerable.Range(21,10)))
+                foreach(int number in Enumerable.Range(1,12).Concat(Enumerable.Range(21,15)))
                 {
                     string id="D"+number.ToString("D2");
                     var guard=FormationCampaignRules.DefenderByArtId(id);
-                    yield return new Plan{Id=id,GuardArt=id,Kind="defender",Name=guard.Name,Units=new[]{id=="D28"?"SLUG":"B10"}};
+                    yield return new Plan{Id=id,GuardArt=id,Kind="defender",Name=guard.Name,Units=new[]{"B10"}};
                 }
-                yield return new Plan{Id="D32",GuardArt="D32",Kind="defender",Name=FormationCampaignRules.DefenderByArtId("D32").Name,Units=new[]{"B10"}};
                 yield return new Plan{Id="P14H",SummonArt="P14H",Kind="summon",Name="卡德霍猎犬",Units=new[]{"B14"}};
                 yield return new Plan{Id="GOLEM",SummonArt="GOLEM",Kind="summon",Name="泥岩巨像",Units=new[]{"M27","M42"}};
                 yield break;
@@ -214,44 +213,73 @@ namespace YesterdayConvoy
                 if(guard.SnowBossPhase!=2)clip.notes+=" 本段未观察到终局二阶段。";
                 yield break;
             }
-            clip.notes+=" 守军在现役规则中固定站位，源目录没有独立行走片段。靶只供触发动作、伤害或治疗。";
+            clip.notes+=" 守军在现役规则中固定站位。靶只供触发动作、伤害或治疗。";
             yield return Segment("固守站位 · 本作守军不行走",1.5f,freezeSimulation:true);
+            if(id=="D31")
+            {
+                clip.notes+=" 超新星护卫沿用旧攻擂炮击及半血攻速，无独立主动技能。后段预置半血以检查实际炮击加速。";
+                yield return Segment("旧攻擂炮击 · 弹着与范围接触",5);
+                guard.Health=guard.MaxHealth*.49f;
+                yield return Segment("半血形态 · 炮击加速",6);
+                yield break;
+            }
             if(id=="D32")
             {
-                clip.notes+=" 赤刃明霄陈保留在守军资源库，现役关卡未排入。普通攻击在棋盘结算，技能部分用原版动作和特效检视，不结算技能伤害。";
-                yield return Segment("普攻 · 原版命中",3);
-                model.PreviewShowcaseGuardMotion("skill_begin",controller.ShowcaseGuardMotionDuration(guard,"skill_begin"));
-                yield return Segment("赤霄·天喟 · 龙头、红色拖尾与持续层",2);
-                model.PreviewShowcaseGuardMotion("skill_attack",controller.ShowcaseGuardMotionDuration(guard,"skill_attack"));
-                yield return Segment("三段剑光 · 飞龙在当前棋盘转向",6);
+                clip.notes+=" 普攻、三连斩和龙形剑气都由棋盘战斗实际触发并结算。跳过部分技力等待。";
+                yield return Segment("普攻 · 原版节奏与接触",5);
+                yield return AdvanceUntil(()=>model.GuardChenDawnCast(guard)!=null,20);
+                yield return Segment("赤霄·天喟 · 20秒连续三连斩与龙形剑气",21);
                 yield break;
             }
             if(id=="D30")
             {
-                clip.notes+=" 玛恩纳保留在守军资源库，现役关卡未排入；后两段实机检视源技能与斩击特效。";
-                foreach(string key in new[]{"skill_begin","skill_attack"})
+                yield return Segment("蓄力待机 · 解放者平时收剑",3);
+                phase="跳过部分自然技力等待";
+                yield return AdvanceUntil(()=>model.GuardSkillActive(guard),32);
+                if(!model.GuardSkillActive(guard))throw new InvalidOperationException("Mlynar did not start his natural skill against the target.");
+                yield return Segment("未照耀的荣光 · 连续挥砍与收剑",28);
+                yield break;
+            }
+            if(id=="D28")
+            {
+                clip.notes+=" 前段确认同时布置五颗棋子。后段依次把展示靶移到棋子的触发位置，范围伤害和收盘仍走真实战斗。";
+                yield return Segment("天下劫 · 五颗棋子展开",2);
+                var pieces=model.GuardChessPieces(guard);
+                if(pieces.Length!=5)throw new InvalidOperationException("Wang needs five legal stones on the saved showcase board.");
+                for(int i=0;i<pieces.Length;i++)
                 {
-                    float seconds=controller.ShowcaseGuardMotionDuration(guard,key);
-                    if(seconds<=0)continue;
-                    model.PreviewShowcaseGuardMotion(key,seconds);
-                    yield return Segment(key=="skill_begin"?"源技能起手 · 动作检视":"源技能挥击 · 原版斩击特效",Mathf.Max(1.25f,seconds/FormationBattleController.FormationVisualRate+.3f));
+                    model.ShowcasePlaceWangTarget(pieces[i].Origin);
+                    yield return Segment(i==pieces.Length-1?"第五颗触发 · 收起棋盘":"棋子实际触发 · 棋盘保持",i==pieces.Length-1?2:1);
                 }
                 yield break;
             }
-            string basic=id=="D22"?"入距即展开火墙 · 墙体与普通攻击":id=="D28"?"执棋开场 · 地面棋子触发":
+            if(FormationBattleModel.IsArchivedSignatureGuard(id))
+            {
+                yield return Segment(id=="D35"?"普通治疗 · 药弹飞行与接触":"普通攻击 · 起手与接触",5);
+                phase="跳过部分自然技力等待";
+                yield return AdvanceUntil(()=>model.GuardSkillActive(guard),25);
+                if(!model.GuardSkillActive(guard))
+                    throw new InvalidOperationException(id+" did not activate its archived skill against the review target.");
+                string signature=id=="D33"?"第三技能 · 十九格领域与弩弹":
+                    id=="D34"?"第三技能 · 四格攻击与腐蚀爆发":"第二技能 · 药弹范围及延迟治疗";
+                yield return Segment(signature,id=="D34"?14:12);
+                if(id=="D33")clip.notes+=" 原飞行截击动画保留在资源库，现役棋盘没有独立空中拦截。";
+                yield break;
+            }
+            string basic=id=="D22"?"入距即展开火墙 · 墙体与普通攻击":
                 id=="D27"?"常规守军形态 · 无独立普通攻击":guard.Healer?"普通治疗":"普通攻击与接触";
             yield return Segment(basic,id=="D22"?8:4);
             double previous=guard.LastSkillAt;
-            bool hasImmediateSkill=id=="D22"||id=="D28";
+            bool hasImmediateSkill=id=="D22";
             if(!hasImmediateSkill)
             {
                 phase="跳过部分自然等待";
                 yield return AdvanceUntil(()=>guard.LastSkillAt>previous,30);
             }
-            string action=id=="D23"?"六次真实治疗后转形进攻":id=="D28"?"棋子触发后续 · 区域受击":
+            string action=id=="D23"?"六次真实治疗后转形进攻":
                 id=="D22"?"火墙后的普攻与收势":guard.Healer?"技能治疗及反馈":"技能、持续层与接触";
-            yield return Segment(action,id=="D23"?12:id=="D21"||id=="D24"||id=="D27"?10:6);
-            if(guard.LastSkillAt<0&&id!="D28")clip.notes+=" 预置对局未观察到技能触发。";
+            yield return Segment(action,id switch {"D21"=>43,"D26"=>51,"D23"=>12,"D24" or "D27"=>10,_=>6});
+            if(guard.LastSkillAt<0)clip.notes+=" 预置对局未观察到技能触发。";
         }
 
         IEnumerator RecordSummon(Plan plan)
