@@ -8,6 +8,8 @@ namespace YesterdayConvoy
     /// <summary>v0.7 combat. All events use the battle clock; the campaign owns economic state.</summary>
     public sealed partial class FormationBattleModel
     {
+        const float AnastasioSkillRange = 1.1f;
+
         public FormationCampaignRun Campaign { get; private set; }
         public int BattleGold { get; private set; }
         public int InitialDefenderCount { get; private set; }
@@ -376,12 +378,24 @@ namespace YesterdayConvoy
             if(target==null)return;
             if(Key(u)=="M03"&&Stack(u,"contact")==0){AddStack(u,"contact",1,1);GainSP(u,2,true);}
             bool healer=s.Spec?.DamageType=="治疗";
-            if(Vector2.Distance(u.Position,target.Position)>u.Range&&!healer)
+            float targetDistance = Vector2.Distance(u.Position, target.Position);
+            if(targetDistance>u.Range&&!healer)
             {if(s.RidingCarrier==0)Move(u,target.Position,dt,true);return;}
             if(TalulahRainEnd(u)+1e-8>=Clock)return;
             Face(u,target.Position);
             if(!summon&&u.SkillRequired>0&&u.SkillCharge+1e-5>=u.SkillRequired&&Buff(u,"silence")==0)
-            {if(CastCampaignSkill(u,target))return;}
+            {
+                if (Key(u) != "B23" || targetDistance <= AnastasioSkillRange)
+                {
+                    if (CastCampaignSkill(u, target)) return;
+                }
+                else if (s.RidingCarrier == 0 && (Terrain == null ||
+                    Terrain.TryApproach(u.Position, target.Position, AnastasioSkillRange, out _, out _)))
+                {
+                    Move(u, target.Position, dt, true, AnastasioSkillRange);
+                    return;
+                }
+            }
             if(u.Interval<=0||Clock+1e-8<u.NextAttackAt)return;
             if(healer)
             {

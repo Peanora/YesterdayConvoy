@@ -28,7 +28,7 @@ namespace YesterdayConvoy
             action=Mathf.Max(.35f,action);
             if(k=="TAL")action=Campaign.TalulahCost==5?2:Campaign.TalulahCost==4?1.5f:1.2f;
             if(k=="WIS"&&Campaign.WisadelSkill==2)action=.6f;
-            var presentation=BeginAction(u,action,true);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
+            var presentation=BeginAction(u,action,true,k=="B23"?target:null);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
             if(k=="TAL"&&Campaign.TalulahCost==5)
                 foreach(var pending in presentationActions)
                     if(pending.ActorId==u.Id&&!pending.Skill&&pending.ContactAt>Clock+1e-8)pending.Cancelled=true;

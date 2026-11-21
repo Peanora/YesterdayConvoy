@@ -125,20 +125,28 @@ def dimensions(path):
     return struct.unpack(">II", data[16:24])
 
 
-def segments(clip):
-    result, pages, count, first = [], [], 0, 0
+def segments(clip, max_pixels=None):
+    result, pages, count, first, pixels = [], [], 0, 0, 0
     for page in clip["pages"]:
-        if pages and count + page["count"] > 600:
+        page_pixels = page["width"] * page["height"] if max_pixels else 0
+        if pages and (count + page["count"] > 600 or max_pixels and pixels + page_pixels > max_pixels):
             result.append({"firstFrame": first, "count": count, "pages": pages})
             first += count
-            pages, count = [], 0
+            pages, count, pixels = [], 0, 0
         if page["count"] > 600:
             raise ValueError("A source page exceeds one ArtSequence cache unit")
         pages.append(dict(page))
         count += page["count"]
+        pixels += page_pixels
     if pages:
         result.append({"firstFrame": first, "count": count, "pages": pages})
     return result
+
+
+def recaptured_body_segments(task, clip):
+    # Preserve B08 layout. New high-resolution bodies stream bounded groups
+    # instead of loading a whole long motion as one GPU resource.
+    return segments(clip, None if task == "B08" else 24 * 1024 * 1024)
 
 
 def validate_source(folder, data):
@@ -313,7 +321,7 @@ def verify_recaptured_body(project, task, view, data, source):
             assert clip[key] == expected[key]
         assert 0 <= clip["pivotX"] <= 1 and 0 <= clip["pivotY"] <= 1
         assert clip["pixelsPerUnit"] == expected["sourcePixelsPerBone"] / WORLD_UNITS_PER_BONE
-        assert clip["segments"] == segments(expected)
+        assert clip["segments"] == recaptured_body_segments(task, expected)
         assert sum(page["count"] for page in clip["pages"]) == clip["count"]
         for page in clip["pages"]:
             path = out / page["file"]
@@ -348,7 +356,10 @@ def verify(project, task, view):
     catalogs = project / "Assets/Data/ArtCatalogs/BossRoster" / task / view
     data = read_json(catalogs / "manifest.json")
     source = read_json(catalogs / "SOURCE-RECORD.json")
-    if data.get("capturePolicy") == "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_A_1024_B_FIXED_WORLD_ORIGIN":
+    if data.get("capturePolicy") in {
+        "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_A_1024_B_FIXED_WORLD_ORIGIN",
+        "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_768_FIXED_WORLD_ORIGIN",
+    }:
         return verify_recaptured_body(project, task, view, data, source)
     preview = Path(source["sourcePreview"])
     auxiliary = task.startswith("P")

@@ -613,14 +613,14 @@ namespace YesterdayConvoy
             Hits.Add(new FormationHit { At = Clock, From = source.Position, To = target.Position, FromId = source.Id, ToId = target.Id, Amount = amount, Heal = true, Skill = skill });
         }
 
-        void Move(FormationFighter unit, Vector2 goal, float dt, bool avoid)
+        void Move(FormationFighter unit, Vector2 goal, float dt, bool avoid, float? approachRange = null)
         {
             if (SnowBossFreezeRemaining(unit) > 0) return;
             if (Terrain != null)
             {
                 Vector2 waypoint;
                 bool reachable = avoid && !HasEnteredBattleArea(unit) ? Terrain.TryEnterBattleArea(unit.Position, out waypoint) :
-                    avoid ? Terrain.TryApproach(unit.Position, goal, unit.Range, out waypoint, out _) :
+                    avoid ? Terrain.TryApproach(unit.Position, goal, approachRange ?? unit.Range, out waypoint, out _) :
                     Terrain.TryExit(unit.Position, out waypoint);
                 if (!reachable) return;
                 goal = waypoint;

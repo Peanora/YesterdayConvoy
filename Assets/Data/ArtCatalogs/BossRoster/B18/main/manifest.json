@@ -57,10 +57,10 @@
       "count": 98,
       "fps": 60,
       "loop": false,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5560304973121463,
+      "pivotY": 0.15101420825346856,
       "events": [
         {
           "time": 0.9333333373069763,
@@ -71,65 +71,114 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 181.95653243010796,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 98,
+          "count": 96,
           "pages": [
             {
-              "file": "Attack-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Attack-000.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Attack-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Attack-001.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Attack-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Attack-002.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Attack-003.png",
-              "count": 23,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Attack-003.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Attack-004.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Attack-005.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 2,
+          "pages": [
+            {
+              "file": "hq-Attack-006.png",
+              "count": 2,
+              "width": 2048,
+              "height": 512
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "Attack-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Attack-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Attack-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Attack-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Attack-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Attack-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Attack-003.png",
-          "count": 23,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Attack-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-006.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
         }
-      ]
+      ],
+      "captureBounds": [
+        -309.2912292480469,
+        -36.35005569458008,
+        239.21926879882812,
+        472.7930603027344
+      ],
+      "captureSourcePixelsPerBone": 0.8188043959354857
     },
     {
       "key": "Die",
@@ -138,179 +187,300 @@
       "count": 322,
       "fps": 60,
       "loop": false,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5088394722554814,
+      "pivotY": 0.32409864017241596,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 108.24622213333309,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 322,
+          "count": 96,
           "pages": [
             {
-              "file": "Die-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-000.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-001.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-002.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-003.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-003.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-004.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-004.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-005.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-005.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Die-006.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-006.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-007.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-007.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-008.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-008.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-009.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-009.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-010.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-010.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-011.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 192,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Die-012.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-011.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-013.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Die-012.png",
-              "count": 22,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Die-014.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Die-015.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Die-016.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Die-017.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 288,
+          "count": 34,
+          "pages": [
+            {
+              "file": "hq-Die-018.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Die-019.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Die-020.png",
+              "count": 2,
+              "width": 2048,
+              "height": 512
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "Die-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-003.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-004.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-005.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-006.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-007.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-008.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-009.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-010.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-011.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Die-012.png",
-          "count": 22,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Die-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-013.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-014.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-015.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-016.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-017.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-018.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-019.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-020.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
         }
-      ]
+      ],
+      "captureBounds": [
+        -470.3006591796875,
+        -90.44942474365234,
+        451.7182922363281,
+        460.2298278808594
+      ],
+      "captureSourcePixelsPerBone": 0.4871079995999989
     },
     {
       "key": "Idle",
@@ -319,143 +489,234 @@
       "count": 241,
       "fps": 60,
       "loop": true,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5471246209649185,
+      "pivotY": 0.0901371267461149,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 203.21562619512557,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 241,
+          "count": 96,
           "pages": [
             {
-              "file": "Idle-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-003.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-004.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-005.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-006.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-007.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-008.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
-            },
-            {
-              "file": "Idle-009.png",
+              "file": "hq-Idle-000.png",
               "count": 16,
-              "width": 1920,
-              "height": 1536
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-001.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-002.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-003.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-004.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-005.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Idle-006.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-007.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-008.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-009.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-010.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-011.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 192,
+          "count": 49,
+          "pages": [
+            {
+              "file": "hq-Idle-012.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-013.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-014.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Idle-015.png",
+              "count": 1,
+              "width": 2048,
+              "height": 512
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "Idle-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-003.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-004.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-005.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-006.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-007.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-008.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
-        },
-        {
-          "file": "Idle-009.png",
+          "file": "hq-Idle-000.png",
           "count": 16,
-          "width": 1920,
-          "height": 1536
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-013.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-014.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-015.png",
+          "count": 1,
+          "width": 2048,
+          "height": 512
         }
-      ]
+      ],
+      "captureBounds": [
+        -271.94891357421875,
+        -7.5242156982421875,
+        219.17999267578125,
+        466.47796630859375
+      ],
+      "captureSourcePixelsPerBone": 0.914470317878065
     },
     {
       "key": "Move",
@@ -464,71 +725,120 @@
       "count": 98,
       "fps": 60,
       "loop": true,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5437191180843829,
+      "pivotY": 0.08795944907610403,
       "events": [],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 204.98344516999126,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 98,
+          "count": 96,
           "pages": [
             {
-              "file": "Move-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Move-000.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Move-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Move-001.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Move-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Move-002.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Move-003.png",
-              "count": 23,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Move-003.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Move-004.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Move-005.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 2,
+          "pages": [
+            {
+              "file": "hq-Move-006.png",
+              "count": 2,
+              "width": 2048,
+              "height": 512
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "Move-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Move-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Move-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Move-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Move-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Move-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Move-003.png",
-          "count": 23,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Move-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-006.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
         }
-      ]
+      ],
+      "captureBounds": [
+        -267.71331787109375,
+        -8.55633544921875,
+        219.17999267578125,
+        465.9694519042969
+      ],
+      "captureSourcePixelsPerBone": 0.9224255032649606
     },
     {
       "key": "Skill_1",
@@ -537,10 +847,10 @@
       "count": 181,
       "fps": 60,
       "loop": false,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.48852016834787865,
+      "pivotY": 0.07514346661575583,
       "events": [
         {
           "time": 1.8333333730697632,
@@ -551,58 +861,310 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 91.09743792497804,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 181,
+          "count": 40,
           "pages": [
             {
-              "file": "Skill_1-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-003.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-004.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-005.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-006.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_1-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
             },
             {
-              "file": "Skill_1-007.png",
-              "count": 6,
-              "width": 1920,
+              "file": "hq-Skill_1-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 40,
+          "count": 40,
+          "pages": [
+            {
+              "file": "hq-Skill_1-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-018.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-019.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 80,
+          "count": 40,
+          "pages": [
+            {
+              "file": "hq-Skill_1-020.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-021.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-022.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-023.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-024.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-025.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-026.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-027.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-028.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-029.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 120,
+          "count": 40,
+          "pages": [
+            {
+              "file": "hq-Skill_1-030.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-031.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-032.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-033.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-034.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-035.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-036.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-037.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-038.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-039.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 160,
+          "count": 21,
+          "pages": [
+            {
+              "file": "hq-Skill_1-040.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-041.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-042.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-043.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-044.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "hq-Skill_1-045.png",
+              "count": 1,
+              "width": 1536,
               "height": 768
             }
           ]
@@ -610,54 +1172,289 @@
       ],
       "pages": [
         {
-          "file": "Skill_1-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-003.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-004.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-005.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-006.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_1-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
         },
         {
-          "file": "Skill_1-007.png",
-          "count": 6,
-          "width": 1920,
+          "file": "hq-Skill_1-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-022.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-023.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-024.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-025.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-026.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-027.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-028.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-029.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-030.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-031.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-032.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-033.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-034.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-035.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-036.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-037.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-038.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-039.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-040.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-041.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-042.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-043.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-044.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-045.png",
+          "count": 1,
+          "width": 1536,
           "height": 768
         }
-      ]
+      ],
+      "captureBounds": [
+        -271.9430236816406,
+        -25.74114990234375,
+        314.95684814453125,
+        1617.6376953125
+      ],
+      "captureSourcePixelsPerBone": 0.40993847066240113
     },
     {
       "key": "Skill_2",
@@ -666,10 +1463,10 @@
       "count": 433,
       "fps": 60,
       "loop": false,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.4299383833635174,
+      "pivotY": 0.18191731885388496,
       "events": [
         {
           "time": 3.3333332538604736,
@@ -687,233 +1484,384 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 122.07414451686827,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 433,
+          "count": 96,
           "pages": [
             {
-              "file": "Skill_2-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-000.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-001.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-002.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-003.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-003.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-004.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-004.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-005.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-005.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Skill_2-006.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-006.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-007.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-007.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-008.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-008.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-009.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-009.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-010.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-010.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-011.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 192,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Skill_2-012.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-011.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-013.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-012.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-014.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-013.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-015.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-014.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-016.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-015.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-017.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 288,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Skill_2-018.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-016.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_2-019.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_2-017.png",
-              "count": 8,
-              "width": 1920,
-              "height": 768
+              "file": "hq-Skill_2-020.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_2-021.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_2-022.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_2-023.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 384,
+          "count": 49,
+          "pages": [
+            {
+              "file": "hq-Skill_2-024.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_2-025.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_2-026.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_2-027.png",
+              "count": 1,
+              "width": 2048,
+              "height": 512
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "Skill_2-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-003.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-004.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-005.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-006.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-007.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-008.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-009.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-010.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-011.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-012.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-013.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-013.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-014.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-014.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-015.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-015.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-016.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_2-016.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_2-017.png",
-          "count": 8,
-          "width": 1920,
-          "height": 768
+          "file": "hq-Skill_2-017.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-018.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-019.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-020.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-021.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-022.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-023.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-024.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-025.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-026.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-027.png",
+          "count": 1,
+          "width": 2048,
+          "height": 512
         }
-      ]
+      ],
+      "captureBounds": [
+        -343.4886169433594,
+        -111.00042724609375,
+        474.0888366699219,
+        703.930908203125
+      ],
+      "captureSourcePixelsPerBone": 0.5493336503259072
     },
     {
       "key": "Skill_3",
@@ -922,10 +1870,10 @@
       "count": 222,
       "fps": 60,
       "loop": false,
-      "cell": 384,
-      "columns": 5,
-      "pivotX": 0.4990388495234001,
-      "pivotY": 0.11773039093381871,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5154448202750789,
+      "pivotY": 0.23182199707395684,
       "events": [
         {
           "time": 2.9000000953674316,
@@ -936,125 +1884,204 @@
         }
       ],
       "transparentWait": false,
-      "pixelsPerUnit": 43.302181175316186,
+      "pixelsPerUnit": 130.1679554110195,
       "segments": [
         {
           "firstFrame": 0,
-          "count": 222,
+          "count": 96,
           "pages": [
             {
-              "file": "Skill_3-000.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-000.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-001.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-001.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-002.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-002.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-003.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-003.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-004.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-004.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-005.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-005.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 96,
+          "pages": [
+            {
+              "file": "hq-Skill_3-006.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-006.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-007.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-007.png",
-              "count": 25,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-008.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
             },
             {
-              "file": "Skill_3-008.png",
-              "count": 22,
-              "width": 1920,
-              "height": 1920
+              "file": "hq-Skill_3-009.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_3-010.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_3-011.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            }
+          ]
+        },
+        {
+          "firstFrame": 192,
+          "count": 30,
+          "pages": [
+            {
+              "file": "hq-Skill_3-012.png",
+              "count": 16,
+              "width": 2048,
+              "height": 2048
+            },
+            {
+              "file": "hq-Skill_3-013.png",
+              "count": 14,
+              "width": 2048,
+              "height": 2048
             }
           ]
         }
       ],
       "pages": [
         {
-          "file": "Skill_3-000.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-001.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-002.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-003.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-004.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-005.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-006.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-007.png",
-          "count": 25,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
         },
         {
-          "file": "Skill_3-008.png",
-          "count": 22,
-          "width": 1920,
-          "height": 1920
+          "file": "hq-Skill_3-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-013.png",
+          "count": 14,
+          "width": 2048,
+          "height": 2048
         }
-      ]
+      ],
+      "captureBounds": [
+        -396.87042236328125,
+        -44.595481872558594,
+        369.8702697753906,
+        513.4158935546875
+      ],
+      "captureSourcePixelsPerBone": 0.5857557993495878
     }
   ],
   "role": "EXISTING_CARD_APPROVED_SOURCE_VISUAL",
@@ -1078,5 +2105,7 @@
     }
   ],
   "sampling": "Frame i is the unchanged source sample at min(i / fps, sourceDuration); the terminal sample is retained.",
-  "status": "IMPORTED_NOT_BOUND"
+  "status": "IMPORTED_NOT_BOUND",
+  "capturePolicy": "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_768_FIXED_WORLD_ORIGIN",
+  "pixelsPerUnitPolicy": "Per clip; global ppu retained only for the unchanged portrait. Source world scale .0045 is unchanged."
 }

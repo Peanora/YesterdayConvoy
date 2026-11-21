@@ -1,0 +1,3282 @@
+{
+  "version": 1,
+  "task": "B23",
+  "method": "ORIGINAL_SPINE_PER_MOTION_CAPTURE",
+  "fps": 60,
+  "worldUnitsPerSourceBone": 0.0045,
+  "note": "Original bones, source atlas pixels, source events and timings; fixed root pivot/PPU per motion. No AI enhancement, texture resizing or source animation retiming.",
+  "clips": [
+    {
+      "key": "A_Attack_1",
+      "source": "A_Attack_1",
+      "duration": 1.6666666269302368,
+      "count": 101,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5848809041475075,
+      "pivotY": 0.20706961466090096,
+      "events": [
+        {
+          "time": 0.5,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Attack_1-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_1-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_1-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_1-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_1-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_1-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_1-006.png",
+          "count": 5,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 124.5064380415334,
+      "captureBounds": [
+        -478.3695983886719,
+        -24.32465934753418,
+        323.236083984375,
+        559.7020874023438
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5602789711869003
+    },
+    {
+      "key": "A_Attack_2",
+      "source": "A_Attack_2",
+      "duration": 1.6666666269302368,
+      "count": 101,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.56334477031209,
+      "pivotY": 0.20372699873563643,
+      "events": [
+        {
+          "time": 0.5,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Attack_2-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_2-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_2-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_2-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_2-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_2-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Attack_2-006.png",
+          "count": 5,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 113.31845279993045,
+      "captureBounds": [
+        -503.975830078125,
+        -20.05851936340332,
+        376.77276611328125,
+        615.00634765625
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.509933037599687
+    },
+    {
+      "key": "A_Idle",
+      "source": "A_Idle",
+      "duration": 2.3333332538604736,
+      "count": 141,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.6878558834616297,
+      "pivotY": 0.18546508887799362,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Idle-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Idle-008.png",
+          "count": 13,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "pixelsPerUnit": 150.36825117956505,
+      "captureBounds": [
+        -474.01202392578125,
+        -27.885690689086914,
+        189.72561645507812,
+        503.87823486328125
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.6766571303080426
+    },
+    {
+      "key": "A_Move",
+      "source": "A_Move",
+      "duration": 1.2000000476837158,
+      "count": 74,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.6922289092193581,
+      "pivotY": 0.17979317186522292,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Move-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Move-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Move-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Move-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Move-004.png",
+          "count": 10,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 150.34734363813067,
+      "captureBounds": [
+        -477.3872985839844,
+        -22.1366024017334,
+        186.44264221191406,
+        506.77996826171875
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.6765630463715879
+    },
+    {
+      "key": "A_Revive_1",
+      "source": "A_Revive_1",
+      "duration": 0.5,
+      "count": 31,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5976084659611866,
+      "pivotY": 0.22227341632521186,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Revive_1-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_1-001.png",
+          "count": 15,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "pixelsPerUnit": 129.22298832921916,
+      "captureBounds": [
+        -472.1157531738281,
+        -8.870034217834473,
+        300.23187255859375,
+        497.9333801269531
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5815034474814862
+    },
+    {
+      "key": "A_Revive_2",
+      "source": "A_Revive_2",
+      "duration": 1.1666666269302368,
+      "count": 71,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.6259318211318909,
+      "pivotY": 0.18179149559502505,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Revive_2-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_2-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_2-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_2-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_2-004.png",
+          "count": 7,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 160.51443717084416,
+      "captureBounds": [
+        -400.15576171875,
+        -8.055042266845703,
+        221.62673950195312,
+        459.1678161621094
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.7223149672687986
+    },
+    {
+      "key": "A_Revive_3_A",
+      "source": "A_Revive_3_A",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5032743733334089,
+      "pivotY": 0.23534950070560257,
+      "events": [
+        {
+          "time": 1.1666666269302368,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Revive_3_A-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Revive_3_A-007.png",
+          "count": 9,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 120.6651009472779,
+      "captureBounds": [
+        -387.8365783691406,
+        -164.0175018310547,
+        381.66162109375,
+        663.1070556640625
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5429929542627505
+    },
+    {
+      "key": "A_Revive_3_B",
+      "source": "A_Revive_3_B",
+      "duration": 0.5,
+      "count": 31,
+      "fps": 60,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.5341431701147105,
+      "pivotY": 0.06735619092661177,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Revive_3_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-A_Revive_3_B-007.png",
+          "count": 3,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 92.2256193278223,
+      "captureBounds": [
+        -442.3223571777344,
+        -11.015642166137695,
+        315.9561462402344,
+        1612.260009765625
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.4150152869752003
+    },
+    {
+      "key": "A_Skill_1",
+      "source": "A_Skill_1",
+      "duration": 2,
+      "count": 121,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5760217713812033,
+      "pivotY": 0.22063771025501966,
+      "events": [
+        {
+          "time": 1.600000023841858,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Skill_1-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_1-007.png",
+          "count": 9,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 121.3458847147078,
+      "captureBounds": [
+        -482.52252197265625,
+        -39.421119689941406,
+        339.9616394042969,
+        563.2991333007812
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.546056481216185
+    },
+    {
+      "key": "A_Skill_2_Begin",
+      "source": "A_Skill_2_Begin",
+      "duration": 0.06666667014360428,
+      "count": 6,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.6086857674851853,
+      "pivotY": 0.2649506275615121,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Skill_2_Begin-000.png",
+          "count": 6,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 131.89256828435134,
+      "captureBounds": [
+        -472.1157531738281,
+        -92.4003677368164,
+        284.59912109375,
+        497.9333801269531
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.593516557279581
+    },
+    {
+      "key": "A_Skill_2_End",
+      "source": "A_Skill_2_End",
+      "duration": 0.6666666865348816,
+      "count": 42,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5200576634803954,
+      "pivotY": 0.30961402776747204,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Skill_2_End-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_End-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_End-002.png",
+          "count": 10,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 108.36983728858299,
+      "captureBounds": [
+        -481.5422058105469,
+        -154.33999633789062,
+        439.4250183105469,
+        554.1134643554688
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.48766426779862343
+    },
+    {
+      "key": "A_Skill_2_Loop",
+      "source": "A_Skill_2_Loop",
+      "duration": 2.6666667461395264,
+      "count": 162,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5145177515334229,
+      "pivotY": 0.22388779218648064,
+      "events": [
+        {
+          "time": 0.1666666716337204,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.4333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.699999988079071,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.9666666388511658,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.2333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.5,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.7666666507720947,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 2.0333333015441895,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 2.299999952316284,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 2.566666603088379,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-A_Skill_2_Loop-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-A_Skill_2_Loop-010.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 118.84327659495284,
+      "captureBounds": [
+        -433.8009948730469,
+        -79.21881866455078,
+        406.0030822753906,
+        607.9055786132812
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5347947446772877
+    },
+    {
+      "key": "B_Attack_1",
+      "source": "B_Attack_1",
+      "duration": 1.6666666269302368,
+      "count": 101,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.647286102415157,
+      "pivotY": 0.2184000097857724,
+      "events": [
+        {
+          "time": 0.5,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Attack_1-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_1-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_1-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_1-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_1-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_1-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_1-006.png",
+          "count": 5,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 120.93450076615576,
+      "captureBounds": [
+        -551.2109375,
+        -18.642841339111328,
+        274.0710754394531,
+        548.5134887695312
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5442052534477009
+    },
+    {
+      "key": "B_Attack_2",
+      "source": "B_Attack_2",
+      "duration": 1.6666666269302368,
+      "count": 101,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.587695455557072,
+      "pivotY": 0.25562370901776,
+      "events": [
+        {
+          "time": 0.5,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Attack_2-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_2-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_2-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_2-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_2-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_2-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Attack_2-006.png",
+          "count": 5,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 112.23735569309764,
+      "captureBounds": [
+        -533.51513671875,
+        -153.0542755126953,
+        355.717041015625,
+        648.5148315429688
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5050681006189394
+    },
+    {
+      "key": "B_Die",
+      "source": "B_Die",
+      "duration": 1,
+      "count": 61,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5865827135453823,
+      "pivotY": 0.20180339154595145,
+      "events": [
+        {
+          "time": 0,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Die-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Die-003.png",
+          "count": 13,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "pixelsPerUnit": 152.84572546918324,
+      "captureBounds": [
+        -390.94140625,
+        -58.119937896728516,
+        262.0377197265625,
+        502.0727844238281
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.6878057646113245
+    },
+    {
+      "key": "B_Idle",
+      "source": "B_Idle",
+      "duration": 2.3333332538604736,
+      "count": 141,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.6306017091061493,
+      "pivotY": 0.17657540644069014,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Idle-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Idle-008.png",
+          "count": 13,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "pixelsPerUnit": 160.17111344449174,
+      "captureBounds": [
+        -404.33074951171875,
+        -31.90591049194336,
+        218.78453063964844,
+        491.3961486816406
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.7207700105002127
+    },
+    {
+      "key": "B_Move",
+      "source": "B_Move",
+      "duration": 1.2000000476837158,
+      "count": 74,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.6162581623207816,
+      "pivotY": 0.16014065472237354,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Move-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Move-004.png",
+          "count": 10,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 167.87994553950622,
+      "captureBounds": [
+        -376.0433044433594,
+        -46.112186431884766,
+        218.45932006835938,
+        506.77996826171875
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.755459754927778
+    },
+    {
+      "key": "B_Skill_1_Begin",
+      "source": "B_Skill_1_Begin",
+      "duration": 3.5,
+      "count": 211,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.4785818445006345,
+      "pivotY": 0.2027468673637322,
+      "events": [
+        {
+          "time": 3.4666666984558105,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Skill_1_Begin-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_Begin-013.png",
+          "count": 3,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 113.3605068091532,
+      "captureBounds": [
+        -387.8365783691406,
+        -141.86363220214844,
+        430.83056640625,
+        738.5582275390625
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5101222806411894
+    },
+    {
+      "key": "B_Skill_1_End",
+      "source": "B_Skill_1_End",
+      "duration": 0.6666666865348816,
+      "count": 42,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5674750070683757,
+      "pivotY": 0.30407693913350403,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Skill_1_End-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_End-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_1_End-002.png",
+          "count": 10,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 127.04927459093851,
+      "captureBounds": [
+        -453.2075500488281,
+        -147.17596435546875,
+        332.3543395996094,
+        498.0900573730469
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5717217356592232
+    },
+    {
+      "key": "B_Skill_2_Begin",
+      "source": "B_Skill_2_Begin",
+      "duration": 0.06666667014360428,
+      "count": 6,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5665255717689407,
+      "pivotY": 0.2414301547087898,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Skill_2_Begin-000.png",
+          "count": 6,
+          "width": 2048,
+          "height": 1024
+        }
+      ],
+      "pixelsPerUnit": 148.18526420585678,
+      "captureBounds": [
+        -387.8365783691406,
+        -92.4003677368164,
+        285.67889404296875,
+        489.46417236328125
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.6668336889263554
+    },
+    {
+      "key": "B_Skill_2_End",
+      "source": "B_Skill_2_End",
+      "duration": 0.6666666865348816,
+      "count": 42,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5136263583570867,
+      "pivotY": 0.3087730705291603,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Skill_2_End-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_End-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_End-002.png",
+          "count": 10,
+          "width": 2048,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 110.0350579170174,
+      "captureBounds": [
+        -467.6047058105469,
+        -153.84043884277344,
+        439.4250183105469,
+        549.3030395507812
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.49515776062657824
+    },
+    {
+      "key": "B_Skill_2_Loop",
+      "source": "B_Skill_2_Loop",
+      "duration": 2.6666667461395264,
+      "count": 162,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5145177515334229,
+      "pivotY": 0.22388779218648064,
+      "events": [
+        {
+          "time": 0.1666666716337204,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.4333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.699999988079071,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.9666666388511658,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.2333333492279053,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.5,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 1.7666666507720947,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 2.0333333015441895,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 2.299999952316284,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 2.566666603088379,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Skill_2_Loop-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-B_Skill_2_Loop-010.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 118.84327659495284,
+      "captureBounds": [
+        -433.8009948730469,
+        -79.21881866455078,
+        406.0030822753906,
+        607.9055786132812
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5347947446772877
+    },
+    {
+      "key": "B_Start",
+      "source": "B_Start",
+      "duration": 1.5,
+      "count": 91,
+      "fps": 60,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.483492940870724,
+      "pivotY": 0.13867592802459533,
+      "events": [
+        {
+          "time": 0.6666666865348816,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-B_Start-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-B_Start-022.png",
+          "count": 3,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "pixelsPerUnit": 83.58648290018861,
+      "captureBounds": [
+        -387.8365783691406,
+        -157.77462768554688,
+        455.2447204589844,
+        1633.2757568359375
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.37613917305084876
+    }
+  ],
+  "files": [
+    {
+      "file": "hq-A_Attack_1-000.png",
+      "sha256": "0fb48144d317cc5fea5347c575ddd350e86bf9a2f99b3732f4d13b2ba58849bd",
+      "bytes": 1744635
+    },
+    {
+      "file": "hq-A_Attack_1-001.png",
+      "sha256": "e93ae87d8388ef9dd195c4356152376d52ca3f7436d495c469776d66fac48044",
+      "bytes": 1717483
+    },
+    {
+      "file": "hq-A_Attack_1-002.png",
+      "sha256": "667208584b0228799a8a05acdeae6a7debab8acb522f5422cb505a135c09fecf",
+      "bytes": 1687787
+    },
+    {
+      "file": "hq-A_Attack_1-003.png",
+      "sha256": "44bae7d3ccde942bcd70805e9c5156e156f5f599e64bfdca8e379816d5e0ffae",
+      "bytes": 1569912
+    },
+    {
+      "file": "hq-A_Attack_1-004.png",
+      "sha256": "79ef96917c1b96bf8fc794067f817b5e50240dda3f7110772e5fc18058fb62ac",
+      "bytes": 1752149
+    },
+    {
+      "file": "hq-A_Attack_1-005.png",
+      "sha256": "2951d197e94797334629bd82f27bb2549c0aaed71cc07b389b0b67d8857ddf85",
+      "bytes": 1728973
+    },
+    {
+      "file": "hq-A_Attack_1-006.png",
+      "sha256": "578922099abacdd76637676400a6e61f59cb0cd5cd88795d5ef1b0323fa2194d",
+      "bytes": 556798
+    },
+    {
+      "file": "hq-A_Attack_2-000.png",
+      "sha256": "5b2f9ddecad2ccfd1b95208bf1852383f341db5621180d9de9c7c4ecb25a250c",
+      "bytes": 1390838
+    },
+    {
+      "file": "hq-A_Attack_2-001.png",
+      "sha256": "01a997034fa81f8b03a39e76fff07d103f0f7a10e44fbab071357346d0674dcb",
+      "bytes": 1317784
+    },
+    {
+      "file": "hq-A_Attack_2-002.png",
+      "sha256": "9ce64ba65cb8d97c0151c6c8aaa7438b915f6b024a8463d5071a2027acb5eb1e",
+      "bytes": 1481342
+    },
+    {
+      "file": "hq-A_Attack_2-003.png",
+      "sha256": "4f9cad72961b05cc9580569c58e37ada0e7c273cc42c2cfb578b7101bff8aae5",
+      "bytes": 1513436
+    },
+    {
+      "file": "hq-A_Attack_2-004.png",
+      "sha256": "90971c7680c4f9e08cbf808e14f48aeed717a47d808553586655942b1256d8f5",
+      "bytes": 1532046
+    },
+    {
+      "file": "hq-A_Attack_2-005.png",
+      "sha256": "41adbf6a11896463c56acacfbf47c8bea8659928333cd1303489950cb8eaf80a",
+      "bytes": 1444436
+    },
+    {
+      "file": "hq-A_Attack_2-006.png",
+      "sha256": "a1ff0bce8c7979908cf8cb200d3cdbea45a2031bf54ab45edc3ce4194833932b",
+      "bytes": 440036
+    },
+    {
+      "file": "hq-A_Idle-000.png",
+      "sha256": "e4ffe1d1fd40834f5a165f01a934edc5f595b2dfc86250ae82c5839b10a52739",
+      "bytes": 2128287
+    },
+    {
+      "file": "hq-A_Idle-001.png",
+      "sha256": "a665d717d8167563a61cd0a1337bbad0150ffcdd8e2bd22aaa611e0858f50e1a",
+      "bytes": 2152723
+    },
+    {
+      "file": "hq-A_Idle-002.png",
+      "sha256": "66df859edd004196597e3e13f8e036a349b51a080a9c8b7c216f426559212dab",
+      "bytes": 2109961
+    },
+    {
+      "file": "hq-A_Idle-003.png",
+      "sha256": "4f00ec346f39914012ad9bd4dc7ed2ff69f023550d803d140b38688b443901ba",
+      "bytes": 2138257
+    },
+    {
+      "file": "hq-A_Idle-004.png",
+      "sha256": "b29e3d8f4c6b027f9ffc7b5b50fa99816f205d8c6e91ba3a0c903f590a246b20",
+      "bytes": 2128918
+    },
+    {
+      "file": "hq-A_Idle-005.png",
+      "sha256": "f17115a3d4eddee94e37dbc9651070d0a6247b391c9ff6b0f3471e9b60bf74f1",
+      "bytes": 2163289
+    },
+    {
+      "file": "hq-A_Idle-006.png",
+      "sha256": "26a0004ec3c7c51814a607ee525ad97480534893f3f74a263a9142c475178e0b",
+      "bytes": 2136982
+    },
+    {
+      "file": "hq-A_Idle-007.png",
+      "sha256": "30825f538748a1e418f7d10957b32a2241c50ab4ef5d8316a8259495e8f58c6e",
+      "bytes": 2145413
+    },
+    {
+      "file": "hq-A_Idle-008.png",
+      "sha256": "8660a1e6c778798691f66e3416144f460667bc2a763b07966415c3c70e31f5be",
+      "bytes": 1793998
+    },
+    {
+      "file": "hq-A_Move-000.png",
+      "sha256": "a7c460f9599ed70818c2622da8b23f2d9be305919ca371935e2949a5d7e0c304",
+      "bytes": 2289924
+    },
+    {
+      "file": "hq-A_Move-001.png",
+      "sha256": "37b5bb6d74d3e0ac41b96203018ff3caa768b00e4b69ebe447526966d42d98ad",
+      "bytes": 2289476
+    },
+    {
+      "file": "hq-A_Move-002.png",
+      "sha256": "3bfb8dfb7064018a888a3563b82563b4d5130553431187b478341b94a64a57b4",
+      "bytes": 2295923
+    },
+    {
+      "file": "hq-A_Move-003.png",
+      "sha256": "820ae0e11e4c0c45ea88b276bff687428eb045d2b04c7a606c7ea3cc68a88713",
+      "bytes": 2271731
+    },
+    {
+      "file": "hq-A_Move-004.png",
+      "sha256": "a3940d11b1bb2fabae24dad63a94ca8faf87e34f4dfb294581f2f9caaa3a884c",
+      "bytes": 1317776
+    },
+    {
+      "file": "hq-A_Revive_1-000.png",
+      "sha256": "c3ed411dc096cc20a2b3d21e2108f80eeac688d2364785e53b84f7f65629d7ec",
+      "bytes": 1894687
+    },
+    {
+      "file": "hq-A_Revive_1-001.png",
+      "sha256": "ff2beb4763437add300119c259673c002124b3a037183d57373b86a173fcc471",
+      "bytes": 1638369
+    },
+    {
+      "file": "hq-A_Revive_2-000.png",
+      "sha256": "10a0dd673fd63b347b421833505d5db099be80f01575c0d82b98a91f1cf583c4",
+      "bytes": 2386275
+    },
+    {
+      "file": "hq-A_Revive_2-001.png",
+      "sha256": "50e46c32b5ea8fa5b01f34895facce1c163d02af5f5f6cb00f73dfaa704d64af",
+      "bytes": 2453098
+    },
+    {
+      "file": "hq-A_Revive_2-002.png",
+      "sha256": "e51b957f3bd2ee5b83540f8a513ad3965081c7046623c09aef8875e5f08b8a29",
+      "bytes": 2399996
+    },
+    {
+      "file": "hq-A_Revive_2-003.png",
+      "sha256": "ebc5ff2730caf509e957115b08a0ca5ac1d832178579c6ffa313082106579c3c",
+      "bytes": 2459166
+    },
+    {
+      "file": "hq-A_Revive_2-004.png",
+      "sha256": "60789ed6b26e5014000309680ef0d31ed0e818f6897f23a37dc0a03e4b532411",
+      "bytes": 1066204
+    },
+    {
+      "file": "hq-A_Revive_3_A-000.png",
+      "sha256": "ba7a1ba0766818f1e9831ea840f11ab88c9d1d7d7ea95965acd97390ba2dada7",
+      "bytes": 1519161
+    },
+    {
+      "file": "hq-A_Revive_3_A-001.png",
+      "sha256": "3062fbfda03870223b0befbb762d769bdc465eb86dbba8e4c6e146da5516fcc9",
+      "bytes": 1427895
+    },
+    {
+      "file": "hq-A_Revive_3_A-002.png",
+      "sha256": "e2dc877432aa9369c5c52f09bc2e8481cc317b885f52bd336a6bd500e548ddf3",
+      "bytes": 1488079
+    },
+    {
+      "file": "hq-A_Revive_3_A-003.png",
+      "sha256": "57d49be732bef1dfd61f44991ba2076039f210d09f3ad261676be3ecd339612d",
+      "bytes": 1440006
+    },
+    {
+      "file": "hq-A_Revive_3_A-004.png",
+      "sha256": "ca122130bebf60d59e0301dd9149ac10d9d9cb5195b82e07c9eff12e9e501908",
+      "bytes": 1457187
+    },
+    {
+      "file": "hq-A_Revive_3_A-005.png",
+      "sha256": "d76f7bf71dc66805668dbdb4df79846dba3af649cc432335426560fe9eaba92d",
+      "bytes": 1467910
+    },
+    {
+      "file": "hq-A_Revive_3_A-006.png",
+      "sha256": "ec978ddecff37a4486a4f8e63fe54fa764828a6a2718dba47685f82ce31ede06",
+      "bytes": 1536315
+    },
+    {
+      "file": "hq-A_Revive_3_A-007.png",
+      "sha256": "5b5609503467a96ddcda801e977a3b71f1137c7ec5d201e3b6ac0f0e5008e6db",
+      "bytes": 887336
+    },
+    {
+      "file": "hq-A_Revive_3_B-000.png",
+      "sha256": "924550e53a3971619dfab684743480b8158c3ec689ced55feeead6f32ccc7df0",
+      "bytes": 303953
+    },
+    {
+      "file": "hq-A_Revive_3_B-001.png",
+      "sha256": "1398ca87ee5624128ff4400bd19a941200b0116233ee3348d7fe08b6da792c02",
+      "bytes": 308336
+    },
+    {
+      "file": "hq-A_Revive_3_B-002.png",
+      "sha256": "c78e53ff277d881a0775bdadb5aa27e6ba85d4703583bd91a4005430aab6bf68",
+      "bytes": 325217
+    },
+    {
+      "file": "hq-A_Revive_3_B-003.png",
+      "sha256": "4fccc1fbcaeb09587653a82c3465a5f385f4672516abf777e106f09755789a27",
+      "bytes": 325909
+    },
+    {
+      "file": "hq-A_Revive_3_B-004.png",
+      "sha256": "ec1cc01a52301e5443bf97eb4a7b273387b92088597393ce43a8c12f876cb561",
+      "bytes": 327499
+    },
+    {
+      "file": "hq-A_Revive_3_B-005.png",
+      "sha256": "d98e99180c2f1491b07a85aea73695a265f37347b2e7ddacf1badeb6c431f799",
+      "bytes": 339385
+    },
+    {
+      "file": "hq-A_Revive_3_B-006.png",
+      "sha256": "4db1214b4a1139f91f295c797440b3eab04a39fb446a26f4b5816f4989accb18",
+      "bytes": 319110
+    },
+    {
+      "file": "hq-A_Revive_3_B-007.png",
+      "sha256": "4199cd2e73f7851f596917c7bcfb9e3bfdbd6ba824a2a9313a6e5b0002e3115b",
+      "bytes": 162094
+    },
+    {
+      "file": "hq-A_Skill_1-000.png",
+      "sha256": "fbc787f748e928be2816af92d687be73bf2f61523f55cb00e17f023bed860a6f",
+      "bytes": 1641667
+    },
+    {
+      "file": "hq-A_Skill_1-001.png",
+      "sha256": "d25536bb944b89bc6bd6c68117b4ad70b7179faf25dadf78ad3e1b7566669ccd",
+      "bytes": 1655514
+    },
+    {
+      "file": "hq-A_Skill_1-002.png",
+      "sha256": "2204065a5330099af1b4114d2054b11cbae1a9c130eb5cfcd12cddea39973c7a",
+      "bytes": 1605851
+    },
+    {
+      "file": "hq-A_Skill_1-003.png",
+      "sha256": "a5b1122774d8e7b9b6b9d2824a58a5d341a008c5a7847036b320bf20ef55dfcd",
+      "bytes": 1612054
+    },
+    {
+      "file": "hq-A_Skill_1-004.png",
+      "sha256": "581c1985a78c99a9fbe87f044f5501dae938a82c4fbff4134636ce285c2a431a",
+      "bytes": 1636803
+    },
+    {
+      "file": "hq-A_Skill_1-005.png",
+      "sha256": "682d8964694ef15ceb7d44929d1e7440e9663391161aa725cdb04e6ae2dccb36",
+      "bytes": 1684530
+    },
+    {
+      "file": "hq-A_Skill_1-006.png",
+      "sha256": "f5e94cdb4ed088ed6beb82f9db69d4beae6aed4d0458676102d28892365bf9d3",
+      "bytes": 1617956
+    },
+    {
+      "file": "hq-A_Skill_1-007.png",
+      "sha256": "820d1864c60fad7965600fd477d7b2d1eeb56566a883cd8d2f4883a82b9bc9d0",
+      "bytes": 917909
+    },
+    {
+      "file": "hq-A_Skill_2_Begin-000.png",
+      "sha256": "06b40aa31942c9e90ff75b326f4eca7922cead5263bcb408dc445ed0d44aacca",
+      "bytes": 716389
+    },
+    {
+      "file": "hq-A_Skill_2_End-000.png",
+      "sha256": "d03d40ebcd5043bbd93e5fdea17954df5958bad37e79fb12cd58f8e5fd1bd2a4",
+      "bytes": 1231752
+    },
+    {
+      "file": "hq-A_Skill_2_End-001.png",
+      "sha256": "2638f167292d0ffbd42ac4d916666e67b4539e03cee0ea280d6e25c85d0f0dd0",
+      "bytes": 1426364
+    },
+    {
+      "file": "hq-A_Skill_2_End-002.png",
+      "sha256": "061240a5916896e2401898445de655e2536019eeb7e3bfd3bfa3fc78bb11e528",
+      "bytes": 790239
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-000.png",
+      "sha256": "02004e42e0d93aa01155f6caeccc36c0cf62c16dfa3cf42f19b6575751fc85d8",
+      "bytes": 1504675
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-001.png",
+      "sha256": "609c78c2b1ab2bfead453820b7eb8e189eb554e252cfb122355e20550e5ef3c2",
+      "bytes": 1634398
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-002.png",
+      "sha256": "5065b9819458fdad12b7ca5532aafad894917c29e1290b8dad7c0704178bb43a",
+      "bytes": 1672963
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-003.png",
+      "sha256": "0606cdb8c9415636ed109a4c4e29c5ecc8bfe4d3c991565a049ef25ff150be0b",
+      "bytes": 1619541
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-004.png",
+      "sha256": "fbe9170943c2d6a2ed2c789cbfd16c04de311ed7573496dbd981b3f364b7e707",
+      "bytes": 1599989
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-005.png",
+      "sha256": "12470d9e09dd8b3d244c653f86667d7a101d32780567f5f58d9bcc1efc9982ec",
+      "bytes": 1634252
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-006.png",
+      "sha256": "0e91801b6f5c102c0a8c263a18f7b270d44a5218d9521ef151f3dbc8ddc51430",
+      "bytes": 1672847
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-007.png",
+      "sha256": "c79d2443f31f54219c00cf6740eb91b5dc98893a36bc6baaaf4e7be30d56bead",
+      "bytes": 1640064
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-008.png",
+      "sha256": "acd4f69039b0f69c79600b93bde1072aaf9bf530590106ec2127783d48bea9fc",
+      "bytes": 1620650
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-009.png",
+      "sha256": "76c319a80027d06a4ca26b9f5dc098d0113ff2529b5d077a777e0d6f8555ce45",
+      "bytes": 1655494
+    },
+    {
+      "file": "hq-A_Skill_2_Loop-010.png",
+      "sha256": "4b350b0a104d4a9c04bc03a8bbfb660d7b411aa5b67cddb0ab91797b56c7f9e1",
+      "bytes": 129445
+    },
+    {
+      "file": "hq-B_Attack_1-000.png",
+      "sha256": "3a7170fafb60846f88059924ebd7d58f560683e881ee22b542e6dde832714581",
+      "bytes": 1572869
+    },
+    {
+      "file": "hq-B_Attack_1-001.png",
+      "sha256": "ebb8c0eeaec4b25fa33ea074b8ce027b7558e8127214e02da6cb3017d5b8eda2",
+      "bytes": 1659966
+    },
+    {
+      "file": "hq-B_Attack_1-002.png",
+      "sha256": "6ddbee0269890ca1be5ed3ccca7885bca98d987e44dbbdd6f856e779d6889b67",
+      "bytes": 1575795
+    },
+    {
+      "file": "hq-B_Attack_1-003.png",
+      "sha256": "3120a935c2b0eb3e9620771b38e475fd51e255c1267a9ec81533baf309933662",
+      "bytes": 1580201
+    },
+    {
+      "file": "hq-B_Attack_1-004.png",
+      "sha256": "99bfa801f63fb485c2c648de8817ef808818b7b0896379a43eb52a85ec1f66cc",
+      "bytes": 1731330
+    },
+    {
+      "file": "hq-B_Attack_1-005.png",
+      "sha256": "5fd5702732b72a4c18a3f76cf2d613997c08f0a8369e43079b0bf296d85eb7d2",
+      "bytes": 1665470
+    },
+    {
+      "file": "hq-B_Attack_1-006.png",
+      "sha256": "2482e6adaac7094042bf3b49fa47141be51fce39abad8c4bcac759337b57f294",
+      "bytes": 514432
+    },
+    {
+      "file": "hq-B_Attack_2-000.png",
+      "sha256": "d9edf6e431d7d9004e2d083e04d0b18e30bf5e1a8ddfce3c53be42a4e1f18070",
+      "bytes": 1401387
+    },
+    {
+      "file": "hq-B_Attack_2-001.png",
+      "sha256": "1f978a6b23b0963bb9bc25f69ee2f396693b219e4e9bc062beb62689a7b9c00a",
+      "bytes": 1371235
+    },
+    {
+      "file": "hq-B_Attack_2-002.png",
+      "sha256": "8358e7eb23a4d26460475715effe5463d0dcd188fe0e75051489b11c2995b745",
+      "bytes": 1482854
+    },
+    {
+      "file": "hq-B_Attack_2-003.png",
+      "sha256": "ef74508b22c07fcd7316dcd34e338c123702a295487f5f2350c90114d24989bd",
+      "bytes": 1511451
+    },
+    {
+      "file": "hq-B_Attack_2-004.png",
+      "sha256": "d42af9063b4d6288de647c0d3d189ddc2b9da2db0d5badafccc8cbe2f9e42fa4",
+      "bytes": 1536275
+    },
+    {
+      "file": "hq-B_Attack_2-005.png",
+      "sha256": "0817e990d4690625dfd9e69e4dc58f0389cc0af004685e3fea3077b875077d10",
+      "bytes": 1512067
+    },
+    {
+      "file": "hq-B_Attack_2-006.png",
+      "sha256": "561a27c0b0caa72e45930dee4669d2fdb06fc105aa26507e0a329b9994851afa",
+      "bytes": 461273
+    },
+    {
+      "file": "hq-B_Die-000.png",
+      "sha256": "c85a24648bcecc41e780f7fc7a7e2281b651dc71dfa30810748b011f9275ec9f",
+      "bytes": 2403521
+    },
+    {
+      "file": "hq-B_Die-001.png",
+      "sha256": "cdd3487532b1999ed6c34e42f0f4f590b10c0fb2398f613fd41b9f455e65ed09",
+      "bytes": 2413254
+    },
+    {
+      "file": "hq-B_Die-002.png",
+      "sha256": "76c91d6641abfedad4127a0f20cc1dad6c310abcf7696441fd57e7de8c870f96",
+      "bytes": 2292428
+    },
+    {
+      "file": "hq-B_Die-003.png",
+      "sha256": "abbee05e5e3d6d75c4d8fbc9a16118824c5463d946790146267ab7cd601949cd",
+      "bytes": 1629268
+    },
+    {
+      "file": "hq-B_Idle-000.png",
+      "sha256": "f09b75a30ad8bd014cd28c1943401a766429a01bd173d76ca74efb44edcc89a7",
+      "bytes": 2246979
+    },
+    {
+      "file": "hq-B_Idle-001.png",
+      "sha256": "669d0935355a3e364bd5b5d4932ef486df37367288c6f18341039d90797441e8",
+      "bytes": 2338002
+    },
+    {
+      "file": "hq-B_Idle-002.png",
+      "sha256": "b19f36bea9bcf69cb94bb988f0161be4493ba466bc2712611bdbb5d589da2938",
+      "bytes": 2239610
+    },
+    {
+      "file": "hq-B_Idle-003.png",
+      "sha256": "3f201448ffe62adb8b98e7db8862e57c663986805679ee63333c623a706be8d0",
+      "bytes": 2312103
+    },
+    {
+      "file": "hq-B_Idle-004.png",
+      "sha256": "77d5dd187e654bde44ceec9bb1108ccd0d808fd1dae09cb993ee1e7a7ef5acaa",
+      "bytes": 2214686
+    },
+    {
+      "file": "hq-B_Idle-005.png",
+      "sha256": "94afbc579763d35b274290639209ba5f74e880b25cad2f8c03b07927928769bc",
+      "bytes": 2326118
+    },
+    {
+      "file": "hq-B_Idle-006.png",
+      "sha256": "21dec85999223517b47bdc3a77089604a2c72b58ed0ee2a79037be6d87a99e1a",
+      "bytes": 2276622
+    },
+    {
+      "file": "hq-B_Idle-007.png",
+      "sha256": "b4e356ee939a638df8971ea2b0719dae49c19823e29220e8024e53524ceaa7a0",
+      "bytes": 2318452
+    },
+    {
+      "file": "hq-B_Idle-008.png",
+      "sha256": "3450080df5b25d3049c6c3187e9ba2c708e586d760da329251cf3d45a14c4b83",
+      "bytes": 1881546
+    },
+    {
+      "file": "hq-B_Move-000.png",
+      "sha256": "efdf1435522431f5d68fb3c20c4c397ce45f513d281f4c0c49dfd9001cff40f2",
+      "bytes": 2720997
+    },
+    {
+      "file": "hq-B_Move-001.png",
+      "sha256": "4c5b147de030fe8e6374f894fdd4857f64721c92473b94f3a9e20a68ffe597ed",
+      "bytes": 2717449
+    },
+    {
+      "file": "hq-B_Move-002.png",
+      "sha256": "8dd2963b2ee84dc3c0675922215734211acaf117ef39b476ece105ab9fe42095",
+      "bytes": 2701836
+    },
+    {
+      "file": "hq-B_Move-003.png",
+      "sha256": "e832f2bc02fec80990b2ce28222edd4b023282ff012b77726544f455770eb8d3",
+      "bytes": 2749157
+    },
+    {
+      "file": "hq-B_Move-004.png",
+      "sha256": "d658f0598ac08731a4c042a32e0139cb60420b764724d7b277da251dad8c6b8f",
+      "bytes": 1547449
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-000.png",
+      "sha256": "3fab822411ea9c0f1feea9a8b4e886d21ade6240f1aa1487f76629c266682156",
+      "bytes": 1385888
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-001.png",
+      "sha256": "d653bfc152fc810167d5e5d330609f00fbd806094143ed3003402af00a6765a0",
+      "bytes": 1362664
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-002.png",
+      "sha256": "b4d531e4826fa093a2487c8598ed7d826a31a55d23a326517d53b0a3f3ee97c2",
+      "bytes": 1364243
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-003.png",
+      "sha256": "a1a902a4e53af361704173abe4885d4016a43f1c210377b965342c6fb220b0f4",
+      "bytes": 1438054
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-004.png",
+      "sha256": "428c788c7e8ced7bff21bffc34c63f6c1cea4d35ba49bcdc4a35a6ca56e28786",
+      "bytes": 1432442
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-005.png",
+      "sha256": "fa20d4e58a4c3aed30996101e495f54e64da2347d060f896f27738b789912382",
+      "bytes": 1348535
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-006.png",
+      "sha256": "7ad200c229835659793be2eb2f93c65064127cd9fe3bc7ffe0c9e6ebfce2e404",
+      "bytes": 1341178
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-007.png",
+      "sha256": "ee34be0fd3ff57974af845b6d73017828d6ed82c3bd66e057af3859b4e5062f9",
+      "bytes": 1330205
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-008.png",
+      "sha256": "5a3f9f6e5447a21a7aca40b02d20b58ad19ddde02c4458eb04aedcfdc30d5dcd",
+      "bytes": 1380668
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-009.png",
+      "sha256": "6d1e0868303f598329022acf1c54d9b3a244867a2cbb1ab606bf4d296d975a9a",
+      "bytes": 1345251
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-010.png",
+      "sha256": "d9e30f334eee9c2367a553bcaf1b21266fe22a39deb662c01188d7309eb78563",
+      "bytes": 1404024
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-011.png",
+      "sha256": "22a75b6d94c46c6a0e4cdd6c00b3c6df02bc113a603ea6c2696d65157980ca81",
+      "bytes": 1421652
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-012.png",
+      "sha256": "723b8ab62b8007b4fa15b0884ce95fd83028e8d8bbbeef3225bb017fde8f39dd",
+      "bytes": 1432263
+    },
+    {
+      "file": "hq-B_Skill_1_Begin-013.png",
+      "sha256": "f8f71dd2d55b153078d1bb3eba9ea585a90f8d514ab1ebd9a3e03fa2c4a58f1f",
+      "bytes": 227681
+    },
+    {
+      "file": "hq-B_Skill_1_End-000.png",
+      "sha256": "d40d229a61fd33970041c81510293ea1e0a2ba9ff073c02953278b0fc1210f1d",
+      "bytes": 1489337
+    },
+    {
+      "file": "hq-B_Skill_1_End-001.png",
+      "sha256": "a31d38a9488a501a495ea4e7b2fb6c9dff3a8e08346f2fa8e8991eb76c540193",
+      "bytes": 1728167
+    },
+    {
+      "file": "hq-B_Skill_1_End-002.png",
+      "sha256": "df58a040fb55693869cdcd8ab13a63d1033b3bd72e683d90a647f9436f14f6bd",
+      "bytes": 969519
+    },
+    {
+      "file": "hq-B_Skill_2_Begin-000.png",
+      "sha256": "9196a39457ae2e5434e733e9730ef87a1c5b09a27a16d9db308fb1e6e164467e",
+      "bytes": 839828
+    },
+    {
+      "file": "hq-B_Skill_2_End-000.png",
+      "sha256": "ce4dad2112a7c3d2e66d22d9629fb97330abdda9fda191f9cbdb6f870d67b6af",
+      "bytes": 1262755
+    },
+    {
+      "file": "hq-B_Skill_2_End-001.png",
+      "sha256": "3d91f2a08214885b4f22f8e02cb046d83babb828dc6fcd0c8dea7bf8c3f934a9",
+      "bytes": 1428608
+    },
+    {
+      "file": "hq-B_Skill_2_End-002.png",
+      "sha256": "3c1c2d8c826b910786645f2303a44f0aeb2f554bbb5dd7a76b0c9f1938f5633e",
+      "bytes": 782658
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-000.png",
+      "sha256": "02004e42e0d93aa01155f6caeccc36c0cf62c16dfa3cf42f19b6575751fc85d8",
+      "bytes": 1504675
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-001.png",
+      "sha256": "609c78c2b1ab2bfead453820b7eb8e189eb554e252cfb122355e20550e5ef3c2",
+      "bytes": 1634398
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-002.png",
+      "sha256": "5065b9819458fdad12b7ca5532aafad894917c29e1290b8dad7c0704178bb43a",
+      "bytes": 1672963
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-003.png",
+      "sha256": "0606cdb8c9415636ed109a4c4e29c5ecc8bfe4d3c991565a049ef25ff150be0b",
+      "bytes": 1619541
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-004.png",
+      "sha256": "fbe9170943c2d6a2ed2c789cbfd16c04de311ed7573496dbd981b3f364b7e707",
+      "bytes": 1599989
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-005.png",
+      "sha256": "12470d9e09dd8b3d244c653f86667d7a101d32780567f5f58d9bcc1efc9982ec",
+      "bytes": 1634252
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-006.png",
+      "sha256": "0e91801b6f5c102c0a8c263a18f7b270d44a5218d9521ef151f3dbc8ddc51430",
+      "bytes": 1672847
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-007.png",
+      "sha256": "c79d2443f31f54219c00cf6740eb91b5dc98893a36bc6baaaf4e7be30d56bead",
+      "bytes": 1640064
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-008.png",
+      "sha256": "acd4f69039b0f69c79600b93bde1072aaf9bf530590106ec2127783d48bea9fc",
+      "bytes": 1620650
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-009.png",
+      "sha256": "76c319a80027d06a4ca26b9f5dc098d0113ff2529b5d077a777e0d6f8555ce45",
+      "bytes": 1655494
+    },
+    {
+      "file": "hq-B_Skill_2_Loop-010.png",
+      "sha256": "4b350b0a104d4a9c04bc03a8bbfb660d7b411aa5b67cddb0ab91797b56c7f9e1",
+      "bytes": 129445
+    },
+    {
+      "file": "hq-B_Start-000.png",
+      "sha256": "958a203ffe6714457f80e05d448fc41e9c7afcb76fb7a77a1d4d1fd394b66ded",
+      "bytes": 177754
+    },
+    {
+      "file": "hq-B_Start-001.png",
+      "sha256": "37c92733c5d7ac0d3e6caf2c6be86707e5243a90d057a5e2753a3e063cf075ff",
+      "bytes": 248332
+    },
+    {
+      "file": "hq-B_Start-002.png",
+      "sha256": "0b9d287fcdee45e8e2fabb2954beb8bb01ad6bae2082074623c03424b9c49e08",
+      "bytes": 271621
+    },
+    {
+      "file": "hq-B_Start-003.png",
+      "sha256": "49c6b0d609fd2d5696a57d5556e636916c947bdfd22efb1582bafe5f30333007",
+      "bytes": 283346
+    },
+    {
+      "file": "hq-B_Start-004.png",
+      "sha256": "dd769d3a1d5a0e45067a5e2a25aaa769d005605f67dad12d331be83184cdd1fe",
+      "bytes": 286969
+    },
+    {
+      "file": "hq-B_Start-005.png",
+      "sha256": "abd187e9d1c39730798b9377d2f4d5856fc9a999b68b3d68f97b03584bceec7a",
+      "bytes": 269415
+    },
+    {
+      "file": "hq-B_Start-006.png",
+      "sha256": "b7865890a5b79eff0b0ff2190872d028b280218918917b69e14b4cd226825330",
+      "bytes": 249623
+    },
+    {
+      "file": "hq-B_Start-007.png",
+      "sha256": "478cdb6893b2708ba4724d6d336ecdfe82fc52038144e6b5a2d1fab6a2389e47",
+      "bytes": 242918
+    },
+    {
+      "file": "hq-B_Start-008.png",
+      "sha256": "de616ddabf206a6ec29ea85fa78e00a94f6972aa64d6b81e6d0fa684e927c687",
+      "bytes": 257320
+    },
+    {
+      "file": "hq-B_Start-009.png",
+      "sha256": "17a83e68df51c68c710b4fe0c1fc6eabbba73770f8db9138a88ac5a936814bee",
+      "bytes": 266141
+    },
+    {
+      "file": "hq-B_Start-010.png",
+      "sha256": "1d2f5fe1c5f878e43c2bfb6915b16e67ea405855cdef6435c9e9acabfc171579",
+      "bytes": 270460
+    },
+    {
+      "file": "hq-B_Start-011.png",
+      "sha256": "0369f9904f34036e713631d77a9f5f80b5d026b3c55d88e74b88aa549c9a250f",
+      "bytes": 263662
+    },
+    {
+      "file": "hq-B_Start-012.png",
+      "sha256": "11c69fdb0ba6f5aaa632e616360256196c878f78003fadeeeb4b9851dcd182f6",
+      "bytes": 265696
+    },
+    {
+      "file": "hq-B_Start-013.png",
+      "sha256": "891665c4b7601acfbec7d77ab2e2757a76c2c5720a9ab50a3fbce51513d35098",
+      "bytes": 259791
+    },
+    {
+      "file": "hq-B_Start-014.png",
+      "sha256": "59bb7dcd897042a76137e1bb5731537ac32216c926089e9b8375e00efedc6944",
+      "bytes": 259338
+    },
+    {
+      "file": "hq-B_Start-015.png",
+      "sha256": "3d075e7e1e5ea72bd9b81351bcb2ae8d880fd2792ea72509ee788969f045ec1b",
+      "bytes": 260713
+    },
+    {
+      "file": "hq-B_Start-016.png",
+      "sha256": "90b5a74a56d5bcbb73f479dcc5d5486925f1620354ccd6290ea1bc01de48e987",
+      "bytes": 258318
+    },
+    {
+      "file": "hq-B_Start-017.png",
+      "sha256": "2ca698a2c0a7336d273ed88fe12be37431911a760534f9fa431c8d67f585e0ed",
+      "bytes": 257769
+    },
+    {
+      "file": "hq-B_Start-018.png",
+      "sha256": "e4e6552f674a755b5635514b1940a58c47ce5892aaddbe634b4e81b55d5e0525",
+      "bytes": 257319
+    },
+    {
+      "file": "hq-B_Start-019.png",
+      "sha256": "f0d432c46463df727da18c9a9e3022e71520b0fd841acf1083fe22ba59e1fbbe",
+      "bytes": 246997
+    },
+    {
+      "file": "hq-B_Start-020.png",
+      "sha256": "ccef06b5bec93f11b35677b4dca9f8dc5430c4a7dddf8080afa8fc2ca6c365d2",
+      "bytes": 245111
+    },
+    {
+      "file": "hq-B_Start-021.png",
+      "sha256": "2af4ba876e91a0689623f1463edc762f84e1546ccfc6dcba37d349e654324f4b",
+      "bytes": 252216
+    },
+    {
+      "file": "hq-B_Start-022.png",
+      "sha256": "d1593cf4907b6a7cf225bfa32a842f14e8c3d49296f0b865f4cc6743f43acc62",
+      "bytes": 210003
+    }
+  ],
+  "alphaChecks": [
+    {
+      "source": "A_Attack_1",
+      "time": 0,
+      "visible": 37082,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_1",
+      "time": 0.4166666567325592,
+      "visible": 38930,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_1",
+      "time": 0.8333333134651184,
+      "visible": 37665,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_1",
+      "time": 1.2499999701976776,
+      "visible": 38482,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_1",
+      "time": 1.6649999603033065,
+      "visible": 37099,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_2",
+      "time": 0,
+      "visible": 30699,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_2",
+      "time": 0.4166666567325592,
+      "visible": 28377,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_2",
+      "time": 0.8333333134651184,
+      "visible": 31113,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_2",
+      "time": 1.2499999701976776,
+      "visible": 32027,
+      "edge": 0
+    },
+    {
+      "source": "A_Attack_2",
+      "time": 1.6649999603033065,
+      "visible": 30690,
+      "edge": 0
+    },
+    {
+      "source": "A_Idle",
+      "time": 0,
+      "visible": 54079,
+      "edge": 0
+    },
+    {
+      "source": "A_Idle",
+      "time": 0.5833333134651184,
+      "visible": 53656,
+      "edge": 0
+    },
+    {
+      "source": "A_Idle",
+      "time": 1.1666666269302368,
+      "visible": 53449,
+      "edge": 0
+    },
+    {
+      "source": "A_Idle",
+      "time": 1.7499999403953552,
+      "visible": 53856,
+      "edge": 0
+    },
+    {
+      "source": "A_Idle",
+      "time": 2.330999920606613,
+      "visible": 54089,
+      "edge": 0
+    },
+    {
+      "source": "A_Move",
+      "time": 0,
+      "visible": 51915,
+      "edge": 0
+    },
+    {
+      "source": "A_Move",
+      "time": 0.30000001192092896,
+      "visible": 53512,
+      "edge": 0
+    },
+    {
+      "source": "A_Move",
+      "time": 0.6000000238418579,
+      "visible": 52718,
+      "edge": 0
+    },
+    {
+      "source": "A_Move",
+      "time": 0.9000000357627869,
+      "visible": 51819,
+      "edge": 0
+    },
+    {
+      "source": "A_Move",
+      "time": 1.198800047636032,
+      "visible": 51922,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_1",
+      "time": 0,
+      "visible": 39930,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_1",
+      "time": 0.125,
+      "visible": 41155,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_1",
+      "time": 0.25,
+      "visible": 38465,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_1",
+      "time": 0.375,
+      "visible": 38000,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_1",
+      "time": 0.4995,
+      "visible": 38428,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_2",
+      "time": 0,
+      "visible": 59357,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_2",
+      "time": 0.2916666567325592,
+      "visible": 59184,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_2",
+      "time": 0.5833333134651184,
+      "visible": 59776,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_2",
+      "time": 0.8749999701976776,
+      "visible": 59992,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_2",
+      "time": 1.1654999603033065,
+      "visible": 59346,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_A",
+      "time": 0,
+      "visible": 33523,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_A",
+      "time": 0.5,
+      "visible": 30260,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_A",
+      "time": 1,
+      "visible": 29182,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_A",
+      "time": 1.5,
+      "visible": 30881,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_A",
+      "time": 1.998,
+      "visible": 32174,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_B",
+      "time": 0,
+      "visible": 19502,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_B",
+      "time": 0.125,
+      "visible": 20812,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_B",
+      "time": 0.25,
+      "visible": 21597,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_B",
+      "time": 0.375,
+      "visible": 21660,
+      "edge": 0
+    },
+    {
+      "source": "A_Revive_3_B",
+      "time": 0.4995,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_1",
+      "time": 0,
+      "visible": 35223,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_1",
+      "time": 0.5,
+      "visible": 36416,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_1",
+      "time": 1,
+      "visible": 36463,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_1",
+      "time": 1.5,
+      "visible": 36536,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_1",
+      "time": 1.998,
+      "visible": 35235,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Begin",
+      "time": 0,
+      "visible": 41597,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Begin",
+      "time": 0.01666666753590107,
+      "visible": 43502,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Begin",
+      "time": 0.03333333507180214,
+      "visible": 55404,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Begin",
+      "time": 0.05000000260770321,
+      "visible": 58045,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Begin",
+      "time": 0.06660000347346068,
+      "visible": 60416,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_End",
+      "time": 0,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_End",
+      "time": 0.1666666716337204,
+      "visible": 28395,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_End",
+      "time": 0.3333333432674408,
+      "visible": 29593,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_End",
+      "time": 0.5000000149011612,
+      "visible": 28583,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_End",
+      "time": 0.6660000198483467,
+      "visible": 28067,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Loop",
+      "time": 0,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Loop",
+      "time": 0.6666666865348816,
+      "visible": 46364,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Loop",
+      "time": 1.3333333730697632,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Loop",
+      "time": 2.0000000596046448,
+      "visible": 45472,
+      "edge": 0
+    },
+    {
+      "source": "A_Skill_2_Loop",
+      "time": 2.6640000793933867,
+      "visible": 34000,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_1",
+      "time": 0,
+      "visible": 32336,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_1",
+      "time": 0.4166666567325592,
+      "visible": 35929,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_1",
+      "time": 0.8333333134651184,
+      "visible": 34774,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_1",
+      "time": 1.2499999701976776,
+      "visible": 36618,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_1",
+      "time": 1.6649999603033065,
+      "visible": 32339,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_2",
+      "time": 0,
+      "visible": 27883,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_2",
+      "time": 0.4166666567325592,
+      "visible": 28547,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_2",
+      "time": 0.8333333134651184,
+      "visible": 30361,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_2",
+      "time": 1.2499999701976776,
+      "visible": 31983,
+      "edge": 0
+    },
+    {
+      "source": "B_Attack_2",
+      "time": 1.6649999603033065,
+      "visible": 27876,
+      "edge": 0
+    },
+    {
+      "source": "B_Die",
+      "time": 0,
+      "visible": 51664,
+      "edge": 0
+    },
+    {
+      "source": "B_Die",
+      "time": 0.25,
+      "visible": 57150,
+      "edge": 0
+    },
+    {
+      "source": "B_Die",
+      "time": 0.5,
+      "visible": 57228,
+      "edge": 0
+    },
+    {
+      "source": "B_Die",
+      "time": 0.75,
+      "visible": 57700,
+      "edge": 0
+    },
+    {
+      "source": "B_Die",
+      "time": 0.999,
+      "visible": 57035,
+      "edge": 0
+    },
+    {
+      "source": "B_Idle",
+      "time": 0,
+      "visible": 56776,
+      "edge": 0
+    },
+    {
+      "source": "B_Idle",
+      "time": 0.5833333134651184,
+      "visible": 57417,
+      "edge": 0
+    },
+    {
+      "source": "B_Idle",
+      "time": 1.1666666269302368,
+      "visible": 56940,
+      "edge": 0
+    },
+    {
+      "source": "B_Idle",
+      "time": 1.7499999403953552,
+      "visible": 58036,
+      "edge": 0
+    },
+    {
+      "source": "B_Idle",
+      "time": 2.330999920606613,
+      "visible": 56757,
+      "edge": 0
+    },
+    {
+      "source": "B_Move",
+      "time": 0,
+      "visible": 64368,
+      "edge": 0
+    },
+    {
+      "source": "B_Move",
+      "time": 0.30000001192092896,
+      "visible": 64529,
+      "edge": 0
+    },
+    {
+      "source": "B_Move",
+      "time": 0.6000000238418579,
+      "visible": 64248,
+      "edge": 0
+    },
+    {
+      "source": "B_Move",
+      "time": 0.9000000357627869,
+      "visible": 66525,
+      "edge": 0
+    },
+    {
+      "source": "B_Move",
+      "time": 1.198800047636032,
+      "visible": 64328,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_Begin",
+      "time": 0,
+      "visible": 28438,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_Begin",
+      "time": 0.875,
+      "visible": 29071,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_Begin",
+      "time": 1.75,
+      "visible": 28766,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_Begin",
+      "time": 2.625,
+      "visible": 28491,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_Begin",
+      "time": 3.4965,
+      "visible": 41413,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_End",
+      "time": 0,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_End",
+      "time": 0.1666666716337204,
+      "visible": 36080,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_End",
+      "time": 0.3333333432674408,
+      "visible": 37788,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_End",
+      "time": 0.5000000149011612,
+      "visible": 36204,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_1_End",
+      "time": 0.6660000198483467,
+      "visible": 35718,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Begin",
+      "time": 0,
+      "visible": 48560,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Begin",
+      "time": 0.01666666753590107,
+      "visible": 51412,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Begin",
+      "time": 0.03333333507180214,
+      "visible": 70462,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Begin",
+      "time": 0.05000000260770321,
+      "visible": 73256,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Begin",
+      "time": 0.06660000347346068,
+      "visible": 76334,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_End",
+      "time": 0,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_End",
+      "time": 0.1666666716337204,
+      "visible": 29423,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_End",
+      "time": 0.3333333432674408,
+      "visible": 29328,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_End",
+      "time": 0.5000000149011612,
+      "visible": 28132,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_End",
+      "time": 0.6660000198483467,
+      "visible": 26758,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Loop",
+      "time": 0,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Loop",
+      "time": 0.6666666865348816,
+      "visible": 46364,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Loop",
+      "time": 1.3333333730697632,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Loop",
+      "time": 2.0000000596046448,
+      "visible": 45472,
+      "edge": 0
+    },
+    {
+      "source": "B_Skill_2_Loop",
+      "time": 2.6640000793933867,
+      "visible": 34000,
+      "edge": 0
+    },
+    {
+      "source": "B_Start",
+      "time": 0,
+      "visible": 0,
+      "edge": 0
+    },
+    {
+      "source": "B_Start",
+      "time": 0.375,
+      "visible": 15410,
+      "edge": 0
+    },
+    {
+      "source": "B_Start",
+      "time": 0.75,
+      "visible": 15994,
+      "edge": 0
+    },
+    {
+      "source": "B_Start",
+      "time": 1.125,
+      "visible": 15562,
+      "edge": 0
+    },
+    {
+      "source": "B_Start",
+      "time": 1.4985,
+      "visible": 15459,
+      "edge": 0
+    }
+  ],
+  "completed": true,
+  "sourceFiles": [
+    {
+      "file": "B23/source/main/enemy_1561_crzjdg.skel",
+      "sha256": "cb51d9a076828079457e51e4ecf8f4486a0ca994ab9b585e720cc4de950f2e32",
+      "bytes": 591241
+    },
+    {
+      "file": "B23/source/main/enemy_1561_crzjdg.atlas",
+      "sha256": "376fd2a555ab8aee828d5e15628c31f0ea9aa8efbcc10e3f97ff54486a1231d9",
+      "bytes": 7257
+    },
+    {
+      "file": "B23/source/main/enemy_1561_crzjdg.png",
+      "sha256": "9b457e828845a5c458a827c16a2334459d60229daf815f3aab68f307f1585a3d",
+      "bytes": 146917
+    }
+  ]
+}

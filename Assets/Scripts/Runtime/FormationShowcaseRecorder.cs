@@ -113,8 +113,9 @@ namespace YesterdayConvoy
                 {
                     string id="D"+number.ToString("D2");
                     var guard=FormationCampaignRules.DefenderByArtId(id);
-                    yield return new Plan{Id=id,GuardArt=id,Kind="defender",Name=guard.Name,Units=new[]{"B10"}};
+                    yield return new Plan{Id=id,GuardArt=id,Kind="defender",Name=guard.Name,Units=new[]{id=="D28"?"SLUG":"B10"}};
                 }
+                yield return new Plan{Id="D32",GuardArt="D32",Kind="defender",Name=FormationCampaignRules.DefenderByArtId("D32").Name,Units=new[]{"B10"}};
                 yield return new Plan{Id="P14H",SummonArt="P14H",Kind="summon",Name="卡德霍猎犬",Units=new[]{"B14"}};
                 yield return new Plan{Id="GOLEM",SummonArt="GOLEM",Kind="summon",Name="泥岩巨像",Units=new[]{"M27","M42"}};
                 yield break;
@@ -215,15 +216,25 @@ namespace YesterdayConvoy
             }
             clip.notes+=" 守军在现役规则中固定站位，源目录没有独立行走片段。靶只供触发动作、伤害或治疗。";
             yield return Segment("固守站位 · 本作守军不行走",1.5f,freezeSimulation:true);
+            if(id=="D32")
+            {
+                clip.notes+=" 赤刃明霄陈保留在守军资源库，现役关卡未排入。普通攻击在棋盘结算，技能部分用原版动作和特效检视，不结算技能伤害。";
+                yield return Segment("普攻 · 原版命中",3);
+                model.PreviewShowcaseGuardMotion("skill_begin",controller.ShowcaseGuardMotionDuration(guard,"skill_begin"));
+                yield return Segment("赤霄·天喟 · 龙头、红色拖尾与持续层",2);
+                model.PreviewShowcaseGuardMotion("skill_attack",controller.ShowcaseGuardMotionDuration(guard,"skill_attack"));
+                yield return Segment("三段剑光 · 飞龙在当前棋盘转向",6);
+                yield break;
+            }
             if(id=="D30")
             {
-                clip.notes+=" 玛恩纳保留在守军资源库，现役关卡不配置且没有普通攻击；后两段为源技能动作的实机检视。";
+                clip.notes+=" 玛恩纳保留在守军资源库，现役关卡未排入；后两段实机检视源技能与斩击特效。";
                 foreach(string key in new[]{"skill_begin","skill_attack"})
                 {
                     float seconds=controller.ShowcaseGuardMotionDuration(guard,key);
                     if(seconds<=0)continue;
                     model.PreviewShowcaseGuardMotion(key,seconds);
-                    yield return Segment(key=="skill_begin"?"源技能起手 · 动作检视":"源技能挥击 · 动作检视",Mathf.Max(1.25f,seconds/FormationBattleController.FormationVisualRate+.3f));
+                    yield return Segment(key=="skill_begin"?"源技能起手 · 动作检视":"源技能挥击 · 原版斩击特效",Mathf.Max(1.25f,seconds/FormationBattleController.FormationVisualRate+.3f));
                 }
                 yield break;
             }

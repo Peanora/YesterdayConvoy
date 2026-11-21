@@ -9,7 +9,7 @@ namespace YesterdayConvoy
         OriginalNativeFxLayer formationSixStarFx;
 
         static bool UsesFormationSixStarNativeFx(string artId) => artId is
-            "D21" or "D22" or "D23" or "D24" or "D25" or "D26" or "D28" or "D29" or "D30";
+            "D21" or "D22" or "D23" or "D24" or "D25" or "D26" or "D28" or "D29" or "D30" or "D32";
 
         static string FxTime(double time) => time.ToString("R", CultureInfo.InvariantCulture);
 
@@ -81,6 +81,22 @@ namespace YesterdayConvoy
         void PresentFormationSixStarFields(FormationDefender guard)
         {
             if (!UsesFormationSixStarNativeFx(guard.ArtId)) return;
+            if (guard.ArtId == "D21")
+            {
+                if (!Model.GuardSkillActive(guard) && (Model.Phase is FormationPhase.Preparation or FormationPhase.Fighting))
+                {
+                    double begun = Model.GuardSignatureEnd(guard);
+                    // The archived idle wolf follows the source SpecialPoint0 on the displayed body frame.
+                    ShowFormationGuardEffect(guard, "whitw2_token_01", "ordinary-token/" + FxTime(begun),
+                        (Model.Clock - begun) * FormationVisualRate, guard.Position, 32, loop: true);
+                }
+                return;
+            }
+            if (guard.ArtId == "D32")
+            {
+                PresentFormationChenFields(guard);
+                return;
+            }
             double startedAt = Model.GuardSignatureStart(guard);
             if (double.IsNegativeInfinity(startedAt)) return;
             double age = (Model.Clock - startedAt) * FormationVisualRate;
@@ -88,22 +104,42 @@ namespace YesterdayConvoy
             var position = guard.Position;
             if (guard.ArtId == "D23" && Model.GuardTransformed(guard))
             {
-                ShowFormationGuardEffect(guard, "monstr_skill_03_begin_01", instance, age, position, 11, flat: true);
+                ShowFormationGuardEffect(guard, "monstr_skill_03_begin_01", instance, age, Model.GuardHomePosition(guard), 11, flat: true);
                 ShowFormationGuardEffect(guard, "monstr_skill_03_begin_02", instance, age, position, 24);
                 ShowFormationGuardEffect(guard, "monstr_skill_03_begin_03", instance, age, position, 12, true, true);
                 for (int i = 1; i <= 5; i++)
                     ShowFormationGuardEffect(guard, "monstr_skill_03_buff_0" + i, instance, age, position, 12 + i,
-                        true, i is 1 or 3 or 4);
+                        loop: true);
             }
             else if (guard.ArtId == "D24" && Model.GuardSkillActive(guard))
                 ShowFormationGuardEffect(guard, "angel2_skill_3_buff_01", instance, age, position, 12, true, true);
             else if (guard.ArtId == "D25" && guard.Shield > 0)
             {
+                ShowFormationGuardEffect(guard, "hsgma2_skill_03_range_01", instance, age, position, 11, true, true);
                 ShowFormationGuardEffect(guard, "hsgma2_skill_03_buff_01", instance, age, position, 12, true, true);
                 ShowFormationGuardEffect(guard, "hsgma2_skill_03_buff_02", instance, age, position, 13, true, true);
             }
             else if (guard.ArtId == "D29" && guard.Shield > 0)
                 ShowFormationGuardEffect(guard, "demkni_skill_03_self", instance, age, position, 12, true, true);
+        }
+
+        void PresentFormationYuFirewall(FormationDefender guard, FormationBattleModel.FormationGuardEffect wall,
+            string instance, double age)
+        {
+            // The archived wall renders one native emitter per tile plus a native cap on each board edge.
+            // The wall's settlement radius remains the actual model value.
+            bool facingRight = wall.Direction.x >= 0;
+            string clip = facingRight ? "yu_skill3_range_01_r" : "yu_skill3_range_01_l";
+            float column = wall.Origin.x;
+            for (int row = 0; row < FormationBattleModel.Height; row++)
+                ShowFormationGuardEffect(guard, clip, instance + "/" + row, age, new Vector2(column, row),
+                    11, loop: true, flat: true);
+            ShowFormationGuardEffect(guard, clip + (facingRight ? "_d_end" : "_u_end"), instance,
+                age, new Vector2(column, -.5f), 11, loop: true, flat: true);
+            ShowFormationGuardEffect(guard, clip + (facingRight ? "_u_end" : "_d_end"), instance,
+                age, new Vector2(column, FormationBattleModel.Height - .5f), 11, loop: true, flat: true);
+            ShowFormationGuardEffect(guard, "yu_skill3_buff_01", instance, age, guard.Position, 18,
+                loop: true, flat: true);
         }
 
         void PresentFormationSixStarSignatureAction(FormationDefender guard, FormationPresentationAction action, double now)
@@ -112,7 +148,9 @@ namespace YesterdayConvoy
             string instance = "cast/" + action.Sequence;
             double age = (now - action.At) * action.Rate;
             var direction = ActorWorldPoint(action.To) - ActorWorldPoint(action.From);
-            if (guard.ArtId == "D23" && action.Animation == "skill_end")
+            if (guard.ArtId == "D32" && action.Animation == "skill_attack")
+                PresentFormationChenSlash(guard, action, now, instance, age);
+            else if (guard.ArtId == "D23" && action.Animation == "skill_end")
             {
                 ShowFormationGuardEffect(guard, "monstr_skill_03_end_01", instance, age, action.From, 24);
                 ShowFormationGuardEffect(guard, "monstr_skill_03_end_02", instance, age,
@@ -120,6 +158,15 @@ namespace YesterdayConvoy
             }
             else if (guard.ArtId == "D26" && action.Animation == "skill_attack")
             {
+                // The archive's BirdAura_Self range is owned by this cast. The
+                // current board has one self cast and no partner field.
+                if (now < action.LaunchedAt + 1.25)
+                {
+                    ShowFormationGuardEffect(guard, "svash2_skill_03_buff_01", instance, age, action.From, 18, true, true);
+                    ShowFormationGuardEffect(guard, "svash2_skill_03_buff_weapon_01", instance, age, action.From, 22, true);
+                    ShowFormationGuardEffect(guard, "svash2_skill_03_range_01", instance, age, action.From, 11, true, true,
+                        direction: direction);
+                }
                 ShowFormationGuardEffect(guard, "svash2_skill_03_combat_start_01", instance, age, action.From, 23,
                     direction: direction);
                 // This original projectile owns its tip motion. The board supplies a fixed launch point and direction.
@@ -128,8 +175,20 @@ namespace YesterdayConvoy
                     flat: true, direction: direction);
             }
             else if (guard.ArtId == "D30" && action.Animation == "skill_attack")
+            {
                 ShowFormationGuardEffect(guard, "mlynar_skill_03_buff_01", instance, age, action.From, 20,
                     direction: direction);
+                ShowFormationGuardEffect(guard, "mlynar_skill_03_range_01", instance, (now - action.LaunchedAt) * action.Rate,
+                    action.From, 17, flat: true, direction: direction);
+            }
+        }
+
+        void PresentFormationWangBoard(FormationDefender guard,string instance,double age)
+        {
+            var cell=guard.Position;
+            ShowFormationGuardEffect(guard,"wang_skill_03_range_start",instance,age,cell,11,flat:true);
+            ShowFormationGuardEffect(guard,"wang_skill_03_range",instance,age,cell,10,true,true);
+            ShowFormationGuardEffect(guard,"wang_skill_03_buff_02",instance,age,cell,26,true,true);
         }
     }
 }

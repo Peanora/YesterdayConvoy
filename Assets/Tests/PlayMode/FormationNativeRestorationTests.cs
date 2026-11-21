@@ -171,6 +171,44 @@ namespace YesterdayConvoy.Tests
             Assert.That(Field<double>(tag, "SampleAge"), Is.EqualTo(age));
         }
 
+        [UnityTest] public IEnumerator ArchivedChessBoardRemainsVisibleThroughTheRealTrigger()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "SLUG" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "SLUG" }, 3, 3, "D28", false, true);
+            Begin();
+            var guard = controller.Model.Defenders.Single();
+            yield return Until(() => NativeLayerIsVisible("D28", "wang_skill_03_range"), 2);
+            Assert.That(controller.Model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill), Is.False);
+            yield return Until(() => controller.Model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill), 5);
+            Assert.That(NativeLayerIsVisible("D28", "wang_skill_03_range"), Is.True);
+        }
+
+        [UnityTest] public IEnumerator ReconstructedMon3trSwingsAtTheArchivedCadenceAndSourceMarker()
+        {
+            RequireGpu();
+            yield return Fixture(new[] { "B10" });
+            yield return (IEnumerator)Invoke(controller, "PrepareShowcaseRoleFixture", new[] { "B10" }, 3, 3, "D23", false, true);
+            Begin();
+            var guard = controller.Model.Defenders.Single();
+            var attacks = new List<FormationPresentationAction>();
+            yield return Until(() =>
+            {
+                foreach (var action in controller.Model.PresentationActions)
+                    if (action.ActorId == guard.Id && action.Animation == "skill_attack" && !attacks.Contains(action))
+                        attacks.Add(action);
+                return attacks.Count >= 2;
+            }, 40);
+            Assert.That(attacks[1].At - attacks[0].At, Is.InRange(1.3499, 1.3751));
+            Assert.That(attacks[0].ContactAt - attacks[0].At,
+                Is.EqualTo((2d / 3) / attacks[0].Rate).Within(.00001));
+        }
+
+        bool NativeLayerIsVisible(string guard, string nativeClip) =>
+            controller.GetComponentsInChildren<Transform>().Any(node =>
+                node.name.StartsWith("Original Native FX / defender/" + guard + "/" + nativeClip + " /", StringComparison.Ordinal) &&
+                node.GetComponentsInChildren<Renderer>().Any(renderer => renderer.enabled));
+
         [UnityTest] public IEnumerator OriginalCampaignContactDoesNotAddAGenericBodyFlash()
         {
             RequireGpu();
@@ -388,8 +426,12 @@ namespace YesterdayConvoy.Tests
             Assert.That(leftFire,Is.Not.Null);
             Assert.That(leftFire.sprite.name,Does.StartWith("TalulahNative/original-fire-screen-left/"));
             var view=Field<Camera>(controller,"battleCamera");
-            Vector3 leftViewport=view.WorldToViewportPoint(leftFire.transform.position);
-            Assert.That(leftViewport.x,Is.InRange(.02f,.14f));
+            Vector3 leftViewportMin=view.WorldToViewportPoint(leftFire.transform.TransformPoint(leftFire.sprite.bounds.min));
+            Vector3 leftViewportMax=view.WorldToViewportPoint(leftFire.transform.TransformPoint(leftFire.sprite.bounds.max));
+            Assert.That(leftViewportMin.x,Is.InRange(-.03f,-.01f));
+            Assert.That(leftViewportMax.x,Is.InRange(.30f,.395f));
+            Assert.That(leftViewportMin.y,Is.GreaterThanOrEqualTo(.098f),"Leave the lower HUD clear.");
+            Assert.That(leftViewportMax.y,Is.LessThanOrEqualTo(.902f),"Leave the upper HUD clear.");
             var leftFrame=leftFire.sprite;
             Assert.That(fire.All(r=>r.sharedMaterial.shader.name=="YesterdayConvoy/TalulahNative"&&r.color==Color.white),Is.True);
             Assert.That(fire.Max(r=>r.transform.position.z)-fire.Min(r=>r.transform.position.z),Is.EqualTo(7).Within(.01));

@@ -139,16 +139,7 @@ namespace YesterdayConvoy
                     switch(effect.Kind)
                     {
                         case "firewall":
-                            var axis=new Vector2(-effect.Direction.y,effect.Direction.x);
-                            string wall=Mathf.Abs(axis.x)>Mathf.Abs(axis.y)?"yu_skill3_range_01":effect.Direction.x>=0?"yu_skill3_range_01_r":"yu_skill3_range_01_l";
-                            int children=Mathf.Max(1,Mathf.CeilToInt(effect.Length));
-                            for(int i=0;i<children;i++)
-                            {
-                                var cell=origin+axis*(((i+.5f)/children-.5f)*effect.Length);
-                                if(cell.x>=FormationBattleModel.BattleAreaStart&&cell.x<FormationBattleModel.Width&&cell.y>=0&&cell.y<FormationBattleModel.Height)
-                                    ShowFormationGuardEffect(guard,wall,instance+"/"+i,age,cell,11,true,true);
-                            }
-                            ShowFormationGuardEffect(guard,"yu_skill3_buff_01",instance,age,guard.Position,18,true,true);
+                            PresentFormationYuFirewall(guard,effect,instance,age);
                             break;
                         case "hunt":
                             ShowFormationGuardEffect(guard,"whitw2_skill_03_buff_start",instance,age,guard.Position,12,flat:true);
@@ -161,6 +152,8 @@ namespace YesterdayConvoy
                             break;
                         case "chess":
                         case "chess_hit":
+                            if(CombatViewActive)PresentFormationWangBoard(guard,"board/"+FxTime(effect.PlacedAt),
+                                (now-effect.PlacedAt)*FormationVisualRate);
                             PresentFormationGuardChess(guard,origin,instance,age,effect.Kind=="chess_hit",combat: CombatViewActive);
                             break;
                         case "slash":
@@ -197,6 +190,12 @@ namespace YesterdayConvoy
                     PresentFormationGuardCast(guard, action, now);
                 }
                 PresentFormationGuardProjectile(guard, action, now);
+            }
+            if (Model.ShowcaseGuardVisualAction is { } preview && now <= preview.EndAt + .6 &&
+                Model.Defenders.FirstOrDefault(guard => guard.Id == preview.ActorId) is { } previewGuard)
+            {
+                PresentFormationSixStarSignatureAction(previewGuard, preview, now);
+                PresentFormationGuardCast(previewGuard, preview, now);
             }
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
@@ -259,6 +258,7 @@ namespace YesterdayConvoy
                 "D26" when ordinary => "svash2_attack_start_a_01",
                 "D26" when empowered => "svash2_skill_03_combat_start_01_2",
                 "D30" when empowered => "mlynar_skill_03_start_01",
+                "D32" when ordinary => "chen3_attack_start_01",
                 _ => null
             };
             if(guard.ArtId == "D09" && action.TargetId != -1)
@@ -348,6 +348,7 @@ namespace YesterdayConvoy
             "D27" => "sbell2_skill_03_hit",
             "D29" => hit.Heal ? "common_heal_hit_01" : "demkni_attack_01_hit",
             "D30" => "mlynar_skill_03_hit_01",
+            "D32" when !hit.Skill => "chen3_attack_hit_01",
             _ => null
         };
 

@@ -77,16 +77,20 @@ namespace YesterdayConvoy
             var frame = clip.At((Model.Clock - zone.At) * LegacyVisualRate);
             if (frame == null) return;
 
-            // The original screen emitter plays separately from the projectile fronts.
-            // Fit the source flames inside the left margin of the combat view.
+            // Reserve the edge of the screen for the source fire, independently of the lanes.
+            // The small offscreen edge reads as a continuous front while the HUD stays clear.
+            const float leftEdge = -.018f;
+            const float maxWidth = .40f;
+            const float maxHeight = .80f;
             float depth = battleCamera.nearClipPlane + 1;
             var screenSpan = battleCamera.ViewportToWorldPoint(new Vector3(1, 1, depth)) -
                 battleCamera.ViewportToWorldPoint(new Vector3(0, 0, depth));
             float width = Vector3.Dot(screenSpan, battleCamera.transform.right);
             float height = Vector3.Dot(screenSpan, battleCamera.transform.up);
-            float scale = Mathf.Min(.23f * width / frame.bounds.size.x, .67f * height / frame.bounds.size.y);
-            float centerX = .02f + frame.bounds.size.x * scale / width * .5f;
-            var point = battleCamera.ViewportToWorldPoint(new Vector3(centerX, .5f, depth));
+            float scale = Mathf.Min(maxWidth * width / frame.bounds.size.x, maxHeight * height / frame.bounds.size.y);
+            float x = leftEdge - frame.bounds.min.x * scale / width;
+            float y = .5f - frame.bounds.center.y * scale / height;
+            var point = battleCamera.ViewportToWorldPoint(new Vector3(x, y, depth));
             var visibleCell = new Vector2(FormationBattleModel.BattleAreaStart, (FormationBattleModel.Height - 1) * .5f);
             var effect = LegacyDraw(frame, legacyHdrMaterial, point, visibleCell, scale, 600, hdr: clip.HdrRange, gammaOutput: true);
             if (effect != null) effect.name = TalulahLeftFireName;

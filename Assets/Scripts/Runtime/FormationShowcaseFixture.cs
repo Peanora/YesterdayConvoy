@@ -207,6 +207,9 @@ namespace YesterdayConvoy
 
     public sealed partial class FormationBattleModel
     {
+        internal FormationPresentationAction ShowcaseGuardVisualAction { get; private set; }
+        internal FormationPresentationAction ShowcaseChenLaunch { get; private set; }
+
         internal void PrepareShowcaseGuard(string artId)
         {
             var node = Campaign.CurrentNode;
@@ -238,14 +241,19 @@ namespace YesterdayConvoy
         {
             // StartBattle reprojects the campaign roster. Replace its freshly created
             // guards and immediately run their regular initialization before the first tick.
+            ShowcaseGuardVisualAction = null;
+            ShowcaseChenLaunch = null;
             PrepareShowcaseGuard(artId);
             BeginCampaignBattle();
             LimitSeconds = double.PositiveInfinity;
             var guard = Defenders[0];
             var target = Units.First(unit => unit.Enabled);
-            target.Position = guard.ArtId == "D23" || guard.ArtId == "D28"
-                ? (Vector2)guard.SkillCell.Value + Vector2.left * .5f
-                : guard.Position + Vector2.left * Mathf.Min(.8f, guard.Range * .8f);
+            target.Position = guard.ArtId switch
+            {
+                "D23" => (Vector2)guard.SkillCell.Value + Vector2.left * .5f,
+                "D28" => (Vector2)guard.SkillCell.Value + Vector2.left * 1.7f,
+                _ => guard.Position + Vector2.left * Mathf.Min(.8f, guard.Range * .8f)
+            };
             // Separate the reviewed muzzle, flight and target from each other on the capture board.
             float reviewDistance = artId == "D24" ? 3.6f : artId == "D09" ? 2.8f : 0;
             if (reviewDistance > 0)
@@ -276,6 +284,48 @@ namespace YesterdayConvoy
             guard.PresentationDuration = sourceSeconds / FormationBattleController.FormationVisualRate;
             guard.PresentationRate = FormationBattleController.FormationVisualRate;
             guard.PresentationAction = motion;
+            if (guard.ArtId == "D32")
+            {
+                guard.NextAttackAt = double.PositiveInfinity;
+                guard.SkillRequired = float.MaxValue;
+                var target = Units.First(unit => unit.Enabled);
+                if (motion == "skill_begin")
+                {
+                    var kit = Kit(guard);
+                    kit.ActiveUntil = Clock + 20;
+                    double launch = Clock + sourceSeconds / guard.PresentationRate;
+                    ShowcaseChenLaunch = new FormationPresentationAction
+                    {
+                        Sequence = ++presentationSequence, ActorId = guard.Id, Skill = true,
+                        At = Clock, LaunchedAt = launch, ContactAt = launch, EndAt = kit.ActiveUntil,
+                        Rate = guard.PresentationRate, Animation = motion, From = guard.Position,
+                        To = guard.Position + guard.Facing
+                    };
+                }
+                else if (motion == "skill_attack")
+                {
+                    double contact = Clock + (16d / 30) / guard.PresentationRate;
+                    ShowcaseGuardVisualAction = new FormationPresentationAction
+                    {
+                        Sequence = ++presentationSequence, ActorId = guard.Id, Skill = true,
+                        At = Clock, LaunchedAt = contact, ContactAt = contact, EndAt = Clock + guard.PresentationDuration,
+                        Rate = guard.PresentationRate, Animation = motion, From = guard.Position,
+                        To = target.Position, TargetId = target.Id
+                    };
+                }
+            }
+            else if (guard.ArtId == "D30" && motion == "skill_attack")
+            {
+                const double sourceContact = 32d / 60;
+                double contact = Clock + sourceContact / guard.PresentationRate;
+                ShowcaseGuardVisualAction = new FormationPresentationAction
+                {
+                    Sequence = ++presentationSequence, ActorId = guard.Id, Skill = true,
+                    At = Clock, LaunchedAt = contact, ContactAt = contact,
+                    EndAt = Clock + guard.PresentationDuration, Rate = guard.PresentationRate,
+                    Animation = motion, From = guard.Position, To = guard.Position + guard.Facing * 2
+                };
+            }
         }
 
         // Source-animation review only: no combat simulation or skill/SP alteration.

@@ -359,6 +359,52 @@ namespace YesterdayConvoy.Tests
             float charge=model.Units[0].SkillCharge;model.Paused=true;Advance(model,2);Assert.That(model.Units[0].SkillCharge,Is.EqualTo(charge));
             model.Paused=false;Advance(model,2);Assert.That(model.Units[0].SkillCharge,Is.EqualTo(charge+2).Within(.001));
         }
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AnastasioCastsOnlyAfterWalkingToAReachableGuardAtCloseRange(bool reachable)
+        {
+            Fixture(out var run, "B23");
+            var platform = reachable ? new RectInt(17, 2, 1, 3) : new RectInt(16, 2, 3, 3);
+            var terrain = new FormationBattleTerrainLayout(new[] { new FormationBattleTerrainRegion(platform, .5f, true) });
+            var model = new FormationBattleModel(71, terrain);
+            model.BindCampaign(run);
+            var piece = run.Shop.Bench.Single();
+            Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry
+                { Instance = piece.Instance, Star = piece.Star, ArtId = piece.Id, Spawn = Vector2.zero } }, 10), Is.True);
+            var guard = Target(model);
+            guard.Position = new Vector2(17, 3);
+            Assert.That(model.StartBattle(), Is.True);
+            Enter(model);
+            var fighter = model.Units.Single();
+            fighter.SkillCharge = fighter.SkillRequired;
+            Vector2 start = fighter.Position;
+            Assert.That(Vector2.Distance(start, guard.Position), Is.LessThan(fighter.Range));
+            Advance(model, .25f);
+            Assert.That(fighter.LastSkillAt, Is.LessThan(0), "Skill cannot begin at ordinary attack range");
+
+            for (int step = 0; step < 160 && fighter.LastSkillAt < 0; step++)
+            {
+                Vector2 previous = fighter.Position;
+                model.Advance(.025f);
+                Assert.That(terrain.CanTravel(previous, fighter.Position), Is.True);
+                Assert.That(Vector2.Distance(previous, fighter.Position), Is.LessThanOrEqualTo(fighter.MoveSpeed * .025f + .0001f));
+            }
+
+            if (reachable)
+            {
+                Assert.That(fighter.LastSkillAt, Is.GreaterThan(0));
+                Assert.That(Vector2.Distance(fighter.Position, guard.Position), Is.LessThanOrEqualTo(1.1f));
+                Assert.That(fighter.Position.x, Is.LessThan(guard.Position.x));
+            }
+            else
+            {
+                Assert.That(fighter.Position, Is.EqualTo(start));
+                Assert.That(fighter.LastSkillAt, Is.LessThan(0));
+                Assert.That(fighter.SkillCharge, Is.EqualTo(fighter.SkillRequired).Within(.001f));
+                Assert.That(fighter.LastActionAt, Is.GreaterThan(0), "Ordinary attacks remain available");
+            }
+        }
+
         [TestCase("SLUG")][TestCase("M03")][TestCase("M11")][TestCase("M17")][TestCase("M21")][TestCase("M35")]
         [TestCase("B01")][TestCase("B22")][TestCase("M12")][TestCase("M13")][TestCase("M16")][TestCase("M25")]
         [TestCase("M27")][TestCase("M29")][TestCase("M30")][TestCase("M33")][TestCase("M38")][TestCase("B03")]

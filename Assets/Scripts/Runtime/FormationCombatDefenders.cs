@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         internal const float GuardRangedProjectileSpeed = 10;
         internal const float ExusiaiProjectileSpeed = 30;
         internal const double ExusiaiAttackRelease = 16d / 60;
+        const double Mon3trReconstructedAttackInterval = 1.35;
         static readonly double[] ExusiaiVolleyReleases = { 10d / 60, 12d / 60, 14d / 60, 16d / 60, 18d / 60 };
 
         internal sealed class FormationGuardEffect
@@ -19,6 +20,7 @@ namespace YesterdayConvoy
             internal Vector2 Origin, Direction;
             internal float Radius, Length;
             internal double StartedAt, EndsAt, ImpactAt;
+            internal double PlacedAt;
         }
 
         sealed class GuardKit
@@ -74,6 +76,13 @@ namespace YesterdayConvoy
         internal double GuardSignatureStart(FormationDefender guard) =>
             guardKits.TryGetValue(guard.Id, out var kit) && kit.Guard == guard && kit.Casts > 0
                 ? kit.LastCast : guard.LastSkillAt >= 0 ? guard.LastSkillAt : double.NegativeInfinity;
+
+        internal double GuardSignatureEnd(FormationDefender guard) =>
+            guardKits.TryGetValue(guard.Id, out var kit) && kit.Guard == guard ? kit.ActiveUntil : 0;
+
+        internal Vector2 GuardHomePosition(FormationDefender guard) =>
+            guardKits.TryGetValue(guard.Id, out var kit) && kit.Guard == guard
+                ? kit.OriginalPosition : guard.Position;
 
         static bool UsesGuardTimeCharge(FormationDefender guard)
         {
@@ -524,6 +533,7 @@ namespace YesterdayConvoy
                 guard.Position = guard.SkillCell.Value;
                 guard.Range = 1.4f;
                 guard.TargetId = -1;
+                guard.NextAttackAt = Clock;
                 kit.ActiveUntil = Clock + 10;
                 ScheduleOwned(guard, kit.ActiveUntil, () =>
                 {
@@ -540,13 +550,14 @@ namespace YesterdayConvoy
             Face(guard, target.Position);
             guard.TargetId = target.Id;
             var action = BeginGuardAction(guard, true, .75, target, motion: "skill_attack");
-            guard.NextAttackAt = Clock + guard.Interval;
+            action.ContactAt = action.LaunchedAt = action.At + (2d / 3) / action.Rate;
+            guard.NextAttackAt = Clock + Mon3trReconstructedAttackInterval;
             GuardContact(guard, action, () =>
             {
                 if (!GuardTransformed(guard)) return;
                 foreach (var unit in GuardVictims(guard.Position, guard.Range, 3))
                     CombatDamage(guard, unit, guard.Attack * 3.8f, 2, true, false);
-            }, .375);
+            });
         }
 
         void FireGuardVolley(FormationDefender guard, GuardKit kit, FormationFighter target)
@@ -618,7 +629,7 @@ namespace YesterdayConvoy
             kit.Effect = new FormationGuardEffect
             {
                 Kind = "chess", Origin = guard.SkillCell.Value, Radius = 1.4f,
-                StartedAt = Clock, EndsAt = double.PositiveInfinity
+                PlacedAt = Clock, StartedAt = Clock, EndsAt = double.PositiveInfinity
             };
         }
 

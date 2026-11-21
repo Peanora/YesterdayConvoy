@@ -163,6 +163,7 @@ namespace YesterdayConvoy
                 "预留格上的棋子触发时打击半径1.4格内最多3人，各造成180%攻击力法伤并减速2秒；每24秒可重设一枚。", 24, 24),
             new GuardDefinition("D29", "塞雷娅", 2, 6),
             new GuardDefinition("D30", "玛恩纳", 1, 6),
+            new GuardDefinition("D32", "赤刃明霄陈", 1, 6),
         }.ToDictionary(guard => guard.ArtId);
 
         static readonly float[] EncounterHealth = { 1f, 1.7f, 3f, 5.5f };

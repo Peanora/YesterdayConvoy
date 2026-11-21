@@ -2,16 +2,18 @@
 // Uses the existing offline Spine 3.8 worker and an isolated local headless renderer.
 const fs=require('fs'),path=require('path'),http=require('http'),crypto=require('crypto');
 const args=process.argv.slice(2);
-if(args.length<2)throw Error('Usage: node resample_formation_body.cjs <original-review-root> <output-directory> [playwright-module]');
+if(args.length<2)throw Error('Usage: node resample_formation_body.cjs <original-review-root> <output-directory> [playwright-module] [B08|B18|B23]');
 const source=path.resolve(args[0]),out=path.resolve(args[1]);
 const {chromium}=require(args[2]||'C:/Users/31016/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const model=JSON.parse(fs.readFileSync(path.join(source,'B08/model-report-main.json'),'utf8'));
-const prior=JSON.parse(fs.readFileSync(path.join(source,'atlases/B08/main/manifest.json'),'utf8'));
+const task=args[3]||'B08';
+if(!['B08','B18','B23'].includes(task))throw Error('Unknown source body: '+task);
+const model=JSON.parse(fs.readFileSync(path.join(source,task,'model-report-main.json'),'utf8'));
+const prior=JSON.parse(fs.readFileSync(path.join(source,'atlases',task,'main/manifest.json'),'utf8'));
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 fs.mkdirSync(out,{recursive:true});
 const server=http.createServer((req,res)=>{
   const relative=decodeURIComponent(new URL(req.url,'http://127.0.0.1').pathname).replace(/^\//,'');
-  if(relative!=='model-worker.html'&&relative!=='spine-webgl.js'&&!relative.startsWith('B08/source/main/'))return res.writeHead(403).end();
+  if(relative!=='model-worker.html'&&relative!=='spine-webgl.js'&&!relative.startsWith(task+'/source/main/'))return res.writeHead(403).end();
   const file=path.resolve(source,relative);
   if(!file.startsWith(source+path.sep))return res.writeHead(403).end();
   fs.readFile(file,(error,data)=>{if(error)return res.writeHead(404).end();res.setHeader('Content-Type',relative.endsWith('.html')?'text/html':relative.endsWith('.js')?'text/javascript':relative.endsWith('.png')?'image/png':'application/octet-stream');res.end(data);});
@@ -22,7 +24,7 @@ const server=http.createServer((req,res)=>{
   browser=await chromium.launch({headless:true,channel:'chrome',args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
   const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:'+server.address().port+'/model-worker.html');
-  const manifest={version:1,task:'B08',method:'ORIGINAL_SPINE_PER_MOTION_CAPTURE',fps:60,worldUnitsPerSourceBone:.0045,
+  const manifest={version:1,task,method:'ORIGINAL_SPINE_PER_MOTION_CAPTURE',fps:60,worldUnitsPerSourceBone:.0045,
     note:'Original bones, source atlas pixels, source events and timings; fixed root pivot/PPU per motion. No AI enhancement, texture resizing or source animation retiming.',clips:[],files:[],alphaChecks:[]};
   let loadedCell=0;
   for(const clip of prior.clips){
@@ -30,8 +32,9 @@ const server=http.createServer((req,res)=>{
    if(!sourceClip)throw Error('Source action disappeared: '+clip.source);
    const raw=sourceClip.bounds||model.bounds;
    const bounds=[Math.min(0,raw[0]),Math.min(0,raw[1]),Math.max(0,raw[2]),Math.max(0,raw[3])];
-   const cell=clip.source.startsWith('B_')?1024:512,columns=2048/cell,capacity=columns*columns;
    const extent=Math.max(bounds[2]-bounds[0],bounds[3]-bounds[1],50),margin=1.14,viewport=extent*margin;
+   const cell=task==='B08'&&clip.source.startsWith('B_')?1024:task!=='B08'&&extent>1400?768:512;
+   const columns=Math.floor(2048/cell),capacity=columns*columns;
    const cx=(bounds[0]+bounds[2])/2,cy=(bounds[1]+bounds[3])/2;
    if(loadedCell!==cell){await page.evaluate(config=>modelWorker.loadModel(config),{...model,cell,captureBounds:bounds,captureMargin:margin});loadedCell=cell;}
    const pages=[];

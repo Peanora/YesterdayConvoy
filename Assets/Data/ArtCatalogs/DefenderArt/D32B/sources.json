@@ -1,0 +1,107 @@
+{
+  "task": "D32B",
+  "unitId": "D32",
+  "name": "赤刃明霄陈",
+  "variant": "battle-back",
+  "characterId": "char_1050_chen3",
+  "model": "char_1050_chen3",
+  "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1050_chen3/defaultskin/back/",
+  "files": [
+    {
+      "file": "char_1050_chen3.skel",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1050_chen3/defaultskin/back/char_1050_chen3.skel",
+      "bytes": 669821,
+      "sha256": "590c3558a156d4556dc9b6261b3055ad1d7337b8a873d62c4fcacfd9a7627ca6"
+    },
+    {
+      "file": "char_1050_chen3.atlas",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1050_chen3/defaultskin/back/char_1050_chen3.atlas",
+      "bytes": 17824,
+      "sha256": "79f06da4cbb327bd40a0067da57cfa6eda516962e18134da860538d10fd0db3c"
+    },
+    {
+      "file": "char_1050_chen3.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_1050_chen3/defaultskin/back/char_1050_chen3.png",
+      "bytes": 195653,
+      "sha256": "6a30323d98e2246487cf3142437dd50c8892606434904dee7e21143913dee12d"
+    }
+  ],
+  "reference": "https://ak.hypergryph.com/news/4942.html",
+  "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1050_chen3/meta.json",
+  "rights": "Original proprietary art; user integration/upload authorization does not grant rights-holder redistribution permission.",
+  "authorization": "2026-11-13 user explicitly corrected identity and requested direct replacement in game.",
+  "rasterization": {
+    "spineVersion": "3.8.99",
+    "fps": 60,
+    "coreScale": 0.38,
+    "corePixelsPerUnit": 151.2,
+    "idleAlphaHeight": 163,
+    "commonWorldIdleAlphaHeight": 1.25,
+    "notes": "Per-clip PPU compensates source raster scale; source origin pivots retained; technical portrait crop from exact idle frame."
+  },
+  "officialActor": {
+    "name": "charpack/char_1050_chen3.ab",
+    "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1050_chen3.dat",
+    "version": "26-10-29-15-36-11-33649006",
+    "md5": "1e705147e8e974b0c8e8afd8e6fba4fc",
+    "sha256": "f1c30efaf98455dee411a92a2628408dfeb1a6c7d105b5d5030f438530f7a440"
+  },
+  "officialDefaultModel": {
+    "characterId": "char_1050_chen3",
+    "version": "26-10-29-15-36-11-33649006",
+    "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/chararts_char_1050_chen3.dat",
+    "md5": "51da3df70debf3a8bf5905c13bd79523",
+    "sha256": "c029ea17c3ddfc62e1938ad57279881b0362363e4e096aa450b528c2d44a651c"
+  },
+  "nativeMounts": {
+    "bindings": [
+      {
+        "effect": "chen3_skill_03_weapon_01",
+        "point": "SpecialPoint0",
+        "sourceMountPointType": 5,
+        "keepOriginRotation": false,
+        "followScale": false,
+        "followScaleSign": false,
+        "sourceEvidence": "chen3_skill_03_weapon_01 FollowMountPoint5 from original chen3 effects bundle; original CharacterAnimator specialPoint0 -> BoneFollower."
+      }
+    ],
+    "sourceEnumEvidence": {
+      "verified": true,
+      "status": "CONFIRMED_ORIGINAL_ENUM_CONSTANTS_FROM_IL2CPP_METADATA",
+      "enumType": "Torappu.Battle.Entity/MountPointType",
+      "mapping": {
+        "5": "specialPoint0",
+        "6": "specialPoint1",
+        "8": "specialPoint2",
+        "10": "specialPoint4",
+        "13": "specialPoint7"
+      },
+      "constants": {
+        "FOOT": 0,
+        "HIT": 1,
+        "MUZZLE": 2,
+        "HEAD": 3,
+        "UI": 4,
+        "SPECIAL_0": 5,
+        "SPECIAL_1": 6,
+        "GROUND": 7,
+        "SPECIAL_2": 8,
+        "SPECIAL_3": 9,
+        "SPECIAL_4": 10,
+        "SPECIAL_7": 13
+      },
+      "source": "https://github.com/Tim23333/Arknights_timer/blob/5734c30bf54780056ff758505380322c0cf519fe/Ark_data/Cpp2IL_DummyDll/Assembly-CSharp.dll",
+      "sourceSHA256": "adc1ceff7c662c0c52fcc5b8e854e55617f20a9f6f80d40858525db4611c0674",
+      "verification": "Pipeline owner read enum constants with Cecil from the IL2CPP DummyDLL; FollowMountPoint._mountPointType directly references this enum. Non-contiguous GROUND=7 is preserved. No DLL code executed.",
+      "currentModelProof": "Each actual mount is independently resolved through current official 26-10-29 chararts CharacterAnimator front/back Transform references and BoneFollower boneName; frame tracks come from those same original default Spine files.",
+      "limitations": "Serialized enum/model/source-frame contract; full original-client effect manager behaviour is not asserted."
+    },
+    "sourceModelSha256": "c029ea17c3ddfc62e1938ad57279881b0362363e4e096aa450b528c2d44a651c",
+    "trackSource": "Original default front/back Spine same action frame at60Hz; no fitted offsets or hand-authored motion."
+  },
+  "limitations": [
+    "Original back model has no Die animation; use original front Die for death fallback.",
+    "Original Skill_2_Disappear contains no visible attachment; not represented as a fake full animation.",
+    "Body export does not prove original client full FX/state choreography; validate actual game and original reference separately."
+  ]
+}
