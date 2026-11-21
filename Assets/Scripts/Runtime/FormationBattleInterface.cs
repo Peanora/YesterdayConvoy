@@ -8,6 +8,9 @@ namespace YesterdayConvoy
     {
         static readonly Color Dark=new Color(.045f,.075f,.105f,.96f),Panel=ApprovedUi.Paper;
         static readonly Color Cyan=new Color(.28f,.85f,.88f),Gold=new Color(1,.79f,.38f),White=new Color(.9f,.94f,.96f),Muted=new Color(.55f,.67f,.73f);
+        static readonly Color DefenderHealthRed = new Color32(226, 53, 58, 255);
+        static readonly Color BossHealthRed = new Color32(237, 48, 46, 255);
+        const double BossHealthRefillSeconds = .75;
         static readonly Vector2[] DamageNumberOutline =
         {
             new Vector2(-2, 0), new Vector2(2, 0), new Vector2(0, -2), new Vector2(0, 2),
@@ -53,7 +56,9 @@ namespace YesterdayConvoy
                 {
                     DrawWorldLabels();
                     GUI.enabled=enabled&&!formationMenuOpen;
-                    DrawFormationCombatHud();DrawFormationPauseOverlay();
+                    DrawFormationCombatHud();
+                    DrawFormationRanking();
+                    DrawFormationPauseOverlay();
                     GUI.enabled=enabled;
                     DrawFormationMenuControls();
                     return;
@@ -127,11 +132,24 @@ namespace YesterdayConvoy
         }
         void DrawFormationRanking()
         {
-            if(Model.Phase==FormationPhase.Preparation)return;
-            var rows=Model.Units.OrderByDescending(u=>u.DamageDone).ThenBy(u=>u.ArtId,StringComparer.Ordinal).Select(u=>new ApprovedShopWidgets.RankingRow
-            {CardId="CARD_"+u.ArtId,Name=u.Name,Damage=u.DamageDone,Portrait=FormationUnitArt.For(u.ArtId)?.Portrait}).ToArray();
-            string state=Model.Paused?"已暂停":Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting?"实时统计":"本场结算";
-            ApprovedShopWidgets.DrawRanking(rows,Model.Units.Sum(u=>u.DamageDone),state,ApprovedUi.Font(null),ref formationRankingScroll,ref formationRankingScrollbar);
+            if (Model.Phase == FormationPhase.Preparation)
+            {
+                formationRankingScroll = Vector2.zero;
+                return;
+            }
+            var rows = Model.Units.Where(u => u.Enabled).OrderByDescending(u => u.DamageDone).ThenBy(u => u.ArtId, StringComparer.Ordinal)
+                .Select(u => new ApprovedShopWidgets.RankingRow
+                {
+                    CardId = "CARD_" + u.ArtId,
+                    Name = u.Name,
+                    Damage = u.DamageDone,
+                    Portrait = FormationUnitArt.For(u.ArtId)?.Portrait
+                }).ToArray();
+            bool combat = CombatViewActive;
+            string state = combat ? (Model.Paused ? "已暂停" : "实时统计") : "本场结算";
+            Vector2? panelPosition = combat ? new Vector2(ApprovedUi.RecruitList.x, 72) : null;
+            ApprovedShopWidgets.DrawRanking(rows, rows.Sum(row => row.Damage), state, ApprovedUi.Font(null),
+                ref formationRankingScroll, ref formationRankingScrollbar, panelPosition);
         }
         void DrawFormationCombatRoster()
         {
@@ -271,14 +289,25 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders).Concat(Model.Summons))
             {
                 if(!actor.Alive||!FormationActorVisibleInView(actor))continue;
-                if (CombatViewActive && actor is FormationDefender { IsTwoPhaseBoss: true }) continue;
+                var guard = actor as FormationDefender;
+                bool isBoss = guard != null && Model.IsBossDefender(guard);
                 float top=formationLabelHeights.TryGetValue(actor.Id,out var labelTop)?labelTop:ActorPresentationHeight(actor);
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(FormationDisplayPoint(actor)+battleCamera.transform.up*(top+.12f)));
                 if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;
-                bool ally=actor is FormationFighter;
-                Fill(new Rect(p.x-23,p.y,46,5),new Color(.015f,.025f,.03f,.9f));
-                Fill(new Rect(p.x-22,p.y+1,44*Mathf.Clamp01(actor.Health/actor.MaxHealth),3),ally?Cyan:new Color(1,.42f,.32f));
-                Label(new Rect(p.x-65,p.y-18,130,18),actor.Name,11,White,TextAnchor.MiddleCenter);
+                float width = isBoss ? 260 : 46;
+                float height = isBoss ? 12 : 5;
+                var bar = new Rect(p.x - width * .5f, p.y, width, height);
+                float fraction = Mathf.Clamp01(actor.Health / actor.MaxHealth);
+                Fill(bar, new Color(.015f, .025f, .03f, .9f));
+                if (isBoss)
+                {
+                    float refill = (float)((Model.Clock - guard.BossHealthRefillAt) / BossHealthRefillSeconds);
+                    fraction = Mathf.Min(fraction, Mathf.SmoothStep(0, 1, refill));
+                    Fill(new Rect(bar.x + 1, bar.y + 1, bar.width - 2, bar.height - 2), new Color32(54, 17, 21, 255));
+                }
+                Fill(new Rect(bar.x + 1, bar.y + 1, (bar.width - 2) * fraction, bar.height - 2),
+                    isBoss ? BossHealthRed : guard != null ? DefenderHealthRed : Cyan);
+                Label(new Rect(p.x-65,p.y-18,130,18),actor.Name,isBoss?13:11,White,TextAnchor.MiddleCenter);
                 if (Model.Phase == FormationPhase.Preparation && actor is FormationFighter fighter)
                     DrawEquippedItemStrip(fighter.Instance, new Vector2(p.x + 27, p.y - 6), 18);
             }

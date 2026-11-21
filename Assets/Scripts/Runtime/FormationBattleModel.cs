@@ -53,6 +53,7 @@ namespace YesterdayConvoy
         public bool IsSupernovaBoss { get; internal set; }
         public int SupernovaBossPhase { get; internal set; }
         internal double SupernovaBossTransitionUntil { get; set; }
+        internal double BossHealthRefillAt { get; set; } = double.NegativeInfinity;
         internal bool IsTwoPhaseBoss => IsSnowBoss || IsSupernovaBoss;
         internal int BossHealthPhase => IsSnowBoss ? SnowBossPhase : SupernovaBossPhase;
     }

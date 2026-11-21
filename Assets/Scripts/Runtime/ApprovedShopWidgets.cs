@@ -49,11 +49,12 @@ namespace YesterdayConvoy
             }
             finally{GUI.EndScrollView();}
         }
-        public static void DrawRanking(IReadOnlyList<RankingRow> rows,float total,string state,Font font,ref Vector2 scroll,ref GUIStyle scrollbar)
+        public static void DrawRanking(IReadOnlyList<RankingRow> rows,float total,string state,Font font,ref Vector2 scroll,ref GUIStyle scrollbar,Vector2? panelPosition=null)
         {
             GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)
                 =>ApprovedUi.Text(font,size,alignment,color??ApprovedUi.Ink,weight);
             Rect panel=ApprovedUi.RecruitList;
+            if (panelPosition.HasValue) panel.position = panelPosition.Value;
             GUI.BeginGroup(panel);
             try
             {

@@ -145,6 +145,7 @@ namespace YesterdayConvoy
                 "Pause holds the music playhead and the second voice remains queued for phase two");
             checkingSnowBossPause = false;
             model.Paused = false;
+            StartCoroutine(CaptureInterfaceClip("06-health-bar-refill", 56, "-formationBossHealthRefillEvidence"));
 
             yield return ObserveSupernovaUntil(() => guard.SupernovaBossPhase == 2 && !model.SupernovaBossTransitionActive(guard),
                 "Boss reaches phase two naturally after resuming");

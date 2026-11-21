@@ -31,6 +31,7 @@ namespace YesterdayConvoy
         {
             guard.SupernovaBossPhase = 1;
             guard.SupernovaBossTransitionUntil = 0;
+            guard.BossHealthRefillAt = double.NegativeInfinity;
             guard.PhaseStage = 0;
             guard.Range = State(guard).BaseRange;
             kit.SupernovaTargetRandom = new FormationRandom(unchecked((uint)Seed ^ 0xeb09a593u));
@@ -72,6 +73,7 @@ namespace YesterdayConvoy
             guard.PhaseStage = 1;
             var state = State(guard);
             guard.Health = state.LowestHealth = guard.MaxHealth;
+            guard.BossHealthRefillAt = Clock;
             guard.Range = state.BaseRange + .75f;
             var kit = Kit(guard);
             kit.Casts = 0;

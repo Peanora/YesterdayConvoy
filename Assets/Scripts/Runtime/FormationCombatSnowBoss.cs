@@ -37,6 +37,7 @@ namespace YesterdayConvoy
         {
             guard.SnowBossPhase = 1;
             guard.SnowBossTransitionStartedAt = guard.SnowBossTransitionUntil = 0;
+            guard.BossHealthRefillAt = double.NegativeInfinity;
             guard.PhaseStage = 0;
             kit.SnowTiles = new Dictionary<Vector2Int, int>();
             kit.InSnow = new HashSet<int>();
@@ -82,6 +83,7 @@ namespace YesterdayConvoy
             guard.PhaseStage = 1;
             var state = State(guard);
             guard.Health = state.LowestHealth = guard.MaxHealth;
+            guard.BossHealthRefillAt = Clock;
             state.Buffs.Clear();
             guard.Range = state.BaseRange + .75f;
             Kit(guard).Casts = 0;
