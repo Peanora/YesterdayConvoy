@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-21 生命成长与首领治疗验收
+
+运行内容源码 `8aaac2820fbd285df557b5db6ee48a56ce2b000a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,087,910 字节，零错误，退出 0。Runtime DLL SHA-256 为 `B7D394972996F408B3C7BD9D1B2F148EFCDAC25DD7AF9CC038406B461E6ADC4B`。仓库检查核对 17,130 个跟踪文件。完整 EditMode 1223/1223。 [构建日志](../artifacts/formation-survival-balance/build-delivery.log) · [EditMode XML](../artifacts/formation-survival-balance/edit-tuned.xml)
+
+初雪二阶段对照使用同五名受攻击者和相同站位，场景直接进入转段，奶妈从相同的技力差开始，后续由正常战斗结算命中和治疗。无奶、一星梅菲斯特、二星梅菲斯特到第三次阵亡经过 7.475、8.650、9.800 秒，两次有奶的首轮群疗实际为 675 和 1215。另核对传令兵治疗范围和暂停冷却、百夫长普攻与主技队疗，以及旧 3-7 九人十四格装备预算于 139.875 秒进蓝门。保存场景中的高费样本于 115.975 秒胜利，三次阵亡。1-3 两组原样三张一星分别于 86.500 和 80.925 秒险胜，阵亡八次和三次。 [战斗回归](../artifacts/formation-survival-balance/edit-tuned.xml)
+
+同版 1280×720 D3D11 正常窗口的初雪 Player 61/61、零异常，132.275 秒清场，141.500 秒实际进蓝门，核对了二阶段头顶血条、直击画面和胜利帧。超新星 Player 59/59，64.100 秒进蓝门。默认入口前三战 163/163。后两项在后台执行，报告记录了战斗和界面状态通过，后台帧仅用于诊断。全三位面自然招募与运营的通关率仍待长局试玩。 [初雪正常窗口报告](../artifacts/formation-survival-balance/snow-rendered/snow-boss-smoke.json) · [二阶段命中](../artifacts/formation-survival-balance/snow-rendered/06-s3-native-direct-impact.png) · [胜利帧](../artifacts/formation-survival-balance/snow-rendered/08-trial-victory.png) · [超新星报告](../artifacts/formation-survival-balance/supernova/supernova-boss-smoke.json) · [默认入口报告](../artifacts/formation-survival-balance/campaign/campaign-smoke.json)
+
 ## 2026-11-21 战斗伤害排行与首领头顶血条验收
 
 源码 `760576fa8e60118e85ed0b0fde9a87f1343c7443`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,085,197 字节，零错误，退出 0。Runtime DLL SHA-256 `3C9DEAE1D3548707DB8E6DB25A8783D02F35FEFF27EE13BCFB9023A34D8C1304`。EditMode 1220/1220。 [构建日志](../artifacts/formation-battle-hud/build-delivery.log) · [EditMode XML](../artifacts/formation-battle-hud/edit-delivery.xml)
