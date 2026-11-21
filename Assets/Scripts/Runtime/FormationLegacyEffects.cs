@@ -147,10 +147,10 @@ namespace YesterdayConvoy
                             PresentGuardSnowField(effect);
                             break;
                         case "chess_board":
-                            PresentFormationWangBoard(guard,"board/"+FxTime(effect.PlacedAt),
+                            PresentFormationWangBoard(guard,origin,"board/"+FxTime(effect.PlacedAt),
                                 (now-effect.PlacedAt)*FormationVisualRate);
                             foreach(var stone in Model.GuardChessPieces(guard))
-                                if(now < stone.EndsAt)
+                                if(now >= stone.PlacedAt && now < stone.EndsAt)
                                     PresentFormationGuardChess(guard,stone.Origin,
                                         instance+"/"+stone.Origin.x+"/"+stone.Origin.y,
                                         (now-stone.StartedAt)*FormationVisualRate,stone.Kind=="chess_hit",combat:true);

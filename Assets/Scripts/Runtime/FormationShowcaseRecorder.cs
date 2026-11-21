@@ -242,15 +242,10 @@ namespace YesterdayConvoy
             }
             if(id=="D28")
             {
-                clip.notes+=" 前段确认同时布置五颗棋子。后段依次把展示靶移到棋子的触发位置，范围伤害和收盘仍走真实战斗。";
-                yield return Segment("天下劫 · 五颗棋子展开",2);
-                var pieces=model.GuardChessPieces(guard);
-                if(pieces.Length!=5)throw new InvalidOperationException("Wang needs five legal stones on the saved showcase board.");
-                for(int i=0;i<pieces.Length;i++)
-                {
-                    model.ShowcasePlaceWangTarget(pieces[i].Origin);
-                    yield return Segment(i==pieces.Length-1?"第五颗触发 · 收起棋盘":"棋子实际触发 · 棋盘保持",i==pieces.Length-1?2:1);
-                }
+                clip.notes+=" 展示靶在开战前固定于十字中心格内，整段连续录制真实落子、引爆与收盘。";
+                yield return Segment("天下劫 · 中心落子、四邻跟子、逐颗爆裂",5);
+                if(model.GuardChessPieces(guard).Count(piece=>piece.Kind=="chess_hit")!=5)
+                    throw new InvalidOperationException("The battle did not detonate all five Wang stones.");
                 yield break;
             }
             if(FormationBattleModel.IsArchivedSignatureGuard(id))

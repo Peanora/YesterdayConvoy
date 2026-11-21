@@ -223,7 +223,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.Model.Defenders.Single().IsSnowBoss, Is.True);
         }
 
-        [UnityTest] public IEnumerator ArchivedChessBoardRemainsVisibleThroughAllFiveRealTriggers()
+        [UnityTest] public IEnumerator WangPlacesTheWholeCrossThenDetonatesEachStoneWhileTheBoardRemainsVisible()
         {
             RequireGpu();
             yield return Fixture(new[] { "B10" });
@@ -231,19 +231,45 @@ namespace YesterdayConvoy.Tests
             Begin();
             var model = controller.Model;
             var guard = model.Defenders.Single();
+            Assert.That((Array)Invoke(model, "GuardChessPieces", guard), Is.Empty);
+            Step(.025f);
             var pieces = ((Array)Invoke(model, "GuardChessPieces", guard)).Cast<object>().ToArray();
             Assert.That(pieces.Length, Is.EqualTo(5));
-            Assert.That(pieces.Select(piece => Field<Vector2>(piece, "Origin")).Distinct().Count(), Is.EqualTo(5));
-            yield return Until(() => NativeLayerIsVisible("D28", "wang_skill_03_range"), 2);
-            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.Skill), Is.False);
+            var center = Field<Vector2>(pieces[0], "Origin");
+            Assert.That(pieces.Select(piece => Field<Vector2>(piece, "Origin") - center),
+                Is.EqualTo(new[] { Vector2.zero, Vector2.left, Vector2.right, Vector2.down, Vector2.up }));
+            int Placed() => pieces.Count(piece => Field<double>(piece, "PlacedAt") <= model.Clock + 1e-7);
+            int Detonated() => pieces.Count(piece => Field<string>(piece, "Kind") == "chess_hit");
+            int Hits() => model.Hits.Count(hit => hit.FromId == guard.Id && hit.Skill);
+            double cast = model.Clock;
+            Assert.That(Placed(), Is.EqualTo(1));
+            model.Paused = true;
+            Step(.50f);
+            Assert.That(model.Clock, Is.EqualTo(cast));
+            Assert.That(Placed(), Is.EqualTo(1));
+            model.Paused = false;
+
+            for (int i = 1; i < pieces.Length; i++)
+            {
+                Step(.25f);
+                Assert.That(Placed(), Is.EqualTo(i + 1));
+                Assert.That(Detonated(), Is.Zero);
+                Assert.That(Hits(), Is.Zero);
+                yield return null;
+            }
+            Assert.That(NativeLayerIsVisible("D28", "wang_skill_03_range"), Is.True);
+
             for (int i = 0; i < pieces.Length; i++)
             {
-                Invoke(model, "ShowcasePlaceWangTarget", Field<Vector2>(pieces[i], "Origin"));
-                yield return Until(() => Field<string>(pieces[i], "Kind") == "chess_hit", 1);
-                Assert.That(pieces.Count(piece => Field<string>(piece, "Kind") == "chess_hit"), Is.EqualTo(i + 1));
+                Step(.25f);
+                Assert.That(Detonated(), Is.EqualTo(i + 1));
+                Assert.That(Hits(), Is.EqualTo(i + 1));
+                Assert.That(Field<double>(pieces[i], "ImpactAt"), Is.EqualTo(cast + 1.25 + i * .25).Within(.001));
                 Assert.That(NativeLayerIsVisible("D28", "wang_skill_03_range"), Is.True);
-                Assert.That(model.Hits.Last().FromId, Is.EqualTo(guard.Id));
+                yield return null;
             }
+            Step(.5f);
+            Assert.That(Invoke(model, "GuardEffect", guard), Is.Not.Null);
             yield return Until(() => Invoke(model, "GuardEffect", guard) == null, 1);
         }
 

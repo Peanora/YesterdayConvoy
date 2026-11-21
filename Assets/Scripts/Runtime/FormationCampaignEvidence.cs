@@ -1374,7 +1374,7 @@ namespace YesterdayConvoy
                 Vector2 landing = guard.SkillCell.Value;
                 cell = landing + (landing.y < 4 ? Vector2.down : Vector2.up);
             }
-            else if (artId == "D28") cell = (Vector2)guard.SkillCell.Value + Vector2.left * .5f;
+            else if (artId == "D28") cell = (Vector2)(model.FindWangCrossCenter(guard) ?? throw new InvalidOperationException("No legal Wang cross on " + node));
             else cell = guard.Position + Vector2.left;
             Assert(model.Terrain.IsWalkable(cell) && model.Defenders.All(other =>
                 (other.Position - cell).sqrMagnitude >= .23f), node + " diagnostic target is in an open position");

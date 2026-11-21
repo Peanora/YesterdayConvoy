@@ -40,6 +40,7 @@ namespace YesterdayConvoy
             internal bool SignatureEnded;
             internal FormationGuardEffect Effect;
             internal FormationGuardEffect[] ChessPieces;
+            internal Vector2Int? WangCenter;
             internal ChenDawnCast ChenDawn;
             internal Dictionary<Vector2Int, int> SnowTiles;
             internal HashSet<int> InSnow;
@@ -62,8 +63,7 @@ namespace YesterdayConvoy
             guardKits.Remove(guard.Id);
             var kit = Kit(guard);
             if (guard.IsSnowBoss) ResetSnowBoss(guard, kit);
-            if (guard.ArtId == "D28" && GuardSkillCellIsFree(guard))
-                PlaceGuardChess(guard, kit);
+            if (guard.ArtId == "D28") kit.WangCenter = FindWangCrossCenter(guard);
         }
 
         internal FormationGuardEffect GuardEffect(FormationDefender guard)
@@ -71,8 +71,12 @@ namespace YesterdayConvoy
             if (!guard.Alive) return null;
             if (guardKits.TryGetValue(guard.Id, out var kit) && kit.Guard == guard && kit.Effect?.EndsAt > Clock)
                 return kit.Effect;
-            if (Phase == FormationPhase.Preparation && guard.ArtId == "D28" && GuardSkillCellIsFree(guard))
-                return new FormationGuardEffect { Kind = "chess", Origin = guard.SkillCell.Value, Radius = 1.4f, EndsAt = double.PositiveInfinity };
+            if (Phase == FormationPhase.Preparation && guard.ArtId == "D28")
+            {
+                var preview = Kit(guard);
+                if ((preview.WangCenter ??= FindWangCrossCenter(guard)) is { } center)
+                    return new FormationGuardEffect { Kind = "chess", Origin = center, EndsAt = double.PositiveInfinity };
+            }
             return null;
         }
 

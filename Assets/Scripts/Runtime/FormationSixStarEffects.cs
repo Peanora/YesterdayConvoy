@@ -226,12 +226,14 @@ namespace YesterdayConvoy
             }
         }
 
-        void PresentFormationWangBoard(FormationDefender guard,string instance,double age)
+        void PresentFormationWangBoard(FormationDefender guard,Vector2 center,string instance,double age)
         {
-            var cell=guard.Position;
-            ShowFormationGuardEffect(guard,"wang_skill_03_range_start",instance,age,cell,11,flat:true);
-            ShowFormationGuardEffect(guard,"wang_skill_03_range",instance,age,cell,10,true,true);
-            ShowFormationGuardEffect(guard,"wang_skill_03_buff_02",instance,age,cell,26,true,true);
+            // The original five-column field puts its middle tile two tiles forward of its origin.
+            var origin=center-guard.Facing*2;
+            var ground=WorldPoint(origin)+Vector3.up*.025f;
+            ShowFormationGuardEffect(guard,"wang_skill_03_range_start",instance,age,origin,11,flat:true,point:ground);
+            ShowFormationGuardEffect(guard,"wang_skill_03_range",instance,age,origin,10,true,true,point:ground);
+            ShowFormationGuardEffect(guard,"wang_skill_03_buff_02",instance,age,guard.Position,26,true,true);
         }
     }
 }

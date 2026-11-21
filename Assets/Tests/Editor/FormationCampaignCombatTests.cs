@@ -986,25 +986,44 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void WangsReservedChessCellTriggersSkillDamageOnContact()
+        public void WangCompletesTheCrossAndSettlesFiveSequentialHitsOnTheSavedBoard()
         {
-            var model = Fixture(out var run, "M11");
+            var template = Fixture(out var run, "M11").Units.Single();
             ReachNode(run, "3-4", collectDrops: false);
-            model.BindCampaign(run);
-            var guard = model.Defenders.Single(defender => defender.ArtId == "D28");
-            Assert.That(guard.SkillCell.HasValue, Is.True);
-            model.Defenders.RemoveAll(defender => defender != guard);
-            Assert.That(model.StartBattle(), Is.True);
-            var fighter = model.Units.Single();
-            fighter.Position = guard.SkillCell.Value;
-            fighter.MaxHealth = fighter.Health = 100000;
-            fighter.MoveSpeed = 0;
-            Advance(model, .025f);
-            Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.False);
-            Advance(model, .125f);
-            Assert.That(model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.EqualTo(1));
-            Advance(model, 2);
-            Assert.That(model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.EqualTo(1));
+            var terrain = SavedTerrain();
+            var sides = new HashSet<bool>();
+            for (int seed = 71; seed < 99 && sides.Count < 2; seed++)
+            {
+                var model = new FormationBattleModel(seed, terrain);
+                model.BindCampaign(run);
+                var guard = model.Defenders.Single(defender => defender.ArtId == "D28");
+                if (!sides.Add(guard.Position.y < FormationBattleModel.Height / 2)) continue;
+                Assert.That(model.Defenders, Has.Count.EqualTo(9));
+                Assert.That(model.ApplyRoster(new[] { new FormationRosterEntry
+                {
+                    Instance = template.Instance, Star = template.Star, ArtId = template.ArtId, Spawn = template.Spawn
+                } }, 10), Is.True);
+                Assert.That(model.StartBattle(), Is.True);
+                guard = model.Defenders.Single(defender => defender.ArtId == "D28");
+                var center = InvokeGuardTestHook<Vector2Int>(model, "FindWangCrossCenter", guard);
+                Assert.That(center.y < FormationBattleModel.Height / 2,
+                    Is.EqualTo(guard.SkillCell.Value.y < FormationBattleModel.Height / 2));
+                var fighter = model.Units.Single();
+                fighter.Position = center;
+                fighter.MaxHealth = fighter.Health = 100000;
+                fighter.MoveSpeed = 0;
+                int Hits() => model.Hits.Count(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill);
+                Advance(model, 1.025f);
+                Assert.That(Hits(), Is.Zero);
+                for (int hit = 1; hit <= 5; hit++)
+                {
+                    Advance(model, .25f);
+                    Assert.That(Hits(), Is.EqualTo(hit));
+                }
+                Advance(model, 2);
+                Assert.That(Hits(), Is.EqualTo(5));
+            }
+            Assert.That(sides, Has.Count.EqualTo(2));
         }
     }
 }

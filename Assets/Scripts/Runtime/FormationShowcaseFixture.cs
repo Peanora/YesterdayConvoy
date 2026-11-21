@@ -245,7 +245,8 @@ namespace YesterdayConvoy
             target.Position = guard.ArtId switch
             {
                 "D23" => (Vector2)guard.SkillCell.Value + Vector2.left * .5f,
-                "D28" => (Vector2)guard.SkillCell.Value + Vector2.left * 3,
+                "D28" => (Vector2)(FindWangCrossCenter(guard) ?? throw new InvalidOperationException("The showcase has no legal Wang cross."))
+                    + new Vector2(-.32f, -.31f),
                 _ => guard.Position + Vector2.left * Mathf.Min(.8f, guard.Range * .8f)
             };
             // Separate the reviewed muzzle, flight and target from each other on the capture board.
@@ -269,13 +270,6 @@ namespace YesterdayConvoy
             // hit resolve the transition and trigger the 2-second freeze.
             Defenders[0].Health = 1;
             Units.First(unit => unit.Enabled).NextAttackAt = Clock;
-        }
-
-        internal void ShowcasePlaceWangTarget(Vector2 cell)
-        {
-            var target = Units.First(unit => unit.Enabled);
-            target.Position = cell;
-            target.ActionUntil = double.PositiveInfinity;
         }
 
         // Source-animation review only: no combat simulation or skill/SP alteration.
