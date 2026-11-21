@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-21 高台与实际行军路线验收
+
+Windows 运行源码 `117868dc85d84713a1777c4bc7ac3fd5c6332ee3`。Unity 6000.6.5f1 Windows x64 Development 构建 1,382,837,274 字节，零错误、退出 0。Runtime DLL SHA-256 为 `F6754A8EEA0736C874413687C0F72B776E17A759EBC3E9689FE60AE91FB3BA0F`。EditMode 1224/1224，新增回归验证开阔地连线可走时寻路仍能选择中轴，清场后也优先从主路走向蓝门。编辑器验证保存地形、守军站位和全图可达。 [构建日志](../artifacts/formation-terrain-routes/build.log) · [EditMode XML](../artifacts/formation-terrain-routes/edit.xml)
+
+实机三图 76/76。按实际地图检查了旧石谷高台与掩体层是否隐藏，以及三条示例路径是否走过各自标记铺装。三场均完成真实自动攻坚和进蓝门，换回石谷会恢复自己的实体高台。默认挑战前三战 163/163，初雪两阶段 61/61，147.450 秒进蓝门，三组 Player 退出 0、零异常。 [三图报告](../artifacts/formation-terrain-routes/maps/map-variants-smoke.json) · [默认挑战](../artifacts/formation-terrain-routes/campaign/campaign-smoke.json) · [初雪](../artifacts/formation-terrain-routes/snow/snow-boss-smoke.json)
+
+核对四张实机战斗图，石谷高台改用 #02 同包砂岩，街庭白石、回廊饰金、雪谷冰台分别使用各自原包。常速行军片每段取 72 帧，1280×720、24 fps，三段完整解码。路线权重保留平地侧翼，硬地形占格依然生效。完整三位面自然招募试玩未执行。 [四图实机](../artifacts/formation-terrain-routes/boards.jpg) · [街庭行军](../artifacts/formation-terrain-routes/maps/1-4-advance.mp4) · [回廊行军](../artifacts/formation-terrain-routes/maps/2-1-advance.mp4) · [雪谷行军](../artifacts/formation-terrain-routes/maps/3-1-advance.mp4)
+
 ## 2026-11-21 三张新地图实机验收
 
 运行内容源码 `d43a19463e4985d2fcf7a8dfbad807cd3147a3af`。Unity 6000.6.5f1 Windows x64 Development 构建 1,382,839,857 字节，零错误，退出 0。Runtime DLL SHA-256 为 `95A8E89504E314B8E4523202E6DFF133C190AF8EE1A980EE6C8109FCB21238AA`。完整 EditMode 1223/1223。编辑器核对三套存盘 Prefab 的 528 格、共用门列、各自材质族及所有战斗节点两套种子的守军生成。另逐格检查可踏格到蓝门的路径和指定守军的接近点。 [构建日志](../artifacts/formation-map-variants/build-final.log) · [EditMode XML](../artifacts/formation-map-variants/edit-final.xml)
