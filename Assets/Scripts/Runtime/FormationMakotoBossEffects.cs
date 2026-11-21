@@ -35,24 +35,26 @@ namespace YesterdayConvoy
             bool left = guard.Facing.x < 0;
             string side = left ? "_l" : "";
             Vector3 ground = ActorWorldPoint(cell) + Vector3.up * .065f;
+            // Source doll glows wrap the body. Keep the sustained billboard behind its visible skin.
+            const int bodyAuraOrder = -8;
             switch (mode.Animation)
             {
                 case "makoto_s1_idle":
-                    ShowMakotoEffect("skill_01_buff_01" + side, age, cell, foot, 10, loop: true);
+                    ShowMakotoEffect("skill_01_buff_01" + side, age, cell, foot, bodyAuraOrder, loop: true);
                     break;
                 case "makoto_s2_idle":
-                    ShowMakotoEffect("skill_02_buff_01" + side, age, cell, foot, 10, loop: true);
+                    ShowMakotoEffect("skill_02_buff_01" + side, age, cell, foot, bodyAuraOrder, loop: true);
                     ShowMakotoEffect("skill_02_range_01", age, cell, ground, -80, loop: true, ground: true);
                     ShowMakotoEffect("skill_02_range_02_start", age, cell, ground, -79, ground: true);
                     ShowMakotoEffect("skill_02_range_02", age, cell, ground, -79, loop: true, ground: true);
                     break;
                 case "makoto_s3_idle":
-                    ShowMakotoEffect(left ? "skill_03_p1_buff_01_l" : "skill_03_p1_buff_01_r", age, cell, foot, 10, loop: true);
+                    ShowMakotoEffect(left ? "skill_03_p1_buff_01_l" : "skill_03_p1_buff_01_r", age, cell, foot, bodyAuraOrder, loop: true);
                     ShowMakotoEffect("skill_03_p1_range_01_start", age, cell, ground, -80, ground: true);
                     ShowMakotoEffect("skill_03_p1_range_01", age, cell, ground, -80, loop: true, ground: true);
                     break;
                 case "makoto_s3_recovery":
-                    ShowMakotoEffect("skill_03_p2_buff_01" + side, age, cell, foot, 10, loop: true);
+                    ShowMakotoEffect("skill_03_p2_buff_01" + side, age, cell, foot, bodyAuraOrder, loop: true);
                     ShowMakotoEffect("skill_03_p2_range_01", age, cell, ground, -80, loop: true, ground: true);
                     ShowMakotoEffect("skill_03_p2_range_02_start", age, cell, ground, -79, ground: true);
                     ShowMakotoEffect("skill_03_p2_range_02", age, cell, ground, -79, loop: true, ground: true);
