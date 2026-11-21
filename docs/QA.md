@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-21 战斗伤害排行与首领头顶血条验收
+
+源码 `760576fa8e60118e85ed0b0fde9a87f1343c7443`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,085,197 字节，零错误，退出 0。Runtime DLL SHA-256 `3C9DEAE1D3548707DB8E6DB25A8783D02F35FEFF27EE13BCFB9023A34D8C1304`。EditMode 1220/1220。 [构建日志](../artifacts/formation-battle-hud/build-delivery.log) · [EditMode XML](../artifacts/formation-battle-hud/edit-delivery.xml)
+
+默认入口 1080p D3D11 Player 163/163，走完前三场战斗和结算。1-1 交战帧可见三名上阵角色按 356、174、121 降序，合计 651。暂停切换为「已暂停」并保持排行，下一次整备隐藏。排行沿用编队实际扣血字段，单独记账的召唤物伤害未计入。普通守军头顶显示红条，进攻方头顶显示青条。最终轮默认流程使用 Unity 的 D3D11 单线程渲染参数。前一轮一次并行启动的诊断在进入战斗前发生原生访问异常，最终轮三组 Player 均退出 0、零异常。 [战斗截图](../artifacts/formation-battle-hud/delivery/campaign/05-combat-0.png) · [暂停截图](../artifacts/formation-battle-hud/delivery/campaign/05-combat-paused-no-operating-ui.png) · [默认 Player 报告](../artifacts/formation-battle-hud/delivery/campaign/campaign-smoke.json)
+
+超新星 1080p D3D11 Player 59/59，预设阵容按 1× 战斗时钟于 63.7 秒进入蓝门。对照《明日方舟》IW-9 岁相实录 00:20 的暗底红条，保留红填充和暗槽组合，依用户修订放在首领头顶。超新星第一段清空时画面只有一个空槽，第二段开始后同一槽的红色填充逐帧从 0 增至 40、118、213、303、368、385 像素，内槽宽 387 像素。回填完成后，条宽随当段真实扣血缩短。回填采用 0.75 秒战斗时钟，录像由同版截图序列封装，第 14 帧使用同一时段单独保存的第二阶段画面。守军 720p D3D11 Player 47/47，实机抽查 1-6 普通守军、1-9 斩业星熊、2-7 塞雷娅。最终加长版未单独重跑初雪 Player。 [原作实录](https://www.bilibili.com/video/BV1Cq4y1C71y/?t=20) · [回填实机](../artifacts/formation-battle-hud/delivery/supernova/boss-refill.mp4) · [回填关键帧](../artifacts/formation-battle-hud/delivery/supernova/boss-refill-keyframes.jpg) · [超新星报告](../artifacts/formation-battle-hud/delivery/supernova/supernova-boss-smoke.json) · [守军报告](../artifacts/formation-battle-hud/delivery/defense/defense-smoke.json)
+
 ## 2026-11-21 超新星配乐与两段开场语音验收
 
 源码 `b8c15510384c8352881bcf67e4863cd3d6609e25`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,085,186 字节，零错误，退出 0。Runtime DLL SHA-256 `827C62D6968646AF99FB3DD6ADE9DEA4510D97C0E93438FB854E10C30A9D7917`。EditMode 1220/1220。构建重试使用进程级 Windows NLS 设置，并在共享编译服务失去响应后恢复 C# 编译。 [构建日志](../artifacts/formation-supernova-audio/build-delivery.log) · [EditMode XML](../artifacts/formation-supernova-audio/edit-final.xml)
