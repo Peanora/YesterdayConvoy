@@ -21,14 +21,19 @@ namespace YesterdayConvoy
         public bool RosterArtReady=>Model!=null&&RequiredFormationArtIds().All(FormationArtAvailable);
 
         internal const string PramanixBossBodyArt = "D27Boss";
-        static string FormationBodyArtId(FormationActor actor) =>
-            actor is FormationDefender { IsSnowBoss: true } ? PramanixBossBodyArt : actor.ArtId;
+        static string FormationBodyArtId(FormationActor actor) => actor switch
+        {
+            FormationDefender { IsSnowBoss: true } => PramanixBossBodyArt,
+            FormationDefender { IsSupernovaBoss: true, Alive: true } when SupernovaRearView(actor) => "D31B",
+            _ => actor.ArtId
+        };
 
         bool FormationArtAvailable(string id)
         {
             if(!warmedFormationArt.Contains(id))return false;
             if(!id.StartsWith("D",StringComparison.Ordinal))return formationMonsterArt.TryGetValue(id,out var source)&&source.IsReady&&FormationInitialMotionKeys(source,id).All(key=>source.WindowReady(key,0,false))&&FormationEffectSequences(source).All(c=>c.Ready);
-            return art.TryGetValue(id,out var defender)&&defender.Clips.Values.Where(FormationGuardClip).All(c=>c.Ready)
+            return art.TryGetValue(id,out var defender)&&defender.Clips.Values.Where(c=>FormationGuardClip(c)&&!IsSupernovaBossClip(c.Key)).All(c=>c.Ready)
+                &&(!UsesSupernovaBossArt(id)||SupernovaBossBodyClips.All(key=>defender.Clips.TryGetValue(key,out var clip)&&clip.Ready))
                 &&FormationGuardEffects(id).All(c=>c.Ready);
         }
 
@@ -39,6 +44,11 @@ namespace YesterdayConvoy
         {
             if(Model==null)yield break;
             foreach(var id in Model.Units.Where(u=>u.Enabled).Select(u=>u.ArtId).Concat(Model.Defenders.Select(FormationBodyArtId)).Distinct())yield return id;
+            if(UsesSupernovaBossArt("D31"))
+            {
+                yield return "D31";
+                yield return "D31B";
+            }
             if(Campaign!=null&&Model.Defenders.Any(d=>d.ArtId=="D28"))yield return "D28Chess";
             foreach(var id in Model.Summons.Select(u=>u.ArtId).Distinct())yield return id;
             var team=Model.Units.Where(u=>u.Enabled).Select(u=>FormationCampaignRules.Find(u.ArtId)).Where(s=>s!=null).ToArray();
@@ -83,7 +93,9 @@ namespace YesterdayConvoy
                 foreach(var sequence in effects)pinned.Add(sequence.CacheKey);
                 ArtMemoryCache.Pin(pinned);
                 if(id==PramanixBossBodyArt)WarmSnowBossAudio();
-                foreach(var clip in source.Clips.Values.Where(FormationGuardClip))yield return clip.Warm();
+                bool supernova=UsesSupernovaBossArt(id);
+                if(supernova)source.Extras(SupernovaBossBodyClips);
+                foreach(var clip in source.Clips.Values.Where(c=>FormationGuardClip(c)&&(supernova||!IsSupernovaBossClip(c.Key))))yield return clip.Warm();
                 foreach(var clip in effects)if(!clip.Ready)yield return clip.Warm();
                 if(UsesFormationSixStarNativeFx(id))
                     yield return OriginalNativeFxCatalog.Prepare(OriginalNativeFxCatalog.KeysFor(id));
@@ -282,7 +294,9 @@ namespace YesterdayConvoy
                     if(guard.IsSnowBoss)labelTop=PramanixScoutLabelTop;
                     double sourceAge=(motionNow-actor.LastActionAt)*actionRate;
                     double s2StartedAt=Model.SnowBossS2StartedAt(guard);
-                    if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&
+                    if(guard.IsSupernovaBoss)
+                        SelectSupernovaBossPose(guard,source,now,ref key,ref age,ref singleFrameSequence);
+                    else if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&
                        source.Clips.TryGetValue(actor.PresentationAction,out var nativeSkill)&&sourceAge<nativeSkill.Duration)
                     {
                         key=actor.PresentationAction;age=sourceAge;singleFrameSequence=true;

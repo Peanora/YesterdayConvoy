@@ -890,6 +890,118 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
+        public void DefaultSupernovaTrialUsesBothSourceKitsBeforeRealBlueGateBreakthrough()
+        {
+            const int seed = 20261117;
+            var start = typeof(FormationShopSession).GetMethod("StartSupernovaBossTrial", BindingFlags.Static | BindingFlags.NonPublic);
+            var session = (FormationShopSession)start.Invoke(null, new object[] { seed });
+            try
+            {
+                var model = new FormationBattleModel(seed, SavedTerrain());
+                session.ApplyTo(model);
+                Assert.That(session.Run.IsSupernovaBossTrial, Is.True);
+                Assert.That(session.Run.CurrentNode.Id, Is.EqualTo(FormationCampaignRules.SupernovaBossNodeId));
+                Assert.That(FormationCampaignRules.Nodes.Any(node => node.Id == session.Run.CurrentNode.Id), Is.False);
+                Assert.That(model.EnabledCount, Is.EqualTo(8));
+                var boss = model.Defenders.Single();
+                Assert.That(boss.ArtId, Is.EqualTo("D31"));
+                Assert.That(boss.IsSupernovaBoss && !boss.IsSnowBoss && model.Terrain.CanPlaceDefender(boss.Position), Is.True);
+                Assert.That(model.StartBattle(), Is.True);
+
+                double transition = 0, restored = 0, clear = 0;
+                FormationHit firstS2Hit = null, firstS3Hit = null;
+                bool splashObserved = false;
+                var bossActions = new Dictionary<int, FormationPresentationAction>();
+                for (int tick = 0; tick < 8000 && (model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting); tick++)
+                {
+                    model.Advance(.025f);
+                    foreach (var action in model.PresentationActions)
+                        if (action.ActorId == boss.Id) bossActions.TryAdd(action.Sequence, action);
+                    firstS2Hit ??= model.Hits.FirstOrDefault(hit => hit.FromId == boss.Id && hit.Amount > 0 &&
+                        hit.Action?.Animation == "supernova_s2_volley");
+                    var shellHits = model.Hits.Where(hit => hit.FromId == boss.Id && hit.Amount > 0 &&
+                        hit.Action?.Animation == "supernova_s3_shell").ToArray();
+                    firstS3Hit ??= shellHits.FirstOrDefault();
+                    splashObserved |= shellHits.GroupBy(hit => hit.Action).Any(group => group.Select(hit => hit.ToId).Distinct().Count() > 1);
+                    if (transition == 0 && model.SupernovaBossTransitionActive(boss))
+                    {
+                        transition = model.Clock;
+                        Assert.That(boss.Health, Is.Zero);
+                        Assert.That(model.BossAlive && model.Phase == FormationPhase.Fighting, Is.True);
+                        Assert.That(model.RemainingDefenders, Is.EqualTo(1));
+                        Assert.That(model.Hits.Any(hit => hit.ToId == boss.Id && hit.Killed), Is.False);
+                        Assert.That(model.Units.Concat(model.Summons).All(unit => model.SnowBossFreezeRemaining(unit) == 0), Is.True);
+                        model.Paused = true;
+                        Advance(model, 2);
+                        Assert.That(model.Clock, Is.EqualTo(transition));
+                        Assert.That(model.SupernovaBossTransitionActive(boss), Is.True);
+                        model.Paused = false;
+                    }
+                    if (restored == 0 && boss.SupernovaBossPhase == 2)
+                    {
+                        restored = model.Clock;
+                        Assert.That(boss.Health, Is.GreaterThan(boss.MaxHealth * .9f));
+                        Assert.That(model.SupernovaBossTransitionActive(boss), Is.False);
+                    }
+                    if (clear == 0 && model.RemainingDefenders == 0)
+                    {
+                        clear = model.Clock;
+                        Assert.That(model.Phase, Is.EqualTo(FormationPhase.Exiting));
+                        Assert.That(model.BossAlive, Is.False);
+                    }
+                }
+                TestContext.WriteLine($"Supernova trial: phase={model.Phase}, transition={transition:0.000}s, " +
+                    $"restored={restored:0.000}s, clear={clear:0.000}s, end={model.Clock:0.000}s, HP={boss.Health:0}/{boss.MaxHealth:0}");
+                Assert.That(transition, Is.GreaterThan(0));
+                Assert.That(restored - transition, Is.EqualTo(1.25).Within(.02501));
+                Assert.That(clear, Is.GreaterThan(restored));
+                Assert.That(model.Clock, Is.GreaterThan(clear));
+                Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
+
+                var moves = bossActions.Values.Where(action => !action.ProjectileOnly).OrderBy(action => action.At).ToArray();
+                var normal = moves.First(action => action.Animation == "supernova_s2_volley");
+                var overload = moves.First(action => action.Animation == "supernova_s2_overload");
+                var opening = moves.First(action => action.Animation == "supernova_s2_begin");
+                Assert.That(overload.At, Is.GreaterThanOrEqualTo(opening.At + 8));
+                Assert.That(overload.At, Is.LessThan(transition));
+                Assert.That(firstS2Hit?.Action, Is.Not.Null);
+                Assert.That(normal.LaunchedAt - normal.At, Is.EqualTo((8d / 30) / normal.Rate).Within(.000001));
+                Assert.That(firstS2Hit.Action.ContactAt - firstS2Hit.Action.LaunchedAt,
+                    Is.EqualTo(.1 / firstS2Hit.Action.Rate).Within(.000001));
+                Assert.That(firstS2Hit.Action.ProjectileMovement, Is.Null);
+                Assert.That(firstS2Hit.At, Is.InRange(normal.ContactAt - .000001, normal.ContactAt + .025001));
+                var rounds = bossActions.Values.Where(action => action.Sequence == overload.Sequence ||
+                    action.ParentSequence == overload.Sequence).OrderBy(action => action.ProjectileIndex).ToArray();
+                Assert.That(rounds.Length, Is.EqualTo(4));
+                for (int i = 0; i < rounds.Length; i++)
+                {
+                    Assert.That(rounds[i].LaunchedAt - rounds[0].LaunchedAt, Is.EqualTo(i * .1 / rounds[0].Rate).Within(.000001));
+                    Assert.That(rounds[i].ContactAt - rounds[i].LaunchedAt, Is.EqualTo(.1 / rounds[i].Rate).Within(.000001));
+                    Assert.That(rounds[i].ProjectileMovement, Is.Null);
+                }
+
+                var firstReload = moves.First(action => action.Animation == "supernova_s3_end");
+                Assert.That(moves.Count(action => action.Animation == "supernova_s3_shell" && action.At < firstReload.At), Is.EqualTo(6));
+                Assert.That(moves.Any(action => action.Animation == "supernova_s3_begin" && action.At > firstReload.EndAt), Is.True);
+                Assert.That(firstS3Hit?.Action, Is.Not.Null);
+                var firstShell = firstS3Hit.Action;
+                Assert.That(firstShell.At, Is.GreaterThanOrEqualTo(restored));
+                Assert.That(firstShell.LaunchedAt - firstShell.At, Is.EqualTo((16d / 30) / firstShell.Rate).Within(.000001));
+                Assert.That(firstShell.ContactAt, Is.GreaterThan(firstShell.LaunchedAt));
+                Assert.That(firstS3Hit.At, Is.InRange(firstShell.ContactAt - .000001, firstShell.ContactAt + .025001));
+                Assert.That(splashObserved, Is.True, "An actual shell damages multiple nearby attackers in the supplied battle");
+
+                Assert.That(model.Retry(), Is.True);
+                Assert.That(model.Defenders.Single().SupernovaBossPhase, Is.EqualTo(1));
+                Assert.That(model.PresentationActions, Is.Empty);
+            }
+            finally
+            {
+                FormationShopSession.StartNew(seed, true);
+            }
+        }
+
+        [Test]
         public void YuOnlyCastsOneWallInTheFirstPlaneBattle()
         {
             var model = Fixture(out var run, "M11");

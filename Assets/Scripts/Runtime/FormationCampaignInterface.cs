@@ -195,14 +195,16 @@ namespace YesterdayConvoy
             var r=new Rect(350,198,580,showProgress?270:234);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
             string outcome=Model.Phase==FormationPhase.Won?"蓝门突破":"本关失利";
             string title=Campaign.GuardTrialArt is { } guardArt ? FormationCampaignRules.DefenderByArtId(guardArt).Name :
-                Campaign.IsPramanixBossTrial ? "圣聆初雪" : trial?.Trait.Name??Campaign.CurrentNode.Id;
+                Campaign.BossTrialName ?? trial?.Trait.Name ?? Campaign.CurrentNode.Id;
             CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,40),$"{title}  ·  {outcome}",25,true);
             CampaignLabel(new Rect(r.x+25,r.y+84,r.width-50,35),$"用时 {Model.Clock:0.0} 秒  ·  剩余守军 {Model.RemainingDefenders}/{Model.InitialDefenderCount}  ·  守军生命削减 {Model.EncounterProgress:P0}",15);
             if(showProgress)CampaignLabel(new Rect(r.x+25,r.y+122,r.width-50,67),progress,14,true);
             if(Button(new Rect(r.x+25,r.yMax-72,254,46),"重试本关",true,true)){ResetDemo();return;}
             bool guardTrial = Campaign.GuardTrialArt != null;
-            if(Button(new Rect(r.x+296,r.yMax-72,259,46),guardTrial?"选择其他守军":trial==null?"选择其他关卡":"选择其他羁绊"))
-                OpenFormationTrialPicker(guardTrial?FormationMenuPage.GuardTrials:trial==null?FormationMenuPage.DifficultyTrials:FormationMenuPage.SynergyTrials);
+            string back = guardTrial ? "选择其他守军" : Campaign.IsBossTrial ? "返回系统菜单" : trial == null ? "选择其他关卡" : "选择其他羁绊";
+            if (Button(new Rect(r.x+296,r.yMax-72,259,46), back))
+                OpenFormationTrialPicker(guardTrial ? FormationMenuPage.GuardTrials : Campaign.IsBossTrial ? FormationMenuPage.Actions :
+                    trial == null ? FormationMenuPage.DifficultyTrials : FormationMenuPage.SynergyTrials);
         }
         void DrawCampaignInventory()
         {
@@ -305,6 +307,13 @@ namespace YesterdayConvoy
         }
         void DrawCampaignRoute()
         {
+            if (Campaign.IsSupernovaBossTrial)
+            {
+                var rules = CampaignWindow(Campaign.BossTrialName + " · 首领试玩",
+                    $"限时 {Campaign.CurrentNode.TimeLimit:0} 秒，清空守军后由存活的进攻方本体进入蓝门。");
+                CampaignLabel(new Rect(rules.x + 22, rules.y + 110, rules.width - 44, 100), FormationCampaignRules.SupernovaBoss.Effect, 15, true);
+                return;
+            }
             var r=CampaignWindow("行动记录与发展路线","本次挑战的环境、战略战备和三个位面节点。战斗结束统一结算，补给不发基础收入。");
             var viewport=new Rect(r.x+22,r.y+96,r.width-44,400);
             campaignRouteScroll=GUI.BeginScrollView(viewport,campaignRouteScroll,new Rect(0,0,viewport.width-18,860));
@@ -320,7 +329,8 @@ namespace YesterdayConvoy
         void DrawCampaignScouting()
         {
             var trial=Campaign.SynergyTrial;
-            string title=trial==null?$"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}":trial.Trait.Name+" · 羁绊试玩";
+            string title = Campaign.IsSupernovaBossTrial ? Campaign.BossTrialName + " · 首领试玩" :
+                trial == null ? $"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}" : trial.Trait.Name + " · 羁绊试玩";
             double limit=trial==null?Campaign.CurrentNode.TimeLimit:Model.LimitSeconds;
             string time=double.IsPositiveInfinity(limit)?"不限时":$"{limit:0} 秒";
             var r=CampaignWindow("怪物信息",title+" · "+time);
@@ -367,7 +377,8 @@ namespace YesterdayConvoy
                 string line=guard==null?"":(guard.Role<=2?"前排":"后排")+(guard.Rarity==6?" · 六星　":"　");
                 CampaignLabel(new Rect(0,row*110,850,24),line+d.Name+"　生命 "+d.MaxHealth.ToString("0")+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
                 CampaignLabel(new Rect(0,row*110+28,850,25),"技力 "+d.SkillCharge.ToString("0")+" / "+d.SkillRequired.ToString("0")+"　攻击间隔 "+d.Interval.ToString("0.00")+"秒　部署格 "+d.Position,12);
-                string effect=FormationCampaignRules.DefenderSkillDescription(Campaign.CurrentNode.Id,d.ArtId);
+                string effect = d.IsSupernovaBoss ? FormationCampaignRules.SupernovaBoss.Effect :
+                    FormationCampaignRules.DefenderSkillDescription(Campaign.CurrentNode.Id,d.ArtId);
                 CampaignLabel(new Rect(0,row*110+57,850,42),effect,12);row++;
             }
             GUI.EndScrollView();

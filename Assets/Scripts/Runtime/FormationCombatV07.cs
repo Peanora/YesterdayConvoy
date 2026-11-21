@@ -15,7 +15,7 @@ namespace YesterdayConvoy
         public int InitialDefenderCount { get; private set; }
         public bool BossAlive => Defenders.Any(d => d.Alive && State(d).Boss);
         public float EncounterProgress => initialGuardHealth <= 0 ? 0 : Mathf.Clamp01(1 - Defenders.Where(d => State(d).InitialGuard).Sum(d =>
-            State(d).LowestHealth + (d.IsSnowBoss && d.SnowBossPhase == 1 ? d.MaxHealth : 0)) / initialGuardHealth);
+            State(d).LowestHealth + (d.BossHealthPhase == 1 ? d.MaxHealth : 0)) / initialGuardHealth);
         internal bool IsInitialGuard(FormationDefender guard) => State(guard).InitialGuard;
         public readonly List<FormationFighter> Summons = new List<FormationFighter>();
         public IReadOnlyDictionary<string,int> SynergyCounts => synergyCounts;
@@ -187,7 +187,7 @@ namespace YesterdayConvoy
             BattleGold=0;killedGuards=0;actionSequence=0;resonanceBeats=0;nextSeaDecay=1;BattleEvents.Clear();SkillCasts.Clear();
             snowBossFrozen.Clear();
             foreach(var d in Defenders){var s=State(d);s.LowestHealth=d.MaxHealth;d.Health=d.MaxHealth;d.Alive=true;d.SkillCharge=s.GuardInitialSP;ResetGuardKit(d);}
-            InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth*(d.IsSnowBoss?2:1));
+            InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth*(d.IsTwoPhaseBoss?2:1));
             foreach(var u in Units.Where(u=>u.Enabled))
             {
                 var s=State(u);u.PhaseStage=0;s.NativeLives=0;u.NativePhase=0;u.NativePhaseChangedAt=0;u.NativePhaseReturningUntil=0;s.LastTarget=-1;s.Action=0;u.SkillCharge=s.Spec?.InitialSP??0;
@@ -215,8 +215,9 @@ namespace YesterdayConvoy
             }
             if (node.DefenderCount == 0) return;
 
-            var boss = FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
-            if (boss?.ArtId == "D27")
+            var boss = node.Id == FormationCampaignRules.SupernovaBossNodeId ? FormationCampaignRules.SupernovaBoss :
+                FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
+            if (boss?.ArtId is "D27" or "D31")
             {
                 var cell = new Vector2Int(Width - 5, 4);
                 if (Terrain != null && (!Terrain.CanPlaceDefender(cell) || !Terrain.IsWalkable(cell) || Terrain.HeightAt(cell) > 0))
@@ -285,6 +286,8 @@ namespace YesterdayConvoy
                 SkillCell = formation?.SkillCell(artId),
                 IsSnowBoss = isBoss && artId == "D27",
                 SnowBossPhase = isBoss && artId == "D27" ? 1 : 0,
+                IsSupernovaBoss = isBoss && artId == "D31",
+                SupernovaBossPhase = isBoss && artId == "D31" ? 1 : 0,
                 MaxHealth = isBoss ? boss.Health : FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
                 Armor = isBoss ? boss.Armor : role.Armor,
@@ -293,7 +296,7 @@ namespace YesterdayConvoy
                 Interval = isBoss ? boss.Interval : artId == "D32" ? ChenAttackInterval : role.Interval,
                 SkillRequired = isBoss ? boss.RequiredSP : guard.RequiredSP ?? role.RequiredSP,
             };
-            ConfigureArchivedGuard(d);
+            if (!d.IsSupernovaBoss) ConfigureArchivedGuard(d);
             ResetActor(d, true, Vector2.left);
             var state = State(d);
             state.Template = guard.Role;
@@ -317,6 +320,7 @@ namespace YesterdayConvoy
             Hits.RemoveAll(h=>h.At<Clock-3);
             presentationActions.RemoveAll(action=>Math.Max(action.EndAt,action.ContactAt)<Clock-6);
             CompleteSnowBossTransition();
+            CompleteSupernovaBossTransition();
             foreach(var a in Units.Cast<FormationActor>().Concat(Defenders).Concat(Summons).ToArray())
             {
                 var s=State(a);a.IsMoving=false;

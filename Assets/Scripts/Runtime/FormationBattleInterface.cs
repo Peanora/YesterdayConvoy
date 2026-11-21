@@ -187,7 +187,7 @@ namespace YesterdayConvoy
             var r=ApprovedUi.Menu;r.y=operations?83:r.y;
             bool preparation = operations && Model.Phase == FormationPhase.Preparation && !CampaignInteractionBlocked;
             bool history = operations && Campaign.BallRewards.Count > 0;
-            r.height=(practice?309:271)+(preparation?37:0)+(history?37:0);
+            r.height=(practice?346:308)+(preparation?37:0)+(history?37:0);
             Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+12,r.y+9,r.width-60,27),"系统菜单",approvedShop.LoopText(19,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))CloseFormationMenu();
@@ -196,9 +196,10 @@ namespace YesterdayConvoy
             if(Button(new Rect(r.x+12,r.y+118,r.width-24,30),"难度试玩 · 无限金币"))OpenFormationTrialPicker(FormationMenuPage.DifficultyTrials);
             if(Button(new Rect(r.x+12,r.y+155,r.width-24,30),"羁绊试玩"))OpenFormationTrialPicker(FormationMenuPage.SynergyTrials);
             if(Button(new Rect(r.x+12,r.y+192,r.width-24,30),"首领试玩 · 圣聆初雪")){SelectPramanixBossTrial();return;}
-            if(Button(new Rect(r.x+12,r.y+229,r.width-24,30),"六星守军试玩"))OpenFormationTrialPicker(FormationMenuPage.GuardTrials);
-            if(practice&&Button(new Rect(r.x+12,r.y+266,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
-            float next = r.y + (practice ? 303 : 266);
+            if(Button(new Rect(r.x+12,r.y+229,r.width-24,30),"首领试玩 · 维什戴尔·超新星")){SelectSupernovaBossTrial();return;}
+            if(Button(new Rect(r.x+12,r.y+266,r.width-24,30),"六星守军试玩"))OpenFormationTrialPicker(FormationMenuPage.GuardTrials);
+            if(practice&&Button(new Rect(r.x+12,r.y+303,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
+            float next = r.y + (practice ? 340 : 303);
             if (preparation)
             {
                 if (Button(new Rect(r.x + 12, next, r.width - 24, 30), "装备与合成"))
@@ -211,7 +212,7 @@ namespace YesterdayConvoy
 
         void DrawPracticePicker()
         {
-            bool practice=Campaign?.IsPractice==true&&Campaign.GuardTrialArt==null&&Campaign.SynergyTrial==null&&!Campaign.IsPramanixBossTrial;
+            bool practice = Campaign?.IsDifficultyTrial == true;
             var r=CampaignWindow("难度试玩 · 无限金币",practice
                 ?"换关和重试保留阵容、装备及站位。"
                 :"选择战斗关卡后会新开一局难度试玩。",false);
@@ -270,7 +271,7 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Where(u=>u.Enabled).Cast<FormationActor>().Concat(Model.Defenders).Concat(Model.Summons))
             {
                 if(!actor.Alive||!FormationActorVisibleInView(actor))continue;
-                if(CombatViewActive && actor is FormationDefender boss && boss.IsSnowBoss)continue;
+                if (CombatViewActive && actor is FormationDefender { IsTwoPhaseBoss: true }) continue;
                 float top=formationLabelHeights.TryGetValue(actor.Id,out var labelTop)?labelTop:ActorPresentationHeight(actor);
                 var p=TacticalViewport.Current.FromScreen(battleCamera.WorldToScreenPoint(FormationDisplayPoint(actor)+battleCamera.transform.up*(top+.12f)));
                 if(p.y<labelFrame.yMin+5||p.y>labelFrame.yMax-3)continue;

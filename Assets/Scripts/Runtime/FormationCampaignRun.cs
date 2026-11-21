@@ -4,9 +4,22 @@ using System.Linq;
 
 namespace YesterdayConvoy
 {
+    enum FormationBossTrial { None, Pramanix, Supernova }
+
     /// <summary>One finite v0.7 challenge. Scene/UI only choose options; this owns rewards and their once-only keys.</summary>
     public sealed class FormationCampaignRun
     {
+        static readonly FormationCampaignRules.NodeDefinition SupernovaTrialNode = new FormationCampaignRules.NodeDefinition
+        {
+            Id = FormationCampaignRules.SupernovaBossNodeId,
+            Kind = "首领",
+            Plane = 3,
+            HealthScale = 1,
+            AttackScale = 1,
+            TimeLimit = 150,
+            Front = new[] { "D31" }
+        };
+
         public sealed class ChoiceOption
         {
             public string Id, Name, Description;
@@ -106,9 +119,19 @@ namespace YesterdayConvoy
         int lockedReunionCount;
         bool synergyTrialSettled;
         public int NodeIndex {get;private set;}
-        public FormationCampaignRules.NodeDefinition CurrentNode=>FormationCampaignRules.Nodes[NodeIndex];
+        public FormationCampaignRules.NodeDefinition CurrentNode => IsSupernovaBossTrial ? SupernovaTrialNode : FormationCampaignRules.Nodes[NodeIndex];
         public bool IsPractice {get;}
-        public bool IsPramanixBossTrial { get; }
+        readonly FormationBossTrial bossTrial;
+        public bool IsPramanixBossTrial => bossTrial == FormationBossTrial.Pramanix;
+        public bool IsSupernovaBossTrial => bossTrial == FormationBossTrial.Supernova;
+        internal string BossTrialName => bossTrial switch
+        {
+            FormationBossTrial.Pramanix => "圣聆初雪",
+            FormationBossTrial.Supernova => FormationCampaignRules.SupernovaBoss.Name,
+            _ => null
+        };
+        internal bool IsBossTrial => bossTrial != FormationBossTrial.None;
+        internal bool IsDifficultyTrial => IsPractice && !IsBossTrial && GuardTrialArt == null && SynergyTrial == null;
         internal string GuardTrialArt { get; set; }
         public FormationSynergyTrial SynergyTrial { get; }
         public string LastTrialProgress { get; private set; }
@@ -169,11 +192,11 @@ namespace YesterdayConvoy
         public FormationCampaignRun(ShopTrialModel shop,int seed) : this(shop,seed,null) {}
 
         internal FormationCampaignRun(ShopTrialModel shop,int seed,int? practiceNode,FormationSynergyTrial trial=null,
-            IReadOnlyList<string> openingStarters = null, bool pramanixBossTrial = false)
+            IReadOnlyList<string> openingStarters = null, FormationBossTrial bossTrial = FormationBossTrial.None)
         {
             this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
             SynergyTrial=trial;
-            IsPramanixBossTrial = pramanixBossTrial;
+            this.bossTrial = bossTrial;
             IsPractice=practiceNode.HasValue;
             if(IsPractice&&!SelectPracticeNode(practiceNode.Value))throw new ArgumentOutOfRangeException(nameof(practiceNode));
             if (trial != null)
@@ -188,7 +211,7 @@ namespace YesterdayConvoy
                 if (trial.Trait.Id == "萨卡兹") { SarkazPact = 2; SarkazBloodPact = true; }
                 return;
             }
-            if (IsPramanixBossTrial) return;
+            if (IsBossTrial) return;
             if (openingStarters != null)
             {
                 PrepareOpeningDelivery(openingStarters);
@@ -203,6 +226,7 @@ namespace YesterdayConvoy
 
         internal bool SelectPracticeNode(int node)
         {
+            if (IsSupernovaBossTrial) return node == 0;
             if(!IsPractice||node<0||node>=FormationCampaignRules.Nodes.Length||FormationCampaignRules.Nodes[node].DefenderCount==0)return false;
             if (SynergyTrial != null && node != SynergyTrial.NodeIndex) return false;
             if (IsPramanixBossTrial && FormationCampaignRules.Nodes[node].Id != "3-7") return false;

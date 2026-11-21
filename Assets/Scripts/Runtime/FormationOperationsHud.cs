@@ -29,14 +29,14 @@ namespace YesterdayConvoy
         Texture2D operationsNodeIcons;
 
         int[] OperationsPlaneNodes => OperationsPlanes[Campaign.CurrentNode.Plane - 1];
-        bool FormationStrategyHistoryAvailable => Campaign != null && Campaign.SynergyTrial == null && !CombatViewActive &&
+        bool FormationStrategyHistoryAvailable => Campaign != null && Campaign.SynergyTrial == null && !Campaign.IsSupernovaBossTrial && !CombatViewActive &&
             !MarketVisible && !ShopPanelTransitioning;
         bool FormationScoutAvailable => Model?.Phase == FormationPhase.Preparation &&
             !CampaignInteractionBlocked && !formationMenuOpen && !shopOddsVisible && !rewardHistoryOpen;
 
         public Rect FormationRouteNodeRect(int nodeIndex)
         {
-            if (Campaign == null || Campaign.SynergyTrial != null) return Rect.zero;
+            if (Campaign == null || Campaign.SynergyTrial != null || Campaign.IsSupernovaBossTrial) return Rect.zero;
             var nodes = OperationsPlaneNodes;
             int slot = Array.IndexOf(nodes, nodeIndex);
             if (slot < 0) return Rect.zero;
@@ -129,12 +129,12 @@ namespace YesterdayConvoy
             var trial = Campaign.SynergyTrial;
             var life = new Rect(1006, 20, 86, 36);
             Fill(new Rect(life.x, life.y + 2, 1, 32), OperationsEdge);
-            if (trial != null || Campaign.IsPramanixBossTrial)
+            if (trial != null || Campaign.IsBossTrial)
             {
                 var panel = OperationsRouteRect;
                 OperationsLabel(new Rect(panel.x + 12, panel.y + 7, panel.width - 24, 26),
-                    trial == null ? "圣聆初雪 · 首领试玩" : trial.Trait.Name + " · 羁绊试玩", 18, OperationsGold, true);
-                OperationsLabel(new Rect(panel.x + 12, panel.y + 35, panel.width - 24, 18), trial?.Hint ?? PramanixTrialHint, 12, OperationsInk);
+                    trial == null ? Campaign.BossTrialName + " · 首领试玩" : trial.Trait.Name + " · 羁绊试玩", 18, OperationsGold, true);
+                OperationsLabel(new Rect(panel.x + 12, panel.y + 35, panel.width - 24, 18), trial?.Hint ?? BossTrialHint, 12, OperationsInk);
                 OperationsLabel(life, "无限金币", 12, OperationsMuted, false, TextAnchor.MiddleCenter);
             }
             else
@@ -150,7 +150,7 @@ namespace YesterdayConvoy
             if (OperationsButton(new Rect(1096, 20, 58, 36), "搭档"))
             { OpenFormationOperationsPanel(); campaignFormationOpen = true; }
             GUI.enabled = enabled;
-            if (OperationsButton(new Rect(1155, 20, 59, 36), trial != null ? "换羁绊" : "记录"))
+            if (OperationsButton(new Rect(1155, 20, 59, 36), trial != null ? "换羁绊" : Campaign.IsSupernovaBossTrial ? "规则" : "记录"))
             {
                 OpenFormationOperationsPanel();
                 if (trial != null) OpenFormationTrialPicker(FormationMenuPage.SynergyTrials);

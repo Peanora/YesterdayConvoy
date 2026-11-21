@@ -55,14 +55,20 @@ namespace YesterdayConvoy
         internal static FormationShopSession StartPramanixBossTrial(int seed)
         {
             int node = Array.FindIndex(FormationCampaignRules.Nodes, entry => entry.Id == "3-7");
-            Current = new FormationShopSession(seed, true, node, pramanixBossTrial: true);
+            Current = new FormationShopSession(seed, true, node, bossTrial: FormationBossTrial.Pramanix);
+            return Current;
+        }
+
+        internal static FormationShopSession StartSupernovaBossTrial(int seed)
+        {
+            Current = new FormationShopSession(seed, true, 0, bossTrial: FormationBossTrial.Supernova);
             return Current;
         }
 
         public FormationShopSession(int seed,bool fullCampaign=false) : this(seed,fullCampaign,null) {}
 
         FormationShopSession(int seed,bool fullCampaign,int? practiceNode,FormationSynergyTrial trial=null,
-            bool pramanixBossTrial=false)
+            FormationBossTrial bossTrial = FormationBossTrial.None)
         {
             Seed = seed;
             Shop = new ShopTrialModel((fullCampaign?FormationCampaignRules.AllUnits.Select(role=>new ShopTrialModel.Role{Id=role.CardId,Name=role.Name,Cost=role.Cost}):FormationUnitCatalog.All.Where(role => role.ShopEligible).Select(role =>
@@ -75,15 +81,15 @@ namespace YesterdayConvoy
                     ? FormationCampaignRules.AllUnits.Where(role => role.Cost == 1)
                         .OrderBy(_ => random.Next()).Take(3).Select(role => role.CardId).ToArray()
                     : Array.Empty<string>());
-                var pieces = pramanixBossTrial
-                    ? PramanixTrialRoster.Select(card => new ShopTrialModel.Piece
+                var pieces = bossTrial != FormationBossTrial.None
+                    ? BossTrialRoster.Select(card => new ShopTrialModel.Piece
                         { Id = FormationCampaignRules.Find(card.Unit).CardId, Star = card.Star }).ToArray()
                     : starting.Select(id => new ShopTrialModel.Piece { Id = id,
                         Star = trial?.Trait.Id == "泥岩" && FormationCampaignRun.HasNativeTrait(id, "泥岩") ? 3 : 1 }).ToArray();
                 Shop.Preset(pieces, Array.Empty<string>(), level: Math.Max(3, pieces.Length), xp: 0, gold: 8);
                 Run=new FormationCampaignRun(Shop,seed,practiceNode,trial,
-                    practiceNode.HasValue ? null : DrawOpeningRoster(Shop, random), pramanixBossTrial);
-                if (pramanixBossTrial) EquipPramanixTrialRoster();
+                    practiceNode.HasValue ? null : DrawOpeningRoster(Shop, random), bossTrial);
+                if (Run.IsBossTrial) EquipBossTrialRoster();
                 Round=Run.NodeIndex+1;
             }
             else
@@ -102,7 +108,7 @@ namespace YesterdayConvoy
             Synchronize(); Shop.BeginPreparation(); Shop.Refresh(true);
         }
 
-        static readonly (string Unit, int Star, string[] Items)[] PramanixTrialRoster =
+        static readonly (string Unit, int Star, string[] Items)[] BossTrialRoster =
         {
             ("M20", 2, new[] { "DD", "DE" }),
             ("M28", 3, new[] { "AA", "CD", "CF" }),
@@ -114,9 +120,9 @@ namespace YesterdayConvoy
             ("B01", 3, Array.Empty<string>())
         };
 
-        void EquipPramanixTrialRoster()
+        void EquipBossTrialRoster()
         {
-            foreach (var card in PramanixTrialRoster)
+            foreach (var card in BossTrialRoster)
             {
                 string cardId = FormationCampaignRules.Find(card.Unit).CardId;
                 var piece = Shop.Bench.Single(member => member.Id == cardId);

@@ -104,6 +104,11 @@ namespace YesterdayConvoy
 
         IEnumerable<ArtSequence> FormationGuardEffects(string id)
         {
+            if(id=="D31"&&UsesSupernovaBossArt(id))
+            {
+                foreach(var sequence in FormationSupernovaBossEffectSequences())yield return sequence;
+                yield break;
+            }
             bool pramanixBoss = id == PramanixBossBodyArt;
             string guardId = pramanixBoss ? "D27" : id;
             if(!FormationGuardEffectKeys.TryGetValue(guardId,out var keys))yield break;
@@ -124,6 +129,11 @@ namespace YesterdayConvoy
             foreach(var guard in Model.Defenders)
             {
                 if(!guard.Alive)continue;
+                if(guard.IsSupernovaBoss)
+                {
+                    PresentSupernovaBossState(guard,now);
+                    continue;
+                }
                 if(guard.IsSnowBoss)
                 {
                     PresentPramanixBoss(guard, now);
@@ -177,6 +187,11 @@ namespace YesterdayConvoy
                 if(action.ActorId<100||action.Cancelled)continue;
                 var guard=Model.Defenders.FirstOrDefault(d=>d.Id==action.ActorId);
                 if(guard==null)continue;
+                if(guard.IsSupernovaBoss)
+                {
+                    PresentSupernovaBossAction(guard,action,now);
+                    continue;
+                }
                 if(guard.IsSnowBoss)
                 {
                     string effect = action.Animation switch
@@ -200,6 +215,11 @@ namespace YesterdayConvoy
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
             {
+                if(hit.SourceArtId=="D31"&&Model.Defenders.Any(d=>d.Id==hit.FromId&&d.IsSupernovaBoss))
+                {
+                    PresentSupernovaBossHit(hit,now);
+                    continue;
+                }
                 var pramanix = hit.SourceArtId == "D27" ? Model.Defenders.FirstOrDefault(d => d.Id == hit.FromId && d.IsSnowBoss) : null;
                 string clip=pramanix == null ? FormationGuardHitClip(hit) : PramanixBossHit(pramanix, hit);
                 if(clip==null)continue;

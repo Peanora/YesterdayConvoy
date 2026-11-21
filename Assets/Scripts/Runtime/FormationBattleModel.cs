@@ -50,6 +50,11 @@ namespace YesterdayConvoy
         public int SnowBossPhase { get; internal set; }
         public double SnowBossTransitionStartedAt { get; internal set; }
         public double SnowBossTransitionUntil { get; internal set; }
+        public bool IsSupernovaBoss { get; internal set; }
+        public int SupernovaBossPhase { get; internal set; }
+        internal double SupernovaBossTransitionUntil { get; set; }
+        internal bool IsTwoPhaseBoss => IsSnowBoss || IsSupernovaBoss;
+        internal int BossHealthPhase => IsSnowBoss ? SnowBossPhase : SupernovaBossPhase;
     }
 
     public sealed class FormationHit
