@@ -83,13 +83,7 @@ namespace YesterdayConvoy
             if (!UsesFormationSixStarNativeFx(guard.ArtId)) return;
             if (guard.ArtId == "D21")
             {
-                if (!Model.GuardSkillActive(guard) && (Model.Phase is FormationPhase.Preparation or FormationPhase.Fighting))
-                {
-                    double begun = Model.GuardSignatureEnd(guard);
-                    // The archived idle wolf follows the source SpecialPoint0 on the displayed body frame.
-                    ShowFormationGuardEffect(guard, "whitw2_token_01", "ordinary-token/" + FxTime(begun),
-                        (Model.Clock - begun) * FormationVisualRate, guard.Position, 32, loop: true);
-                }
+                PresentFormationLapplandWolves(guard);
                 return;
             }
             if (guard.ArtId == "D32")
@@ -121,6 +115,51 @@ namespace YesterdayConvoy
             }
             else if (guard.ArtId == "D29" && guard.Shield > 0)
                 ShowFormationGuardEffect(guard, "demkni_skill_03_self", instance, age, position, 12, true, true);
+        }
+
+        void PresentFormationLapplandWolves(FormationDefender guard)
+        {
+            if (Model.Phase is not (FormationPhase.Preparation or FormationPhase.Fighting)) return;
+            double sinceCast = Model.Clock - Model.GuardSignatureStart(guard);
+            bool opening = sinceCast >= 0 && sinceCast < .5;
+            if (!opening && !Model.GuardSkillActive(guard))
+            {
+                double begun = Model.GuardSignatureEnd(guard);
+                // The archived idle wolf follows the source SpecialPoint0 on the displayed body frame.
+                ShowFormationGuardEffect(guard, "whitw2_token_01", "ordinary-token/" + FxTime(begun),
+                    (Model.Clock - begun) * FormationVisualRate, guard.Position, 32, loop: true);
+                return;
+            }
+
+            const int sourceWolfCount = 3;
+            const float sourceScatterSeconds = 1.3f;
+            string instance = "hunt/" + FxTime(Model.GuardSignatureStart(guard));
+            double age = sinceCast * FormationVisualRate;
+            ShowFormationGuardEffect(guard, "whitw2_skill_03_buff_start", instance, age, guard.Position, 12);
+            var hunt = Model.GuardEffect(guard);
+            Vector2 destination = hunt?.Origin ?? FormationFeedbackActor(guard.TargetId)?.Position ?? (guard.Position + guard.Facing);
+            float waiting = (float)Math.Min(sourceScatterSeconds, sinceCast);
+            float pursuing = (float)Math.Max(0, sinceCast - sourceScatterSeconds);
+            // The old skill scatters three wolves at unit speed, then closes at 2–4 cells/s.
+            // The current skill has one authoritative hunt anchor for all damage settlement.
+            float travel = pursuing < 2 ? 2 * pursuing + .5f * pursuing * pursuing : 6 + 4 * (pursuing - 2);
+            Vector3 casterPoint = ActorWorldPoint(guard.Position);
+            Vector3 targetPoint = ActorWorldPoint(destination);
+            for (int i = 0; i < sourceWolfCount; i++)
+            {
+                float angle = i * Mathf.PI * 2 / sourceWolfCount;
+                Vector2 start = guard.Position + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * waiting;
+                float distance = Vector2.Distance(start, destination);
+                float progress = distance > .0001f ? Mathf.Clamp01(travel / distance) : 0;
+                Vector2 cell = Vector2.Lerp(start, destination, progress);
+                Vector3 point = WorldPoint(cell);
+                point.y = Mathf.Lerp(casterPoint.y, targetPoint.y, progress);
+                Vector3 aim = targetPoint - point;
+                aim.y = 0;
+                if (aim.sqrMagnitude < 1e-6f) aim = Vector3.right;
+                ShowFormationGuardEffect(guard, "whitw2_skill_03_token_trail_01", instance + "/wolf/" + i,
+                    age, cell, 33, loop: true, point: point, direction: aim);
+            }
         }
 
         void PresentFormationYuFirewall(FormationDefender guard, FormationBattleModel.FormationGuardEffect wall,

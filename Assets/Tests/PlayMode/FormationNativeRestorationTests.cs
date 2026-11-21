@@ -192,13 +192,23 @@ namespace YesterdayConvoy.Tests
             Begin();
             var guard = controller.Model.Defenders.Single();
             var attacks = new List<FormationPresentationAction>();
+            bool sawReconstructedIdle = false;
             yield return Until(() =>
             {
                 foreach (var action in controller.Model.PresentationActions)
                     if (action.ActorId == guard.Id && action.Animation == "skill_attack" && !attacks.Contains(action))
                         attacks.Add(action);
+                if (attacks.Count == 1 && controller.Model.Clock >= attacks[0].EndAt + .05)
+                {
+                    var body = Body(guard);
+                    string pose = body.sprite?.name;
+                    Assert.That(body.enabled, Is.True);
+                    Assert.That(pose, Does.Contain("skill_idle"), "The reconstructed body remains visible between real slashes.");
+                    sawReconstructedIdle = true;
+                }
                 return attacks.Count >= 2;
             }, 40);
+            Assert.That(sawReconstructedIdle, Is.True);
             Assert.That(attacks[1].At - attacks[0].At, Is.InRange(1.3499, 1.3751));
             Assert.That(attacks[0].ContactAt - attacks[0].At,
                 Is.EqualTo((2d / 3) / attacks[0].Rate).Within(.00001));

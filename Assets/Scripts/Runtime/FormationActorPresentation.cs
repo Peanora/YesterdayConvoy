@@ -321,10 +321,10 @@ namespace YesterdayConvoy
                     frame=oneShot?Mathf.Clamp(frame,0,clip.Count-1):frame%clip.Count;
                     if(actor.Alive&&actor.ArtId=="D23")
                     {
-                        // The original relay clips contain a hidden frame on either side of the teleport.
-                        // Keep the adjoining visible pose on this board's single persistent body.
-                        if(clip.Key=="skill_begin")frame=Mathf.Min(frame,Mathf.Max(0,clip.Count-2));
-                        else if(clip.Key=="skill_end")frame=Mathf.Max(frame,Mathf.Min(1,clip.Count-1));
+                        // The relay clips use smoke-only frames at the seam. Keep the
+                        // adjoining visible pose on the board's single persistent body.
+                        if(clip.Key=="skill_begin")frame=Mathf.Min(frame,Mathf.Max(0,clip.Count-5));
+                        else if(clip.Key=="skill_end")frame=Mathf.Max(frame,Mathf.Min(4,clip.Count-1));
                     }
                     if(!frozen||body.sprite==null)body.sprite=clip.Frames[frame];
                 }

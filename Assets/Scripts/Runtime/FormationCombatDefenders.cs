@@ -170,6 +170,13 @@ namespace YesterdayConvoy
         {
             var action = BeginAction(guard, duration, skill, target, heal);
             if (motion != null) action.Animation = guard.PresentationAction = motion;
+            if (guard.ArtId == "D23" && motion != null)
+            {
+                // The generic guard profile uses the long healing clip. The relay and each
+                // reconstructed slash use their own motion length before returning to idle.
+                guard.PresentationDuration = duration;
+                action.EndAt = action.At + duration;
+            }
             if (target == null) return action;
 
             // Basic role skills with no separate body clip replay the retained normal action.

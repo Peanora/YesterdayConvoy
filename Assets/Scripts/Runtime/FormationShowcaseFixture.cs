@@ -287,7 +287,7 @@ namespace YesterdayConvoy
             if (guard.ArtId == "D32")
             {
                 guard.NextAttackAt = double.PositiveInfinity;
-                guard.SkillRequired = float.MaxValue;
+                guard.SkillRequired = 999;
                 var target = Units.First(unit => unit.Enabled);
                 if (motion == "skill_begin")
                 {

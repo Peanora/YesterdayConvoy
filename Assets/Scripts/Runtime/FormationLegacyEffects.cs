@@ -141,11 +141,6 @@ namespace YesterdayConvoy
                         case "firewall":
                             PresentFormationYuFirewall(guard,effect,instance,age);
                             break;
-                        case "hunt":
-                            ShowFormationGuardEffect(guard,"whitw2_skill_03_buff_start",instance,age,guard.Position,12,flat:true);
-                            ShowFormationGuardEffect(guard,"whitw2_skill_03_token_trail_01",instance,age,origin,23,true,
-                                point:ActorWorldPoint(origin)+Vector3.up*.7f);
-                            break;
                         case "snow":
                             LegacyOriginal("defender/D27/sbell2_skill_03_start_01",age,origin,24,flat:true);
                             PresentGuardSnowField(effect);
