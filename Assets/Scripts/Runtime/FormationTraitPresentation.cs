@@ -15,6 +15,10 @@ namespace YesterdayConvoy
         static readonly Color TraitInactiveTierInk = new Color32(105, 108, 96, 255);
         static readonly Regex TraitTierValues = new Regex(@"(?<![\d./])\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?)+");
         static readonly Regex TraitTierRequirement = new Regex(@"(?<!\d)(?<levels>\d+(?:/\d+)*)人(?:档|起|时|且|[：:])?");
+        static readonly Regex TraitTierClause = new Regex(
+            @"(?:^|(?<=[。；，]))[^\S\r\n]*(?<level>\d+)人[^。\r\n]*?(?:。|(?=[；，][^\S\r\n]*\d+人)|$)",
+            RegexOptions.Multiline);
+        static readonly Regex TraitValueColorTags = new Regex(@"</?color(?:=#[0-9A-Fa-f]+)?>");
         const float TraitRowHeight = 45;
         const float TraitBadgeSize = 34;
         const float TraitBadgePressSeconds = .065f;
@@ -347,7 +351,7 @@ namespace YesterdayConvoy
             var levels = view.Rule.Levels;
             string muted = ColorUtility.ToHtmlStringRGB(TraitInactiveTierInk);
             string active = ColorUtility.ToHtmlStringRGB(PreparationPalette.BronzeInk);
-            return TraitTierValues.Replace(text, match =>
+            string coloredValues = TraitTierValues.Replace(text, match =>
             {
                 var values = match.Value.Split('/');
                 int chosen = System.Array.IndexOf(levels, view.ActiveLevel);
@@ -371,6 +375,14 @@ namespace YesterdayConvoy
                 for (int i = 0; i < values.Length; i++)
                     values[i] = "<color=#" + (i == chosen ? active : muted) + ">" + values[i] + "</color>";
                 return string.Join("/", values);
+            });
+            return TraitTierClause.Replace(coloredValues, clause =>
+            {
+                if (!int.TryParse(clause.Groups["level"].Value, out int level) ||
+                    System.Array.IndexOf(levels, level) < 0 || level <= view.ActiveLevel)
+                    return clause.Value;
+                // A locked clause is uniformly pale, including any tier values formatted above.
+                return "<color=#" + muted + ">" + TraitValueColorTags.Replace(clause.Value, "") + "</color>";
             });
         }
 

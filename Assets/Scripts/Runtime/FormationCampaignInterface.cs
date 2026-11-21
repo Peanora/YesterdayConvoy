@@ -163,7 +163,9 @@ namespace YesterdayConvoy
             GUI.EndScrollView();
             if(optional)return;
             if(Button(new Rect(r.x+22,r.yMax-61,190,35),"免费重抽本组一次",run.CanRerollChoice))run.RerollChoice();
-            CampaignLabel(new Rect(r.x+231,r.yMax-57,660,36),run.CanRerollChoice?(run.ChoiceTitle?.Contains("战略预案")==true?"换成未展示的预案，原组选项不会返回。":"重抽本组战略战备，不改变已经选定的战备。 "):"完成本次选择后继续。",12);
+            if (run.CanRerollChoice)
+                CampaignLabel(new Rect(r.x + 231, r.yMax - 57, 660, 36), run.ChoiceTitle?.Contains("战略预案") == true
+                    ? "换成未展示的预案，原组选项不会返回。" : "重抽本组战略战备，不改变已经选定的战备。", 12);
         }
         void DrawCampaignFinished()
         {
