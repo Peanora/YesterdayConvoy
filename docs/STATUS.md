@@ -1,5 +1,10 @@
 # 当前工程状态
 
+## 2026-11-21 超新星爆裂黎明重做与首段提速
+
+- 普通齐射基础间隔从 1.50 秒缩到 1.05 秒，过载四连发每轮基础间隔 0.90 秒。二、三技能的 20 层特效从 `sale#14` 原 prefab 高清重采，运行时保留完整 RGBA。爆裂黎明恢复贴身白粉翼焰、启动子层、原方向炮口及明亮弹芯，落点分别呈现地面爆裂和立体红黑 WIS 字样。 [原作与适配记录](art/source-records/formation-supernova-boss.md)
+- Windows 对应源码 `d25a3628`。EditMode 1220/1220，1080p Player 41/41，零异常，预设八人 63.7 秒实际进入蓝门。 [Windows EXE](../Builds/Windows/YesterdayConvoy.exe) · [有声实机](../artifacts/formation-supernova-rework/supernova-hd.mp4) · [前后对比](../artifacts/formation-supernova-rework/supernova-before-after.mp4)
+
 ## 2026-11-21 超新星高清与攻击特效修订
 
 - 独立首领试玩使用重新渲染的正背面原骨骼动作。二技能的采样密度提高约 2.6 倍，三技能提高约 56%，保持原脚点、体型和动作时长。炮口亮帧与出手同步，三技能保留发射、飞行、受击、落地的分层，地面余波沿棋盘铺开。 [素材和绑定](art/source-records/formation-supernova-boss.md)
