@@ -202,10 +202,20 @@ namespace YesterdayConvoy
             {
                 ShowFormationGuardEffect(guard, "svash2_skill_03_combat_start_01", instance, age, action.From, 23,
                     direction: direction);
-                // This original projectile owns its tip motion. The board supplies a fixed launch point and direction.
                 double travelAge = now - action.LaunchedAt;
-                ShowFormationGuardEffect(guard, "svash2_skill_03_trail_02", instance, travelAge, action.From, 30,
-                    flat: true, direction: direction);
+                if (travelAge < 0 || !FormationPointVisibleInView(action.From)) return;
+                direction.y = 0;
+                if (direction.sqrMagnitude < 1e-8f) direction = new Vector3(guard.Facing.x, 0, guard.Facing.y);
+                // The prefab's animated tip advances along its authored +Y, projected to world +Z by the flat pose.
+                // Rotate that authored root toward the actual wave without also advancing the renderer's root.
+                var rotation = Quaternion.AngleAxis(Vector3.SignedAngle(Vector3.forward, direction, Vector3.up), Vector3.up) *
+                    Quaternion.Euler(90, 0, 0);
+                var pose = new OriginalNativeFxPose(ActorWorldPoint(action.From) + Vector3.up * .025f, rotation, direction)
+                {
+                    FormationSortingOrder = LegacyOrder(action.From, 30)
+                };
+                formationSixStarFx.TryShow("defender/D26/svash2_skill_03_trail_02", guard.Id + "/wave/" + action.Sequence,
+                    travelAge, pose, loop: true, stopAge: .3);
             }
             else if (guard.ArtId == "D30" && action.Animation == "skill_attack")
             {

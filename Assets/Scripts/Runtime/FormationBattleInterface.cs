@@ -244,7 +244,7 @@ namespace YesterdayConvoy
                 var guard = FormationCampaignRules.DefenderByArtId(id);
                 if (guard == null) continue;
                 var button = new Rect(r.x + 24 + i / 8 * 444, r.y + 88 + i % 8 * 45, 416, 37);
-                if (Button(button, guard.Name, true, Campaign.GuardTrialArt == id)) { SelectGuardTrial(id); return; }
+                if (Button(button, guard.Name, true, Campaign?.GuardTrialArt == id)) { SelectGuardTrial(id); return; }
             }
         }
 

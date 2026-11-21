@@ -211,9 +211,18 @@ namespace YesterdayConvoy
 
             foreach (var guard in Model.Defenders)
             {
-                if (guard.ArtId != "D28" || Model.GuardEffect(guard) is not { Kind: "chess_hit" } chess) continue;
-                var cue = FindFormationOriginalCue(guard.ArtId, "skillHit", chess.Kind, 0);
-                AddFormationOriginalAudio(destination, cue, chess.ImpactAt, after, through, guard.Id, (int)(chess.ImpactAt * 40), 3);
+                if (guard.ArtId != "D28") continue;
+                var pieces = Model.GuardChessPieces(guard);
+                var start = FindFormationOriginalCue(guard.ArtId, "skillRelease", "chess_hit", 0);
+                var contact = FindFormationOriginalCue(guard.ArtId, "skillHit", "chess_hit", 0);
+                for (int index = 0; index < pieces.Length; index++)
+                {
+                    var stone = pieces[index];
+                    if (stone.Kind != "chess_hit") continue;
+                    int cueId = unchecked((int)Math.Round(stone.ImpactAt * 40) * pieces.Length + index);
+                    AddFormationOriginalAudio(destination, start, stone.ImpactAt, after, through, guard.Id, cueId, 3);
+                    AddFormationOriginalAudio(destination, contact, stone.ImpactAt, after, through, guard.Id, cueId, 3);
+                }
             }
 
             foreach (var hit in Model.Hits)
