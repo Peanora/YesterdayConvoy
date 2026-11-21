@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-22 结城理三阶段首领
+
+- Windows 运行源码 `438f9a84777fca26440b92e43ce0534dfdf44fb2`。Unity 6000.6.5f1 x64 构建成功、退出 0。Runtime DLL SHA-256 为 `8C4D5B022AA682850FB73E380B160A80964259BEDE92A710877218985346C473`。构建后处理导出 5,506 个运行资源，先前运行中的旧版本保留在原路径。 [构建日志](../artifacts/formation-makoto-boss/build-reviewed.log) · [本轮 Windows EXE](../Builds/MakotoBoss/YesterdayConvoy.exe)
+- 功能提交 `09b2655a` 的完整 EditMode 1226/1226。八人预设的三技首次命中为 4.875、19.500、42.775 秒，59.300 秒清场，68.025 秒实际进入蓝门。低输出用例直接建立第三阶段守备条件，以 425 真实 DPS 持续攻击，150 秒时首领剩 1,840 生命。本用例另验了法术减伤、真实伤害的结算、两次转段免伤与回血上限 6,400。 [EditMode 报告](../artifacts/formation-makoto-boss/edit.xml)
+- 数值预估按三段 120,000／160,000／150,000 生命、所有回血用满、末段 45% 血下物理和法术减伤 12% 计算。若接敌、转段和进门占用 12–15 秒，约需 3,262–3,334 DPS。若耗时 15 秒且在第二阶段再损失 20% 输出时间，则约需 3,631 DPS。这里的 DPS 是经过护甲、法抗且尚未经过守备减伤的有效输出。实战还受到阵容、恐惧和技能时序影响。 [规则与参数](FORMATION_BATTLE.md#结城理见证荣光首领试玩)
+- 最终版 1280×720 D3D11 Player 37/37、零异常。正常首领试玩预设在 1× 战斗时钟下于 16.700、40.900 秒打空首两段，51.925 秒转守备，53.175 秒实际回复首个 800 点，60.075 秒清场、64.925 秒进蓝门。暂停冻结空血条期间的动作，重试恢复第一段并保留阵容站位。 [Player 报告](../artifacts/formation-makoto-boss/player-reviewed/makoto-boss-smoke.json) · [实机短片](../artifacts/formation-makoto-boss/makoto-boss-player.mp4)
+- 对照同皮肤原作慢放 1:08–1:25、1:28–1:44 和 1:48–2:16。棋盘一技能 4.250 秒开始动作，4.650 秒发射，4.875 秒接触，实机可见蓝光从角色到目标。二技能 19.450 秒起手，19.850 秒命中，蓝色波纹及地面外圈独立呈现。三技能 41.900 秒开始动作，42.150 秒在多个目标处显示弱点打击，随后可见俄耳甫斯守备及治疗。复验将角色常驻光移到身体后面，皮肤与人格面具的轮廓可辨，前景施法和命中继续分层。范围按棋盘格适配，近身混战时局部命中仍与进攻方重叠。短片按采集时点封装为 24 fps，重复邻帧补足五个间断取样。 [同皮肤原作慢放](https://www.bilibili.com/video/BV1vdtq6qE2u/) · [实机连续关键帧](../artifacts/formation-makoto-boss/makoto-boss-motion-review.jpg) · [原包和分层绑定](art/source-records/formation-makoto-boss.md)
+
 ## 2026-11-21 高台与实际行军路线验收
 
 Windows 运行源码 `117868dc85d84713a1777c4bc7ac3fd5c6332ee3`。Unity 6000.6.5f1 Windows x64 Development 构建 1,382,837,274 字节，零错误、退出 0。Runtime DLL SHA-256 为 `F6754A8EEA0736C874413687C0F72B776E17A759EBC3E9689FE60AE91FB3BA0F`。EditMode 1224/1224，新增回归验证开阔地连线可走时寻路仍能选择中轴，清场后也优先从主路走向蓝门。编辑器验证保存地形、守军站位和全图可达。 [构建日志](../artifacts/formation-terrain-routes/build.log) · [EditMode XML](../artifacts/formation-terrain-routes/edit.xml)
