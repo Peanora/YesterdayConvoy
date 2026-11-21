@@ -53,6 +53,7 @@ namespace YesterdayConvoy
             public int LifeVersion, Action, ActionHits, ComboPerAction, Autos, Casts, NativeLives, LastTarget=-1, HandoffStacks, SkillBeats;
             public int RidingCarrier, Passenger, Template, Stage;
             public double NativeReturnAt, NativeReturnHealth, BusyUntil, ExpiresAt, NextPulseAt, RecordUntil;
+            public double HeraldHealCooldown;
             public bool NativePending, Boss, Elite, InitialGuard, RelayQuickUsed, EmergencyUsedThisLife;
             public double NextEmergencyAt, LastShieldSP=-100, LastReflect=-100, LastFold=-100, LastHealSP=-100, LastResShield=-100, LastSnowBreak=-100, LastBless=-100;
             public float ShieldAbsorbed, ReflectAbsorbed, HealStored, DamageStored, ArtsStored, FurnaceStored, CrawlerStored;
@@ -121,7 +122,8 @@ namespace YesterdayConvoy
         void ConfigureCampaignFighter(FormationFighter u)
         {
             var s=State(u);var p=s.Spec;if(p==null)return;
-            float[] stars={1,1.8f,3.24f,5.832f};int star=Mathf.Clamp(u.Star-1,0,3);
+            int star=Mathf.Clamp(u.Star-1,0,3);
+            float attackMultiplier=FormationCampaignRules.AttackStarMultiplier(star+1);
             float hp=0,attack=0,power=0,aspeed=0,armor=0,mr=0,sp=0;
             foreach(var item in Campaign.Equipment(u.Instance))
             {
@@ -144,15 +146,16 @@ namespace YesterdayConvoy
             s.BaseArmor=p.Armor+new[]{0,4,10,18}[star]+armor;s.BaseMR=p.MagicResistance+new[]{0,5,10,15}[star]+mr;
             attack+=Campaign.PreplanId=="P12"?Campaign.VeteranStacks(p.Id)*.02f:0;
             if(Campaign.HasAugment("CG3"))attack+=Mathf.Min(.24f,Mathf.Floor(s.BaseArmor/10)*.04f);
-            s.BaseAttack=p.Attack*stars[star];s.AttackPct=attack;s.Power=power;s.AttackSpeed=aspeed;s.NaturalRate=1+sp;
+            s.BaseAttack=p.Attack*attackMultiplier;s.AttackPct=attack;s.Power=power;s.AttackSpeed=aspeed;s.NaturalRate=1+sp;
             s.BaseRange=p.Range+(Campaign.HasAugment("CG4")?.4f:0);s.BaseSpeed=p.MoveSpeed*(Campaign.HasAugment("CS2")?1.1f:1);
             s.BaseSP=p.RequiredSP;
             if(p.Id=="TAL")
             {
-                int c=Campaign.TalulahCost;s.BaseAttack=(c==5?560:c==4?310:190)*stars[star];s.BaseSP=c==5?28:c==4?24:22;
-                p=Spec(u);u.MaxHealth=(c==5?2800:c==4?1900:1250)*stars[star]*(1+hp);s.BaseArmor=(c==5?26:c==4?18:12)+armor+new[]{0,4,10,18}[star];s.BaseMR=(c==5?40:c==4?30:25)+mr+new[]{0,5,10,15}[star];
+                int c=Campaign.TalulahCost;s.BaseAttack=(c==5?560:c==4?310:190)*attackMultiplier;s.BaseSP=c==5?28:c==4?24:22;
+                s.BaseArmor=(c==5?26:c==4?18:12)+armor+new[]{0,4,10,18}[star];s.BaseMR=(c==5?40:c==4?30:25)+mr+new[]{0,5,10,15}[star];
                 if(Campaign.TalulahEnhanced&&c==3){s.AttackPct+=.2f;s.BaseSP=18;}
-            }else u.MaxHealth=p.Health*stars[star]*(1+hp);
+            }
+            u.MaxHealth=FormationCampaignRules.BaseHealthAtStar(p,star+1,Campaign.TalulahCost)*(1+hp);
             if(p.Id=="WIS") { if(Campaign.WisadelSkill==1)s.BaseSP=3;else if(Campaign.WisadelSkill==2)s.BaseSP=24; }
             RefreshCampaignStats(u);u.Health=u.MaxHealth;u.Position=u.SpawnCenter;u.Alive=true;u.Shield=0;
         }
@@ -333,6 +336,7 @@ namespace YesterdayConvoy
                 }
                 if(!a.Alive)continue;
                 if(a is FormationFighter frozen && SnowBossFreezeRemaining(frozen)>0)continue;
+                if (s.HeraldHealCooldown > 0) s.HeraldHealCooldown = Math.Max(0, s.HeraldHealCooldown - dt);
                 if(s.Spec!=null)
                 {
                     RefreshCampaignStats(a);
@@ -381,6 +385,7 @@ namespace YesterdayConvoy
             if(!entered&&!cadejo) { if(Clock>=u.ActionUntil&&s.RidingCarrier==0)Move(u,new Vector2(DeploymentColumns+1,u.Position.y),dt,true);return; }
             if(Key(u)=="M34"&&Stack(u,"awake")==0)return;
             var target=FighterTarget(u);u.TargetId=target?.Id??-1;
+            if (!summon && target != null && Key(u) == "M17") TryHeraldTreatment(u);
             if(Clock<u.ActionUntil||s.BusyUntil>Clock)return;
             if(MoveSnowBossInduced(u,dt))return;
             if(cadejo&&(!entered||target==null||Vector2.Distance(u.Position,target.Position)>u.Range))

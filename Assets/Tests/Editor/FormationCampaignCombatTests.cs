@@ -53,6 +53,10 @@ namespace YesterdayConvoy.Tests
             (T)typeof(FormationBattleModel).GetMethod(method, BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(model, new[] { argument });
 
+        static void HoldTestPosition(FormationFighter fighter, double until) =>
+            typeof(FormationActor).GetField("ActionUntil", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(fighter, until);
+
         [Test]
         public void LapplandOrdinaryWolfRampsAndThreeHuntWolvesDealRealContactsForFortySeconds()
         {
@@ -396,8 +400,13 @@ namespace YesterdayConvoy.Tests
                 .Select(defender => $"{defender.Name}:{defender.Health:0}/{defender.MaxHealth:0}@{defender.Position}")));
             if (lineup == "frozen")
             {
-                var expected = nodeId == "1-3" && seed == 20261119 ? FormationPhase.Won : FormationPhase.Lost;
-                Assert.That(model.Phase, Is.EqualTo(expected), nodeId);
+                if (nodeId == "1-3" && model.Phase == FormationPhase.Won)
+                {
+                    // The opening three-card board may scrape through after the low-cost health increase.
+                    Assert.That(model.Clock, Is.GreaterThanOrEqualTo(model.LimitSeconds - 12), nodeId);
+                    Assert.That(model.Units.Sum(unit => unit.Deaths), Is.GreaterThanOrEqualTo(2), nodeId);
+                }
+                else Assert.That(model.Phase, Is.EqualTo(FormationPhase.Lost), nodeId);
             }
             if (lineup == "normal") Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won), nodeId);
             return model;
@@ -417,10 +426,82 @@ namespace YesterdayConvoy.Tests
         public void CampaignUsesApprovedPanelAndNaturalRecoveryInsteadOfSixTemplates()
         {
             var model=Fixture(out var run,"M25","M14");
-            Assert.That(model.Units[0].MaxHealth,Is.EqualTo(700));Assert.That(model.Units[0].Attack,Is.EqualTo(90));Assert.That(model.Units[0].SkillRequired,Is.EqualTo(18));
+            Assert.That(model.Units[0].MaxHealth,Is.EqualTo(680));Assert.That(model.Units[0].Attack,Is.EqualTo(90));Assert.That(model.Units[0].SkillRequired,Is.EqualTo(18));
             Target(model);Assert.That(model.StartBattle(),Is.True);
             float charge=model.Units[0].SkillCharge;model.Paused=true;Advance(model,2);Assert.That(model.Units[0].SkillCharge,Is.EqualTo(charge));
             model.Paused=false;Advance(model,2);Assert.That(model.Units[0].SkillCharge,Is.EqualTo(charge+2).Within(.001));
+        }
+
+        [Test]
+        public void HeraldTreatsWoundedAlliesInRangeOnTheCombatClock()
+        {
+            var model = Fixture(out _, "M17", "M11", "M03");
+            Target(model);
+            Assert.That(model.StartBattle(), Is.True);
+            var herald = model.Units[0];
+            var nearby = model.Units[1];
+            var distant = model.Units[2];
+            foreach (var unit in model.Units) HoldTestPosition(unit, 20);
+            nearby.Position = new Vector2(15, 4);
+            distant.Position = new Vector2(19, 3);
+            nearby.Health = nearby.MaxHealth * .5f;
+            distant.Health = distant.MaxHealth * .25f;
+            float nearBefore = nearby.Health, farBefore = distant.Health;
+
+            Advance(model, .25f);
+            Assert.That(herald.HealingDone, Is.Zero, "Treatment starts only after the herald enters combat");
+            herald.Position = new Vector2(14.5f, 3);
+            Advance(model, .025f);
+            var pulse = model.Hits.Single(hit => hit.Heal && hit.FromId == herald.Id);
+            float amount = herald.Attack * .8f + nearby.MaxHealth * .02f;
+            Assert.That(pulse.ToId, Is.EqualTo(nearby.Id));
+            Assert.That(nearby.Health, Is.EqualTo(nearBefore + amount).Within(.01f));
+            Assert.That(distant.Health, Is.EqualTo(farBefore));
+
+            model.Paused = true;
+            Advance(model, 5);
+            model.Paused = false;
+            Advance(model, 3.9f);
+            Assert.That(herald.HealingDone, Is.EqualTo(amount).Within(.01f));
+            Advance(model, .15f);
+            Assert.That(herald.HealingDone, Is.EqualTo(2 * amount).Within(.01f));
+        }
+
+        [Test]
+        public void CenturionTreatsNearbyAlliesOnContactAndAtTheEndOfItsSkill()
+        {
+            var model = Fixture(out _, "M24", "M11", "M03", "M16");
+            var guard = Target(model);
+            Assert.That(model.StartBattle(), Is.True);
+            var centurion = model.Units[0];
+            var close = model.Units[1];
+            var second = model.Units[2];
+            var distant = model.Units[3];
+            centurion.Position = new Vector2(14, 3);
+            close.Position = new Vector2(14, 4);
+            second.Position = new Vector2(14, 2);
+            distant.Position = new Vector2(18, 3);
+            foreach (var ally in new[] { close, second, distant }) HoldTestPosition(ally, 20);
+            close.Health *= .4f;
+            second.Health *= .65f;
+            distant.Health *= .2f;
+            float farBefore = distant.Health;
+
+            for (int tick = 0; tick < 60 && centurion.HealingDone <= 0; tick++) Advance(model, .025f);
+            var ordinary = model.Hits.Single(hit => hit.Heal && !hit.Skill && hit.FromId == centurion.Id);
+            Assert.That(ordinary.ToId, Is.EqualTo(close.Id));
+            Assert.That(ordinary.Amount, Is.EqualTo(centurion.Attack * .5f + close.MaxHealth * .01f).Within(.01f));
+            Assert.That(model.Hits.Any(hit => !hit.Heal && hit.FromId == centurion.Id && hit.ToId == guard.Id), Is.True);
+
+            close.Health = close.MaxHealth * .1f;
+            second.Health = second.MaxHealth * .1f;
+            centurion.SkillCharge = centurion.SkillRequired;
+            for (int tick = 0; tick < 100 && !model.Hits.Any(hit => hit.Heal && hit.Skill && hit.FromId == centurion.Id); tick++)
+                Advance(model, .025f);
+            var skillHeals = model.Hits.Where(hit => hit.Heal && hit.Skill && hit.FromId == centurion.Id).ToArray();
+            Assert.That(skillHeals.Select(hit => hit.ToId), Is.EquivalentTo(new[] { close.Id, second.Id }));
+            Assert.That(skillHeals.Select(hit => hit.Amount), Is.All.EqualTo(centurion.Attack * 1.4f).Within(.01f));
+            Assert.That(distant.Health, Is.EqualTo(farBefore));
         }
         [TestCase(true)]
         [TestCase(false)]
@@ -652,7 +733,10 @@ namespace YesterdayConvoy.Tests
             run.Shop.Preset(new[]{new ShopTrialModel.Piece{Id=FormationCampaignRules.Find(id).CardId,Star=4}},Array.Empty<string>(),10,0,80);
             var card=run.Shop.Bench.Single();
             Assert.That(model.ApplyRoster(new[]{new FormationRosterEntry{Instance=card.Instance,ArtId=card.Id,Star=4,Spawn=new Vector2(FormationBattleModel.DeploymentColumns-1,3)}},10),Is.True);
-            Assert.That(model.Units.Single().MaxHealth,Is.EqualTo(FormationCampaignRules.Find(id).Health*5.832f).Within(.01f));
+            var rule = FormationCampaignRules.Find(id);
+            var fighter = model.Units.Single();
+            Assert.That(fighter.MaxHealth, Is.EqualTo(rule.Health * 4.8f).Within(.01f));
+            Assert.That(fighter.Attack, Is.EqualTo(rule.Attack * 5.832f).Within(.01f));
         }
 
         [Test]
@@ -783,6 +867,83 @@ namespace YesterdayConvoy.Tests
             Assert.That(model.Retry(), Is.True);
             Assert.That(model.Defenders.Single().SnowBossPhase, Is.EqualTo(1));
             Assert.That(model.SnowBossFreezeRemaining(distant), Is.Zero);
+        }
+
+        [Test]
+        public void TwoStarHealerRaisesHealthAndDelaysTheThirdLossAgainstSnowBoss()
+        {
+            var without = ObserveSnowBossOpeningTreatment(0);
+            var oneStar = ObserveSnowBossOpeningTreatment(1);
+            var twoStar = ObserveSnowBossOpeningTreatment(2);
+            Assert.That(without.ThirdDeath, Is.LessThan(9), "Five unprotected fighters cannot stand under the barrage indefinitely");
+            Assert.That(oneStar.ThirdDeath, Is.GreaterThan(without.ThirdDeath));
+            Assert.That(twoStar.ThirdDeath, Is.GreaterThan(oneStar.ThirdDeath));
+            Assert.That(twoStar.BurstHealing, Is.GreaterThan(oneStar.BurstHealing * 1.5f));
+        }
+
+        static (double ThirdDeath, float BurstHealing) ObserveSnowBossOpeningTreatment(int healerStar)
+        {
+            const float step = .025f;
+            var fighters = new[] { ("WIS", 2), ("B22", 3), ("M11", 3), ("M18", 2), ("M29", 2) };
+            var lineup = healerStar > 0 ? fighters.Append(("M25", healerStar)).ToArray() : fighters;
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "3-7", collectDrops: false);
+            run.Shop.Preset(lineup.Select(card => new ShopTrialModel.Piece
+            {
+                Id = FormationCampaignRules.Find(card.Item1).CardId, Star = card.Item2
+            }), Array.Empty<string>(), 10, 0, 80);
+            Assert.That(model.ApplyRoster(run.Shop.Bench.Select((piece, i) => new FormationRosterEntry
+            {
+                Instance = piece.Instance, ArtId = piece.Id, Star = piece.Star, Spawn = new Vector2(i % 5 * 2, i / 5 * 3)
+            }), 10), Is.True);
+            model.BindCampaign(run);
+            Assert.That(model.StartBattle(), Is.True);
+            var boss = model.Defenders.Single();
+            var exposed = model.Units.Take(fighters.Length).ToArray();
+            var healer = healerStar > 0 ? model.Units.Last() : null;
+
+            // Isolate the second-phase treatment window from the approach and first-phase attrition.
+            boss.Health = 0;
+            Assert.That(InvokeGuardTestHook<bool>(model, "BeginSnowBossTransition", boss), Is.True);
+            for (int tick = 0; tick < 100 && boss.SnowBossPhase == 1; tick++) model.Advance(step);
+            Assert.That(boss.SnowBossPhase, Is.EqualTo(2));
+            double phaseStart = model.Clock;
+            var offsets = new[]
+            {
+                new Vector2(-2.2f, 0), new Vector2(-2.1f, -.55f), new Vector2(-2.15f, .6f),
+                new Vector2(-2.2f, 1.2f), new Vector2(-2.4f, -1.2f)
+            };
+            for (int i = 0; i < exposed.Length; i++)
+            {
+                exposed[i].Position = boss.Position + offsets[i];
+                exposed[i].Health = exposed[i].MaxHealth;
+                HoldTestPosition(exposed[i], phaseStart + 13);
+            }
+            if (healer != null)
+            {
+                healer.Position = boss.Position + new Vector2(-5.2f, 0);
+                healer.SkillCharge = healer.SkillRequired - 3.5f;
+            }
+
+            double thirdDeath = double.PositiveInfinity;
+            float burstHealing = 0;
+            bool bossHitLanded = false;
+            while (model.Clock < phaseStart + 12)
+            {
+                model.Advance(step);
+                foreach (var hit in model.Hits.Where(hit => hit.At == model.Clock))
+                {
+                    if (hit.FromId == boss.Id && hit.Action != null && IsSnowBossS3Strike(hit.Action)) bossHitLanded = true;
+                    if (healer != null && hit.Heal && hit.Skill && hit.FromId == healer.Id) burstHealing += hit.Amount;
+                }
+                if (exposed.Count(unit => unit.Deaths > 0) < 3) continue;
+                thirdDeath = model.Clock - phaseStart;
+                break;
+            }
+            Assert.That(bossHitLanded, Is.True, "The pressure comes from live stage-two direct hits");
+            if (healer != null) Assert.That(healer.Deaths, Is.Zero, "The comparison keeps the healer safe behind the formation");
+            TestContext.WriteLine($"Snow phase 2, healer star {healerStar}: third death {thirdDeath:0.000}s, burst heals {burstHealing:0.0}");
+            return (thirdDeath, burstHealing);
         }
 
         [Test]

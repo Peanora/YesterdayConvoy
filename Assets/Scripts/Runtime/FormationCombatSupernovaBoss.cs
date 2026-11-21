@@ -175,7 +175,7 @@ namespace YesterdayConvoy
             GuardContact(guard, shell, () =>
             {
                 foreach (var victim in GuardVictims(shell.To, SupernovaBlastRadius, int.MaxValue))
-                    CombatDamage(guard, victim, guard.Attack * 3.8f, 0, true, false);
+                    CombatDamage(guard, victim, guard.Attack * 2.60f, 0, true, false);
             }, trackedTarget: target);
         }
     }

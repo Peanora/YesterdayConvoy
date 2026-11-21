@@ -123,7 +123,8 @@ namespace YesterdayConvoy
             if(Level("泥岩")<2)return;var owners=Units.Where(u=>u.Enabled&&State(u).Spec?.Factions.Contains("泥岩")==true).ToArray();if(owners.Length==0)return;
             int starSum=owners.Sum(u=>u.Star),n=synergyCounts["泥岩"],xp=Campaign.MudrockXP;
             int stage=xp>=80&&starSum>=9&&n>=4?5:xp>=50&&starSum>=7&&n>=3?4:xp>=24&&starSum>=5&&n>=3?3:xp>=8&&starSum>=3&&n>=2?2:1;
-            var golem=new FormationFighter{Id=nextSummon--,Name="泥岩巨像 "+stage,ArtId="GOLEM",Position=owners[0].Position,Spawn=owners[0].Spawn,Enabled=true,Alive=true,MaxHealth=owners.Average(u=>State(u).Spec.Health*(u.Star>=3?3.24f:u.Star==2?1.8f:1))*(stage+1),Attack=owners.Average(u=>State(u).BaseAttack)*new[]{0,1,1.3f,1.6f,2,2.5f}[stage],Armor=owners.Average(u=>u.Armor),MagicResistance=owners.Average(u=>u.MagicResistance),Interval=3,Range=1.5f,MoveSpeed=.6f};
+            float baseHealth = owners.Average(u => FormationCampaignRules.BaseHealthAtStar(State(u).Spec, u.Star, Campaign.TalulahCost));
+            var golem=new FormationFighter{Id=nextSummon--,Name="泥岩巨像 "+stage,ArtId="GOLEM",Position=owners[0].Position,Spawn=owners[0].Spawn,Enabled=true,Alive=true,MaxHealth=baseHealth*(stage+1),Attack=owners.Average(u=>State(u).BaseAttack)*new[]{0,1,1.3f,1.6f,2,2.5f}[stage],Armor=owners.Average(u=>u.Armor),MagicResistance=owners.Average(u=>u.MagicResistance),Interval=3,Range=1.5f,MoveSpeed=.6f};
             golem.Health=golem.MaxHealth;State(golem).ExpiresAt=double.PositiveInfinity;State(golem).Stage=stage;Summons.Add(golem);
             if(stage>=5)foreach(var u in Units.Where(u=>u.Enabled))GiveBuff(u,"golem_shield",.15f,999);
         }

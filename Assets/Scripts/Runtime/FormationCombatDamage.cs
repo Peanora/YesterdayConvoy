@@ -17,6 +17,8 @@ namespace YesterdayConvoy
         {
             if(!source.Alive)return 0;var s=State(source);var victims=targets.Where(t=>t!=null&&t.Alive).ToArray();if(victims.Length==0)return 0;
             s.ActionHits++;AddStack(source,"native_segments",1);float total=0;
+            bool centurion = Key(source) == "M24";
+            bool landed = false;
             float mult=skill?Power(source)*Mathf.Max(1,Stack(source,"cast_multiplier")):1;
             int blast=Tagged(source,"爆破")?Level("爆破"):0;if(area&&skill)mult*=1+(blast>=6?.5f:blast>=4?.3f:blast>=2?.15f:0);
             if(!skill&&victims.Length==1&&Campaign.HasAugment("CS5"))mult*=1.12f;
@@ -25,8 +27,9 @@ namespace YesterdayConvoy
                 var t=victims[i];
                 if(blast>=6&&skill&&s.ActionHits==1){GiveBuff(t,"blast_armor",-15,6);GiveBuff(t,"blast_mr",-15,6);}
                 float projectileMultiplier=GuardProjectileMultiplier(source,t,area);
-                float actual=CombatDamage(source,t,raw*(Key(source)=="M42"&&skill&&t.Shield>0?1.25f:1)*mult*(skill&&area&&blast>=4&&i>0?1.15f:1)*projectileMultiplier,type,skill,true);total+=actual;
-                if(skill){s.SkillTargets.Add(t.Id);AddStack(source,"last_skill_raw",actual);s.SkillDamage[t.Id]=(s.SkillDamage.TryGetValue(t.Id,out var prev)?prev:0)+actual;}
+                float actual=CombatDamage(source,t,raw*(Key(source)=="M42"&&skill&&t.Shield>0?1.25f:1)*mult*(skill&&area&&blast>=4&&i>0?1.15f:1)*projectileMultiplier,type,skill,true,out bool targetHit);total+=actual;
+                landed |= targetHit;
+                if(skill){if(targetHit||!centurion)s.SkillTargets.Add(t.Id);AddStack(source,"last_skill_raw",actual);s.SkillDamage[t.Id]=(s.SkillDamage.TryGetValue(t.Id,out var prev)?prev:0)+actual;}
                 if(element>0)Element(source,t,element,fire);
                 if(Tagged(source,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(source.Position-c).sqrMagnitude<=.6f*.6f))Element(source,t,Level("海嗣")>=5?15:Level("海嗣")>=4?10:6,false);
                 if(Tagged(source,"深池")&&Level("深池")>=2)DeepBurn(source,t);
@@ -36,7 +39,8 @@ namespace YesterdayConvoy
             }
             if(Tagged(source,"伊比利亚")&&Level("伊比利亚")>=2)AddStack(source,"evidence",1,24);
             if(HasItem(source,"AA")&&(int)Stack(source,"native_segments")%3==0)AddStack(source,"saw",1,10);
-            if(Key(source)=="M24")CombatHeal(source,source,total*.2f,skill,false);
+            if (!skill && landed && s.ActionHits == 1 && source.Alive && centurion)
+                HealCenturionOrdinary(source);
             if(Key(source)=="B25")CombatHeal(source,source,total*.15f,skill,false);
             if(skill)
             {
@@ -67,9 +71,15 @@ namespace YesterdayConvoy
                 : Mathf.Max(1, raw - Mathf.Max(-30, armor));
         }
 
-        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,bool transferred=false)
+        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,bool transferred=false) =>
+            CombatDamage(source,target,raw,type,skill,native,out _,transferred);
+
+        float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,out bool landed,bool transferred=false)
         {
-            if(target==null||!target.Alive||raw<=0||target is FormationDefender boss&&(SnowBossTransitionActive(boss)||SupernovaBossTransitionActive(boss)))return 0;var t=State(target);var s=State(source);
+            landed = target != null && target.Alive && raw > 0 &&
+                !(target is FormationDefender boss && (SnowBossTransitionActive(boss) || SupernovaBossTransitionActive(boss)));
+            if (!landed) return 0;
+            var t=State(target);var s=State(source);
             float armor=target.Armor+Buff(target,"mandra_armor")+Buff(target,"blast_armor")+Buff(target,"kingdom_armor");
             if(Buff(target,"armorbreak")>0)armor-=Mathf.Min(5,Stack(target,"armorbreak"))*2;
             armor-=Stack(target,"guard_corrosion_defense");

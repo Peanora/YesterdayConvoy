@@ -151,7 +151,7 @@ namespace YesterdayConvoy
                 {
                     if (!guard.Alive || SnowBossTransitionActive(guard)) return;
                     GrowSnowBossFloor(kit, Vector2Int.RoundToInt(unit.Position));
-                    CombatDamage(guard, unit, guard.Attack * 2.50f, 1, true, false);
+                    CombatDamage(guard, unit, guard.Attack * 1.65f, 1, true, false);
                 }
             });
         }
@@ -240,7 +240,7 @@ namespace YesterdayConvoy
                 foreach (var unit in GuardVictims(guard.Position, guard.Range, 5))
                 {
                     if (!guard.Alive) return;
-                    CombatDamage(guard, unit, guard.Attack * 2.70f, 1, true, false);
+                    CombatDamage(guard, unit, guard.Attack * 1.90f, 1, true, false);
                 }
             });
         }
@@ -303,7 +303,7 @@ namespace YesterdayConvoy
             foreach (var unit in GuardTargets().Where(unit => kit.SnowTiles.ContainsKey(Vector2Int.RoundToInt(unit.Position))).ToArray())
             {
                 if (!guard.Alive) return;
-                SnowBossSnowDamage(guard, unit, .60f, "SnowBossS3Tick");
+                SnowBossSnowDamage(guard, unit, .40f, "SnowBossS3Tick");
             }
         }
 

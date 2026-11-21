@@ -100,7 +100,7 @@ namespace YesterdayConvoy
             var actor = Model.Units.FirstOrDefault(unit => unit.Instance == formationInspectedInstance);
             var anchor = FormationInspectionTarget;
             var r = FormationInspectionRect;
-            float mult = Mathf.Pow(1.8f, (piece?.Star ?? 1) - 1);
+            int star = piece?.Star ?? 1;
 
             ApprovedUi.Border(anchor, OperationsFocus, 2);
             Fill(r, OperationsSurface);
@@ -121,8 +121,8 @@ namespace YesterdayConvoy
             var portrait = new Rect(r.x + 11, r.y + 76, 62, 55);
             Fill(portrait, new Color32(205, 211, 224, 255));
             DrawFormationPortrait(portrait, card);
-            string hp = (actor?.MaxHealth ?? spec.Health * mult).ToString("0");
-            string attack = (actor?.Attack ?? spec.Attack * mult).ToString("0");
+            string hp = (actor?.MaxHealth ?? FormationCampaignRules.BaseHealthAtStar(spec, star, Campaign.TalulahCost)).ToString("0");
+            string attack = (actor?.Attack ?? spec.Attack * FormationCampaignRules.AttackStarMultiplier(star)).ToString("0");
             string armor = (actor?.Armor ?? spec.Armor).ToString("0");
             string resist = (actor?.MagicResistance ?? spec.MagicResistance).ToString("0");
             OperationsLabel(new Rect(r.x + 83, r.y + 75, 203, 17), $"生命 {hp}   攻击 {attack}", 12, OperationsInk);

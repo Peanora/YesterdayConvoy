@@ -22,6 +22,9 @@ namespace YesterdayConvoy
             if(s.Spec==null||(!free&&target==null))return false;
             if(k=="B21"&&s.BusyUntil+1>Clock&&s.Casts>0)return false;
             if(k=="WIS"&&Campaign.WisadelSkill==2&&Buff(u,"wisadel")>0)return false;
+            if (!free && (k is "M25" or "B10") && target.IsTwoPhaseBoss &&
+                !Units.Any(ally => ally.Enabled && ally.Alive && ally.Health <= ally.MaxHealth * .75f))
+                return false;
             if(!free)u.SkillCharge=Mathf.Max(0,u.SkillCharge-u.SkillRequired);
             if(s.Echo>0){GainSP(u,s.Echo,true);s.Echo=0;}
             float action=s.Spec.ActionSeconds*(Buff(u,"haste")>0?Buff(u,"haste"):1)*(k=="B04"&&s.Stage>0?.8f:1);
@@ -91,7 +94,7 @@ namespace YesterdayConvoy
                 case "B05": SkillArea(u,target,3.3f,0,2,5);break;
                 case "M18":
                     GiveBuff(u,"taunt",1,5);Shield(u,u,u.MaxHealth*.5f,8,"native");if(main!=null)GiveBuff(main,"shieldguard",.15f,8);PromptSupport(u);break;
-                case "M24": SkillSequence(u,target,4,1.6f,1,action,1.6f,3);break;
+                case "M24": SkillSequence(u,target,4,1.1f,1,action,1.6f,3);break;
                 case "M42":
                     NativeSegment(u,Nearby(target.Position,AreaRadius(u,2),5,target),u.Attack*5.2f,1,true,0,true);foreach(var d in Nearby(target.Position,AreaRadius(u,2),5,target))Stun(d,1);break;
                 case "M31": SkillSequence(u,target,6,1,1,action,2.3f,5,12);break;
@@ -225,6 +228,12 @@ namespace YesterdayConvoy
         void SkillFinished(FormationFighter u)
         {
             if(!u.Alive)return;var s=State(u);
+            if (Key(u) == "M24" && s.SkillTargets.Count > 0)
+            {
+                float amount = u.Attack * 1.4f * Power(u);
+                foreach (var ally in WoundedAlliesInRange(u, 2.5f).Take(2).ToArray())
+                    CombatHeal(u, ally, amount, true, true);
+            }
             if(HasItem(u,"BF"))s.Stacks["coil"]=0;
             if(HasItem(u,"FF")&&s.Casts%4==0)
             {
@@ -241,6 +250,31 @@ namespace YesterdayConvoy
         }
         FormationFighter[] LowAllies(int n)=>Units.Where(f=>f.Enabled&&f.Alive).OrderBy(f=>f.Health/f.MaxHealth).ThenBy(f=>f.Id).Take(n).ToArray();
         void HealLow(FormationFighter u,int n,float mult){foreach(var f in LowAllies(n))CombatHeal(u,f,u.Attack*mult*Power(u),true,true);}
+
+        IOrderedEnumerable<FormationFighter> WoundedAlliesInRange(FormationFighter source, float range) =>
+            Units.Where(ally => ally.Enabled && ally.Alive && ally.Health < ally.MaxHealth &&
+                (ally.Position - source.Position).sqrMagnitude <= range * range)
+                .OrderBy(ally => ally.Health / ally.MaxHealth).ThenBy(ally => ally.Id);
+
+        void TryHeraldTreatment(FormationFighter source)
+        {
+            var state = State(source);
+            if (state.HeraldHealCooldown > 1e-6 || Buff(source, "silence") > 0) return;
+
+            var ally = WoundedAlliesInRange(source, 3.5f).FirstOrDefault();
+            if (ally == null) return;
+
+            float previousHealth = ally.Health;
+            CombatHeal(source, ally, source.Attack * .8f + ally.MaxHealth * .02f, false, false);
+            if (ally.Health > previousHealth) state.HeraldHealCooldown = 4;
+        }
+
+        void HealCenturionOrdinary(FormationFighter source)
+        {
+            var ally = WoundedAlliesInRange(source, 2.5f).FirstOrDefault();
+            if (ally != null) CombatHeal(source, ally, source.Attack * .5f + ally.MaxHealth * .01f, false, false);
+        }
+
         void BlinkBehind(FormationFighter u,FormationActor target,float distance)
         {
             if(SnowBossFreezeRemaining(u)>0)return;
