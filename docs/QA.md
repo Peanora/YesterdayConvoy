@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-21 望「天下劫」五子连爆实机核对
+
+验收 Windows Player 对应 `37c7b80c7526c6cd748ce8b6ce8169679c08c1de`。Unity 6000.6.5f1 Windows x64 Development 构建 1,376,768,342 字节，0 错误、退出 0。Runtime DLL SHA-256 为 `4F724993FF27A839B883544095FF399F1A028D3DB13BCF416458370A8EAB03C9`。EditMode 1219/1219，覆盖正式 3-4 的南北站位及各自的五次实际命中。D3D11 定向 PlayMode 24/24，覆盖暂停、五次爆炸和棋盘寿命。Windows 默认入口三战 163/163，四个正式节点专项检视 48/48，均为 0 异常。
+
+6.50 秒的同版实机使用固定展示靶。正常速度及逐帧复看时，约 1.60、1.86、2.12、2.39、2.63 秒分别可见中心、左、右、下、上落子的金光。中心棋子的黑色本体部分被靶遮挡，落点可辨。五次真实范围命中和各自原声发生在 2.783、3.033、3.283、3.533、3.783 秒，爆光随对应棋格依次出现。4.25 秒棋盘仍可见，4.42 秒已收。AAC 封装通过，1280×720、60 fps 共 390 帧，1 条开技声、5 组起手与命中声，0 条不可读。 [连续实机](../artifacts/formation-wang-cross/player/roles/66-D28-望.mp4) · [关键帧](../artifacts/formation-wang-cross/wang-keyframes.jpg)
+
+原作实录 59–61 秒用于核对落子光、底图和爆裂形状。原包跟子间隔为 0.25 秒，含随机选格与各子接触触发。中心加四邻固定顺序、全部落好后每隔 0.25 秒逐颗引爆是本轮棋盘适配。 [原作实录](https://www.bilibili.com/video/BV1c3FmzHE6J/?p=2) · [原包记录](art/source-records/formation-guard-combat-2026-11-20.md)
+
 ## 2026-11-21 六星持续攻击与历史守军实机复核
 
 验收 Windows Player 对应 `5d441d79e12a2816472ab21896bfe8848e31da01`。Unity 6000.6.5f1 Windows x64 Development 构建 1,376,765,986 字节，0 错误、退出 0。Runtime DLL SHA-256 为 `9BBAC265F754D43156C5D07B1D914B940B111EE8BB9F278EC8674E9C3C7F5AE3`。完整 EditMode 1219/1219，D3D11 定向 PlayMode 24/24，Windows 默认入口三战 163/163、0 异常。另在同版 Player 的正式阵容站位运行技能检视，2-4、2-5、3-2、3-4 四关 48/48、0 异常，实际遇到 Mon3tr、圣聆初雪、银灰、望的技能与伤害。 [实机与回归证据](../artifacts/formation-guard-combat-recheck/)
