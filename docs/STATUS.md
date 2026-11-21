@@ -1,5 +1,10 @@
 # 当前工程状态
 
+## 2026-11-21 超新星爆裂黎明落点放大
+
+- 对照用户提供的原作炸开帧，将超新星三技能的落点拆为原包贴地扩散、上扬红黑爆花和升起的 WIS 字样。放大三个图层，恢复此前被地面截断的前半圈，让白热爆芯和外缘飞溅在同一炮落点连成一片。伤害半径为 2.2 格。 [原作与适配记录](art/source-records/formation-supernova-boss.md)
+- Windows 对应源码 `1530b7dc`。同机位首炮着地后约 0.09 秒，亮红范围由约 2.2 万增至 9.9 万像素。EditMode 1220/1220，1080p Player 41/41、零异常，预设阵容 63.7 秒实际进入蓝门。 [Windows EXE](../Builds/Windows/YesterdayConvoy.exe) · [落点对照](../artifacts/formation-supernova-peak/blast-peak-before-after.png) · [有声实机](../artifacts/formation-supernova-peak/supernova-hd.mp4)
+
 ## 2026-11-21 超新星爆裂黎明重做与首段提速
 
 - 普通齐射基础间隔从 1.50 秒缩到 1.05 秒，过载四连发每轮基础间隔 0.90 秒。二、三技能的 20 层特效从 `sale#14` 原 prefab 高清重采，运行时保留完整 RGBA。爆裂黎明恢复贴身白粉翼焰、启动子层、原方向炮口及明亮弹芯，落点分别呈现地面爆裂和立体红黑 WIS 字样。 [原作与适配记录](art/source-records/formation-supernova-boss.md)

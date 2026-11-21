@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-21 超新星爆裂黎明落点放大验收
+
+源码 `1530b7dc13161326f7f61ccf5da8a031f83c801e`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,158,626 字节，零错误，退出 0。Runtime DLL SHA-256 `241A1CB5F07FB0CDA7823D6CDF05DB86C9D1795A3095058F2586CEE1A8653CC8`。EditMode 1220/1220。 [构建日志](../artifacts/formation-supernova-peak/build.log) · [EditMode XML](../artifacts/formation-supernova-peak/edit-final.xml)
+
+同版 1080p D3D11 Player 41/41、零异常。由游戏关卡选择命令启动超新星试玩，八人预设以 1× 战斗时钟打到通关。首炮 34.417 秒发射、34.466 秒到达、34.475 秒结算伤害，34.550 秒记录到独立的落地、上扬爆花和 WIS。三层均为 48 PPU ARGB32，投影矩形约为 815×586、623×528、662×331 像素，含透明边缘。实际伤害半径仍为 2.2 格，63.700 秒由存活本体进入蓝门。重试复位通过。 [Player 报告](../artifacts/formation-supernova-peak/after/supernova-boss-smoke.json)
+
+以用户给出的原作峰值截图核对白热中心、红黑飞溅和两侧扩散。在相同棋盘镜头，正常速度可看到命中后地面向前展开、红黑碎片上扬，再露出逐步消退的余光。选取落地计时标记后约 40、90、120 毫秒的对应帧，在同一窗口区域 `x540–1419 / y430–889` 内扣除爆前帧，按 `R≥150`、`R−G>26`、`ΔR≥40` 统计，亮红像素约为 2.0 万→7.7 万、2.2 万→9.9 万、2.1 万→10.4 万。约 90 毫秒帧的亮区中央 90% 横向跨度由 269 增至 377 像素。镜头、地形及混战站位与原图有差异，实际画面中部分角色和 WIS 有短暂重叠。 [峰值同机位对比](../artifacts/formation-supernova-peak/blast-peak-before-after.png) · [连续关键帧](../artifacts/formation-supernova-peak/blast-matched-frames.png) · [原作与适配记录](art/source-records/formation-supernova-boss.md)
+
+1920×1080 窗口采集共 3,858 帧，实际约 49 fps。两段实机片按真实时钟封装至 60 fps，已完整解码。 [有声实机](../artifacts/formation-supernova-peak/supernova-hd.mp4) · [动态前后对比](../artifacts/formation-supernova-peak/supernova-before-after.mp4)
+
 ## 2026-11-21 超新星首段提速与爆裂黎明重做验收
 
 源码 `d25a3628576fff209adbb143e86e827911d2fcb5`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,156,754 字节，零错误，退出 0。Runtime DLL SHA-256 `E110F50919764794BEA6465389AF3908C551C0E38906ED3872F2C6B3BAB39ECA`。最终 EditMode 1220/1220。定向预设阵容验证到多轮 1.050 秒普通齐射和 0.900 秒无减速过载，减速期为 1.125 秒，过载四发的原发间距按当前动作倍率换算。三技能完成六发、范围命中、装填以及真实蓝门通关。 [构建](../artifacts/formation-supernova-rework/build-final.log) · [EditMode](../artifacts/formation-supernova-rework/edit-delivery.xml)
