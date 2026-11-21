@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-22 正式挑战补给展开
+
+- Windows 运行源码 531fb0693617c0a892d954383de08a16f4d008d6。Unity 6000.6.5f1 x64 构建退出 0、零错误，构建报告 1,393,864,390 字节。Runtime DLL SHA-256 为 5B8B4DD0522C7F4388BF90C4EE00ADED94DA311CA653F5F3701D6C63D703C3E2。完整 EditMode 1228/1228，含同组选项与实际发放一致，以及双倍搭配抽检、预付只扣首件。 [构建日志](../artifacts/formation-supply/build-final.log) · [EditMode XML](../artifacts/formation-supply/edit-final.xml)
+- 1600×900、D3D11 的独立 Windows Player 28/28、零异常、退出 0。入口是正式挑战，前四战使用受控胜利结算，透过正式续关进入 1-5。用实际鼠标预选酒神与战术终端，再点确认领取。未选择时 Enter 无效，单击预选未发放，确认后对应角色和装备各发放一份，未选预留返库，金币与经验一致，成功续到 1-6。五张卡、五件装备的图像可见，二费绿、三费蓝。2-3 和 3-3 继承同一渲染入口，本轮未逐节点实机录制。 [Player 报告](../artifacts/formation-supply/window-final/player/supply-smoke.json) · [展开帧](../artifacts/formation-supply/window-final/player/02-supply-open.png)
+- 对照《货币战争》05:14.8–05:16.2 的开场横扫与五列，以及 07:53.3–07:53.9 的装备后显。实机短片 0.20 秒可见棋盘和闭合箱，0.40 秒抬盖扫光，0.60 秒卡牌排开，0.80 秒装备开始显露，1.20 秒五列稳定，2.80 秒确认的整组位于中央，3.20 秒回到棋盘。开箱和错峰是本作适配，使用项目原费用底色与静态角色卡图。短片只录游戏窗口，保留实时时长，封装为 30 fps。 [素材来源与对照](art/source-records/formation-supply-reveal.md) · [实机短片](../artifacts/formation-supply/supply-player.mp4) · [关键帧](../artifacts/formation-supply/supply-player-keyframes.jpg)
+
 ## 2026-11-22 结城理三阶段首领
 
 - Windows 运行源码 `438f9a84777fca26440b92e43ce0534dfdf44fb2`。Unity 6000.6.5f1 x64 构建成功、退出 0。Runtime DLL SHA-256 为 `8C4D5B022AA682850FB73E380B160A80964259BEDE92A710877218985346C473`。构建后处理导出 5,506 个运行资源，先前运行中的旧版本保留在原路径。 [构建日志](../artifacts/formation-makoto-boss/build-reviewed.log) · [本轮 Windows EXE](../Builds/MakotoBoss/YesterdayConvoy.exe)
