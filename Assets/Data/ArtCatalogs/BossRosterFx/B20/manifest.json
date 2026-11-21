@@ -971,6 +971,50 @@
           "height": 888
         }
       ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_floor_sale#14",
+      "count": 26,
+      "width": 292,
+      "height": 212,
+      "columns": 7,
+      "ppu": 48.0,
+      "pivotX": 0.5,
+      "pivotY": 0.6740802548966318,
+      "duration": 0.8666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_floor_sale#14/00.png",
+          "count": 26,
+          "width": 2044,
+          "height": 848
+        }
+      ]
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_burst_sale#14",
+      "count": 54,
+      "width": 264,
+      "height": 224,
+      "columns": 7,
+      "ppu": 48.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5848024232046944,
+      "duration": 1.8,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_burst_sale#14/00.png",
+          "count": 54,
+          "width": 1848,
+          "height": 1792
+        }
+      ]
     }
   ],
   "preload": [
@@ -1020,7 +1064,9 @@
         "wisdel_skill_03_buff_02_b_sale#14",
         "wisdel_skill_03_buff_03_sale#14",
         "wisdel_skill_03_hit_02_name_sale#14",
-        "wisdel_skill_03_hit_02_ground_sale#14"
+        "wisdel_skill_03_hit_02_ground_sale#14",
+        "wisdel_skill_03_hit_02_floor_sale#14",
+        "wisdel_skill_03_hit_02_burst_sale#14"
       ]
     }
   ],

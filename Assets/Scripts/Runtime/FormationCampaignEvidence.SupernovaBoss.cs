@@ -21,6 +21,7 @@ namespace YesterdayConvoy
             public long utcTicks;
             public double battleClock;
             public float x, y, sourceFrameWidth, sourceFrameHeight, sourcePixelsPerUnit;
+            public float projectedQuadWidthPixels, projectedQuadHeightPixels;
         }
 
         [Serializable]
@@ -153,7 +154,7 @@ namespace YesterdayConvoy
             yield return Frame("07-second-health-bar");
 
             yield return ObserveSupernovaAttack(guard, "supernova_s3_shell", "08-s3-shell-and-blast", 70, true,
-                new[] { "S3 wings", "S3 aim", "S3 muzzle", "S3 trail", "S3 impact", "S3 impact ground", "S3 blast lettering" }, (move, hit, frames) =>
+                new[] { "S3 wings", "S3 aim", "S3 muzzle", "S3 trail", "S3 impact", "S3 impact ground", "S3 impact burst", "S3 blast lettering" }, (move, hit, frames) =>
                 {
                     replay.firstS3ShellAt = move.At;
                     replay.firstS3ReleaseAt = move.LaunchedAt;
@@ -291,6 +292,7 @@ namespace YesterdayConvoy
             if (!supernovaBossLiveCapture) return;
             var point = renderer == null ? Vector3.zero : controller.battleCamera.WorldToViewportPoint(renderer.transform.position);
             var sprite = renderer == null ? null : renderer.sprite;
+            var quadSize = sprite == null ? Vector2.zero : ProjectedSupernovaQuadSize(renderer, sprite);
             result.supernovaBoss.captureMarks.Add(new SupernovaCaptureMark
             {
                 cue = cue,
@@ -302,8 +304,27 @@ namespace YesterdayConvoy
                 textureFormat = sprite == null ? null : sprite.texture.format.ToString(),
                 sourceFrameWidth = sprite == null ? 0 : sprite.rect.width,
                 sourceFrameHeight = sprite == null ? 0 : sprite.rect.height,
-                sourcePixelsPerUnit = sprite == null ? 0 : sprite.pixelsPerUnit
+                sourcePixelsPerUnit = sprite == null ? 0 : sprite.pixelsPerUnit,
+                projectedQuadWidthPixels = quadSize.x,
+                projectedQuadHeightPixels = quadSize.y
             });
+        }
+
+        Vector2 ProjectedSupernovaQuadSize(SpriteRenderer renderer, Sprite sprite)
+        {
+            var camera = controller.battleCamera;
+            var local = sprite.bounds;
+            var minimum = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            var maximum = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            foreach (float x in new[] { local.min.x, local.max.x })
+            foreach (float y in new[] { local.min.y, local.max.y })
+            {
+                var corner = new Vector3(renderer.flipX ? -x : x, renderer.flipY ? -y : y, 0);
+                var screen = (Vector2)camera.WorldToScreenPoint(renderer.transform.TransformPoint(corner));
+                minimum = Vector2.Min(minimum, screen);
+                maximum = Vector2.Max(maximum, screen);
+            }
+            return maximum - minimum;
         }
 
         static bool IsSupernovaUncompressed(TextureFormat format) =>

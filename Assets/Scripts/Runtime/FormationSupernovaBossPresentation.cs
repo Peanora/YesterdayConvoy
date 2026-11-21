@@ -10,6 +10,8 @@ namespace YesterdayConvoy
         const string SupernovaBossClipPrefix = "skill_supernova_";
         const string SupernovaBossDeathClip = "skill_supernova_death";
         const string SupernovaBlastLettering = "03_hit_02_name";
+        const string SupernovaBlastFloor = "03_hit_02_floor";
+        const string SupernovaBlastBurst = "03_hit_02_burst";
         internal const string SupernovaBossEffectPrefix = "Formation Supernova / ";
         static readonly string[] SupernovaBossBodyClips =
         {
@@ -23,8 +25,8 @@ namespace YesterdayConvoy
         {
             "02_buff", "02_buff_02", "02_start", "02_overload_start", "02_hit", "02_hit_02",
             "03_buff_f", "03_buff_b", "03_buff_02_f", "03_buff_02_b", "03_buff_03",
-            "03_start", "03_up_start", "03_down_start", "03_trail", "03_hit", "03_hit_02_ground", "03_hit_03",
-            SupernovaBlastLettering
+            "03_start", "03_up_start", "03_down_start", "03_trail", "03_hit", "03_hit_03",
+            SupernovaBlastFloor, SupernovaBlastBurst, SupernovaBlastLettering
         };
 
         bool UsesSupernovaBossArt(string artId) => (artId == "D31" || artId == "D31B") &&
@@ -132,13 +134,15 @@ namespace YesterdayConvoy
                 return;
             }
 
-            // The native stop sample already contains the camera projection of the floor and vertical shards.
-            // Root it on the real landing cell and keep that projection so the vertical burst is not flattened.
+            // The native stop emits a floor spread, an upright burst and raised lettering at the landing cell.
             double blastAge = (now - action.ContactAt) * action.Rate - .15;
             Vector3 blastRoot = ActorWorldPoint(action.To) + Vector3.up * .045f;
-            ShowSupernovaBossEffect("03_hit_02_ground", "S3 impact ground", blastAge, action.To, blastRoot, 45, scale: .92f);
+            ShowSupernovaBossEffect(SupernovaBlastFloor, "S3 impact ground", blastAge, action.To, blastRoot, -150,
+                ground: true, scale: 1.27f);
+            ShowSupernovaBossEffect(SupernovaBlastBurst, "S3 impact burst", blastAge, action.To,
+                blastRoot + battleCamera.transform.up * .25f, 68, scale: 1.24f, minimumHeight: blastRoot.y);
             ShowSupernovaBossEffect(SupernovaBlastLettering, "S3 blast lettering", blastAge, action.To,
-                blastRoot + battleCamera.transform.up * .5f, 76, scale: .75f);
+                blastRoot + battleCamera.transform.up * .77f, 82, scale: 1.06f, minimumHeight: blastRoot.y);
         }
 
         void PresentSupernovaBossHit(FormationHit hit, double now)
@@ -188,13 +192,29 @@ namespace YesterdayConvoy
         }
 
         bool ShowSupernovaBossEffect(string suffix, string label, double age, Vector2 cell, Vector3 position, int order,
-            bool flip = false, bool loop = false, bool ground = false, Vector3? direction = null, float scale = 1)
+            bool flip = false, bool loop = false, bool ground = false, Vector3? direction = null, float scale = 1,
+            float? minimumHeight = null)
         {
             if (age < 0 || !FormationPointVisibleInView(cell)) return false;
             if (!BossRosterFxArt.TryGet(SupernovaBossEffectKey(suffix), out var clip) || !clip.Sequence.Ready) return false;
+            var frame = clip.At(age, loop);
+            if (frame == null) return false;
             float roll = direction.HasValue ? Mathf.Atan2(Vector3.Dot(direction.Value, battleCamera.transform.up),
                 Vector3.Dot(direction.Value, battleCamera.transform.right)) * Mathf.Rad2Deg : 0;
-            var renderer = LegacyDraw(clip.At(age, loop), legacyHdrMaterial, position, cell, scale, order,
+            if (minimumHeight.HasValue)
+            {
+                float bottom = position.y + frame.bounds.min.y * scale * battleCamera.transform.up.y;
+                if (bottom < minimumHeight.Value && battleCamera.transform.position.y > minimumHeight.Value)
+                {
+                    // Bring only this billboard's depth above the landing tile. Scaling about the eye
+                    // keeps the screen location and size, while still testing depth against actual terrain.
+                    float ratio = (battleCamera.transform.position.y - minimumHeight.Value) /
+                        (battleCamera.transform.position.y - bottom);
+                    position = Vector3.LerpUnclamped(battleCamera.transform.position, position, ratio);
+                    scale *= ratio;
+                }
+            }
+            var renderer = LegacyDraw(frame, legacyHdrMaterial, position, cell, scale, order,
                 flip: flip, hdr: clip.HdrRange, flat: ground, roll: roll, gammaOutput: true);
             if (renderer == null) return false;
             renderer.name = SupernovaBossEffectPrefix + label;

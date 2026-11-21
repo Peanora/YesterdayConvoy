@@ -10305,6 +10305,1765 @@
       "firstNonzeroRadianceFrame": 1,
       "firstQuarterPeakEncodedFrame": 1,
       "tokenSkinOwner": false
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_floor_sale#14",
+      "sourcePath": "E:\\珍贵资料\\昨日圆车\\artifacts\\formation-supernova-peak\\native\\frames\\wisdel_skill_03_hit_02_floor_sale#14",
+      "sourceJob": {
+        "key": "",
+        "output": "wisdel_skill_03_hit_02_floor_sale#14",
+        "duration": 3.0,
+        "fps": 30,
+        "size": 768,
+        "orthoSize": 8,
+        "hdrRange": 256,
+        "probeEvery": 0,
+        "camera": {
+          "x": 0,
+          "y": 12,
+          "z": -6.9282
+        },
+        "target": {
+          "x": 0,
+          "y": 0.25,
+          "z": 0
+        },
+        "anchor": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "instances": [
+          {
+            "key": "wisdel_skill_03_hit_02_sale#14",
+            "start": 0,
+            "hideRendererPaths": [
+              "wisdel_skill_03_hit_02_sale#14",
+              "wisdel_skill_03_hit_02_sale#14/static_offset",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (2)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/light",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/glow",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/+",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/fire",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/flow",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/sharp",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/1",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/2",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/3",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/3 (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/ptc",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/1",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/2",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/3",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/4",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/4 (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/1",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/2",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/3",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/4",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/flow",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/flow (1)"
+            ]
+          }
+        ]
+      },
+      "sourceReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "keys": [
+          "wisdel_skill_03_hit_02_sale#14"
+        ],
+        "shaders": [
+          "Torappu/Particles/Disturb/Disturb GrabPass supported=True",
+          "Torappu/Particles/Dissolve/Dissolve AB supported=True",
+          "Torappu/Particles/Disturb/Disturb(CustomData) supported=True",
+          "Legacy Shaders/Particles/Alpha Blended Premultiply supported=True"
+        ],
+        "limitations": [
+          "Original native ParticleSystem, enabled Animator/Legacy Animation, mesh, texture and Shader; source UVTween, FxUVRotation and FxDelay replayed by processing harness.",
+          "Full Torappu game scripts are absent. FollowMountPoint/FollowDirection are supplied by explicit root trajectories; source lifecycle is only partial. Stop uses native StopEmitting, not original _inactiveOnFinish/Animator finish transitions.",
+          "No LOD reduction, intensity change, emission-count change, substitute Shader or stylistic paint. Camera, seed, root trajectories and job timing are processing inputs.",
+          "Source TrailRenderer lifetime is replayed using the explicit 1/60 processing clock because Editor Time.time does not advance during synchronous baking. Original game orchestration is not fully reproduced. EdgePixels>0 requires a wider capture."
+        ],
+        "frames": 90,
+        "visibleFrames": 23,
+        "missingScripts": 23,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "size": 768,
+        "peak": 0.427978515625,
+        "maxTransmissionError": 1.7881393432617188e-07,
+        "hdrRange": 256.0,
+        "fps": 30.0,
+        "pixelsPerWorldUnit": 48.0,
+        "pivotX": 0.5,
+        "pivotY": 0.49206382036209106,
+        "contentMinX": 245,
+        "contentMinY": 244,
+        "contentMaxX": 521,
+        "contentMaxY": 440
+      },
+      "sourceObject": {
+        "key": "wisdel_skill_03_hit_02_sale#14",
+        "nodes": [
+          {
+            "indices": [],
+            "path": "wisdel_skill_03_hit_02_sale#14",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "ParticleEffect",
+                "fields": "{\"_bodyTransofrm\": {\"m_FileID\": 0, \"m_PathID\": 211581748124652840}, \"_subFXDelayConfigs\": [], \"_delayToPlay\": 0.0, \"_delayToFinish\": 0.5, \"_maxLifetime\": -1.0, \"_randomPlayDelay\": 0, \"_allowAutoReuse\": 1, \"_usePlaybackSpeed\": 0, \"_limitedPlaybackSpeed\": 2.0, \"_preloadCnt\": 2, \"_disableBattleEffectShrink\": 0, \"_rotateType\": 0, \"_spawnLocation\": 5, \"_leftIsDefault\": 0, \"_useBodyRotation\": 0, \"_mainDir\": 1, \"_holdByOwner\": 0, \"_overwriteHeight\": 0, \"_heightOffset\": 0.0, \"_rotationY\": {\"m_FileID\": 0, \"m_PathID\": 0}, \"_rotationZ\": {\"m_FileID\": 0, \"m_PathID\": 0}, \"_flipZ\": {\"m_FileID\": 0, \"m_PathID\": 0}, \"_inactiveOnFinish\": [], \"_isLoop\": 0, \"_ignoredByParticleEffectManager\": 0, \"_toggleMeshRendererWhenPause\": 0}"
+              },
+              {
+                "type": "OnPlayAudioPlayer",
+                "fields": "{\"_audioSignal\": \"WISDEL_S3_BOMB_EFF\", \"_delayToEmit\": 0.0, \"_offset\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}, \"_followOwnerDirection\": 0}"
+              }
+            ],
+            "delayToPlay": 0.0,
+            "delayToFinish": 0.5,
+            "isLoop": false
+          },
+          {
+            "indices": [
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/disturb",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxGetParticleSystemPosWS",
+                "fields": "{\"_needUpdate\": 0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bottom",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bottom (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              5
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/light",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              6
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/glow",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              7
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              8
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl_2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              9
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl_2 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              10
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/+",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1 (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              5
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2 (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1 (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/fire",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 1, \"_angle3\": -90.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/flow",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 1, \"_angle3\": -90.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/sharp",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/3",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/3 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/ptc",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/3",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/4",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/4 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/3",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/4",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/flow",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              5
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/flow (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          }
+        ]
+      },
+      "frames": 26,
+      "oldPpu": null,
+      "pixelsPerWorldUnit": 48.0,
+      "crop": [
+        238,
+        321,
+        292,
+        212
+      ],
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_floor_sale#14/00.png",
+          "sha256": "d89d32febb8543c1d514b7c5007142f246dea13db6382440ffccd36c57e91650",
+          "sourceFirstFrame": 0,
+          "sourceFrameSha256": [
+            "b7007f891b0adb7576bd3ac5e08127c33551cc3f3d72216a441e0a007c3ed0f3",
+            "ad0c3b35bd264fb2b0ce71ae3a8640d60933209096d34d31c1546c04ae47ad93",
+            "2613e7f3e27e68865880b131ac2379833938bf2af4c7297fd74245c9f1b890f1",
+            "6656d4548bd8b745866a924cf24768b3277d99ab5f340a7717a3d21f00426813",
+            "7e462be50ebfaac3d7c2c97482e065031ce9334d3778914f947df949e41e63d2",
+            "4311039a7d59e5ffc8e594a91780c8a9eb8e5b95b974fdb5dc3edbdcf797b2ca",
+            "4175c5ddbbbaed953754ab2f51f2439f0847d172712d2b6bdf519da876d44fab",
+            "359ee65e2978686ded7fca3742fc17cad0aa3d12ca2bb891cfaa92b6b54ae669",
+            "1e00494c057df9c147b7ada1764cc5f2fa9df5e0ff2dc78abf77d38f625e1d00",
+            "052f6facb8407e4f7728d06653deb7c834f930202897a09269ebff637a260bd8",
+            "4d9229e33d955aa825b16857892c7c42f835d16f4d29d8a36acab48892caa810",
+            "aa24390b0fbc6aa626f1b1e28975ad982946166d155e49d35bc67c7245c03c9c",
+            "0f998cc19dd59731f66ff3c869392273bef706d88690afaf8184ffe1b9d194c5",
+            "9e3e10fa0ab4c0fc72b98e3ece084863ecfcfd65eb2ac0d158aaab1d0a480f89",
+            "966bfb40eaeb505558de06b2173253c335cb5c42f97f34be12a0403835c868da",
+            "6957e0c54dd7ce9bccf33ac1423c1c4add00eeb30d8d593fade64bf7641ddb5d",
+            "f358d3cefec234865f3694947dbd3c21438768f8dcb745ded868ba75b58c6cac",
+            "c2d06b6c57bcf1ba851d3cea9bc1599df2df376a126e09bd379f01ca10b9e060",
+            "9541ffb733b03beed0d097b692790abc6e112654b6278bbdb81cdf99a34486e3",
+            "3ff7ed9cace8c7bcea8f13f6d8369500c9b2d9c115d76586f3b39b6fa50f29c9",
+            "663558cdb0ce23b9c996e6dc7e311854f551fbc3a8bd0022d2b43f8e6d955847",
+            "1961237a4cb3db724a72a8c7a204a47e902337e6c5ef172fb9cc1c7343f3046d",
+            "87b99c1dbc4749464df5a95b93b470f65ed39b62c8318a6ef8ffd7bb03073603",
+            "f093239e21bdb6db6d267a02c705ef4f3dc1c5baca085a89bb42a3f69d6730e6",
+            "b7007f891b0adb7576bd3ac5e08127c33551cc3f3d72216a441e0a007c3ed0f3",
+            "b7007f891b0adb7576bd3ac5e08127c33551cc3f3d72216a441e0a007c3ed0f3"
+          ]
+        }
+      ],
+      "firstNonzeroRadianceFrame": 1,
+      "tokenSkinOwner": false
+    },
+    {
+      "key": "wisdel_skill_03_hit_02_burst_sale#14",
+      "sourcePath": "E:\\珍贵资料\\昨日圆车\\artifacts\\formation-supernova-peak\\native\\frames\\wisdel_skill_03_hit_02_burst_sale#14",
+      "sourceJob": {
+        "key": "",
+        "output": "wisdel_skill_03_hit_02_burst_sale#14",
+        "duration": 3.0,
+        "fps": 30,
+        "size": 768,
+        "orthoSize": 8,
+        "hdrRange": 256,
+        "probeEvery": 0,
+        "camera": {
+          "x": 0,
+          "y": 9.5,
+          "z": -10.5
+        },
+        "target": {
+          "x": 0,
+          "y": 0.25,
+          "z": 0
+        },
+        "anchor": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "instances": [
+          {
+            "key": "wisdel_skill_03_hit_02_sale#14",
+            "start": 0,
+            "hideRendererPaths": [
+              "wisdel_skill_03_hit_02_sale#14",
+              "wisdel_skill_03_hit_02_sale#14/static_offset",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/disturb",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (2)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bottom",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bottom (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl_2",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl_2 (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1 (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2 (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1 (2)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2 (2)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1 (1)",
+              "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1 (2)"
+            ]
+          }
+        ]
+      },
+      "sourceReport": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "keys": [
+          "wisdel_skill_03_hit_02_sale#14"
+        ],
+        "shaders": [
+          "Torappu/Particles/Additive supported=True",
+          "Torappu/Particles/AlphaBlend supported=True",
+          "Legacy Shaders/Particles/Alpha Blended Premultiply supported=True",
+          "Torappu/Particles/Disturb/Disturb(CustomData) supported=True"
+        ],
+        "limitations": [
+          "Original native ParticleSystem, enabled Animator/Legacy Animation, mesh, texture and Shader; source UVTween, FxUVRotation and FxDelay replayed by processing harness.",
+          "Full Torappu game scripts are absent. FollowMountPoint/FollowDirection are supplied by explicit root trajectories; source lifecycle is only partial. Stop uses native StopEmitting, not original _inactiveOnFinish/Animator finish transitions.",
+          "No LOD reduction, intensity change, emission-count change, substitute Shader or stylistic paint. Camera, seed, root trajectories and job timing are processing inputs.",
+          "Source TrailRenderer lifetime is replayed using the explicit 1/60 processing clock because Editor Time.time does not advance during synchronous baking. Original game orchestration is not fully reproduced. EdgePixels>0 requires a wider capture."
+        ],
+        "frames": 90,
+        "visibleFrames": 51,
+        "missingScripts": 23,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "size": 768,
+        "peak": 3.7919743061065674,
+        "maxTransmissionError": 4.172325134277344e-07,
+        "hdrRange": 256.0,
+        "fps": 30.0,
+        "pixelsPerWorldUnit": 48.0,
+        "pivotX": 0.5,
+        "pivotY": 0.4882757067680359,
+        "contentMinX": 258,
+        "contentMinY": 250,
+        "contentMaxX": 508,
+        "contentMaxY": 461
+      },
+      "sourceObject": {
+        "key": "wisdel_skill_03_hit_02_sale#14",
+        "nodes": [
+          {
+            "indices": [],
+            "path": "wisdel_skill_03_hit_02_sale#14",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "ParticleEffect",
+                "fields": "{\"_bodyTransofrm\": {\"m_FileID\": 0, \"m_PathID\": 211581748124652840}, \"_subFXDelayConfigs\": [], \"_delayToPlay\": 0.0, \"_delayToFinish\": 0.5, \"_maxLifetime\": -1.0, \"_randomPlayDelay\": 0, \"_allowAutoReuse\": 1, \"_usePlaybackSpeed\": 0, \"_limitedPlaybackSpeed\": 2.0, \"_preloadCnt\": 2, \"_disableBattleEffectShrink\": 0, \"_rotateType\": 0, \"_spawnLocation\": 5, \"_leftIsDefault\": 0, \"_useBodyRotation\": 0, \"_mainDir\": 1, \"_holdByOwner\": 0, \"_overwriteHeight\": 0, \"_heightOffset\": 0.0, \"_rotationY\": {\"m_FileID\": 0, \"m_PathID\": 0}, \"_rotationZ\": {\"m_FileID\": 0, \"m_PathID\": 0}, \"_flipZ\": {\"m_FileID\": 0, \"m_PathID\": 0}, \"_inactiveOnFinish\": [], \"_isLoop\": 0, \"_ignoredByParticleEffectManager\": 0, \"_toggleMeshRendererWhenPause\": 0}"
+              },
+              {
+                "type": "OnPlayAudioPlayer",
+                "fields": "{\"_audioSignal\": \"WISDEL_S3_BOMB_EFF\", \"_delayToEmit\": 0.0, \"_offset\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}, \"_followOwnerDirection\": 0}"
+              }
+            ],
+            "delayToPlay": 0.0,
+            "delayToFinish": 0.5,
+            "isLoop": false
+          },
+          {
+            "indices": [
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/disturb",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxGetParticleSystemPosWS",
+                "fields": "{\"_needUpdate\": 0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/name (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bottom",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bottom (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              5
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/light",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              6
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/glow",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              7
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              8
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl_2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              9
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/bowl_2 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              10
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/+",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/1 (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              11,
+              5
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_b/2 (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              12,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/flower_s/1 (2)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 1, \"_angle3\": 270.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/fire",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 1, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 1, \"_angle3\": -90.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/flow",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": -90.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 1, \"_angle3\": -90.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              13,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/center/sharp",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/3",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/3 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              14,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/ptc/ptc",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/3",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/4",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              15,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/thunder/4 (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 0.0, \"_rotateTex2\": 1, \"_angle2\": 90.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              0
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/1",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              1
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/2",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              2
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/3",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              3
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/4",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": []
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              4
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/flow",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          },
+          {
+            "indices": [
+              0,
+              0,
+              16,
+              5
+            ],
+            "path": "wisdel_skill_03_hit_02_sale#14/static_offset/fixed/splash/flow (1)",
+            "active": true,
+            "delay": -1,
+            "uv": [],
+            "scripts": [
+              {
+                "type": "FxUVRotation",
+                "fields": "{\"_propertyName\": \"_Rotation\", \"_rotateTex1\": 0, \"angle1\": 180.0, \"_rotateTex2\": 0, \"_angle2\": 0.0, \"_rotateTex3\": 0, \"_angle3\": 0.0, \"_rotateTex4\": 0, \"_angle4\": 0.0}"
+              }
+            ]
+          }
+        ]
+      },
+      "frames": 54,
+      "oldPpu": null,
+      "pixelsPerWorldUnit": 48.0,
+      "crop": [
+        252,
+        300,
+        264,
+        224
+      ],
+      "pages": [
+        {
+          "file": "wisdel_skill_03_hit_02_burst_sale#14/00.png",
+          "sha256": "b50f26d5d51b1669ab7fa38b01018adfa99550c00a52b5166d16a7bebc350c83",
+          "sourceFirstFrame": 0,
+          "sourceFrameSha256": [
+            "b7007f891b0adb7576bd3ac5e08127c33551cc3f3d72216a441e0a007c3ed0f3",
+            "0b30ec4c8480509f070a79025d37b794f311ccd92250399b42feae64b8d12d94",
+            "01a054017897bd5f761196cff22202e95d6a25f44fcb30556f09b792919c52cf",
+            "40a083554f082c74323f8f11397a1e376365cb63034fabfe0b44c011a9ebd045",
+            "299b594e35f1fbaca587e99c3aa84112c01c8c0a699fdf7a2d7a55f3de892036",
+            "24298cd6f7ac689fc841f0e64dbb85c1a2922e18225f2cb39ded8b7c319f2b4c",
+            "9c0a9329da11d7ab6a90df103735ff868b2829b990255af428bd8587a22e32a0",
+            "aaeac36730e5c8382539a260097399badca727aeb5d314a9be0afa1f4e9cdc76",
+            "3b0767ca7d2e1d83e605c91ca8c132486858c48163bdaac967eb7ed9d0f89fb8",
+            "8f24ab9a7e895bf593f38a728dad5bf6d9d7f5dea548a3e24253dccd58f21931",
+            "87c4ec35ddc5f09374a6d623317887e81229861206ad8d54db223118414a1a93",
+            "7f1adfea71e08a661ea4a9c4526669be653c70f64b3b083640ca8fdd462e8a0b",
+            "1c08bb52dc91291995847e94631f65366f14a89389fb40a77755f522f9f58ed9",
+            "cfdbe21c51c4b53581596cb790a1215016b779a009ea0011a2c2f00d7741e704",
+            "bcc1fb24c857e15658f610f00e5fc677b17b8ebbc61420d833a0bf59b7ce7d32",
+            "ae551a7218d3c03c2c07cec5dd38e340d1dc0240ee05f02f26d17e6c0a3c9eaf",
+            "a8ca6f8fe1824f52aa58d313fe8a13446bcfdfbb063c7602a72da81d8ae03247",
+            "0275fdcf01d01016045d5fe1d38edde85c471386d71e2015ce69e358e2f17730",
+            "59a62fd245e3daf9af2d95c78fc7ebcd497ee232b64795ab4d808f27616fbe7f",
+            "7d2c297feda216910aaf188b46cb4339479f41b987b8d2ac0314f6326a91551c",
+            "adcd6f17bed0d7464d5ee2580d56de09709fb864877a3227fb91542b4d5e3ddf",
+            "6e07d19af0d78fa2560d97231903c09461165d29b993226da7b5d7673abdb042",
+            "1436b48996f40009ce9816efe6f738f62dc6b6e11ac98b509260ccbcdfa0cf1b",
+            "1d76e760f3e0f1ba58bf16f93f919e11b1edb86ddb57d00271d0e3b1cfc57554",
+            "027613a5d4063de7095fa9773e13e9c98d8548a5a144d8c3badca6dbdb72245f",
+            "fe0caef28a77717e4bf0662bf5f4b4183c362373acbb9f6027eb62f4aa66e894",
+            "eab5206acfd1ea92f25a52a2e2302c34f9e837a9106a0cb666fbcfbb5b3cd4ad",
+            "549e98a147c042c427c1f9121ed755c98f05a359d57d06b0fc9deb47080b7a6c",
+            "e4668965248ea04edc2b8d732a40cc1f63767729e828cc3ef5489a0c44fc12e7",
+            "fa7fde7e88ea0fb8e9e46308897595be51e2156ee2a6f3d146bcd30dbe65bb3b",
+            "18859a234fb43419d01fd3279817a2413a5b70921d1576c311abdcf5df0ffae3",
+            "1ba580464e5b7931bd1050d35de44d95e340c2b945d32c1e47de2125ea80e8c5",
+            "139da2c8719f42403e2b9f531699ec40d4723259c39f46a8216925ce62559d30",
+            "fd48edc71831e2b4a77ce21790612f371de21e1fd2721cc6b8a5516db2d8d64b",
+            "72e51dbcd697641525fe8ad2399033ed7f1d60fc3013a30d1d877d02ff4eb1b6",
+            "1b4efcce1aa41b248ed35b1d3e91f90ff1883f9e65c4525ae89f1f260f681fb3",
+            "0359adb1dadda793f92f2a05a087d9f7bce1149f30d83741d90cd5ff3efe0bbf",
+            "8a460a96392fd6bb4a5cab4738027bc0ac25f8d631587aa7fe1a9dc2296cbf4a",
+            "5ca27d748d0542fe59a27561938190f3e708990d70d8da317dea028f21a2dbb3",
+            "e1fe60e9bdb98f207955ab356189a5a1d4cc1efc53d18bb203fbf04c65c01a97",
+            "76620d513a1831aebad69d10ba84b6be1938da23c81347b947f0c25e022db9b5",
+            "8199c3675930996daa868b30f8e59855853597e3a55438c980ae723ea79f5211",
+            "1bc3dd52a55135eb473e37872222f2241a1f9116bb0e1ad60d43b4b0ba45e668",
+            "2c0ccc2ae9f694ce5d3f90cdc231bb4de90e652a67ac3cb8b7559765f3ae8be3",
+            "a7624e81a61a07bccaab5a4b7b13144bd5a201af55084ee8c1cbad4a697cca58",
+            "92632c572a2edb487c2bd8a890c735beb9093c8ad9ef1c07342792242f28f9a1",
+            "d925f00d2033d2b5e8834d39a233d2413fca018642c85196df63f37859011824",
+            "8f5cf129a8460d7fe21d284bfb0f3ca4621f18a8d85185ba62992db8050a0122",
+            "8c6fcd9005ea54e435ee8b483c61167af63c26fd1db6ef7ece1e472590e85e26",
+            "9b28149ed168902e680259277bd9e9d40b234512b169daa7b3c1292cb622d817",
+            "bb77b19234a134977edfdbd573aa4dbcb5729928766926c82ad067c0de4ce04d",
+            "256dfb6f1e2bf8e490f871cad93e89eb608af06e1c7606136e254e4ff7e4eb73",
+            "b7007f891b0adb7576bd3ac5e08127c33551cc3f3d72216a441e0a007c3ed0f3",
+            "b7007f891b0adb7576bd3ac5e08127c33551cc3f3d72216a441e0a007c3ed0f3"
+          ]
+        }
+      ],
+      "firstNonzeroRadianceFrame": 1,
+      "tokenSkinOwner": false
     }
   ],
   "detonationLayerSplit": {
@@ -12487,5 +14246,30 @@
         ]
       }
     ]
+  },
+  "peakProjectionSplit": {
+    "prefab": "wisdel_skill_03_hit_02_sale#14",
+    "floor": [
+      "disturb",
+      "bottom",
+      "bottom (1)",
+      "bowl",
+      "bowl_2",
+      "bowl_2 (1)",
+      "flower_b",
+      "flower_s"
+    ],
+    "burst": [
+      "light",
+      "glow",
+      "+",
+      "center",
+      "ptc",
+      "thunder",
+      "splash"
+    ],
+    "floorCamera": "Original native-bake approximately 60 degree elevation retained.",
+    "burstCamera": "Isolated raised branches sampled at approximately 41 degree elevation to retain visible height at the board camera. Original particle positions, RGB, alpha, source age and roots retained. WIS name remains a separate original branch.",
+    "resolution": "Both rerendered at 768 pixels and original orthographic size 8, yielding 48 pixels per native world unit."
   }
 }
