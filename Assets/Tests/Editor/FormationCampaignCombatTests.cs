@@ -998,7 +998,7 @@ namespace YesterdayConvoy.Tests
             var fighter = model.Units.Single();
             fighter.Position = guard.SkillCell.Value;
             fighter.MaxHealth = fighter.Health = 100000;
-            fighter.ActionUntil = double.PositiveInfinity;
+            fighter.MoveSpeed = 0;
             Advance(model, .025f);
             Assert.That(model.Hits.Any(hit => hit.FromId == guard.Id && hit.ToId == fighter.Id && hit.Skill), Is.False);
             Advance(model, .125f);
