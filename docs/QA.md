@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-21 三张新地图实机验收
+
+运行内容源码 `d43a19463e4985d2fcf7a8dfbad807cd3147a3af`。Unity 6000.6.5f1 Windows x64 Development 构建 1,382,839,857 字节，零错误，退出 0。Runtime DLL SHA-256 为 `95A8E89504E314B8E4523202E6DFF133C190AF8EE1A980EE6C8109FCB21238AA`。完整 EditMode 1223/1223。编辑器核对三套存盘 Prefab 的 528 格、共用门列、各自材质族及所有战斗节点两套种子的守军生成。另逐格检查可踏格到蓝门的路径和指定守军的接近点。 [构建日志](../artifacts/formation-map-variants/build-final.log) · [EditMode XML](../artifacts/formation-map-variants/edit-final.xml)
+
+同版 D3D11 Windows Player 三图 73/73、零运行异常。经正式推进验证 1-4 自动换图且保留阵容与站位，此段使用受控结算。三图分别经过难度试玩的正式选择命令、整备、侦察和真实自动战斗，完成清场和实际进蓝门，验证换图、暂停及重试。使用固定合法阵容，片段为游戏 1×，截图后的尾段加速验证通关。默认开局前三战另跑 163/163、零异常。 [三图报告](../artifacts/formation-map-variants/final/map-variants-smoke.json) · [默认挑战报告](../artifacts/formation-map-variants/campaign/campaign-smoke.json)
+
+同版蓝冰雪谷的圣聆初雪预设 61/61、零异常。背景采集模式仅解除失焦自动暂停，实际战斗按 1× 运行。140.875 秒清空第二段生命，147.450 秒进入蓝门，距 150 秒上限 2.550 秒。校验了两阶段积雪、暂停、重试和正式 3-7 的守军落点。 [初雪实机报告](../artifacts/formation-map-variants/snow-final/snow-boss-smoke.json) · [胜利帧](../artifacts/formation-map-variants/snow-final/08-trial-victory.png)
+
+以本机 #05、#09、#12 的官方缩略图核对各自铺装、绿植／冰壁／金饰和高低台，实时看到三种独立布局。1-4 观察环街绕过花园，2-1 观察双格直道与对称侧台，3-1 观察冰脊与浅蓝冰面。三支 1280×720 实机片各 2 秒，按 24 fps 封装并完整解码。实机机位比 Blender 看稿宽，延伸各自原包景底，斜冰面与行走平面齐平。未执行按自然招募打完整个三位面的人工试玩。 [叙拉古街庭](../artifacts/formation-map-variants/final/1-4.mp4) · [金饰回廊](../artifacts/formation-map-variants/final/2-1.mp4) · [蓝冰雪谷](../artifacts/formation-map-variants/final/3-1.mp4) · [原作来源](art/source-records/formation-map-variants.md)
+
 ## 2026-11-21 生命成长与首领治疗验收
 
 运行内容源码 `8aaac2820fbd285df557b5db6ee48a56ce2b000a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,087,910 字节，零错误，退出 0。Runtime DLL SHA-256 为 `B7D394972996F408B3C7BD9D1B2F148EFCDAC25DD7AF9CC038406B461E6ADC4B`。仓库检查核对 17,130 个跟踪文件。完整 EditMode 1223/1223。 [构建日志](../artifacts/formation-survival-balance/build-delivery.log) · [EditMode XML](../artifacts/formation-survival-balance/edit-tuned.xml)
