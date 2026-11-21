@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-21 同源石谷原素材接入验收
+
+对应 `632bd50c5aaf9fc8d0ebff5b3ecca8334e2a1e82`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,110,218 字节、0 错误、退出 0。Runtime DLL SHA-256 `169CF88DCD2E45EF53AF49A43C66453D647760BDCD7EB646DB14D6C96CCEE583`。176 个保存格，16 个原门。EditMode 1219/1219（包含 1-3 与望五子落子）；D3D11 定向 PlayMode 2/2，覆盖浅渠非通行、两岸和桥、原门、角色脚点/深度与水面暂停。Windows 默认入口 D3D11 三战及奖励扩展验证 175/175，0 异常；不是十三关完整人工通关。
+
+以本机 #02 常规场地原始预览核对砂岩与裂石高低关系、原纹样板、低草、桥和围合岩壁。正常速度 [1-1 实机连续片](../artifacts/formation-canyon/canyon-combat.mp4) 为 1280×720、24 fps、54 帧；0.0 与 2.0 秒复看时，浅渠及外河有连续微幅纹理变化，颜色不抢角色；红蓝门、桥和两处高台能辨，未见正常取景的外围空底。暂停冻结另由 PlayMode 读取同一材质相位确认，不以一张暂停图证明。[战斗](../artifacts/formation-canyon/ship-player/05-guard-reward-landing.png) · [整备](../artifacts/formation-canyon/ship-player/03-left-preparation.png) · [暂停](../artifacts/formation-canyon/ship-player/05-combat-paused-no-operating-ui.png)
+
+大水域版本曾使 1-3 的既定阵容失利并破坏望的落点验证；收回原掩体占格后两个回归均通过。保留题材、原 UV 和镜头，未保留看稿的全部水域面积；水面为同包素材兼容表现，不声称复刻原材质焦散、反射。未执行第二台机器或全流程人类试玩。[原包记录](art/source-records/formation-canyon.md)
+
 ## 2026-11-21 望「天下劫」五子连爆实机核对
 
 验收 Windows Player 对应 `37c7b80c7526c6cd748ce8b6ce8169679c08c1de`。Unity 6000.6.5f1 Windows x64 Development 构建 1,376,768,342 字节，0 错误、退出 0。Runtime DLL SHA-256 为 `4F724993FF27A839B883544095FF399F1A028D3DB13BCF416458370A8EAB03C9`。EditMode 1219/1219，覆盖正式 3-4 的南北站位及各自的五次实际命中。D3D11 定向 PlayMode 24/24，覆盖暂停、五次爆炸和棋盘寿命。Windows 默认入口三战 163/163，四个正式节点专项检视 48/48，均为 0 异常。
