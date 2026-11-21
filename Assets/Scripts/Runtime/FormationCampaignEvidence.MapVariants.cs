@@ -57,12 +57,17 @@ namespace YesterdayConvoy
                 };
                 Assert(authoring.gameObject.activeInHierarchy &&
                     new[] { controller.maps.street, controller.maps.hall, controller.maps.ice }.Count(a => a.gameObject.activeInHierarchy) == 1 &&
-                    controller.maps.canyonScenery.All(root => !root.activeInHierarchy), sample.node + " renders one terrain only");
+                    !controller.terrain.gameObject.activeInHierarchy &&
+                    controller.maps.canyonScenery.All(root => !root.activeInHierarchy), sample.node + " renders one terrain only, including raised surfaces");
                 var model = controller.Model;
                 Assert(!model.Terrain.IsWalkable(sample.feature) &&
                     model.Defenders.All(d => model.Terrain.CanPlaceDefender(d.Position) &&
                         (!d.SkillCell.HasValue || model.Terrain.IsWalkable(d.SkillCell.Value))),
                     sample.node + " blocking scenery and guard positions use the active geometry");
+                var approach = new Vector2(11, sample.board == FormationBattleMaps.Board.Street ? 3 : 1);
+                var destination = sample.board == FormationBattleMaps.Board.Street ? new Vector2(19, 3) : new Vector2(20, 3);
+                Assert(UsesAuthoredCorridor(model.Terrain, authoring.preferredGround, approach, destination),
+                    sample.node + " follows the authored corridor through the middle of the board");
 
                 yield return ResolveChoices();
                 StageDefenseEvidenceRoster(controller.Campaign.CurrentNode.Plane, false);
@@ -76,6 +81,7 @@ namespace YesterdayConvoy
                 yield return Frame(sample.node + "-deploy");
                 controller.StartBattle();
                 Assert(model.Phase == FormationPhase.Fighting && model.Speed == 1, sample.node + " starts at normal speed");
+                yield return CaptureInterfaceClip(sample.node + "-advance", 72, "-formationMapClips");
                 double deadline = Time.realtimeSinceStartupAsDouble + 30;
                 while (!model.Hits.Any(hit => hit.Amount > 0) && Time.realtimeSinceStartupAsDouble < deadline)
                 {
@@ -107,7 +113,26 @@ namespace YesterdayConvoy
             }
             controller.SelectPracticeBattle(0);
             Assert(controller.maps.ActiveBoard == FormationBattleMaps.Board.Canyon &&
+                controller.terrain.gameObject.activeInHierarchy &&
                 controller.maps.canyonScenery.All(root => root.activeInHierarchy), "Returning to 1-1 restores the Canyon scenery");
+        }
+
+        static bool UsesAuthoredCorridor(FormationBattleTerrainLayout layout, RectInt[] ground, Vector2 position, Vector2 goal)
+        {
+            int middleSteps = 0, onRoad = 0;
+            for (int step = 0; step < 100 && position != goal; step++)
+            {
+                if (!layout.TryApproach(position, goal, .8f, out var waypoint, out _)) return false;
+                Vector2 next = Vector2.MoveTowards(position, waypoint, .25f);
+                if (!layout.CanTravel(position, next) || next == position) return false;
+                position = next;
+                if (position.x >= 13 && position.x <= 18)
+                {
+                    middleSteps++;
+                    if (ground.Any(area => area.Contains(Vector2Int.RoundToInt(position)))) onRoad++;
+                }
+            }
+            return position == goal && middleSteps > 0 && onRoad >= middleSteps * .70f;
         }
     }
 }

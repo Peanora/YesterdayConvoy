@@ -51,6 +51,7 @@ namespace YesterdayConvoy
             var layout = layouts[(int)board] ??= authoring.BuildLayout();
             bool showCanyon = board == Board.Canyon;
             foreach (var scenery in canyonScenery) scenery.SetActive(showCanyon);
+            canyon.gameObject.SetActive(showCanyon);
             street.gameObject.SetActive(board == Board.Street);
             hall.gameObject.SetActive(board == Board.Hall);
             ice.gameObject.SetActive(board == Board.Ice);

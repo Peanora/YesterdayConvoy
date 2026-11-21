@@ -37,6 +37,23 @@ namespace YesterdayConvoy.Tests
         static string Snapshot(FormationBattleModel model) => string.Join("|", model.Defenders.Select(d =>
             d.ArtId + ":" + d.Position.x + "," + d.Position.y + ":" + d.MaxHealth + ":" + d.Attack));
 
+        [Test]
+        public void TravelPrefersTheAisleEvenWhenTheDiagonalIsPhysicallyOpen()
+        {
+            var terrain = new FormationBattleTerrainLayout(Array.Empty<FormationBattleTerrainRegion>(),
+                new[] { new RectInt(11, 3, 10, 2) }, 1);
+            var start = new Vector2(11, 1);
+            var goal = new Vector2(20, 3.5f);
+            Assert.That(terrain.CanTravel(start, goal), Is.True);
+            Assert.That(terrain.TryApproach(start, goal, .8f, out var turn, out _), Is.True);
+            Assert.That(turn, Is.EqualTo(new Vector2(11, 3.5f)));
+            Assert.That(terrain.TryApproach(turn, goal, .8f, out var ahead, out _), Is.True);
+            Assert.That(ahead, Is.EqualTo(goal));
+            Assert.That(terrain.TryExit(start, out var exitTurn), Is.True);
+            Assert.That(exitTurn.x, Is.EqualTo(11));
+            Assert.That(exitTurn.y, Is.GreaterThanOrEqualTo(3));
+        }
+
         [TestCase(FormationBattleModel.Width - 5, 1)]
         [TestCase(FormationBattleModel.Width - 4, 1)]
         [TestCase(FormationBattleModel.Width - 5, 2)]

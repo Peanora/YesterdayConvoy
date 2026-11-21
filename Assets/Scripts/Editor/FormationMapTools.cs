@@ -48,10 +48,7 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Formation Battle/Author Approved Map Variants")]
         public static void Apply()
         {
-            if (EditorApplication.isPlayingOrWillChangePlaymode || Enumerable.Range(0, SceneManager.sceneCount)
-                .Any(index => SceneManager.GetSceneAt(index).isDirty))
-                throw new InvalidOperationException("Save open scenes and stop Play before authoring the maps.");
-            var scene = EditorSceneManager.OpenScene(FormationBattleTools.ScenePath, OpenSceneMode.Single);
+            var scene = OpenForAuthoring();
             var controller = Object.FindAnyObjectByType<FormationBattleController>();
             if (controller == null || controller.terrain == null)
                 throw new InvalidOperationException("The default formation board must be authored first.");
@@ -61,6 +58,7 @@ namespace YesterdayConvoy.Editor
             var maps = mapRoot.AddComponent<FormationBattleMaps>();
             controller.maps = maps;
             BindCanyon(scene, maps);
+            FormationCanyonTools.ResurfaceHighStations(controller.terrain);
             foreach (var (folder, board) in Maps)
             {
                 string directory = Art + "/" + folder;
@@ -79,6 +77,28 @@ namespace YesterdayConvoy.Editor
             AssetDatabase.SaveAssets();
             if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save the formation board bindings.");
             Validate();
+        }
+
+        [MenuItem("Yesterday Convoy/Formation Battle/Refresh Route Surfaces")]
+        public static void RefreshRoutes()
+        {
+            var scene = OpenForAuthoring();
+            var controller = Object.FindAnyObjectByType<FormationBattleController>();
+            FormationCanyonTools.ResurfaceHighStations(controller.terrain);
+            foreach (var (folder, board) in Maps)
+                new MapBuilder(Art + "/" + folder, board).RefreshRoutes();
+            EditorSceneManager.MarkSceneDirty(scene);
+            AssetDatabase.SaveAssets();
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save the map surfaces.");
+            Validate();
+        }
+
+        static Scene OpenForAuthoring()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode || Enumerable.Range(0, SceneManager.sceneCount)
+                .Any(index => SceneManager.GetSceneAt(index).isDirty))
+                throw new InvalidOperationException("Save open scenes and stop Play before authoring the maps.");
+            return EditorSceneManager.OpenScene(FormationBattleTools.ScenePath, OpenSceneMode.Single);
         }
 
         internal static void BindCanyon(Scene scene, FormationBattleMaps maps)
@@ -101,7 +121,9 @@ namespace YesterdayConvoy.Editor
         public static void Validate()
         {
             var maps = Object.FindAnyObjectByType<FormationBattleMaps>();
-            if (maps == null || maps.sunlight == null || maps.canyonScenery.Any(root => root == null || !root.activeSelf))
+            var canyon = Object.FindAnyObjectByType<FormationBattleController>()?.terrain;
+            if (maps == null || maps.sunlight == null || canyon == null || !canyon.gameObject.activeSelf ||
+                maps.canyonScenery.Any(root => root == null || !root.activeSelf))
                 throw new InvalidOperationException("Missing formation map bindings or Canyon scenery.");
             var snapshots = new Dictionary<FormationBattleMaps.Board, FormationBattleTerrainLayout>();
             foreach (var (folder, board) in Maps)
@@ -113,6 +135,7 @@ namespace YesterdayConvoy.Editor
                     _ => maps.ice
                 };
                 if (authoring == null || authoring.gameObject.activeSelf || authoring.guardPositions.Length != 2 ||
+                    authoring.preferredGround.Length == 0 || authoring.offRoadCost <= 0 ||
                     PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(authoring.gameObject) != Art + "/" + folder + "/Board.prefab")
                     throw new InvalidOperationException("Map prefab missing or enabled at startup: " + folder);
                 var layout = authoring.BuildLayout();
@@ -180,6 +203,8 @@ namespace YesterdayConvoy.Editor
         sealed class MapBuilder
         {
             readonly string directory, title;
+            readonly FormationBattleMaps.Board boardKind;
+            readonly RectInt[] preferredGround;
             readonly Catalog catalog;
             readonly Dictionary<string, Mesh> meshes;
             readonly Dictionary<string, Part> parts;
@@ -191,12 +216,16 @@ namespace YesterdayConvoy.Editor
             public MapBuilder(string directory, FormationBattleMaps.Board board)
             {
                 this.directory = directory;
+                boardKind = board;
                 title = FormationBattleMaps.DisplayName(board);
                 catalog = JsonUtility.FromJson<Catalog>(File.ReadAllText(directory + "/source.json"));
+                preferredGround = BuildCorridors().ToArray();
                 foreach (string folder in new[] { "Meshes", "Materials" })
                     if (!AssetDatabase.IsValidFolder(directory + "/" + folder)) AssetDatabase.CreateFolder(directory, folder);
                 parts = catalog.parts.ToDictionary(part => part.name);
                 finishes = catalog.finishes.ToDictionary(finish => finish.name);
+                if (board == FormationBattleMaps.Board.Ice)
+                    finishes.Add("packed-ice", new Finish { tint = new Color(.19f, .33f, .49f, 1), mix = .34f });
                 nativeMaterials = catalog.materials.ToDictionary(material => material.name);
                 meshes = catalog.parts.ToDictionary(part => part.name, ImportMesh);
                 shader = Shader.Find("YesterdayConvoy/Formation Canyon Surface");
@@ -211,6 +240,7 @@ namespace YesterdayConvoy.Editor
                     var board = root.AddComponent<FormationBattleTerrainAuthoring>();
                     board.regions = Regions().ToArray();
                     board.guardPositions = catalog.guards;
+                    SetRouteData(board);
                     var cells = new GameObject("Board cells").transform;
                     var surroundings = new GameObject("Surroundings").transform;
                     cells.SetParent(root.transform, false);
@@ -222,6 +252,62 @@ namespace YesterdayConvoy.Editor
                         throw new InvalidOperationException("Could not save " + title);
                 }
                 finally { Object.DestroyImmediate(root); }
+            }
+
+            public void RefreshRoutes()
+            {
+                string path = directory + "/Board.prefab";
+                var root = PrefabUtility.LoadPrefabContents(path);
+                try
+                {
+                    var board = root.GetComponent<FormationBattleTerrainAuthoring>();
+                    SetRouteData(board);
+                    if (boardKind == FormationBattleMaps.Board.Ice)
+                    {
+                        var cells = root.transform.Find("Board cells");
+                        foreach (var placement in catalog.placements.Where(placement => placement.tile))
+                            SetSurface(cells.Find(TileName(placement)).GetComponent<MeshRenderer>(), placement);
+                    }
+                    board.BuildLayout();
+                    if (PrefabUtility.SaveAsPrefabAsset(root, path) == null)
+                        throw new InvalidOperationException("Could not refresh " + title);
+                }
+                finally { PrefabUtility.UnloadPrefabContents(root); }
+            }
+
+            void SetRouteData(FormationBattleTerrainAuthoring board)
+            {
+                board.preferredGround = preferredGround;
+                board.offRoadCost = boardKind == FormationBattleMaps.Board.Ice ? .55f : 1f;
+            }
+
+            IEnumerable<RectInt> BuildCorridors()
+            {
+                int first = FormationBattleModel.DeploymentColumns + 1;
+                int width = FormationBattleModel.Width - first - 1;
+                if (boardKind == FormationBattleMaps.Board.Hall)
+                {
+                    yield return new RectInt(first, 3, width, 2);
+                    yield break;
+                }
+                if (boardKind == FormationBattleMaps.Board.Ice)
+                {
+                    yield return new RectInt(first, 2, 6, 2);
+                    yield return new RectInt(first + 6, 3, width - 6, 2);
+                    yield break;
+                }
+                for (int row = 0; row < catalog.rows.Length; row++)
+                {
+                    string surface = catalog.rows[catalog.rows.Length - 1 - row];
+                    int col = 0;
+                    while (col < surface.Length)
+                    {
+                        if (surface[col] != 'r') { col++; continue; }
+                        int start = col;
+                        while (col < surface.Length && surface[col] == 'r') col++;
+                        yield return new RectInt(first + start, row, col - start, 1);
+                    }
+                }
             }
 
             IEnumerable<FormationBattleTerrainRegion> Regions()
@@ -256,13 +342,12 @@ namespace YesterdayConvoy.Editor
 
             void Place(Placement placement, Transform parent)
             {
-                var node = new GameObject(placement.tile ? $"Tile {placement.column:00},{placement.row:00}" : placement.part,
+                var node = new GameObject(placement.tile ? TileName(placement) : placement.part,
                     typeof(MeshFilter), typeof(MeshRenderer)).transform;
                 node.SetParent(parent, false);
                 var mesh = meshes[placement.part];
                 node.GetComponent<MeshFilter>().sharedMesh = mesh;
-                var renderer = node.GetComponent<MeshRenderer>();
-                renderer.sharedMaterials = parts[placement.part].surfaces.Select(slot => MaterialFor(slot.material, placement.finish)).ToArray();
+                SetSurface(node.GetComponent<MeshRenderer>(), placement);
                 var point = FormationBattleController.WorldPoint(new Vector2(placement.column, placement.row));
                 point.y = FloorHeight + placement.top;
                 node.SetPositionAndRotation(point, Quaternion.Euler(0, placement.angle, 0));
@@ -276,6 +361,17 @@ namespace YesterdayConvoy.Editor
                 }
                 node.localScale = new Vector3(target.x / size.x,
                     size.y > .0001f ? target.y / size.y : 1, target.z / size.z);
+            }
+
+            static string TileName(Placement placement) => $"Tile {placement.column:00},{placement.row:00}";
+
+            void SetSurface(MeshRenderer renderer, Placement placement)
+            {
+                string finish = placement.finish;
+                if (boardKind == FormationBattleMaps.Board.Ice && placement.tile && preferredGround.Any(area =>
+                    area.Contains(new Vector2Int((int)placement.column, (int)placement.row))))
+                    finish = "packed-ice";
+                renderer.sharedMaterials = parts[placement.part].surfaces.Select(slot => MaterialFor(slot.material, finish)).ToArray();
             }
 
             Mesh ImportMesh(Part part)

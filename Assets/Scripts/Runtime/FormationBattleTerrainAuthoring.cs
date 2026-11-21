@@ -19,9 +19,12 @@ namespace YesterdayConvoy
     {
         public FormationBattleTerrainRegion[] regions = Array.Empty<FormationBattleTerrainRegion>();
         public FormationGuardPositions[] guardPositions = Array.Empty<FormationGuardPositions>();
+        public RectInt[] preferredGround = Array.Empty<RectInt>();
+        public float offRoadCost;
 
-        public FormationBattleTerrainLayout BuildLayout() => guardPositions.Length == 0
-            ? new FormationBattleTerrainLayout(regions)
-            : new FormationBattleTerrainLayout(regions, guardPositions[0].Build(), guardPositions[1].Build());
+        public FormationBattleTerrainLayout BuildLayout() =>
+            new FormationBattleTerrainLayout(regions, preferredGround, offRoadCost,
+                guardPositions.Length == 0 ? null : guardPositions[0].Build(),
+                guardPositions.Length == 0 ? null : guardPositions[1].Build());
     }
 }

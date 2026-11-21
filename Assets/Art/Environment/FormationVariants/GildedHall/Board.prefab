@@ -21232,6 +21232,12 @@ MonoBehaviour:
     - {x: 20, y: 5}
     reconstruction: {x: 16, y: 5}
     chess: {x: 20, y: 4}
+  preferredGround:
+  - x: 11
+    y: 3
+    width: 10
+    height: 2
+  offRoadCost: 1
 --- !u!1 &8803838007562490218
 GameObject:
   m_ObjectHideFlags: 0

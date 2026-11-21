@@ -26,7 +26,6 @@ namespace YesterdayConvoy.Editor
         const string Planks = "S_Outworld_out_2771";
         const string Stone = "S_Outworld_stone_542";
         const string Water = "S_outworld_water_44";
-        const string High = "S_outworld_highground218";
         const string Cactus = "S_Outworld_out_2778";
 
         [Serializable] sealed class Catalog { public Part[] parts; }
@@ -82,7 +81,7 @@ namespace YesterdayConvoy.Editor
             foreach (var region in controller.terrain.regions.Where(region=>region.allowDefender))
                 for (int col=region.cells.xMin;col<region.cells.xMax;col++)
                     for (int row=region.cells.yMin;row<region.cells.yMax;row++)
-                        art.Add(terrain,"Native high station",High,Point(col,row,FloorHeight+region.height),
+                        art.Add(terrain,"Native high station",HighStone(col,row),Point(col,row,FloorHeight+region.height),
                             new Vector3(1,region.height+.11f,1));
             art.Landscape(terrain);
             art.Root.gameObject.AddComponent<FormationCanyonWater>().Bind(controller,art.Surfaces.ToArray());
@@ -105,6 +104,22 @@ namespace YesterdayConvoy.Editor
             if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Unable to save Formation Canyon.");
             Validate();
             Debug.Log("FORMATION_CANYON_AUTHOR_PASS");
+        }
+
+        static string HighStone(int col, int row) => Sandstone[(col + row * 2) % Sandstone.Length];
+
+        internal static void ResurfaceHighStations(FormationBattleTerrainAuthoring terrain)
+        {
+            var stations = terrain.transform.Cast<Transform>().Where(node => node.name == "Native high station").ToArray();
+            var art = new Dressing(terrain.transform);
+            foreach (var station in stations)
+            {
+                var point = station.position;
+                int col = Mathf.RoundToInt(point.x + (FormationBattleModel.Width - 1) * .5f);
+                int row = Mathf.RoundToInt(point.z + (FormationBattleModel.Height - 1) * .5f);
+                var region = terrain.regions.Single(cell => cell.allowDefender && cell.cells.Contains(new Vector2Int(col,row)));
+                art.Fit(station, HighStone(col,row), Point(col,row,FloorHeight + region.height), new Vector3(1,region.height + .11f,1));
+            }
         }
 
         [MenuItem("Yesterday Convoy/Formation Battle/Validate Formation Canyon")]

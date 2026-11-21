@@ -16,8 +16,8 @@ namespace YesterdayConvoy
     }
 
     /// <summary>
-    /// Immutable snapshot of the saved board geometry. The small visibility graph is built once;
-    /// combat only queries its fixed obstacle corners. No scene objects or physics are consulted.
+    /// Immutable snapshot of the saved board geometry. The visibility graph uses obstacle corners
+    /// and the middle of preferred corridors. No scene objects or physics are consulted.
     /// Heights affect presentation only; combat keeps its existing planar attack distances.
     /// </summary>
     public sealed class FormationBattleTerrainLayout
@@ -27,6 +27,8 @@ namespace YesterdayConvoy
         const float Epsilon = .00005f;
         readonly FormationBattleTerrainRegion[] regions;
         readonly Rect[] obstacles;
+        readonly Rect[] preferredGround;
+        readonly float offRoadCost;
         readonly Vector2[] corners;
         readonly float[,] distances;
         readonly int[,] nextCorner;
@@ -35,9 +37,14 @@ namespace YesterdayConvoy
         internal FormationCampaignRules.GuardFormation SecondGuardFormation { get; }
 
         public FormationBattleTerrainLayout(IEnumerable<FormationBattleTerrainRegion> source)
-            : this(source, null, null) { }
+            : this(source, Array.Empty<RectInt>(), 0) { }
+
+        public FormationBattleTerrainLayout(IEnumerable<FormationBattleTerrainRegion> source,
+            IReadOnlyList<RectInt> preferredGround, float offRoadCost)
+            : this(source, preferredGround, offRoadCost, null, null) { }
 
         internal FormationBattleTerrainLayout(IEnumerable<FormationBattleTerrainRegion> source,
+            IReadOnlyList<RectInt> preferredGround, float offRoadCost,
             FormationCampaignRules.GuardFormation first, FormationCampaignRules.GuardFormation second)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -62,6 +69,10 @@ namespace YesterdayConvoy
                     r.cells.yMax - .5f + BodyClearance);
             }
 
+            if (preferredGround == null || !float.IsFinite(offRoadCost) || offRoadCost < 0)
+                throw new ArgumentException("Invalid preferred ground or travel cost.");
+            this.offRoadCost = offRoadCost;
+            this.preferredGround = new Rect[preferredGround.Count];
             var points = new List<Vector2>();
             foreach (var r in obstacles)
             {
@@ -70,6 +81,34 @@ namespace YesterdayConvoy
                 AddCorner(points, new Vector2(r.xMax, r.yMin));
                 AddCorner(points, new Vector2(r.xMax, r.yMax));
             }
+            for (int i = 0; i < preferredGround.Count; i++)
+            {
+                RectInt area = preferredGround[i];
+                if (area.width <= 0 || area.height <= 0 || area.xMin < FormationBattleModel.DeploymentColumns + 1 ||
+                    area.xMax >= FormationBattleModel.Width || area.yMin < 0 || area.yMax > FormationBattleModel.Height)
+                    throw new ArgumentException("Preferred ground must be in the battle area.", nameof(preferredGround));
+                for (int j = 0; j < i; j++)
+                    if (area.Overlaps(preferredGround[j]))
+                        throw new ArgumentException("Preferred ground regions must not overlap.", nameof(preferredGround));
+                foreach (var cell in area.allPositionsWithin)
+                    if (!IsWalkable(new Vector2(cell.x, cell.y)))
+                        throw new ArgumentException("Preferred ground must be walkable.", nameof(preferredGround));
+
+                Rect walk = Rect.MinMaxRect(area.xMin - .5f, area.yMin - .5f, area.xMax - .5f, area.yMax - .5f);
+                this.preferredGround[i] = walk;
+                // Interior endpoints make both long straight sections and bends
+                // available without steering everyone through a single grid centre.
+                if (area.width >= area.height)
+                {
+                    AddCorner(points, new Vector2(area.xMin, walk.center.y));
+                    AddCorner(points, new Vector2(area.xMax - 1, walk.center.y));
+                }
+                else
+                {
+                    AddCorner(points, new Vector2(walk.center.x, area.yMin));
+                    AddCorner(points, new Vector2(walk.center.x, area.yMax - 1));
+                }
+            }
             corners = points.ToArray();
             distances = new float[corners.Length, corners.Length];
             nextCorner = new int[corners.Length, corners.Length];
@@ -77,7 +116,7 @@ namespace YesterdayConvoy
                 for (int j = 0; j < corners.Length; j++)
                 {
                     bool visible = CanTravel(corners[i], corners[j]);
-                    distances[i, j] = visible ? Vector2.Distance(corners[i], corners[j]) : float.PositiveInfinity;
+                    distances[i, j] = visible ? TravelCost(corners[i], corners[j]) : float.PositiveInfinity;
                     nextCorner[i, j] = visible ? j : -1;
                 }
             for (int k = 0; k < corners.Length; k++)
@@ -142,6 +181,25 @@ namespace YesterdayConvoy
             return first <= last;
         }
 
+        float TravelCost(Vector2 from, Vector2 to)
+        {
+            Vector2 delta = to - from;
+            float length = delta.magnitude;
+            if (preferredGround.Length == 0 || offRoadCost == 0) return length;
+            float first = 0, last = 1;
+            if (!ClipAxis(from.x, delta.x, FormationBattleModel.DeploymentColumns + .5f,
+                FormationBattleModel.Width - 1.5f, ref first, ref last)) return length;
+            float outside = last - first;
+            foreach (var ground in preferredGround)
+            {
+                float enter = first, leave = last;
+                if (ClipAxis(from.x, delta.x, ground.xMin + Epsilon, ground.xMax - Epsilon, ref enter, ref leave) &&
+                    ClipAxis(from.y, delta.y, ground.yMin + Epsilon, ground.yMax - Epsilon, ref enter, ref leave))
+                    outside -= leave - enter;
+            }
+            return length * (1 + offRoadCost * Mathf.Max(0, outside));
+        }
+
         static bool InsideBoard(Vector2 point) => !float.IsNaN(point.x) && !float.IsNaN(point.y) &&
             point.x >= 0 && point.x <= FormationBattleModel.Width - 1 &&
             point.y >= 0 && point.y <= FormationBattleModel.Height - 1;
@@ -182,8 +240,11 @@ namespace YesterdayConvoy
         public bool TryExit(Vector2 from, out Vector2 waypoint)
         {
             var direct = new Vector2(FormationBattleModel.Width - 1, from.y);
-            if (CanTravel(from, direct)) { waypoint = direct; return true; }
-            waypoint = from; float best = float.PositiveInfinity;
+            if (preferredGround.Length == 0 && CanTravel(from, direct)) { waypoint = direct; return true; }
+            waypoint = from;
+            float best = float.PositiveInfinity;
+            if (preferredGround.Length != 0)
+                TryRoute(from, direct, out waypoint, out best);
             for (int row = 0; row < FormationBattleModel.Height; row++)
                 if (TryRoute(from, new Vector2(FormationBattleModel.Width - 1, row), out var candidate, out float length) && length < best - Epsilon)
                 { waypoint = candidate; best = length; }
@@ -194,15 +255,24 @@ namespace YesterdayConvoy
         {
             waypoint = from; distance = float.PositiveInfinity;
             if (!IsWalkable(from) || !IsWalkable(goal)) return false;
-            if (CanTravel(from, goal)) { waypoint = goal; distance = Vector2.Distance(from, goal); return true; }
+            if (CanTravel(from, goal))
+            {
+                waypoint = goal;
+                distance = TravelCost(from, goal);
+                if (preferredGround.Length == 0 || distance <= Vector2.Distance(from, goal) + Epsilon) return true;
+            }
+            Span<float> toGoal = corners.Length <= 128 ? stackalloc float[corners.Length] : new float[corners.Length];
+            for (int j = 0; j < corners.Length; j++)
+                toGoal[j] = CanTravel(corners[j], goal) ? TravelCost(corners[j], goal) : float.PositiveInfinity;
             for (int i = 0; i < corners.Length; i++)
             {
                 if (!CanTravel(from, corners[i])) continue;
-                float first = Vector2.Distance(from, corners[i]);
+                float first = TravelCost(from, corners[i]);
+                if (first >= distance - Epsilon) continue;
                 for (int j = 0; j < corners.Length; j++)
                 {
-                    if (nextCorner[i, j] < 0 || !CanTravel(corners[j], goal)) continue;
-                    float length = first + distances[i, j] + Vector2.Distance(corners[j], goal);
+                    if (nextCorner[i, j] < 0) continue;
+                    float length = first + distances[i, j] + toGoal[j];
                     if (length >= distance - Epsilon) continue;
                     distance = length; waypoint = corners[i];
                     if (first < .001f)
