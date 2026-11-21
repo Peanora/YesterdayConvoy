@@ -1,5 +1,10 @@
 # 当前工程状态
 
+## 2026-11-21 超新星配乐与两段开场台词
+
+- 超新星首领开战后使用塞壬唱片《Arsonist》演唱版，转阶段继续播放。两段各从超新星皮肤的四句普通话战斗语音中抽一句，同一局不重复。配乐在台词期间降低，和台词一起响应暂停与音效开关，结算时停止。 [配乐和语音来源](art/source-records/formation-supernova-boss-audio-2026-11-21.json)
+- Windows 对应源码 `b8c15510`。超新星同版 1080p Player 60/60，初雪回归 61/61，均零异常。超新星预设阵容 63.7 秒通关。EditMode 1220/1220。 [Windows EXE](../Builds/Windows/YesterdayConvoy.exe) · [两段有声实机](../artifacts/formation-supernova-audio/arsonist-phase-intros.mp4)
+
 ## 2026-11-21 超新星爆裂黎明落点放大
 
 - 对照用户提供的原作炸开帧，将超新星三技能的落点拆为原包贴地扩散、上扬红黑爆花和升起的 WIS 字样。放大三个图层，恢复此前被地面截断的前半圈，让白热爆芯和外缘飞溅在同一炮落点连成一片。伤害半径为 2.2 格。 [原作与适配记录](art/source-records/formation-supernova-boss.md)

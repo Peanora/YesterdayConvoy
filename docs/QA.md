@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-21 超新星配乐与两段开场语音验收
+
+源码 `b8c15510384c8352881bcf67e4863cd3d6609e25`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,085,186 字节，零错误，退出 0。Runtime DLL SHA-256 `827C62D6968646AF99FB3DD6ADE9DEA4510D97C0E93438FB854E10C30A9D7917`。EditMode 1220/1220。构建重试使用进程级 Windows NLS 设置，并在共享编译服务失去响应后恢复 C# 编译。 [构建日志](../artifacts/formation-supernova-audio/build-delivery.log) · [EditMode XML](../artifacts/formation-supernova-audio/edit-final.xml)
+
+超新星 1080p D3D11 Player 60/60、零异常。通过正常关卡选择及开战命令进入，八人预设在 1× 战斗时钟通过两段并于 63.700 秒走进蓝门。第一段 0.150 秒播放 `voice-1`，第二段 33.725 秒播放 `voice-3`。一阶段生命清空到转段完成之间未提前播第二句。暂停冻结播放位置，恢复时原曲继续，结算与重试准备界面均无配乐或台词在播。 [Player 报告](../artifacts/formation-supernova-audio/supernova/supernova-boss-smoke.json)
+
+用 FFmpeg `ebur128` 测得《Arsonist》源文件前 7 秒和 33.725 秒起的 7 秒分别为 −15.9、−7.2 LUFS，四条原声为 −16.2 至 −15.3 LUFS。超新星配乐平时按 0.42 增益，台词期间按 0.12，尾音结束后恢复。实机监听器录音对齐确认同一首配乐和两句原声，两句的波形对齐位置与播放标记相差约 15、20 毫秒。录屏 3,989 帧，实际约 49 fps，15.62 秒的剪辑按真实时间封装至 1080p60、48 kHz 双声道，约在 0.26 和 8.07 秒起播两句。 [音源记录](art/source-records/formation-supernova-boss-audio-2026-11-21.json) · [波形核对](../artifacts/formation-supernova-audio/supernova/audio-waveform-match.json) · [两段有声实机](../artifacts/formation-supernova-audio/arsonist-phase-intros.mp4)
+
+同版初雪 Player 回归 61/61、零异常，预设阵容 133.650 秒进入蓝门。初雪仍播放自有曲目 `battle`，两段分别抽中 `voice-2`、`voice-4`。实机检查了初雪的播放、暂停、跨阶段继续和结算停止。 [初雪 Player 报告](../artifacts/formation-supernova-audio/snow/snow-boss-smoke.json)
+
 ## 2026-11-21 超新星爆裂黎明落点放大验收
 
 源码 `1530b7dc13161326f7f61ccf5da8a031f83c801e`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,158,626 字节，零错误，退出 0。Runtime DLL SHA-256 `241A1CB5F07FB0CDA7823D6CDF05DB86C9D1795A3095058F2586CEE1A8653CC8`。EditMode 1220/1220。 [构建日志](../artifacts/formation-supernova-peak/build.log) · [EditMode XML](../artifacts/formation-supernova-peak/edit-final.xml)
