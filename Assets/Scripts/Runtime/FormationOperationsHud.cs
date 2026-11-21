@@ -29,14 +29,14 @@ namespace YesterdayConvoy
         Texture2D operationsNodeIcons;
 
         int[] OperationsPlaneNodes => OperationsPlanes[Campaign.CurrentNode.Plane - 1];
-        bool FormationStrategyHistoryAvailable => Campaign != null && Campaign.SynergyTrial == null && !Campaign.IsSupernovaBossTrial && !CombatViewActive &&
+        bool FormationStrategyHistoryAvailable => Campaign != null && Campaign.SynergyTrial == null && !Campaign.IsStandaloneBossTrial && !CombatViewActive &&
             !MarketVisible && !ShopPanelTransitioning;
         bool FormationScoutAvailable => Model?.Phase == FormationPhase.Preparation &&
             !CampaignInteractionBlocked && !formationMenuOpen && !shopOddsVisible && !rewardHistoryOpen;
 
         public Rect FormationRouteNodeRect(int nodeIndex)
         {
-            if (Campaign == null || Campaign.SynergyTrial != null || Campaign.IsSupernovaBossTrial) return Rect.zero;
+            if (Campaign == null || Campaign.SynergyTrial != null || Campaign.IsStandaloneBossTrial) return Rect.zero;
             var nodes = OperationsPlaneNodes;
             int slot = Array.IndexOf(nodes, nodeIndex);
             if (slot < 0) return Rect.zero;
@@ -150,7 +150,7 @@ namespace YesterdayConvoy
             if (OperationsButton(new Rect(1096, 20, 58, 36), "搭档"))
             { OpenFormationOperationsPanel(); campaignFormationOpen = true; }
             GUI.enabled = enabled;
-            if (OperationsButton(new Rect(1155, 20, 59, 36), trial != null ? "换羁绊" : Campaign.IsSupernovaBossTrial ? "规则" : "记录"))
+            if (OperationsButton(new Rect(1155, 20, 59, 36), trial != null ? "换羁绊" : Campaign.IsStandaloneBossTrial ? "规则" : "记录"))
             {
                 OpenFormationOperationsPanel();
                 if (trial != null) OpenFormationTrialPicker(FormationMenuPage.SynergyTrials);

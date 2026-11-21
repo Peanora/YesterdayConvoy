@@ -143,7 +143,7 @@ namespace YesterdayConvoy.Editor
                 string file=ArtSourcePaths.Resolve(relative),target=Path.Combine(Cache,relative+".ycart");
                 // Block compression distorts additive RGB and smooth gradients in these HDR layers.
                 bool keepHdrPixels=relative.StartsWith("TalulahUnboundVfx/original-fire-",StringComparison.Ordinal)||
-                    ArtSourcePaths.PreserveSupernovaSkillPixels(relative);
+                    ArtSourcePaths.PreserveNativeEffectPixels(relative);
                 string format=keepHdrPixels?"|rgba32":"";
                 var info=new FileInfo(file);string stamp=info.Length+"|"+info.LastWriteTimeUtc.Ticks+format;
                 string record=File.Exists(target+".hash")?File.ReadAllText(target+".hash"):"";

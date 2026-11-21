@@ -104,6 +104,12 @@ namespace YesterdayConvoy
 
         IEnumerable<ArtSequence> FormationGuardEffects(string id)
         {
+            if (id == FormationCampaignRules.MakotoBossArtId)
+            {
+                foreach (string key in MakotoEffectSuffixes)
+                    yield return BossRosterFxArt.Get(MakotoEffectKey(key)).Sequence;
+                yield break;
+            }
             if(id=="D31"&&UsesSupernovaBossArt(id))
             {
                 foreach(var sequence in FormationSupernovaBossEffectSequences())yield return sequence;
@@ -129,6 +135,11 @@ namespace YesterdayConvoy
             foreach(var guard in Model.Defenders)
             {
                 if(!guard.Alive)continue;
+                if (guard.IsMakotoBoss)
+                {
+                    PresentMakotoBossState(guard, now);
+                    continue;
+                }
                 if(guard.IsSupernovaBoss)
                 {
                     PresentSupernovaBossState(guard,now);
@@ -187,6 +198,11 @@ namespace YesterdayConvoy
                 if(action.ActorId<100||action.Cancelled)continue;
                 var guard=Model.Defenders.FirstOrDefault(d=>d.Id==action.ActorId);
                 if(guard==null)continue;
+                if (guard.IsMakotoBoss)
+                {
+                    PresentMakotoBossAction(guard, action, now);
+                    continue;
+                }
                 if(guard.IsSupernovaBoss)
                 {
                     PresentSupernovaBossAction(guard,action,now);
@@ -215,6 +231,11 @@ namespace YesterdayConvoy
             guardHitSprites.Clear();
             foreach(var hit in Model.Hits)
             {
+                if (hit.SourceArtId == FormationCampaignRules.MakotoBossArtId)
+                {
+                    PresentMakotoBossHit(hit, now);
+                    continue;
+                }
                 if(hit.SourceArtId=="D31"&&Model.Defenders.Any(d=>d.Id==hit.FromId&&d.IsSupernovaBoss))
                 {
                     PresentSupernovaBossHit(hit,now);

@@ -1,0 +1,813 @@
+{
+  "version": 1,
+  "task": "MAKOTO_P3R_1",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "makoto_change_01_p3r#1",
+      "count": 47,
+      "width": 84,
+      "height": 76,
+      "columns": 24,
+      "ppu": 13.586240178888495,
+      "pivotX": 0.5476190476190477,
+      "pivotY": 0.2396665874280428,
+      "duration": 1.5666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_change_01_p3r#1/00.png",
+          "count": 47,
+          "width": 2016,
+          "height": 152
+        }
+      ]
+    },
+    {
+      "key": "makoto_change_01_l_p3r#1",
+      "count": 47,
+      "width": 84,
+      "height": 76,
+      "columns": 24,
+      "ppu": 13.586240178888495,
+      "pivotX": 0.5476190476190477,
+      "pivotY": 0.2396665874280428,
+      "duration": 1.5666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_change_01_l_p3r#1/00.png",
+          "count": 47,
+          "width": 2016,
+          "height": 152
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_buff_01_p3r#1",
+      "count": 66,
+      "width": 76,
+      "height": 72,
+      "columns": 26,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5657894736842105,
+      "pivotY": 0.2300316492716471,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_01_buff_01_p3r#1/00.png",
+          "count": 66,
+          "width": 1976,
+          "height": 216
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_buff_01_l_p3r#1",
+      "count": 66,
+      "width": 76,
+      "height": 72,
+      "columns": 26,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.4342105263157895,
+      "pivotY": 0.2300316492716471,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_01_buff_01_l_p3r#1/00.png",
+          "count": 66,
+          "width": 1976,
+          "height": 216
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_start_01_p3r#1",
+      "count": 50,
+      "width": 76,
+      "height": 76,
+      "columns": 26,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5526315789473685,
+      "pivotY": 0.06002998352050781,
+      "duration": 1.6666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_start_01_p3r#1/00.png",
+          "count": 50,
+          "width": 1976,
+          "height": 152
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_start_02_p3r#1",
+      "count": 62,
+      "width": 76,
+      "height": 48,
+      "columns": 26,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.6578947368421053,
+      "pivotY": 0.0950474739074707,
+      "duration": 2.066666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_start_02_p3r#1/00.png",
+          "count": 62,
+          "width": 1976,
+          "height": 144
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_start_01_back_p3r#1",
+      "count": 51,
+      "width": 76,
+      "height": 84,
+      "columns": 26,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5394736842105263,
+      "pivotY": 0.054312842232840386,
+      "duration": 1.7,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_start_01_back_p3r#1/00.png",
+          "count": 51,
+          "width": 1976,
+          "height": 168
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_start_02_back_p3r#1",
+      "count": 60,
+      "width": 76,
+      "height": 44,
+      "columns": 26,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5394736842105263,
+      "pivotY": 0.1491426988081499,
+      "duration": 2.0,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_start_02_back_p3r#1/00.png",
+          "count": 60,
+          "width": 1976,
+          "height": 132
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_trail_01_p3r#1",
+      "count": 41,
+      "width": 472,
+      "height": 480,
+      "columns": 4,
+      "ppu": 40.0,
+      "pivotX": 0.7669491525423728,
+      "pivotY": 0.5136714140574137,
+      "duration": 1.3666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_trail_01_p3r#1/00.png",
+          "count": 16,
+          "width": 1888,
+          "height": 1920
+        },
+        {
+          "file": "makoto_skill_01_trail_01_p3r#1/01.png",
+          "count": 16,
+          "width": 1888,
+          "height": 1920
+        },
+        {
+          "file": "makoto_skill_01_trail_01_p3r#1/02.png",
+          "count": 9,
+          "width": 1888,
+          "height": 1440
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_hit_01_p3r#1",
+      "count": 36,
+      "width": 112,
+      "height": 100,
+      "columns": 18,
+      "ppu": 40.0,
+      "pivotX": 0.48214285714285715,
+      "pivotY": 0.5056227874755859,
+      "duration": 1.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_hit_01_p3r#1/00.png",
+          "count": 36,
+          "width": 2016,
+          "height": 200
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_01_heal_01_p3r#1",
+      "count": 60,
+      "width": 96,
+      "height": 168,
+      "columns": 21,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5520833333333334,
+      "pivotY": 0.13429927825927734,
+      "duration": 2.0,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_01_heal_01_p3r#1/00.png",
+          "count": 60,
+          "width": 2016,
+          "height": 504
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_buff_01_p3r#1",
+      "count": 66,
+      "width": 80,
+      "height": 84,
+      "columns": 25,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.55,
+      "pivotY": 0.20907474699474515,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_02_buff_01_p3r#1/00.png",
+          "count": 66,
+          "width": 2000,
+          "height": 252
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_buff_01_l_p3r#1",
+      "count": 66,
+      "width": 80,
+      "height": 84,
+      "columns": 25,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.4125,
+      "pivotY": 0.20907474699474515,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_02_buff_01_l_p3r#1/00.png",
+          "count": 66,
+          "width": 2000,
+          "height": 252
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_start_01_p3r#1",
+      "count": 64,
+      "width": 180,
+      "height": 180,
+      "columns": 11,
+      "ppu": 13.586240178888495,
+      "pivotX": 0.49444444444444446,
+      "pivotY": 0.5567481146918403,
+      "duration": 2.1333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_02_start_01_p3r#1/00.png",
+          "count": 64,
+          "width": 1980,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_range_01_p3r#1",
+      "count": 66,
+      "width": 128,
+      "height": 80,
+      "columns": 16,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.484375,
+      "pivotY": 0.5152502059936523,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_02_range_01_p3r#1/00.png",
+          "count": 66,
+          "width": 2048,
+          "height": 400
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_range_02_start_p3r#1",
+      "count": 34,
+      "width": 184,
+      "height": 132,
+      "columns": 11,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.5,
+      "pivotY": 0.6153031551476681,
+      "duration": 1.1333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_02_range_02_start_p3r#1/00.png",
+          "count": 34,
+          "width": 2024,
+          "height": 528
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_range_02_p3r#1",
+      "count": 66,
+      "width": 184,
+      "height": 100,
+      "columns": 11,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.4945652173913043,
+      "pivotY": 0.5122001647949219,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_02_range_02_p3r#1/00.png",
+          "count": 66,
+          "width": 2024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_hit_01_p3r#1",
+      "count": 40,
+      "width": 124,
+      "height": 128,
+      "columns": 16,
+      "ppu": 40.0,
+      "pivotX": 0.49193548387096775,
+      "pivotY": 0.4497053027153015,
+      "duration": 1.3333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_02_hit_01_p3r#1/00.png",
+          "count": 40,
+          "width": 1984,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_02_hit_01_finish_p3r#1",
+      "count": 40,
+      "width": 124,
+      "height": 128,
+      "columns": 16,
+      "ppu": 40.0,
+      "pivotX": 0.49193548387096775,
+      "pivotY": 0.4497053027153015,
+      "duration": 1.3333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_02_hit_01_finish_p3r#1/00.png",
+          "count": 40,
+          "width": 1984,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_buff_01_l_p3r#1",
+      "count": 66,
+      "width": 108,
+      "height": 92,
+      "columns": 18,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.48148148148148145,
+      "pivotY": 0.36480737769085425,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_buff_01_l_p3r#1/00.png",
+          "count": 66,
+          "width": 1944,
+          "height": 368
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_buff_01_r_p3r#1",
+      "count": 66,
+      "width": 108,
+      "height": 92,
+      "columns": 18,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5092592592592593,
+      "pivotY": 0.36480737769085425,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_buff_01_r_p3r#1/00.png",
+          "count": 66,
+          "width": 1944,
+          "height": 368
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_range_01_start_p3r#1",
+      "count": 34,
+      "width": 184,
+      "height": 132,
+      "columns": 11,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.5,
+      "pivotY": 0.6153031551476681,
+      "duration": 1.1333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_range_01_start_p3r#1/00.png",
+          "count": 34,
+          "width": 2024,
+          "height": 528
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_range_01_p3r#1",
+      "count": 66,
+      "width": 184,
+      "height": 100,
+      "columns": 11,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.4945652173913043,
+      "pivotY": 0.5122001647949219,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_range_01_p3r#1/00.png",
+          "count": 66,
+          "width": 2024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_start_a_01_p3r#1",
+      "count": 66,
+      "width": 108,
+      "height": 80,
+      "columns": 18,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.7314814814814815,
+      "pivotY": 0.05702848434448238,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_start_a_01_p3r#1/00.png",
+          "count": 66,
+          "width": 1944,
+          "height": 320
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_start_b_01_p3r#1",
+      "count": 66,
+      "width": 108,
+      "height": 88,
+      "columns": 18,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.05184407667680224,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_start_b_01_p3r#1/00.png",
+          "count": 66,
+          "width": 1944,
+          "height": 352
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_start_a_01_back_p3r#1",
+      "count": 56,
+      "width": 104,
+      "height": 88,
+      "columns": 19,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.4423076923076923,
+      "pivotY": 0.09729862213134766,
+      "duration": 1.8666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_start_a_01_back_p3r#1/00.png",
+          "count": 56,
+          "width": 1976,
+          "height": 264
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_start_b_01_back_p3r#1",
+      "count": 55,
+      "width": 112,
+      "height": 96,
+      "columns": 18,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.4017857142857143,
+      "pivotY": 0.07877373695373535,
+      "duration": 1.8333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_start_b_01_back_p3r#1/00.png",
+          "count": 55,
+          "width": 2016,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_hit_01_p3r#1",
+      "count": 40,
+      "width": 124,
+      "height": 128,
+      "columns": 16,
+      "ppu": 40.0,
+      "pivotX": 0.49193548387096775,
+      "pivotY": 0.4497053027153015,
+      "duration": 1.3333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_hit_01_p3r#1/00.png",
+          "count": 40,
+          "width": 1984,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_hit_02_p3r#1",
+      "count": 34,
+      "width": 148,
+      "height": 96,
+      "columns": 13,
+      "ppu": 40.0,
+      "pivotX": 0.42567567567567566,
+      "pivotY": 0.42252373695373535,
+      "duration": 1.1333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_hit_02_p3r#1/00.png",
+          "count": 34,
+          "width": 1924,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p1_weak_01_p3r#1",
+      "count": 23,
+      "width": 52,
+      "height": 24,
+      "columns": 23,
+      "ppu": 40.0,
+      "pivotX": 0.21153846153846154,
+      "pivotY": 0.35676161448160804,
+      "duration": 0.7666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p1_weak_01_p3r#1/00.png",
+          "count": 23,
+          "width": 1196,
+          "height": 24
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p2_buff_01_p3r#1",
+      "count": 66,
+      "width": 104,
+      "height": 100,
+      "columns": 19,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5,
+      "pivotY": 0.36562278747558596,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p2_buff_01_p3r#1/00.png",
+          "count": 66,
+          "width": 1976,
+          "height": 400
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p2_buff_01_l_p3r#1",
+      "count": 66,
+      "width": 104,
+      "height": 116,
+      "columns": 19,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5,
+      "pivotY": 0.3151920581686085,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p2_buff_01_l_p3r#1/00.png",
+          "count": 66,
+          "width": 1976,
+          "height": 464
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p2_range_01_p3r#1",
+      "count": 66,
+      "width": 128,
+      "height": 80,
+      "columns": 16,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.484375,
+      "pivotY": 0.5152502059936523,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p2_range_01_p3r#1/00.png",
+          "count": 66,
+          "width": 2048,
+          "height": 400
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p2_range_02_start_p3r#1",
+      "count": 33,
+      "width": 188,
+      "height": 132,
+      "columns": 10,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.5,
+      "pivotY": 0.6153031551476681,
+      "duration": 1.1,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p2_range_02_start_p3r#1/00.png",
+          "count": 33,
+          "width": 1880,
+          "height": 528
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p2_range_02_p3r#1",
+      "count": 66,
+      "width": 184,
+      "height": 100,
+      "columns": 11,
+      "ppu": 19.21921836005317,
+      "pivotX": 0.4945652173913043,
+      "pivotY": 0.5122001647949219,
+      "duration": 2.2,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p2_range_02_p3r#1/00.png",
+          "count": 66,
+          "width": 2024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "key": "makoto_skill_03_p2_heal_01_p3r#1",
+      "count": 60,
+      "width": 96,
+      "height": 164,
+      "columns": 21,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.5520833333333334,
+      "pivotY": 0.11928218748511332,
+      "duration": 2.0,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_skill_03_p2_heal_01_p3r#1/00.png",
+          "count": 60,
+          "width": 2016,
+          "height": 492
+        }
+      ]
+    }
+  ],
+  "bindings": []
+}

@@ -21,10 +21,11 @@ namespace YesterdayConvoy
         public bool RosterArtReady=>Model!=null&&RequiredFormationArtIds().All(FormationArtAvailable);
 
         internal const string PramanixBossBodyArt = "D27Boss";
-        static string FormationBodyArtId(FormationActor actor) => actor switch
+        string FormationBodyArtId(FormationActor actor) => actor switch
         {
             FormationDefender { IsSnowBoss: true } => PramanixBossBodyArt,
             FormationDefender { IsSupernovaBoss: true, Alive: true } when SupernovaRearView(actor) => "D31B",
+            FormationDefender { IsMakotoBoss: true, Alive: true } guard when MakotoRearView(guard) => "D36B",
             _ => actor.ArtId
         };
 
@@ -50,6 +51,11 @@ namespace YesterdayConvoy
             {
                 yield return "D31";
                 yield return "D31B";
+            }
+            if(Model.Defenders.Any(guard=>guard.IsMakotoBoss))
+            {
+                yield return FormationCampaignRules.MakotoBossArtId;
+                yield return "D36B";
             }
             if(Campaign!=null&&Model.Defenders.Any(d=>d.ArtId=="D28"))yield return "D28Chess";
             foreach(var id in Model.Summons.Select(u=>u.ArtId).Distinct())yield return id;
@@ -159,6 +165,7 @@ namespace YesterdayConvoy
         {
             if (guard.IsSnowBoss) return PramanixBossScale;
             if (guard.ArtId == "D31") return 2.6f;
+            if (guard.IsMakotoBoss) return 2.2f;
             if (source == null || source.IdleCaptureScale <= 0 || !source.Clips.TryGetValue("idle", out var idle)) return 1;
             return idle.Ppu * GuardWorldUnitsPerSourceUnit / source.IdleCaptureScale;
         }
@@ -194,6 +201,60 @@ namespace YesterdayConvoy
             (art.TryGetValue(FormationBodyArtId(guard), out var source) && source.Clips.TryGetValue(
                 guard is FormationDefender { IsSupernovaBoss: true } ? SupernovaBossDeathClip : "death", out var clip)
                 ? clip.Duration : .65f) / FormationVisualRate;
+
+        static string MakotoClip(string motion) => motion switch
+        {
+            "makoto_s2_attack" or "makoto_s2_idle" => "skill_makoto_s2_loop",
+            "makoto_s3_recovery" => "skill_makoto_s3_guard",
+            null => "idle",
+            _ => "skill_" + motion
+        };
+
+        bool MakotoRearView(FormationDefender guard)
+        {
+            if (!SupernovaRearView(guard)) return false;
+            string clip = MakotoClip(ActiveMakotoBodyMotion(guard, Model.Clock) ?? Model.MakotoBossMode(guard).Animation);
+            // Switches and the second S3 form only have a front-facing original.
+            return clip is "idle" or "skill_makoto_s1_idle" or "skill_makoto_s1_attack" or "skill_makoto_s2_loop"
+                or "skill_makoto_s3_idle" or "skill_makoto_s3_attack_a" or "skill_makoto_s3_attack_b";
+        }
+
+        static string ActiveMakotoBodyMotion(FormationDefender guard, double now) =>
+            guard.PresentationAction?.StartsWith("makoto_", StringComparison.Ordinal) == true &&
+            now < guard.PresentationStartedAt + guard.PresentationDuration ? guard.PresentationAction : null;
+
+        void SelectMakotoBossPose(FormationDefender guard, ArtCatalog source, double now, ref string key,
+            ref double age, ref bool oneShot, ref float labelTop)
+        {
+            if (!CombatViewActive)
+            {
+                key = "idle";
+                age = Time.unscaledTimeAsDouble * FormationVisualRate;
+                return;
+            }
+
+            var mode = Model.MakotoBossMode(guard);
+            string motion = ActiveMakotoBodyMotion(guard, now);
+            if (motion != null && motion != "makoto_s2_attack" && source.Clips.ContainsKey(MakotoClip(motion)))
+            {
+                key = MakotoClip(motion);
+                age = Math.Max(0, now - guard.PresentationStartedAt) * guard.PresentationRate;
+                oneShot = true;
+            }
+            else
+            {
+                key = MakotoClip(mode.Animation);
+                age = Math.Max(0, now - Math.Max(0, mode.StartedAt)) * FormationVisualRate;
+            }
+
+            // Use the visible resting silhouette for a stable label during each form.
+            labelTop = guard.MakotoBossPhase switch
+            {
+                1 => source.Rear ? 1.65f : 1.62f,
+                2 => source.Rear ? 1.64f : 1.83f,
+                _ => Model.MakotoBossRecovering(guard) ? 1.63f : source.Rear ? 1.64f : 1.78f
+            };
+        }
 
         void PresentFormationActor(FormationActor actor,bool defender)
         {
@@ -307,6 +368,8 @@ namespace YesterdayConvoy
                     double s2StartedAt=Model.SnowBossS2StartedAt(guard);
                     if(guard.IsSupernovaBoss)
                         SelectSupernovaBossPose(guard,source,now,ref key,ref age,ref singleFrameSequence);
+                    else if(guard.IsMakotoBoss)
+                        SelectMakotoBossPose(guard,source,now,ref key,ref age,ref singleFrameSequence,ref labelTop);
                     else if(actor.LastActionAt>=0&&actor.PresentationAction?.StartsWith("skill_",StringComparison.Ordinal)==true&&
                        source.Clips.TryGetValue(actor.PresentationAction,out var nativeSkill)&&sourceAge<nativeSkill.Duration)
                     {

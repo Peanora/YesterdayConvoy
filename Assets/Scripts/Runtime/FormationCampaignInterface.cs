@@ -307,11 +307,11 @@ namespace YesterdayConvoy
         }
         void DrawCampaignRoute()
         {
-            if (Campaign.IsSupernovaBossTrial)
+            if (Campaign.StandaloneBoss is { } boss)
             {
                 var rules = CampaignWindow(Campaign.BossTrialName + " · 首领试玩",
                     $"限时 {Campaign.CurrentNode.TimeLimit:0} 秒，清空守军后由存活的进攻方本体进入蓝门。");
-                CampaignLabel(new Rect(rules.x + 22, rules.y + 110, rules.width - 44, 100), FormationCampaignRules.SupernovaBoss.Effect, 15, true);
+                CampaignLabel(new Rect(rules.x + 22, rules.y + 110, rules.width - 44, 100), boss.Effect, 15, true);
                 return;
             }
             var r=CampaignWindow("行动记录与发展路线","本次挑战的环境、战略战备和三个位面节点。战斗结束统一结算，补给不发基础收入。");
@@ -329,7 +329,7 @@ namespace YesterdayConvoy
         void DrawCampaignScouting()
         {
             var trial=Campaign.SynergyTrial;
-            string title = Campaign.IsSupernovaBossTrial ? Campaign.BossTrialName + " · 首领试玩" :
+            string title = Campaign.IsStandaloneBossTrial ? Campaign.BossTrialName + " · 首领试玩" :
                 trial == null ? $"{Campaign.CurrentNode.Id} · {Campaign.CurrentNode.Kind}" : trial.Trait.Name + " · 羁绊试玩";
             double limit=trial==null?Campaign.CurrentNode.TimeLimit:Model.LimitSeconds;
             string time=double.IsPositiveInfinity(limit)?"不限时":$"{limit:0} 秒";
@@ -377,7 +377,7 @@ namespace YesterdayConvoy
                 string line=guard==null?"":(guard.Role<=2?"前排":"后排")+(guard.Rarity==6?" · 六星　":"　");
                 CampaignLabel(new Rect(0,row*110,850,24),line+d.Name+"　生命 "+d.MaxHealth.ToString("0")+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
                 CampaignLabel(new Rect(0,row*110+28,850,25),"技力 "+d.SkillCharge.ToString("0")+" / "+d.SkillRequired.ToString("0")+"　攻击间隔 "+d.Interval.ToString("0.00")+"秒　部署格 "+d.Position,12);
-                string effect = d.IsSupernovaBoss ? FormationCampaignRules.SupernovaBoss.Effect :
+                string effect = Campaign.StandaloneBoss is { } boss && d.ArtId == boss.ArtId ? boss.Effect :
                     FormationCampaignRules.DefenderSkillDescription(Campaign.CurrentNode.Id,d.ArtId);
                 CampaignLabel(new Rect(0,row*110+57,850,42),effect,12);row++;
             }

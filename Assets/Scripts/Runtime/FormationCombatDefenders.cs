@@ -32,6 +32,7 @@ namespace YesterdayConvoy
             internal int ArchivedAmmo;
             internal bool SupernovaOverload;
             internal FormationRandom SupernovaTargetRandom;
+            internal MakotoKit Makoto;
             internal double FirstContact = double.PositiveInfinity;
             internal double LastCast, ActiveUntil, NextPlacement;
             internal float OutsideHealing;
@@ -66,6 +67,7 @@ namespace YesterdayConvoy
             var kit = Kit(guard);
             if (guard.IsSnowBoss) ResetSnowBoss(guard, kit);
             if (guard.IsSupernovaBoss) ResetSupernovaBoss(guard, kit);
+            if (guard.IsMakotoBoss) ResetMakotoBoss(guard, kit);
             if (guard.ArtId == "D28") kit.WangCenter = FindWangCrossCenter(guard);
         }
 
@@ -239,7 +241,7 @@ namespace YesterdayConvoy
             context.Presentation = action;
             void Contact()
             {
-                if (!guard.Alive || action.Cancelled || SupernovaBossTransitionActive(guard))
+                if (!guard.Alive || action.Cancelled || SupernovaBossTransitionActive(guard) || MakotoBossTransitionActive(guard))
                 { action.Cancelled = true; return; }
                 if (trackedTarget?.Alive == true) action.To = trackedTarget.Position;
                 else if (action.ProjectileOnly) { action.Cancelled = true; return; }
@@ -261,6 +263,11 @@ namespace YesterdayConvoy
             if (guard.IsSupernovaBoss)
             {
                 TickSupernovaBoss(guard, kit);
+                return;
+            }
+            if (guard.IsMakotoBoss)
+            {
+                TickMakotoBoss(guard, kit.Makoto);
                 return;
             }
             if (guard.ArtId == "D28")

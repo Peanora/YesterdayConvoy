@@ -1,0 +1,711 @@
+{
+  "version": 1,
+  "task": "D36",
+  "ppu": 166.4,
+  "rearVariant": false,
+  "clips": [
+    {
+      "key": "attack",
+      "source": "Attack_A",
+      "count": 37,
+      "duration": 1.2000000476837158,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 340,
+      "cellHeight": 296,
+      "columns": 4,
+      "pivotX": 0.47941176470588237,
+      "pivotY": 0.15202702702702703,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "attack_a-00.png",
+          "count": 20,
+          "width": 1360,
+          "height": 1480
+        },
+        {
+          "file": "attack_a-01.png",
+          "count": 17,
+          "width": 1360,
+          "height": 1480
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s1_attack",
+      "source": "Doll_Skill_1_Attack",
+      "count": 55,
+      "duration": 1.7999999523162842,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 260,
+      "cellHeight": 312,
+      "columns": 5,
+      "pivotX": 0.6730769230769231,
+      "pivotY": 0.035256410256410256,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "skill_makoto_s1_attack-00.png",
+          "count": 20,
+          "width": 1300,
+          "height": 1248
+        },
+        {
+          "file": "skill_makoto_s1_attack-01.png",
+          "count": 20,
+          "width": 1300,
+          "height": 1248
+        },
+        {
+          "file": "skill_makoto_s1_attack-02.png",
+          "count": 15,
+          "width": 1300,
+          "height": 936
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s1_idle",
+      "source": "Doll_Skill_1_Idle",
+      "count": 60,
+      "duration": 2,
+      "fps": 30,
+      "loop": true,
+      "cellWidth": 204,
+      "cellHeight": 288,
+      "columns": 7,
+      "pivotX": 0.5735294117647058,
+      "pivotY": 0.03819444444444445,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s1_idle-00.png",
+          "count": 35,
+          "width": 1428,
+          "height": 1440
+        },
+        {
+          "file": "skill_makoto_s1_idle-01.png",
+          "count": 25,
+          "width": 1428,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s1_begin",
+      "source": "Doll_Skill_1_SwitchIn",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 260,
+      "cellHeight": 300,
+      "columns": 5,
+      "pivotX": 0.5807692307692308,
+      "pivotY": 0.07333333333333333,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s1_begin-00.png",
+          "count": 25,
+          "width": 1300,
+          "height": 1500
+        },
+        {
+          "file": "skill_makoto_s1_begin-01.png",
+          "count": 6,
+          "width": 1300,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s1_end",
+      "source": "Doll_Skill_1_SwitchOut",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 304,
+      "cellHeight": 328,
+      "columns": 5,
+      "pivotX": 0.5263157894736842,
+      "pivotY": 0.14634146341463414,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s1_end-00.png",
+          "count": 20,
+          "width": 1520,
+          "height": 1312
+        },
+        {
+          "file": "skill_makoto_s1_end-01.png",
+          "count": 11,
+          "width": 1520,
+          "height": 984
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s2_loop",
+      "source": "Doll_Skill_2_Loop",
+      "count": 60,
+      "duration": 2,
+      "fps": 30,
+      "loop": true,
+      "cellWidth": 376,
+      "cellHeight": 344,
+      "columns": 4,
+      "pivotX": 0.675531914893617,
+      "pivotY": 0.03197674418604651,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s2_loop-00.png",
+          "count": 16,
+          "width": 1504,
+          "height": 1376
+        },
+        {
+          "file": "skill_makoto_s2_loop-01.png",
+          "count": 16,
+          "width": 1504,
+          "height": 1376
+        },
+        {
+          "file": "skill_makoto_s2_loop-02.png",
+          "count": 16,
+          "width": 1504,
+          "height": 1376
+        },
+        {
+          "file": "skill_makoto_s2_loop-03.png",
+          "count": 12,
+          "width": 1504,
+          "height": 1032
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s2_begin",
+      "source": "Doll_Skill_2_SwitchIn",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 408,
+      "cellHeight": 344,
+      "columns": 3,
+      "pivotX": 0.6299019607843137,
+      "pivotY": 0.03197674418604651,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s2_begin-00.png",
+          "count": 12,
+          "width": 1224,
+          "height": 1376
+        },
+        {
+          "file": "skill_makoto_s2_begin-01.png",
+          "count": 12,
+          "width": 1224,
+          "height": 1376
+        },
+        {
+          "file": "skill_makoto_s2_begin-02.png",
+          "count": 7,
+          "width": 1224,
+          "height": 1032
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s2_end",
+      "source": "Doll_Skill_2_SwitchOut",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 400,
+      "cellHeight": 380,
+      "columns": 3,
+      "pivotX": 0.635,
+      "pivotY": 0.12631578947368421,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s2_end-00.png",
+          "count": 12,
+          "width": 1200,
+          "height": 1520
+        },
+        {
+          "file": "skill_makoto_s2_end-01.png",
+          "count": 12,
+          "width": 1200,
+          "height": 1520
+        },
+        {
+          "file": "skill_makoto_s2_end-02.png",
+          "count": 7,
+          "width": 1200,
+          "height": 1140
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_attack_a",
+      "source": "Doll_Skill_3_P1_Attack_A",
+      "count": 55,
+      "duration": 1.7999999523162842,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 480,
+      "cellHeight": 440,
+      "columns": 3,
+      "pivotX": 0.61875,
+      "pivotY": 0.025,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_attack_a-00.png",
+          "count": 9,
+          "width": 1440,
+          "height": 1320
+        },
+        {
+          "file": "skill_makoto_s3_attack_a-01.png",
+          "count": 9,
+          "width": 1440,
+          "height": 1320
+        },
+        {
+          "file": "skill_makoto_s3_attack_a-02.png",
+          "count": 9,
+          "width": 1440,
+          "height": 1320
+        },
+        {
+          "file": "skill_makoto_s3_attack_a-03.png",
+          "count": 9,
+          "width": 1440,
+          "height": 1320
+        },
+        {
+          "file": "skill_makoto_s3_attack_a-04.png",
+          "count": 9,
+          "width": 1440,
+          "height": 1320
+        },
+        {
+          "file": "skill_makoto_s3_attack_a-05.png",
+          "count": 9,
+          "width": 1440,
+          "height": 1320
+        },
+        {
+          "file": "skill_makoto_s3_attack_a-06.png",
+          "count": 1,
+          "width": 1440,
+          "height": 440
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_attack_b",
+      "source": "Doll_Skill_3_P1_Attack_B",
+      "count": 55,
+      "duration": 1.7999999523162842,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 428,
+      "cellHeight": 484,
+      "columns": 3,
+      "pivotX": 0.5817757009345794,
+      "pivotY": 0.022727272727272728,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_attack_b-00.png",
+          "count": 9,
+          "width": 1284,
+          "height": 1452
+        },
+        {
+          "file": "skill_makoto_s3_attack_b-01.png",
+          "count": 9,
+          "width": 1284,
+          "height": 1452
+        },
+        {
+          "file": "skill_makoto_s3_attack_b-02.png",
+          "count": 9,
+          "width": 1284,
+          "height": 1452
+        },
+        {
+          "file": "skill_makoto_s3_attack_b-03.png",
+          "count": 9,
+          "width": 1284,
+          "height": 1452
+        },
+        {
+          "file": "skill_makoto_s3_attack_b-04.png",
+          "count": 9,
+          "width": 1284,
+          "height": 1452
+        },
+        {
+          "file": "skill_makoto_s3_attack_b-05.png",
+          "count": 9,
+          "width": 1284,
+          "height": 1452
+        },
+        {
+          "file": "skill_makoto_s3_attack_b-06.png",
+          "count": 1,
+          "width": 1284,
+          "height": 484
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_idle",
+      "source": "Doll_Skill_3_P1_Idle",
+      "count": 60,
+      "duration": 2,
+      "fps": 30,
+      "loop": true,
+      "cellWidth": 348,
+      "cellHeight": 324,
+      "columns": 4,
+      "pivotX": 0.6839080459770115,
+      "pivotY": 0.033950617283950615,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_idle-00.png",
+          "count": 16,
+          "width": 1392,
+          "height": 1296
+        },
+        {
+          "file": "skill_makoto_s3_idle-01.png",
+          "count": 16,
+          "width": 1392,
+          "height": 1296
+        },
+        {
+          "file": "skill_makoto_s3_idle-02.png",
+          "count": 16,
+          "width": 1392,
+          "height": 1296
+        },
+        {
+          "file": "skill_makoto_s3_idle-03.png",
+          "count": 12,
+          "width": 1392,
+          "height": 972
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_begin",
+      "source": "Doll_Skill_3_P1_SwitchIn",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 404,
+      "cellHeight": 324,
+      "columns": 3,
+      "pivotX": 0.5866336633663366,
+      "pivotY": 0.040123456790123455,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_begin-00.png",
+          "count": 12,
+          "width": 1212,
+          "height": 1296
+        },
+        {
+          "file": "skill_makoto_s3_begin-01.png",
+          "count": 12,
+          "width": 1212,
+          "height": 1296
+        },
+        {
+          "file": "skill_makoto_s3_begin-02.png",
+          "count": 7,
+          "width": 1212,
+          "height": 972
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_change_begin",
+      "source": "Doll_Skill_3_P1toP2_ChangeBegin",
+      "count": 16,
+      "duration": 0.5,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 348,
+      "cellHeight": 324,
+      "columns": 4,
+      "pivotX": 0.6810344827586207,
+      "pivotY": 0.033950617283950615,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_change_begin-00.png",
+          "count": 16,
+          "width": 1392,
+          "height": 1296
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_change_end",
+      "source": "Doll_Skill_3_P1toP2_ChangeEnd",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 264,
+      "cellHeight": 308,
+      "columns": 5,
+      "pivotX": 0.5909090909090909,
+      "pivotY": 0.06818181818181818,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_change_end-00.png",
+          "count": 20,
+          "width": 1320,
+          "height": 1232
+        },
+        {
+          "file": "skill_makoto_s3_change_end-01.png",
+          "count": 11,
+          "width": 1320,
+          "height": 924
+        }
+      ]
+    },
+    {
+      "key": "death",
+      "source": "Doll_Skill_3_P2_Die",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 292,
+      "cellHeight": 308,
+      "columns": 5,
+      "pivotX": 0.5342465753424658,
+      "pivotY": 0.1038961038961039,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_death-00.png",
+          "count": 20,
+          "width": 1460,
+          "height": 1232
+        },
+        {
+          "file": "skill_makoto_death-01.png",
+          "count": 11,
+          "width": 1460,
+          "height": 924
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_guard",
+      "source": "Doll_Skill_3_P2_Loop",
+      "count": 60,
+      "duration": 2,
+      "fps": 30,
+      "loop": true,
+      "cellWidth": 244,
+      "cellHeight": 292,
+      "columns": 6,
+      "pivotX": 0.639344262295082,
+      "pivotY": 0.03767123287671233,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_guard-00.png",
+          "count": 30,
+          "width": 1464,
+          "height": 1460
+        },
+        {
+          "file": "skill_makoto_s3_guard-01.png",
+          "count": 30,
+          "width": 1464,
+          "height": 1460
+        }
+      ]
+    },
+    {
+      "key": "idle",
+      "source": "Idle",
+      "count": 360,
+      "duration": 12,
+      "fps": 30,
+      "loop": true,
+      "cellWidth": 240,
+      "cellHeight": 248,
+      "columns": 6,
+      "pivotX": 0.5083333333333333,
+      "pivotY": 0.0846774193548387,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "idle-00.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-01.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-02.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-03.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-04.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-05.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-06.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-07.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-08.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        },
+        {
+          "file": "idle-09.png",
+          "count": 36,
+          "width": 1440,
+          "height": 1488
+        }
+      ]
+    }
+  ],
+  "height": 1.35,
+  "attackContact": 0.5333333611488342,
+  "idleVisibleTop": 1.2921
+}

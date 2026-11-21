@@ -28,7 +28,7 @@ namespace YesterdayConvoy
             var rule=new Color(.29f,.38f,.43f,.8f);
             var phase=new Rect(16,12,232,44);
             Fill(phase,surface);ApprovedUi.Border(phase,rule);
-            string node = Campaign?.IsSupernovaBossTrial == true ? "首领试玩" : Campaign?.CurrentNode.Id ?? Model.Round.ToString();
+            string node = Campaign?.IsStandaloneBossTrial == true ? "首领试玩" : Campaign?.CurrentNode.Id ?? Model.Round.ToString();
             Label(new Rect(28,15,207,22),node+" · "+(Model.Phase==FormationPhase.Exiting?"前往蓝门":"自动攻坚"),16,White);
             Label(new Rect(28,37,207,15),"全清守军后，由存活本体进入蓝门",10,Muted);
 

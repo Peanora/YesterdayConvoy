@@ -15,7 +15,9 @@ namespace YesterdayConvoy
         public int InitialDefenderCount { get; private set; }
         public bool BossAlive => Defenders.Any(d => d.Alive && State(d).Boss);
         public float EncounterProgress => initialGuardHealth <= 0 ? 0 : Mathf.Clamp01(1 - Defenders.Where(d => State(d).InitialGuard).Sum(d =>
-            State(d).LowestHealth + (d.BossHealthPhase == 1 ? d.MaxHealth : 0)) / initialGuardHealth);
+            State(d).LowestHealth + GuardFutureHealth(d)) / initialGuardHealth);
+        float GuardFutureHealth(FormationDefender guard) =>
+            guard.IsMakotoBoss ? MakotoFutureHealth(guard) : guard.BossHealthPhase == 1 ? guard.MaxHealth : 0;
         internal bool IsInitialGuard(FormationDefender guard) => State(guard).InitialGuard;
         internal bool IsBossDefender(FormationDefender guard) => combat.TryGetValue(guard.Id, out var state) && state.Boss;
         public readonly List<FormationFighter> Summons = new List<FormationFighter>();
@@ -191,7 +193,8 @@ namespace YesterdayConvoy
             BattleGold=0;killedGuards=0;actionSequence=0;resonanceBeats=0;nextSeaDecay=1;BattleEvents.Clear();SkillCasts.Clear();
             snowBossFrozen.Clear();
             foreach(var d in Defenders){var s=State(d);s.LowestHealth=d.MaxHealth;d.Health=d.MaxHealth;d.Alive=true;d.SkillCharge=s.GuardInitialSP;ResetGuardKit(d);}
-            InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth*(d.IsTwoPhaseBoss?2:1));
+            InitialDefenderCount=Defenders.Count(d=>State(d).InitialGuard);
+            initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth+GuardFutureHealth(d));
             foreach(var u in Units.Where(u=>u.Enabled))
             {
                 var s=State(u);u.PhaseStage=0;s.NativeLives=0;u.NativePhase=0;u.NativePhaseChangedAt=0;u.NativePhaseReturningUntil=0;s.LastTarget=-1;s.Action=0;u.SkillCharge=s.Spec?.InitialSP??0;
@@ -219,9 +222,8 @@ namespace YesterdayConvoy
             }
             if (node.DefenderCount == 0) return;
 
-            var boss = node.Id == FormationCampaignRules.SupernovaBossNodeId ? FormationCampaignRules.SupernovaBoss :
-                FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
-            if (boss?.ArtId is "D27" or "D31")
+            var boss = Campaign.StandaloneBoss ?? FormationCampaignRules.Bosses.FirstOrDefault(entry => entry.NodeId == node.Id);
+            if (boss?.ArtId is "D27" or "D31" or FormationCampaignRules.MakotoBossArtId)
             {
                 var cell = new Vector2Int(Width - 5, 4);
                 if (Terrain != null && (!Terrain.CanPlaceDefender(cell) || !Terrain.IsWalkable(cell) || Terrain.HeightAt(cell) > 0))
@@ -292,6 +294,8 @@ namespace YesterdayConvoy
                 SnowBossPhase = isBoss && artId == "D27" ? 1 : 0,
                 IsSupernovaBoss = isBoss && artId == "D31",
                 SupernovaBossPhase = isBoss && artId == "D31" ? 1 : 0,
+                IsMakotoBoss = isBoss && artId == FormationCampaignRules.MakotoBossArtId,
+                MakotoBossPhase = isBoss && artId == FormationCampaignRules.MakotoBossArtId ? 1 : 0,
                 MaxHealth = isBoss ? boss.Health : FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
                 Armor = isBoss ? boss.Armor : role.Armor,
@@ -300,7 +304,7 @@ namespace YesterdayConvoy
                 Interval = isBoss ? boss.Interval : artId == "D32" ? ChenAttackInterval : role.Interval,
                 SkillRequired = isBoss ? boss.RequiredSP : guard.RequiredSP ?? role.RequiredSP,
             };
-            if (!d.IsSupernovaBoss) ConfigureArchivedGuard(d);
+            if (!d.IsSupernovaBoss && !d.IsMakotoBoss) ConfigureArchivedGuard(d);
             ResetActor(d, true, Vector2.left);
             var state = State(d);
             state.Template = guard.Role;
@@ -325,6 +329,7 @@ namespace YesterdayConvoy
             presentationActions.RemoveAll(action=>Math.Max(action.EndAt,action.ContactAt)<Clock-6);
             CompleteSnowBossTransition();
             CompleteSupernovaBossTransition();
+            CompleteMakotoBossTransition();
             foreach(var a in Units.Cast<FormationActor>().Concat(Defenders).Concat(Summons).ToArray())
             {
                 var s=State(a);a.IsMoving=false;
@@ -387,6 +392,7 @@ namespace YesterdayConvoy
             var target=FighterTarget(u);u.TargetId=target?.Id??-1;
             if (!summon && target != null && Key(u) == "M17") TryHeraldTreatment(u);
             if(Clock<u.ActionUntil||s.BusyUntil>Clock)return;
+            if(MoveMakotoFear(u,dt))return;
             if(MoveSnowBossInduced(u,dt))return;
             if(cadejo&&(!entered||target==null||Vector2.Distance(u.Position,target.Position)>u.Range))
             {

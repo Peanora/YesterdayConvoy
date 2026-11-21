@@ -22,7 +22,7 @@ namespace YesterdayConvoy
             if(s.Spec==null||(!free&&target==null))return false;
             if(k=="B21"&&s.BusyUntil+1>Clock&&s.Casts>0)return false;
             if(k=="WIS"&&Campaign.WisadelSkill==2&&Buff(u,"wisadel")>0)return false;
-            if (!free && (k is "M25" or "B10") && target.IsTwoPhaseBoss &&
+            if (!free && (k is "M25" or "B10") && target.HasBossHealthPhases &&
                 !Units.Any(ally => ally.Enabled && ally.Alive && ally.Health <= ally.MaxHealth * .75f))
                 return false;
             if(!free)u.SkillCharge=Mathf.Max(0,u.SkillCharge-u.SkillRequired);

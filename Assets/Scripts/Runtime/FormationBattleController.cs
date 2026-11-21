@@ -73,7 +73,7 @@ namespace YesterdayConvoy
         FormationBattleTerrainLayout SelectFormationTerrain(FormationCampaignRun run)
         {
             if (maps == null) return terrain?.BuildLayout();
-            var board = run == null || run.GuardTrialArt != null || run.IsSupernovaBossTrial || run.SynergyTrial != null
+            var board = run == null || run.GuardTrialArt != null || run.IsStandaloneBossTrial || run.SynergyTrial != null
                 ? FormationBattleMaps.Board.Canyon
                 : FormationBattleMaps.ForNode(run.CurrentNode.Id, run.CurrentNode.Plane);
             return maps.Select(board, terrain);
@@ -301,6 +301,11 @@ namespace YesterdayConvoy
         internal void SelectSupernovaBossTrial()
         {
             if (Ready) OpenBossTrial(FormationShopSession.StartSupernovaBossTrial(seed));
+        }
+
+        internal void SelectMakotoBossTrial()
+        {
+            if (Ready) OpenBossTrial(FormationShopSession.StartMakotoBossTrial(seed));
         }
 
         void OpenBossTrial(FormationShopSession session)

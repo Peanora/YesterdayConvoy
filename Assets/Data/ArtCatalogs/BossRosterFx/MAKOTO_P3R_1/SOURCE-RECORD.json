@@ -1,0 +1,906 @@
+{
+  "version": 1,
+  "task": "MAKOTO_P3R_1",
+  "skin": "char_4217_makoto@p3r#1",
+  "battlePrefab": "char_4217_makoto_p3r#1",
+  "sourceVersion": "26-10-29-15-36-11-33649006",
+  "sourceBundles": [
+    {
+      "path": "battle/prefabs/effects/makoto.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_makoto.dat",
+      "sha256": "a1837d6a248d8522ccd644c08404dc2da06a28dc3a7b16dda5bfe8e6d0cab9d6",
+      "manifestMd5": "cb0ce2b7c8b31b0e82c0ea060e117a04"
+    },
+    {
+      "path": "charpack/char_4217_makoto.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_4217_makoto.dat",
+      "sha256": "3cb0926ff01a326a518f680b863c5452790894fa0a69b3d970090f997e8f3c87",
+      "manifestMd5": "ec5c6939cd0757b37f3195d3c7bdc60b"
+    },
+    {
+      "path": "skinpack/char_4217_makoto.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/skinpack_char_4217_makoto.dat",
+      "sha256": "53a3ce36f0349ec5dcd6c203eb2892828a5243ec390ba21eddb3551607085df5",
+      "manifestMd5": "3b6e71c2c15cf9cc2f3a609b71602b33"
+    }
+  ],
+  "rights": "Original Arknights x Persona 3 Reload media. Open redistribution permission unverified.",
+  "clips": [
+    {
+      "key": "makoto_change_01_p3r#1",
+      "role": "makoto_change_01",
+      "crop": [
+        210,
+        217,
+        84,
+        76
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 44,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_change_01_p3r#1/00.png": "3b2fec72ba9f214e72138bdc20091cdf55fc14a76c4a5b861852b6e60cb3f532"
+      }
+    },
+    {
+      "key": "makoto_change_01_l_p3r#1",
+      "role": "makoto_change_01_l",
+      "crop": [
+        210,
+        217,
+        84,
+        76
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 44,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_change_01_l_p3r#1/00.png": "3b2fec72ba9f214e72138bdc20091cdf55fc14a76c4a5b861852b6e60cb3f532"
+      }
+    },
+    {
+      "key": "makoto_skill_01_buff_01_p3r#1",
+      "role": "makoto_skill_01_buff_01",
+      "crop": [
+        149,
+        162,
+        76,
+        72
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_buff_01_p3r#1/00.png": "04d6b465a48ea38fe10c2b719a3b7cb5647e751fa07ffd90e37bbc2e4e9a1be9"
+      }
+    },
+    {
+      "key": "makoto_skill_01_buff_01_l_p3r#1",
+      "role": "makoto_skill_01_buff_01_l",
+      "crop": [
+        159,
+        162,
+        76,
+        72
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_buff_01_l_p3r#1/00.png": "214a2dee7283e3b07df5a05d883a3fcc5fee3f00be0a0c0f6bd818e6ca37ce74"
+      }
+    },
+    {
+      "key": "makoto_skill_01_start_01_p3r#1",
+      "role": "makoto_skill_01_start_01",
+      "crop": [
+        150,
+        146,
+        76,
+        76
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 26,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_start_01_p3r#1/00.png": "647eece7e04dcb0c42e0b1e5b547374c3baf2a5d4a0916dc56f875f495e3a2ed"
+      }
+    },
+    {
+      "key": "makoto_skill_01_start_02_p3r#1",
+      "role": "makoto_skill_01_start_02",
+      "crop": [
+        142,
+        174,
+        76,
+        48
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 40,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_start_02_p3r#1/00.png": "a521369a6e5476265eb5f5e673e70b8aacdfed716c95245c5a690780ecfcb10b"
+      }
+    },
+    {
+      "key": "makoto_skill_01_start_01_back_p3r#1",
+      "role": "makoto_skill_01_start_01_back",
+      "crop": [
+        151,
+        138,
+        76,
+        84
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 26,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_start_01_back_p3r#1/00.png": "ae447a0919e27d808521a0c6b42e165ebb3c55075e04e067f84e437562fa1e96"
+      }
+    },
+    {
+      "key": "makoto_skill_01_start_02_back_p3r#1",
+      "role": "makoto_skill_01_start_02_back",
+      "crop": [
+        151,
+        180,
+        76,
+        44
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 38,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_start_02_back_p3r#1/00.png": "2e35e9a80b447ee573c632aeb39ece0ef7b0ac080a7f228347ea738320766d72"
+      }
+    },
+    {
+      "key": "makoto_skill_01_trail_01_p3r#1",
+      "role": "makoto_skill_01_trail_01",
+      "crop": [
+        22,
+        176,
+        472,
+        480
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 41,
+        "visibleFrames": 41,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_trail_01_p3r#1/00.png": "4963e17f8275e494c276865c26616d879978618bc9abc9ab8ec5a5f28c663070",
+        "makoto_skill_01_trail_01_p3r#1/01.png": "c4e0c4a5cb3b01f1112dabd384956667e5f356c1be340af3824ac2962fdc626e",
+        "makoto_skill_01_trail_01_p3r#1/02.png": "fca8f50fc18bd1e9ae9284e5466b2cc372f90675f2feb8c1350972591bc812d9"
+      }
+    },
+    {
+      "key": "makoto_skill_01_hit_01_p3r#1",
+      "role": "makoto_skill_01_hit_01",
+      "crop": [
+        138,
+        168,
+        112,
+        100
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 33,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_hit_01_p3r#1/00.png": "8797c14b80d2a21af1df8fbe659d6238e926bbd528e0b7387ac90f25b070813f"
+      }
+    },
+    {
+      "key": "makoto_skill_01_heal_01_p3r#1",
+      "role": "makoto_skill_01_heal_01",
+      "crop": [
+        139,
+        72,
+        96,
+        168
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 57,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_01_heal_01_p3r#1/00.png": "002aeceb18874d8b2d8f2e139b596edacc298187abcf20fee2759e6ecaeb6933"
+      }
+    },
+    {
+      "key": "makoto_skill_02_buff_01_p3r#1",
+      "role": "makoto_skill_02_buff_01",
+      "crop": [
+        148,
+        151,
+        80,
+        84
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_02_buff_01_p3r#1/00.png": "11f631b1b0ecb7fec2c511e238939e6127811a076b5cae9af53c7a24a97ca8a9"
+      }
+    },
+    {
+      "key": "makoto_skill_02_buff_01_l_p3r#1",
+      "role": "makoto_skill_02_buff_01_l",
+      "crop": [
+        159,
+        151,
+        80,
+        84
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_02_buff_01_l_p3r#1/00.png": "f0aa522bd80f3c6d6ce4a7e9651eaa1c4e4567c63365e777783d002c0e648e5f"
+      }
+    },
+    {
+      "key": "makoto_skill_02_start_01_p3r#1",
+      "role": "makoto_skill_02_start_01",
+      "crop": [
+        167,
+        195,
+        180,
+        180
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 59,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.08330000191926956
+      ],
+      "pageSha256": {
+        "makoto_skill_02_start_01_p3r#1/00.png": "3e1e82b09ec36185b66266541c7771f85c9d495c2b89ac8681af52dafb0fb867"
+      }
+    },
+    {
+      "key": "makoto_skill_02_range_01_p3r#1",
+      "role": "makoto_skill_02_range_01",
+      "crop": [
+        194,
+        228,
+        128,
+        80
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 63,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.08330000191926956
+      ],
+      "pageSha256": {
+        "makoto_skill_02_range_01_p3r#1/00.png": "b7f8e0a724c152d80884a4caeecac6824e60ddbbed75344dd25a831000c88848"
+      }
+    },
+    {
+      "key": "makoto_skill_02_range_02_start_p3r#1",
+      "role": "makoto_skill_02_range_02_start",
+      "crop": [
+        164,
+        216,
+        184,
+        132
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 24,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.20000000298023224
+      ],
+      "pageSha256": {
+        "makoto_skill_02_range_02_start_p3r#1/00.png": "f235f45c4092970939c38d5c345d097ad14c43d7043b8b45fa50f0db55668f87"
+      }
+    },
+    {
+      "key": "makoto_skill_02_range_02_p3r#1",
+      "role": "makoto_skill_02_range_02",
+      "crop": [
+        165,
+        218,
+        184,
+        100
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 55,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_02_range_02_p3r#1/00.png": "61b3f6a2c824673a1fb946b1e779145d35a7b5de53879c76052b79dd62f7d0c6"
+      }
+    },
+    {
+      "key": "makoto_skill_02_hit_01_p3r#1",
+      "role": "makoto_skill_02_hit_01",
+      "crop": [
+        131,
+        147,
+        124,
+        128
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 37,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_02_hit_01_p3r#1/00.png": "7f00b39518322cfc3a600d63f91dd811990f2a78fa0d31e346809426e90a5c99"
+      }
+    },
+    {
+      "key": "makoto_skill_02_hit_01_finish_p3r#1",
+      "role": "makoto_skill_02_hit_01_finish",
+      "crop": [
+        131,
+        147,
+        124,
+        128
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 37,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_02_hit_01_finish_p3r#1/00.png": "9d8afae1726458251daa438ff343374ba652f34d542f1fb9b22efe969dd39081"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_buff_01_l_p3r#1",
+      "role": "makoto_skill_03_p1_buff_01_l",
+      "crop": [
+        140,
+        159,
+        108,
+        92
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_buff_01_l_p3r#1/00.png": "c3a9cdd1c1d3ae81aebace47edafbdd09b1282977528954ade6edcd0046d39ff"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_buff_01_r_p3r#1",
+      "role": "makoto_skill_03_p1_buff_01_r",
+      "crop": [
+        137,
+        159,
+        108,
+        92
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_buff_01_r_p3r#1/00.png": "f5c1380304e0d9ec90ebe20c3c5cd8ba8d46d4366668e88eb356e9f03b309f61"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_range_01_start_p3r#1",
+      "role": "makoto_skill_03_p1_range_01_start",
+      "crop": [
+        164,
+        216,
+        184,
+        132
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 24,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.20000000298023224
+      ],
+      "pageSha256": {
+        "makoto_skill_03_p1_range_01_start_p3r#1/00.png": "4035c2715ef1fe5ab7b6c43708a1f57a2710a8528f29a0e94becf7cb485afc7f"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_range_01_p3r#1",
+      "role": "makoto_skill_03_p1_range_01",
+      "crop": [
+        165,
+        218,
+        184,
+        100
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 55,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_range_01_p3r#1/00.png": "6da85731df1a7c2d45999863038211926f013a93d343a4b3829114b34d157422"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_start_a_01_p3r#1",
+      "role": "makoto_skill_03_p1_start_a_01",
+      "crop": [
+        113,
+        142,
+        108,
+        80
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 43,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_start_a_01_p3r#1/00.png": "eee2b930104db174d572da1c98e1821d0f43c4608bc502650ad810c8dcf82c5f"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_start_b_01_p3r#1",
+      "role": "makoto_skill_03_p1_start_b_01",
+      "crop": [
+        141,
+        134,
+        108,
+        88
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 43,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_start_b_01_p3r#1/00.png": "d24ed9d5afdea79159eac288a52140589575e43e2a1e94854befc781010de646"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_start_a_01_back_p3r#1",
+      "role": "makoto_skill_03_p1_start_a_01_back",
+      "crop": [
+        146,
+        138,
+        104,
+        88
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 53,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_start_a_01_back_p3r#1/00.png": "befd40ebb1833129d38adbded4d036c116caa611c97efe102acb3427992b876b"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_start_b_01_back_p3r#1",
+      "role": "makoto_skill_03_p1_start_b_01_back",
+      "crop": [
+        147,
+        129,
+        112,
+        96
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 52,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_start_b_01_back_p3r#1/00.png": "da5dd0f855dc8a5e423a576743ed4e6afa8cb124cb2c1c34c27f16990b5fc56b"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_hit_01_p3r#1",
+      "role": "makoto_skill_03_p1_hit_01",
+      "crop": [
+        131,
+        147,
+        124,
+        128
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 37,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_hit_01_p3r#1/00.png": "787384cac77eba414aecb70be04bb388a3a51212d7c5f46b95127e704150c818"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_hit_02_p3r#1",
+      "role": "makoto_skill_03_p1_hit_02",
+      "crop": [
+        129,
+        162,
+        148,
+        96
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 31,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_hit_02_p3r#1/00.png": "889e5d68910ca2bbaa5603a932bfe8362a8fc08b1c5acb9a532fcf12a54a85c3"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p1_weak_01_p3r#1",
+      "role": "makoto_skill_03_p1_weak_01",
+      "crop": [
+        181,
+        202,
+        52,
+        24
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 20,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p1_weak_01_p3r#1/00.png": "1c6f3892fba6ea237eb7008cea5fc123be71f2dfd521759ed69f484aeaf7faba"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p2_buff_01_p3r#1",
+      "role": "makoto_skill_03_p2_buff_01",
+      "crop": [
+        140,
+        154,
+        104,
+        100
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p2_buff_01_p3r#1/00.png": "87e587cabd10f8eae46500dd494a7252cf7f7ebe3c5d10b46605f77aa88b385f"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p2_buff_01_l_p3r#1",
+      "role": "makoto_skill_03_p2_buff_01_l",
+      "crop": [
+        140,
+        138,
+        104,
+        116
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p2_buff_01_l_p3r#1/00.png": "0da7d07cdd375e14c81c95a9718f22a119e5b312434e05b6143fb5c423c27f62"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p2_range_01_p3r#1",
+      "role": "makoto_skill_03_p2_range_01",
+      "crop": [
+        194,
+        228,
+        128,
+        80
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 66,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p2_range_01_p3r#1/00.png": "8ef42fe8ff201bbf5a78e8809467050497f3a629da398816877b2d9d7be55a3d"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p2_range_02_start_p3r#1",
+      "role": "makoto_skill_03_p2_range_02_start",
+      "crop": [
+        162,
+        216,
+        188,
+        132
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 22,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.20000000298023224
+      ],
+      "pageSha256": {
+        "makoto_skill_03_p2_range_02_start_p3r#1/00.png": "e9c1d3f76027e98eb2a811190049231f06308ecfeaeb224d8c699aca1274ef0f"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p2_range_02_p3r#1",
+      "role": "makoto_skill_03_p2_range_02",
+      "crop": [
+        165,
+        218,
+        184,
+        100
+      ],
+      "boardScale": 1.8,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 55,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p2_range_02_p3r#1/00.png": "767570dec1e069c879bf94547ce7bba6bb4326c0dc04da19453941c92549392f"
+      }
+    },
+    {
+      "key": "makoto_skill_03_p2_heal_01_p3r#1",
+      "role": "makoto_skill_03_p2_heal_01",
+      "crop": [
+        139,
+        73,
+        96,
+        164
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 56,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_skill_03_p2_heal_01_p3r#1/00.png": "1a039d0f23e63af8e6c4cf6a81b155116fa94e02b41e83beb34b9a192b944397"
+      }
+    }
+  ]
+}

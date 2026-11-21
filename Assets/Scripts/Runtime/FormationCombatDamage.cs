@@ -7,6 +7,7 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleModel
     {
+        const int MakotoWeakPointDamage = 3;
         FormationDefender[] Nearby(Vector2 point,float radius,int cap,FormationDefender preferred=null)
         {
             if(radius<=0)return preferred!=null&&preferred.Alive?new[]{preferred}:Array.Empty<FormationDefender>();
@@ -77,7 +78,8 @@ namespace YesterdayConvoy
         float CombatDamage(FormationActor source,FormationActor target,float raw,int type,bool skill,bool native,out bool landed,bool transferred=false)
         {
             landed = target != null && target.Alive && raw > 0 &&
-                !(target is FormationDefender boss && (SnowBossTransitionActive(boss) || SupernovaBossTransitionActive(boss)));
+                !(target is FormationDefender boss && (SnowBossTransitionActive(boss) || SupernovaBossTransitionActive(boss) ||
+                    MakotoBossTransitionActive(boss)));
             if (!landed) return 0;
             var t=State(target);var s=State(source);
             float armor=target.Armor+Buff(target,"mandra_armor")+Buff(target,"blast_armor")+Buff(target,"kingdom_armor");
@@ -85,6 +87,8 @@ namespace YesterdayConvoy
             armor-=Stack(target,"guard_corrosion_defense");
             if(source is FormationFighter sf&&HasItem(sf,"AA")&&armor>0)armor*=1-Stack(source,"saw")*.02f;
             float mr=target.MagicResistance+Buff(target,"mandra_mr")+Buff(target,"blast_mr")+Buff(target,"kingdom_mr")+Buff(target,"king_mr")+Buff(target,"burn_mr");
+            if (type == MakotoWeakPointDamage)
+                type = DamageAfterDefense(raw, 0, armor, mr) > DamageAfterDefense(raw, 1, armor, mr) ? 0 : 1;
             float baseDamage=DamageAfterDefense(raw,type,armor,mr);
             float expectedDamage=DamageAfterDefense(source.Attack,type,armor,mr);
             bool inKingdom=zones.Any(z=>z.Kind=="kingdom"&&z.Until>Clock&&z.Cells!=null&&z.Cells.Contains(Vector2Int.RoundToInt(source.Position)));
@@ -98,6 +102,8 @@ namespace YesterdayConvoy
                 if(s.RidingCarrier!=0&&Level("便车")>=6)amp+=.25f;
             }
             float reduction=Buff(target,"patriot_dr");
+            if (type != 2 && target is FormationDefender recoveringBoss && MakotoBossRecovering(recoveringBoss))
+                reduction += MakotoRecoveryReduction;
             if(Buff(target,"shieldguard")>0&&Units.Any(u=>Key(u)=="M18"&&u.Alive&&u.Shield>0))reduction+=.15f;
             if(Tagged(target,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(target.Position-c).sqrMagnitude<=.36f))reduction+=Level("海嗣")>=5?.2f:Level("海嗣")>=4?.15f:.1f;
             if(t.RidingCarrier!=0&&source is FormationDefender&&skill&&Campaign.HasAugment("CP4"))reduction+=.25f;
@@ -140,12 +146,14 @@ namespace YesterdayConvoy
                 if(HasItem(fighter,"BE")&&!t.EmergencyUsedThisLife&&fighter.Health<fighter.MaxHealth*.3f&&Stack(fighter,"emergency")<2&&fighter.Health>0){t.EmergencyUsedThisLife=true;AddStack(fighter,"emergency",1,2);Shield(fighter,fighter,fighter.MaxHealth*.2f,6,"emergency");GiveBuff(fighter,"move",.4f,4);}
             }
             bool killed=target.Health<=0 && !(target is FormationDefender transitioningBoss &&
-                (BeginSnowBossTransition(transitioningBoss)||BeginSupernovaBossTransition(transitioningBoss)));
+                (BeginSnowBossTransition(transitioningBoss)||BeginSupernovaBossTransition(transitioningBoss)||
+                    BeginMakotoBossTransition(transitioningBoss)));
             var presentation = HitPresentation(source);
             Hits.Add(new FormationHit
             {
                 At=Clock, From=source.Position, To=target.Position, FromId=source.Id, ToId=target.Id,
                 Amount=healthLoss, ExpectedDamage=expectedDamage, Skill=skill, Killed=killed, SourceArtId=source.ArtId,
+                DamageType=type,
                 IsOutgoingDamage=source is FormationFighter && target is FormationDefender,
                 Action=presentation, ImpactIndex=presentation?.ProjectileOnly==true?presentation.ProjectileIndex:Math.Max(0,s.ActionHits-1),
                 Absorbed=amount<originalAmount-.001f, Secondary=!native&&source is FormationFighter&&presentation==null
@@ -160,7 +168,7 @@ namespace YesterdayConvoy
                     DeepEmber(target);
                 }
             }
-            if(t.Boss&&target.Alive&&!(target is FormationDefender specialBoss&&specialBoss.IsTwoPhaseBoss))
+            if(t.Boss&&target.Alive&&!(target is FormationDefender specialBoss&&specialBoss.HasBossHealthPhases))
             {
                 int plane=Campaign.CurrentNode.Plane;int stage=plane==3?(target.Health<target.MaxHealth*.35f?2:target.Health<target.MaxHealth*.7f?1:0):(target.Health<target.MaxHealth*.5f?1:0);
                 if(stage>t.Stage){t.Stage=stage;target.PhaseStage=stage;target.Interval=t.BaseInterval/(1+(plane==1?.2f:plane==3?.15f:0));}

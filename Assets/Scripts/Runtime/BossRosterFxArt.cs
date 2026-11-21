@@ -9,6 +9,7 @@ namespace YesterdayConvoy
     internal static class BossRosterFxArt
     {
         internal const string Encoding="sqrt-linear-rgb-effective-alpha";
+        internal const string MakotoTask = "MAKOTO_P3R_1";
         [Serializable] sealed class Package {public int version,fps;public string task,encoding;public Data[] clips;public Preload[] preload;public Binding[] bindings;}
         [Serializable] sealed class Data
         {
@@ -42,7 +43,7 @@ namespace YesterdayConvoy
         sealed class Loaded {internal Dictionary<string,Clip> Clips;internal Binding[] Bindings;internal Preload[] Preloads;}
         static readonly Dictionary<string,Loaded> packages=new Dictionary<string,Loaded>(StringComparer.Ordinal);
         static bool Finite(float n)=>!float.IsNaN(n)&&!float.IsInfinity(n);
-        static bool TaskValid(string task)=>task=="WIS_APRIL_G9"||task!=null&&task.Length==3&&task[0]=='B'&&char.IsDigit(task[1])&&char.IsDigit(task[2]);
+        static bool TaskValid(string task)=>task=="WIS_APRIL_G9"||task==MakotoTask||task!=null&&task.Length==3&&task[0]=='B'&&char.IsDigit(task[1])&&char.IsDigit(task[2]);
         internal static string TaskForCard(string card)
         {if(card=="CARD_WISADEL_APRIL")return "WIS_APRIL_G9";if(card=="CARD_M14")return "B18";
             var task=card!=null&&card.StartsWith("CARD_",StringComparison.Ordinal)?card.Substring(5):null;return TaskValid(task)?task:null;}

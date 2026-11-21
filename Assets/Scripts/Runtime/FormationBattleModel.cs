@@ -53,9 +53,13 @@ namespace YesterdayConvoy
         public bool IsSupernovaBoss { get; internal set; }
         public int SupernovaBossPhase { get; internal set; }
         internal double SupernovaBossTransitionUntil { get; set; }
+        public bool IsMakotoBoss { get; internal set; }
+        public int MakotoBossPhase { get; internal set; }
+        internal double MakotoBossTransitionUntil { get; set; }
         internal double BossHealthRefillAt { get; set; } = double.NegativeInfinity;
         internal bool IsTwoPhaseBoss => IsSnowBoss || IsSupernovaBoss;
-        internal int BossHealthPhase => IsSnowBoss ? SnowBossPhase : SupernovaBossPhase;
+        internal bool HasBossHealthPhases => IsTwoPhaseBoss || IsMakotoBoss;
+        internal int BossHealthPhase => IsMakotoBoss ? MakotoBossPhase : IsSnowBoss ? SnowBossPhase : SupernovaBossPhase;
     }
 
     public sealed class FormationHit
@@ -66,6 +70,7 @@ namespace YesterdayConvoy
         public float Amount;
         public bool Heal, Skill, Killed;
         public FormationPresentationAction Action { get; internal set; }
+        internal int DamageType { get; set; }
         public int ImpactIndex { get; internal set; }
         public string SourceArtId { get; internal set; }
         public bool Absorbed { get; internal set; }

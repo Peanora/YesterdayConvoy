@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace YesterdayConvoy
 {
-    enum FormationBossTrial { None, Pramanix, Supernova }
+    enum FormationBossTrial { None, Pramanix, Supernova, Makoto }
 
     /// <summary>One finite v0.7 challenge. Scene/UI only choose options; this owns rewards and their once-only keys.</summary>
     public sealed class FormationCampaignRun
@@ -18,6 +18,17 @@ namespace YesterdayConvoy
             AttackScale = 1,
             TimeLimit = 150,
             Front = new[] { "D31" }
+        };
+
+        static readonly FormationCampaignRules.NodeDefinition MakotoTrialNode = new FormationCampaignRules.NodeDefinition
+        {
+            Id = FormationCampaignRules.MakotoBossNodeId,
+            Kind = "首领",
+            Plane = 3,
+            HealthScale = 1,
+            AttackScale = 1,
+            TimeLimit = 150,
+            Front = new[] { FormationCampaignRules.MakotoBoss.ArtId }
         };
 
         public sealed class ChoiceOption
@@ -119,15 +130,28 @@ namespace YesterdayConvoy
         int lockedReunionCount;
         bool synergyTrialSettled;
         public int NodeIndex {get;private set;}
-        public FormationCampaignRules.NodeDefinition CurrentNode => IsSupernovaBossTrial ? SupernovaTrialNode : FormationCampaignRules.Nodes[NodeIndex];
+        public FormationCampaignRules.NodeDefinition CurrentNode => bossTrial switch
+        {
+            FormationBossTrial.Supernova => SupernovaTrialNode,
+            FormationBossTrial.Makoto => MakotoTrialNode,
+            _ => FormationCampaignRules.Nodes[NodeIndex]
+        };
         public bool IsPractice {get;}
         readonly FormationBossTrial bossTrial;
         public bool IsPramanixBossTrial => bossTrial == FormationBossTrial.Pramanix;
         public bool IsSupernovaBossTrial => bossTrial == FormationBossTrial.Supernova;
+        public bool IsMakotoBossTrial => bossTrial == FormationBossTrial.Makoto;
+        internal bool IsStandaloneBossTrial => IsSupernovaBossTrial || IsMakotoBossTrial;
+        internal FormationCampaignRules.BossDefinition StandaloneBoss => bossTrial switch
+        {
+            FormationBossTrial.Supernova => FormationCampaignRules.SupernovaBoss,
+            FormationBossTrial.Makoto => FormationCampaignRules.MakotoBoss,
+            _ => null
+        };
         internal string BossTrialName => bossTrial switch
         {
             FormationBossTrial.Pramanix => "圣聆初雪",
-            FormationBossTrial.Supernova => FormationCampaignRules.SupernovaBoss.Name,
+            FormationBossTrial.Supernova or FormationBossTrial.Makoto => StandaloneBoss.Name,
             _ => null
         };
         internal bool IsBossTrial => bossTrial != FormationBossTrial.None;
@@ -226,7 +250,7 @@ namespace YesterdayConvoy
 
         internal bool SelectPracticeNode(int node)
         {
-            if (IsSupernovaBossTrial) return node == 0;
+            if (IsStandaloneBossTrial) return node == 0;
             if(!IsPractice||node<0||node>=FormationCampaignRules.Nodes.Length||FormationCampaignRules.Nodes[node].DefenderCount==0)return false;
             if (SynergyTrial != null && node != SynergyTrial.NodeIndex) return false;
             if (IsPramanixBossTrial && FormationCampaignRules.Nodes[node].Id != "3-7") return false;

@@ -116,6 +116,17 @@ namespace YesterdayConvoy
             Effect = "第一阶段「饱和复仇」同时攻击最多三名目标，随后切入过载四连射。击破首段生命后切换至第二阶段「爆裂黎明」，每轮发射六枚范围炮弹。击倒首领后进入蓝门。"
         };
 
+        public const string MakotoBossNodeId = "MAKOTO-BOSS";
+        internal const string MakotoBossArtId = "D36";
+        public static readonly BossDefinition MakotoBoss = new BossDefinition
+        {
+            NodeId = MakotoBossNodeId, ArtId = MakotoBossArtId, Name = "结城理 · 见证荣光",
+            Health = 120000, Attack = 125, Armor = 30, MagicResistance = 25,
+            Interval = 1.7f, Range = 4.5f,
+            Effect = "三段生命分别使用俄耳甫斯的竖琴、塔纳托斯的囚锁、开辟明日的剑刃。"
+                + "第三段余血45%时切入守备，物理与法术减伤12%，每秒回复800点生命，最多8次。击倒后进入蓝门。"
+        };
+
         public static readonly BossDefinition[] Bosses =
         {
             new BossDefinition
@@ -183,6 +194,7 @@ namespace YesterdayConvoy
                 "第三技能攻击正前方四格内最多三人。腐蚀累积触发十字爆发，爆发消耗弹药。", 28, 45),
             new GuardDefinition("D35", "凯尔希·思衡托", 5, 6,
                 "第二技能发射10枚范围药弹，造成伤害或治疗，落地后追加相反效果。", 20, 35),
+            new GuardDefinition(MakotoBossArtId, MakotoBoss.Name, 1, 6, MakotoBoss.Effect),
         }.ToDictionary(guard => guard.ArtId);
 
         static readonly float[] EncounterHealth = { 1f, 1.7f, 3f, 5.5f };

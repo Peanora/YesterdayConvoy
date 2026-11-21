@@ -205,7 +205,7 @@ namespace YesterdayConvoy
             var r=ApprovedUi.Menu;r.y=operations?83:r.y;
             bool preparation = operations && Model.Phase == FormationPhase.Preparation && !CampaignInteractionBlocked;
             bool history = operations && Campaign.BallRewards.Count > 0;
-            r.height=(practice?346:308)+(preparation?37:0)+(history?37:0);
+            r.height=(practice?383:345)+(preparation?37:0)+(history?37:0);
             Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule);
             GUI.Label(new Rect(r.x+12,r.y+9,r.width-60,27),"系统菜单",approvedShop.LoopText(19,TextAnchor.MiddleLeft,null,700));
             if(Button(new Rect(r.xMax-36,r.y+9,24,24),"×"))CloseFormationMenu();
@@ -216,8 +216,9 @@ namespace YesterdayConvoy
             if(Button(new Rect(r.x+12,r.y+192,r.width-24,30),"首领试玩 · 圣聆初雪")){SelectPramanixBossTrial();return;}
             if(Button(new Rect(r.x+12,r.y+229,r.width-24,30),"首领试玩 · 维什戴尔·超新星")){SelectSupernovaBossTrial();return;}
             if(Button(new Rect(r.x+12,r.y+266,r.width-24,30),"六星守军试玩"))OpenFormationTrialPicker(FormationMenuPage.GuardTrials);
-            if(practice&&Button(new Rect(r.x+12,r.y+303,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
-            float next = r.y + (practice ? 340 : 303);
+            if(Button(new Rect(r.x+12,r.y+303,r.width-24,30),"首领试玩 · 结城理")){SelectMakotoBossTrial();return;}
+            if(practice&&Button(new Rect(r.x+12,r.y+340,r.width-24,30),"返回正式挑战（新开）"))StartNewFormationChallenge(true);
+            float next = r.y + (practice ? 377 : 340);
             if (preparation)
             {
                 if (Button(new Rect(r.x + 12, next, r.width - 24, 30), "装备与合成"))

@@ -65,6 +65,12 @@ namespace YesterdayConvoy
             return Current;
         }
 
+        internal static FormationShopSession StartMakotoBossTrial(int seed)
+        {
+            Current = new FormationShopSession(seed, true, 0, bossTrial: FormationBossTrial.Makoto);
+            return Current;
+        }
+
         public FormationShopSession(int seed,bool fullCampaign=false) : this(seed,fullCampaign,null) {}
 
         FormationShopSession(int seed,bool fullCampaign,int? practiceNode,FormationSynergyTrial trial=null,
