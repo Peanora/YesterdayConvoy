@@ -36,6 +36,8 @@ namespace YesterdayConvoy
             public string Id, Name, Description;
             internal Action Apply;
             internal FormationCampaignRules.DataRecord Strategy;
+            internal FormationCampaignRules.UnitDefinition SupplyUnit;
+            internal string SupplyComponent;
         }
         sealed class Selection
         {
@@ -44,6 +46,7 @@ namespace YesterdayConvoy
             public Func<List<ChoiceOption>> Reroll;
             public bool Rerolled;
             public int Picks=1;
+            public bool FirstSupplyComponentWithheld;
         }
         public sealed class ItemInstance
         {
@@ -205,6 +208,9 @@ namespace YesterdayConvoy
             new ChoiceOption{Id="tal-up",Name=$"升为{shop.PendingTalulahChoice+1}费一星",Description="无需金币或希望；商店同名商品原位升费，库存实时重算。"},
             new ChoiceOption{Id="tal-enhance",Name="强化自身并保留二星",Description=shop.PendingTalulahChoice==3?"攻击+20%，技能伤害+25%，所需SP降至18；本局锁定3费。":"主技改为4段，每次施法获得20%生命护盾8秒；本局锁定4费。"}
         }:selections.Count==0?Array.Empty<ChoiceOption>():selections.Peek().Options;
+        internal int SupplyPicksRemaining => shop.PendingTalulahChoice == 0 && selections.TryPeek(out var supply) &&
+            supply.Options.Count > 0 && supply.Options[0].SupplyUnit != null ? supply.Picks : 0;
+        internal bool SupplyEquipmentWithheld => SupplyPicksRemaining > 0 && selections.Peek().FirstSupplyComponentWithheld;
         public bool CanRerollChoice=>shop.PendingTalulahChoice==0&&selections.Count>0&&selections.Peek().Reroll!=null&&!selections.Peek().Rerolled;
         public IReadOnlyList<ItemInstance> Inventory=>items.Where(x=>x.Owner==0).ToArray();
         public IReadOnlyList<ItemInstance> AllEquipment=>items;
@@ -266,7 +272,12 @@ namespace YesterdayConvoy
             if(shop.PendingTalulahChoice>0){var result=shop.ResolveTalulah(index==0);if(result.Success)OnShopChanged();return result;}
             if(selections.Count==0)return Fail("没有待选奖励");
             var selection=selections.Peek();var option=selection.Options[index];
-            if(--selection.Picks<=0)selections.Dequeue();else selection.Options.RemoveAt(index);
+            if (--selection.Picks <= 0) selections.Dequeue();
+            else
+            {
+                selection.Options.RemoveAt(index);
+                selection.FirstSupplyComponentWithheld = false;
+            }
             option.Apply?.Invoke();OnShopChanged();return Ok("已选择："+option.Name);
         }
         public ShopTrialModel.Result ChooseReward(int index)
@@ -277,11 +288,26 @@ namespace YesterdayConvoy
         }
         public bool RerollChoice()
         {if(!CanRerollChoice)return false;var s=selections.Peek();s.Options=s.Reroll();s.Rerolled=true;return true;}
-        void Request(string title,IEnumerable<ChoiceOption> choices,Func<List<ChoiceOption>> reroll=null,int picks=1)
-        {var options=choices.ToList();if(options.Count==0)return;selections.Enqueue(new Selection{Title=title,Options=options,Reroll=reroll,Picks=Math.Min(picks,options.Count)});}
+        void Request(string title,IEnumerable<ChoiceOption> choices,Func<List<ChoiceOption>> reroll=null,int picks=1,
+            bool firstSupplyComponentWithheld = false)
+        {
+            var options = choices.ToList();
+            if (options.Count == 0) return;
+            selections.Enqueue(new Selection
+            {
+                Title = title, Options = options, Reroll = reroll, Picks = Math.Min(picks, options.Count),
+                FirstSupplyComponentWithheld = firstSupplyComponentWithheld
+            });
+        }
         ChoiceOption Option(string id,string name,string description,Action apply)=>new ChoiceOption{Id=id,Name=name,Description=description,Apply=apply};
         ChoiceOption StrategyOption(FormationCampaignRules.DataRecord record, Action apply) =>
             new ChoiceOption{Id=record.Id,Name=record.Name,Description=record.Effect,Apply=apply,Strategy=record};
+        ChoiceOption SupplyOption(FormationCampaignRules.UnitDefinition unit, string component, string description, Action apply) =>
+            new ChoiceOption
+            {
+                Id = unit.Id, Name = component == null ? unit.Name : unit.Name + " + " + ItemName(component),
+                Description = description, Apply = apply, SupplyUnit = unit, SupplyComponent = component
+            };
         List<T> Shuffle<T>(IEnumerable<T> source)=>source.OrderBy(_=>random.Next()).ToList();
         string CardId(string id)=>FormationCampaignRules.Find(id)?.CardId??id;
         string UnitId(string id)=>FormationCampaignRules.Find(id)?.Id??id;
@@ -496,15 +522,15 @@ namespace YesterdayConvoy
             {
                 var remaining=candidates.Where(unit=>!picked.Contains(unit.Id)).ToArray();
                 if(!inspect||remaining.Length==0){FinishSupply();return;}
-                Request("入库抽检 · 额外选择一名角色",remaining.Select(unit=>Option(unit.Id,unit.Name,"只领取角色，不领取装备；与主补给共用已预占的候选。",()=>
+                Request("入库抽检 · 额外选择一名角色",remaining.Select(unit=>SupplyOption(unit,null,"只领取角色，不领取装备；与主补给共用已预占的候选。",()=>
                 {picked.Add(unit.Id);GiveReserved(tickets[unit.Id]);FinishSupply();})));
             }
             var options=candidates.Select(unit=>
             {
-                string component=RandomComponent();return Option(unit.Id,unit.Name+" + "+ItemName(component),$"{shop.Definition(unit.CardId).Cost}费一星 · {unit.Role}",()=>
+                string component=RandomComponent();return SupplyOption(unit,component,$"{shop.Definition(unit.CardId).Cost}费一星 · {unit.Role}",()=>
                 {picked.Add(unit.Id);GiveReserved(tickets[unit.Id]);if(initialPicked++>0||componentForfeit==0)AddItem(component);if(initialPicked>=Math.Min(picks,candidates.Length))FinishMainChoices();});
             }).ToArray();
-            Request("补给 · 五选"+(picks==2?"二":"一"),options,picks:picks);
+            Request("补给 · 五选"+(picks==2?"二":"一"),options,picks:picks,firstSupplyComponentWithheld:componentForfeit>0);
         }
         void RequestAugment()
         {

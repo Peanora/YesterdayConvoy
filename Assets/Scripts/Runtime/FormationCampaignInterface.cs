@@ -106,6 +106,7 @@ namespace YesterdayConvoy
         void DrawCampaignOverlays()
         {
             if(Campaign==null)return;
+            if (DrawSupplyChoice()) return;
             if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
             if(campaignRewardChoiceOpen&&Campaign.PendingRewardChoices>0){DrawCampaignChoices(true);return;}
             if(Campaign.Finished&&(!AwaitingOptionalRewards||campaignResultSummaryOpen)){DrawCampaignFinished();return;}

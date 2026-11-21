@@ -387,13 +387,63 @@ namespace YesterdayConvoy.Tests
         }
         static void FixtureNode(FormationCampaignRun run,int index)=>typeof(FormationCampaignRun).GetProperty("NodeIndex").GetSetMethod(true).Invoke(run,new object[]{index});
         static void FixtureAugment(FormationCampaignRun run,string id)=>typeof(FormationCampaignRun).GetMethod("ApplyAugment",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(run,new object[]{id});
-        static FormationCampaignRun SupplyFixture(bool doubleSupply=false,bool inspect=false)
+        static FormationCampaignRun SupplyFixture(bool doubleSupply=false,bool inspect=false,bool prepaid=false)
         {
             var shop=Shop(88);var run=new FormationCampaignRun(shop,88);ResolveChoices(run);
+            if (prepaid)
+            {
+                typeof(FormationCampaignRun).GetMethod("ApplyPreplan", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(run, new object[] { "P07" });
+                ResolveChoices(run);
+            }
             shop.Preset(Array.Empty<ShopTrialModel.Piece>(),Array.Empty<string>(),3,0,80);FixtureNode(run,3);
             if(doubleSupply)FixtureAugment(run,"EP5");if(inspect)FixtureAugment(run,"ES6");
             run.SettleBattle(true,1,5,0,false);Assert.That(run.AdvanceNode(),Is.True);Assert.That(run.CurrentNode.Id,Is.EqualTo("1-5"));return run;
         }
+
+        static T SupplyDisplayMember<T>(object source, string name)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var property = source.GetType().GetProperty(name, flags);
+            if (property != null) return (T)property.GetValue(source);
+            var field = source.GetType().GetField(name, flags);
+            Assert.That(field, Is.Not.Null, name);
+            return (T)field.GetValue(source);
+        }
+
+        [Test]
+        public void DisplayedSupplyPackMatchesItsReservedCardAndGrantedComponent()
+        {
+            var run = SupplyFixture();
+            var shop = run.Shop;
+            var options = run.Choices.ToArray();
+            Assert.That(options.Length, Is.EqualTo(5));
+            Assert.That(SupplyDisplayMember<int>(run, "SupplyPicksRemaining"), Is.EqualTo(1));
+            Assert.That(SupplyDisplayMember<bool>(run, "SupplyEquipmentWithheld"), Is.False);
+            var units = options.Select(option => SupplyDisplayMember<FormationCampaignRules.UnitDefinition>(option, "SupplyUnit")).ToArray();
+            var components = options.Select(option => SupplyDisplayMember<string>(option, "SupplyComponent")).ToArray();
+            Assert.That(units, Is.All.Not.Null);
+            Assert.That(units.Select(unit => unit.Id), Is.EqualTo(options.Select(option => option.Id)));
+            Assert.That(units.Select(unit => unit.CardId), Is.EquivalentTo(shop.RewardReservations.Select(ticket => ticket.Id)));
+            Assert.That(units.Select(unit => shop.Definition(unit.CardId).Cost), Is.All.InRange(2, 3));
+            Assert.That(components.Distinct(), Is.SubsetOf(FormationCampaignRules.AllComponents.Select(item => item.Id)));
+
+            const int selected = 2;
+            var ownedItems = run.Inventory.Select(item => item.Instance).ToArray();
+            var displayedUnit = units[selected];
+            int displayedCost = shop.Definition(displayedUnit.CardId).Cost;
+            Assert.That(run.Choose(selected).Success, Is.True);
+            var recruit = shop.Bench.Single();
+            Assert.That(recruit.Id, Is.EqualTo(displayedUnit.CardId));
+            Assert.That(recruit.Star, Is.EqualTo(1));
+            Assert.That(shop.Definition(recruit.Id).Cost, Is.EqualTo(displayedCost));
+            Assert.That(run.Inventory.Where(item => !ownedItems.Contains(item.Instance)).Select(item => item.Key),
+                Is.EqualTo(new[] { components[selected] }));
+            Assert.That(SupplyDisplayMember<int>(run, "SupplyPicksRemaining"), Is.Zero);
+            Assert.That(run.NodeSettled, Is.True);
+            shop.Validate();
+        }
+
         [Test]
         public void ReservedLastCopyCannotBeStolenAndItsClaimAndReleaseAreIdempotent()
         {
@@ -444,19 +494,48 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.PendingDeliveries,Is.EqualTo(1));Assert.That(shop.RewardReservations.Count,Is.EqualTo(extra.Count));
             shop.ReleaseReservation(extra[0]);run.OnShopChanged();Assert.That(run.PendingDeliveries,Is.Zero);Assert.That(shop.Bench.Where(p=>p.Id==id).Sum(p=>ShopTrialModel.Copies(p.Star)),Is.EqualTo(2));shop.Validate();
         }
-        [Test]
-        public void DoubleSupplyAndInspectionShareFiveTicketsAndReturnOnlyUnselectedCopies()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DoubleSupplyAndInspectionShareFiveTicketsAndReturnOnlyUnselectedCopies(bool prepaid)
         {
-            var run=SupplyFixture(true,true);var shop=run.Shop;var chosen=new System.Collections.Generic.HashSet<string>();
-            Assert.That(shop.RewardReservations.Count,Is.EqualTo(5));
-            for(int i=0;i<2;i++)
+            var run = SupplyFixture(doubleSupply: true, inspect: true, prepaid: prepaid);
+            var shop = run.Shop;
+            var chosen = new System.Collections.Generic.HashSet<string>();
+            Assert.That(shop.RewardReservations.Count, Is.EqualTo(5));
+            for (int i = 0; i < 2; i++)
             {
-                int selected=Array.FindIndex(run.Choices.ToArray(),option=>option.Id!="TAL");chosen.Add(run.Choices[selected].Id);run.Choose(selected);
-                Assert.That(shop.RewardReservations.Count,Is.EqualTo(4-i));Assert.That(run.NodeSettled,Is.False);shop.Validate();
+                bool withhold = prepaid && i == 0;
+                Assert.That(SupplyDisplayMember<int>(run, "SupplyPicksRemaining"), Is.EqualTo(2 - i));
+                Assert.That(SupplyDisplayMember<bool>(run, "SupplyEquipmentWithheld"), Is.EqualTo(withhold));
+                int selected = Array.FindIndex(run.Choices.ToArray(), option => option.Id != "TAL");
+                var option = run.Choices[selected];
+                var component = SupplyDisplayMember<string>(option, "SupplyComponent");
+                var ownedItems = run.Inventory.Select(item => item.Instance).ToArray();
+                chosen.Add(option.Id);
+                Assert.That(run.Choose(selected).Success, Is.True);
+                Assert.That(run.Inventory.Where(item => !ownedItems.Contains(item.Instance)).Select(item => item.Key),
+                    Is.EqualTo(withhold ? Array.Empty<string>() : new[] { component }));
+                Assert.That(shop.RewardReservations.Count, Is.EqualTo(4 - i));
+                Assert.That(run.NodeSettled, Is.False);
+                shop.Validate();
             }
-            Assert.That(run.ChoiceTitle,Does.StartWith("入库抽检"));Assert.That(run.Choices.Count,Is.EqualTo(3));Assert.That(run.Choices.Any(x=>chosen.Contains(x.Id)),Is.False);
-            int last=Array.FindIndex(run.Choices.ToArray(),option=>option.Id!="TAL");chosen.Add(run.Choices[last].Id);run.Choose(last);
-            Assert.That(shop.RewardReservations.Count,Is.Zero);Assert.That(run.NodeSettled,Is.True);Assert.That(shop.Bench.Select(p=>FormationCampaignRules.Find(p.Id).Id),Is.EquivalentTo(chosen));shop.Validate();
+            Assert.That(run.ChoiceTitle, Does.StartWith("入库抽检"));
+            Assert.That(run.Choices.Count, Is.EqualTo(3));
+            Assert.That(run.Choices.Any(option => chosen.Contains(option.Id)), Is.False);
+            Assert.That(SupplyDisplayMember<int>(run, "SupplyPicksRemaining"), Is.EqualTo(1));
+            Assert.That(SupplyDisplayMember<bool>(run, "SupplyEquipmentWithheld"), Is.False);
+            Assert.That(run.Choices.Select(option => SupplyDisplayMember<string>(option, "SupplyComponent")), Is.All.Null);
+            Assert.That(run.Choices.Select(option => SupplyDisplayMember<FormationCampaignRules.UnitDefinition>(option, "SupplyUnit")?.Id),
+                Is.EqualTo(run.Choices.Select(option => option.Id)));
+            int gearCount = run.Inventory.Count;
+            int last = Array.FindIndex(run.Choices.ToArray(), option => option.Id != "TAL");
+            chosen.Add(run.Choices[last].Id);
+            Assert.That(run.Choose(last).Success, Is.True);
+            Assert.That(run.Inventory.Count, Is.EqualTo(gearCount));
+            Assert.That(shop.RewardReservations.Count, Is.Zero);
+            Assert.That(run.NodeSettled, Is.True);
+            Assert.That(shop.Bench.Select(p => FormationCampaignRules.Find(p.Id).Id), Is.EquivalentTo(chosen));
+            shop.Validate();
         }
         [Test]
         public void SupplyWaitsForContractTalulahChoiceBeforeReservingCandidates()

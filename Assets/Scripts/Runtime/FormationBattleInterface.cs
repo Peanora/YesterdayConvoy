@@ -79,6 +79,7 @@ namespace YesterdayConvoy
                 if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
                 GUI.enabled=enabled&&!formationMenuOpen;
                 if(shopOddsVisible)DrawFormationOdds();
+                bool showingSupply = Campaign?.SupplyPicksRemaining > 0;
                 DrawCampaignOverlays();
                 if(!CampaignInteractionBlocked&&!formationMenuOpen&&!shopOddsVisible)
                 {
@@ -87,7 +88,7 @@ namespace YesterdayConvoy
                     DrawFormationInspection();
                     DrawFormationEquipmentOverlay();
                 }
-                DrawFormationRewardFlights();
+                if (!showingSupply) DrawFormationRewardFlights();
                 DrawHeldFormationActor();
                 DrawFormationOpeningDelivery();
                 DrawFormationExitConfirmation();
