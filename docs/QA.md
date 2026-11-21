@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-21 超新星高清与攻击辨识实机验收
+
+源码 `a600bf71b19ceb497f4a24146a229f179cde548e`。Unity 6000.6.5f1 的 Windows x64 Development 构建成功，零错误，编辑器退出 0。Runtime DLL SHA-256 `436B5913F45C944038DB0C10360875BE4AF8DA920D62B344FF708F70DD8BE043`。最终 EditMode 1220/1220。23 段原骨骼动作按 30 fps 重采，147 页 1,841 帧，保持脚点。阶段、伤害和出手规则沿用原试关。 [构建日志](../artifacts/formation-supernova-fidelity/build.log) · [EditMode XML](../artifacts/formation-supernova-fidelity/edit-final.xml) · [正背面重采与原事件](art/source-records/formation-supernova-boss.md)
+
+D3D11 Player 实战 36/36、零异常。两版均按 1920×1080 实际游戏机位录制，同时间画面按 HUD 对齐至 0.1 秒内，也对照两版各自可见的攻击帧。侦察时新版的五官、发梢和炮管边缘更清楚。二技能首发约 3.45 秒显示粉白炮口，3.50 秒命中，约 11.88 秒显示过载炮口。三技能渲染记录在 34.425 秒出现炮口和拖尾，34.475 秒真实命中，34.55 秒出现独立落地层。录像约 34.44 秒可见粉色拖尾斜向目标。近身首炮的可视飞行约 0.05 秒。64.900 秒由存活本体进入蓝门，结算后重试检查通过。 [实机报告](../artifacts/formation-supernova-fidelity/after-wgc/supernova-boss-smoke.json) · [本体对照](../artifacts/formation-supernova-fidelity/body-before-after.png) · [二技能炮口](../artifacts/formation-supernova-fidelity/s2-muzzle-active-before-after.png) · [三技能飞行](../artifacts/formation-supernova-fidelity/s3-trail-active-before-after.png) · [三技能落地](../artifacts/formation-supernova-fidelity/s3-ground-before-after.png)
+
+窗口有效采集约 50 fps，两段成片按实际时间以 60 fps 为目标重采样，已完整解码。有声片约 14.6 秒，0.54 秒见二技能炮口，4.90 秒见过载命中，9.04、9.10、9.20 秒依次见三技能的发射飞行、接触和地面爆炸。试玩由游戏的关卡选择命令进入，使用预设阵容按 1× 战斗时钟推进。 [前后对比](../artifacts/formation-supernova-fidelity/supernova-before-after.mp4) · [有声实机](../artifacts/formation-supernova-fidelity/supernova-hd.mp4)
+
 ## 2026-11-21 超新星双阶段首领实机验收
 
 源码 `3780261d561b29427b8241dd5efcafa7fa99befb`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,150,254 字节、零错误、退出 0。Runtime DLL SHA-256 `AF5CBC4D0F5488BC900C94A30DD7E3DAA870F369018423E57719D1DACB67777B`。最终 EditMode 1220/1220，定向用例验证三目标齐射、过载四发的源间隔、两段独立生命与暂停、六炮重装、同炮范围伤害和蓝门。 [构建日志](../artifacts/formation-supernova-boss/build.log) · [EditMode XML](../artifacts/formation-supernova-boss/edit-final.xml)

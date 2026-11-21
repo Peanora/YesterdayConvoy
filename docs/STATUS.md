@@ -1,5 +1,10 @@
 # 当前工程状态
 
+## 2026-11-21 超新星高清与攻击特效修订
+
+- 独立首领试玩使用重新渲染的正背面原骨骼动作。二技能的采样密度提高约 2.6 倍，三技能提高约 56%，保持原脚点、体型和动作时长。炮口亮帧与出手同步，三技能保留发射、飞行、受击、落地的分层，地面余波沿棋盘铺开。 [素材和绑定](art/source-records/formation-supernova-boss.md)
+- Windows 对应源码 `a600bf71`。同机位 1080p 实机核对二技能炮口和过载命中、三技能炮口、短拖尾和落地爆炸。预设八人 64.9 秒进入蓝门，EditMode 1220/1220，Player 36/36、零异常。 [Windows EXE](../Builds/Windows/YesterdayConvoy.exe) · [前后对比](../artifacts/formation-supernova-fidelity/supernova-before-after.mp4) · [有声实机](../artifacts/formation-supernova-fidelity/supernova-hd.mp4)
+
 ## 2026-11-21 维什戴尔·超新星双阶段首领
 
 - 右上「菜单 → 首领试玩 · 维什戴尔·超新星」进入独立关卡。八人预设可直接开战，也可先调整并带当前阵容重试。首段「饱和复仇」从三目标齐射进入过载四连发，第二段「爆裂黎明」每轮六发范围炮弹。两段生命各 220,000，时限 150 秒，最终由存活本体实际进蓝门。 [关卡规则](FORMATION_BATTLE.md#维什戴尔超新星首领试玩) · [原作素材与适配](art/source-records/formation-supernova-boss.md)
