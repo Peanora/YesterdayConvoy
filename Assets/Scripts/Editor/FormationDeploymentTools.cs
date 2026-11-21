@@ -29,7 +29,7 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Formation Battle/Rebuild Expanded Preparation Board")]
         public static void RebuildExpandedBoard()
         {
-            FormationReferenceMapTools.Apply();
+            FormationCanyonTools.Apply();
             Configure();
         }
 
@@ -39,6 +39,7 @@ namespace YesterdayConvoy.Editor
             const string groupName="Foreground moved outward for deployment visibility";
             if(native.Find(groupName)!=null)return; // Preserve the authored adjustment on repeat runs.
             var source=native.Find("Original LS-5 perimeter parts");
+            if(source==null)return;
             var obstructing=source.GetComponentsInChildren<MeshRenderer>().Where(r=>r.bounds.center.z< -4f&&r.bounds.max.y>1.5f).ToArray();
             var group=new GameObject(groupName).transform;group.SetParent(native,false);
             foreach(var renderer in obstructing)
@@ -48,7 +49,7 @@ namespace YesterdayConvoy.Editor
         [MenuItem("Yesterday Convoy/Formation Battle/Validate Full Roster Deployment")]
         public static void Validate()
         {
-            FormationReferenceMapTools.Validate();
+            FormationCanyonTools.Validate();
             var controller=Object.FindAnyObjectByType<FormationBattleController>();
             if(controller.formationCards==null||controller.formationCards.Length!=FormationUnitCatalog.All.Count||
                 controller.formationCards.Any(c=>c==null)||controller.formationCards.Select(c=>c.CardId).Distinct().Count()!=FormationUnitCatalog.All.Count)

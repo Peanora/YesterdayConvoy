@@ -300,14 +300,14 @@ namespace YesterdayConvoy.Tests
                 Assert.That(tile.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),Is.True);
                 foreach(var material in renderer.sharedMaterials)
                 {
-                    Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/FormationNativeSurface"));
+                    Assert.That(material.shader.name,Is.EqualTo("YesterdayConvoy/Formation Canyon Surface"));
                     Assert.That(material.shader.isSupported,Is.True);
-                    Assert.That(material.HasProperty("_ConcreteMode")&&material.GetFloat("_ConcreteMode")>.5f,Is.True,"The board must use the approved matte concrete branch rather than the old reflective atlas surface.");
                     Assert.That(material.mainTexture,Is.Not.Null);
-                    Assert.That(material.mainTexture.name,Is.EqualTo("city-concrete"),"The concrete grain must be a saved Player dependency.");
+                    Assert.That(material.mainTexture.name,Is.EqualTo("TX_AutochessSand_A"));
 #if UNITY_EDITOR
-                    Assert.That(AssetDatabase.GetAssetPath(material),Does.StartWith("Assets/Art/Environment/FormationBoard/"));
-                    Assert.That(AssetDatabase.GetAssetPath(material.mainTexture),Is.EqualTo("Assets/Art/Environment/TacticalV2/city-concrete.png"));
+                    Assert.That(AssetDatabase.GetAssetPath(material),Does.StartWith("Assets/Art/Environment/FormationCanyon/"));
+                    Assert.That(AssetDatabase.GetAssetPath(tile.GetComponent<MeshFilter>().sharedMesh),
+                        Does.StartWith("Assets/Art/Environment/FormationCanyon/"));
 #endif
                 }
             }
@@ -326,9 +326,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(terrainRenderers.Length,Is.GreaterThan(0));
             foreach(var region in regions)
             {
-                bool platform=region.cells.height==2;
-                Assert.That(region.allowDefender,Is.EqualTo(platform),"Only the high platforms may receive guards; low cover stays empty.");
-                Assert.That(region.height,Is.EqualTo(platform ? .48f : .36f).Within(.001f));
+                bool platform=region.cells.xMin>=17;
+                float height=platform ? .48f : region.cells.xMin==12 ? -.30f : .36f;
+                Assert.That(region.allowDefender,Is.EqualTo(platform),"The canyon basin is not a deployment tile.");
+                Assert.That(region.height,Is.EqualTo(height).Within(.001f));
                 var cell=new Vector2(region.cells.xMin,region.cells.yMin);
                 var foot=controller.ActorWorldPoint(cell);
                 Assert.That(controller.Model.Terrain.HeightAt(cell),Is.EqualTo(region.height).Within(.001f));
@@ -336,7 +337,29 @@ namespace YesterdayConvoy.Tests
                 Assert.That(terrainRenderers.Any(r=>foot.x>=r.bounds.min.x-.01f&&foot.x<=r.bounds.max.x+.01f&&foot.z>=r.bounds.min.z-.01f&&foot.z<=r.bounds.max.z+.01f&&Mathf.Abs(r.bounds.max.y-foot.y)<.02f),Is.True,"Saved visible terrain tops must agree with the model and actor feet at "+cell+".");
             }
             Assert.That(controller.Model.Terrain.CanTravel(new Vector2(FormationBattleModel.DeploymentColumns,3),new Vector2(FormationBattleModel.Width-1,3)),Is.True,"The middle row must remain an open route to the blue gates.");
-            Assert.That(controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position)),Is.True,"Random guards must not appear inside low cover.");
+            Assert.That(controller.Model.Terrain.CanTravel(new Vector2(10,0),new Vector2(21,0)),Is.True,"The near bank remains a second route.");
+            Assert.That(controller.Model.Terrain.CanTravel(new Vector2(14,0),new Vector2(14,3)),Is.True,"The bridge crosses both banks at floor height.");
+            Assert.That(controller.Model.Terrain.CanTravel(new Vector2(11,1),new Vector2(16,1)),Is.False,"A unit cannot walk across the basin.");
+            Assert.That(controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position)),Is.True,"Random guards must not appear in the basin.");
+            var water=terrainRenderers.Single(renderer=>renderer.name=="Native basin water");
+            var block=new MaterialPropertyBlock();
+            var flowProperty=Shader.PropertyToID("_FlowTime");
+            water.GetPropertyBlock(block);
+            float beforeFlow=block.GetFloat(flowProperty);
+            yield return null;
+            yield return null;
+            water.GetPropertyBlock(block);
+            float movingFlow=block.GetFloat(flowProperty);
+            Assert.That(movingFlow,Is.GreaterThan(beforeFlow));
+            controller.Model.Paused=true;
+            try
+            {
+                yield return null;
+                yield return null;
+                water.GetPropertyBlock(block);
+                Assert.That(block.GetFloat(flowProperty),Is.EqualTo(movingFlow));
+            }
+            finally{controller.Model.Paused=false;}
             // A preparation-only visual fixture checks the real sprite presenter at a raised cell.
             // Restore the guard immediately; no battle health, skill or result is manufactured.
             var guard=controller.Model.Defenders.First();var savedPosition=guard.Position;
@@ -352,7 +375,7 @@ namespace YesterdayConvoy.Tests
             }
             finally{guard.Position=savedPosition;}
             yield return View(false);
-            Debug.Log("FORMATION_GATE_SCENE_CHECK: Normal concrete base cells and outside perimeter parts, four saved guard terrain regions with matching sprite foot heights, and source transparent gates at current logical columns.");
+            Debug.Log("FORMATION_GATE_SCENE_CHECK: Saved native canyon ground, legal banks and bridge, recessed water with pause-aware flow, and unchanged source gates.");
         }
         [UnityTest] public IEnumerator RealMarketPurchaseUsesGoldAndBattleLocksTransactions()
         {

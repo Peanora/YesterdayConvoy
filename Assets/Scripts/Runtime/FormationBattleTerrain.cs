@@ -44,8 +44,8 @@ namespace YesterdayConvoy
                 if (r.cells.width <= 0 || r.cells.height <= 0 || r.cells.xMin < FormationBattleModel.DeploymentColumns + 2 ||
                     r.cells.xMax > FormationBattleModel.Width - 1 || r.cells.yMin < 0 ||
                     r.cells.yMax > FormationBattleModel.Height || float.IsNaN(r.height) ||
-                    float.IsInfinity(r.height) || r.height <= 0)
-                    throw new ArgumentException("Formation terrain must stay inside the right guard area with a positive height.", nameof(source));
+                    float.IsInfinity(r.height) || r.height == 0 || r.height < 0 && r.allowDefender)
+                    throw new ArgumentException("Formation terrain must stay in the guard area; recessed regions cannot host defenders.", nameof(source));
                 for (int j = 0; j < i; j++)
                     if (r.cells.Overlaps(regions[j].cells))
                         throw new ArgumentException("Formation terrain regions must not overlap.", nameof(source));

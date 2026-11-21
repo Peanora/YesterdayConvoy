@@ -129,7 +129,9 @@ namespace YesterdayConvoy
             if(coordinates.Length!=2||!int.TryParse(coordinates[0],out int column)||!int.TryParse(coordinates[1],out int row))return false;
             var expected=FormationBattleController.WorldPoint(new Vector2(column,row));var renderer=tile.GetComponent<MeshRenderer>();
             if(renderer==null||Vector2.Distance(new Vector2(renderer.bounds.center.x,renderer.bounds.center.z),new Vector2(expected.x,expected.z))>.001f||Mathf.Abs(renderer.bounds.max.y-.12f)>.001f||tile.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled))return false;
-            return renderer.sharedMaterials.Length>0&&renderer.sharedMaterials.All(material=>material!=null&&material.shader.name=="YesterdayConvoy/FormationNativeSurface"&&material.shader.isSupported&&material.HasProperty("_ConcreteMode")&&material.GetFloat("_ConcreteMode")>.5f&&material.mainTexture!=null&&material.mainTexture.name=="city-concrete");
+            return renderer.sharedMaterials.Length>0&&renderer.sharedMaterials.All(material=>material!=null&&
+                material.shader.name=="YesterdayConvoy/Formation Canyon Surface"&&material.shader.isSupported&&
+                material.mainTexture?.name=="TX_AutochessSand_A");
         }
         bool SavedDefenderTerrain()
         {
@@ -141,13 +143,17 @@ namespace YesterdayConvoy
             var renderers=root.GetComponentsInChildren<MeshRenderer>(true);
             foreach(var region in regions)
             {
-                bool platform=region.cells.height==2;
-                if(region.allowDefender!=platform||Mathf.Abs(region.height-(platform ? .48f : .36f))>.001f)return false;
+                bool platform=region.cells.xMin>=17;
+                float height=platform ? .48f : region.cells.xMin==12 ? -.30f : .36f;
+                if(region.allowDefender!=platform||Mathf.Abs(region.height-height)>.001f)return false;
                 var cell=new Vector2(region.cells.xMin,region.cells.yMin);var foot=controller.ActorWorldPoint(cell);
                 if(Mathf.Abs(controller.Model.Terrain.HeightAt(cell)-region.height)>.001f||controller.Model.Terrain.CanPlaceDefender(cell)!=region.allowDefender||
                     !renderers.Any(r=>foot.x>=r.bounds.min.x-.01f&&foot.x<=r.bounds.max.x+.01f&&foot.z>=r.bounds.min.z-.01f&&foot.z<=r.bounds.max.z+.01f&&Mathf.Abs(r.bounds.max.y-foot.y)<.02f))return false;
             }
-            return controller.Model.Terrain.CanTravel(new Vector2(FormationBattleModel.DeploymentColumns,3),new Vector2(FormationBattleModel.Width-1,3))&&controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position));
+            return controller.Model.Terrain.CanTravel(new Vector2(FormationBattleModel.DeploymentColumns,3),new Vector2(FormationBattleModel.Width-1,3))&&
+                controller.Model.Terrain.CanTravel(new Vector2(14,0),new Vector2(14,3))&&
+                !controller.Model.Terrain.CanTravel(new Vector2(11,1),new Vector2(16,1))&&
+                controller.Model.Defenders.All(d=>controller.Model.Terrain.CanPlaceDefender(d.Position));
         }
         bool ActorFeetMatchTerrain()
         {
@@ -267,7 +273,7 @@ namespace YesterdayConvoy
             var nativeTransforms=nativeRoot.GetComponentsInChildren<Transform>(true);
             CheckThat("source-native-gates-keep-four-transparent-full-cell-layers",Enumerable.Range(0,FormationBattleModel.Height).All(row=>NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Red gate row "+row),new Vector2(FormationBattleModel.DeploymentColumns,row))&&NativeGate(nativeTransforms.SingleOrDefault(t=>t.name=="Blue gate row "+row),new Vector2(FormationBattleModel.Width-1,row))));
             var boardCells=SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Transform>(true)).Where(t=>t.gameObject.activeInHierarchy&&t.name.StartsWith("Tile ",StringComparison.Ordinal)).ToArray();
-            CheckThat("saved-base-board-uses-matte-concrete-and-persistent-texture",boardCells.Length==FormationBattleModel.Width*FormationBattleModel.Height&&boardCells.All(FlatBoardCell));
+            CheckThat("saved-base-board-uses-native-canyon-paving",boardCells.Length==FormationBattleModel.Width*FormationBattleModel.Height&&boardCells.All(FlatBoardCell));
             var perimeter=nativeTransforms.SingleOrDefault(t=>t.name=="Original LS-5 raised perimeter");
             CheckThat("saved-raised-perimeter-leaves-fighting-board-clear",perimeter!=null&&perimeter.GetComponentsInChildren<MeshRenderer>(true).Length==2*FormationBattleModel.Width+2*FormationBattleModel.Height&&perimeter.GetComponentsInChildren<MeshRenderer>(true).All(r=>OutsideBoard(r.bounds))&&!perimeter.GetComponentsInChildren<Collider>(true).Any(c=>c.enabled));
             CheckThat("saved-guard-platforms-and-cover-match-combat-layout",SavedDefenderTerrain());

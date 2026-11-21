@@ -208,7 +208,11 @@ namespace YesterdayConvoy.Editor
         }
 
         [MenuItem("Yesterday Convoy/Formation Battle/Validate Original LS-5 Environment")]
-        public static void Validate()
+        public static void Validate() => ValidateSavedGeometry(renderer =>
+            renderer.sharedMaterials.All(material=>material.shader.name==FormationBoardMaterialTools.SurfaceShaderName),
+            FormationNativeAssetTools.ArtPath+"/");
+
+        internal static void ValidateSavedGeometry(Func<MeshRenderer,bool> validSurface,string nativeMeshRoot)
         {
             FormationBattleTools.Validate();var scene=SceneManager.GetActiveScene();
             var root=scene.GetRootGameObjects().Single(g=>g.name==RootName);var camera=Object.FindAnyObjectByType<FormationBattleController>().battleCamera;
@@ -220,9 +224,9 @@ namespace YesterdayConvoy.Editor
             foreach(var tile in tiles)
             {
                 var mesh=tile.GetComponent<MeshFilter>()?.sharedMesh;
-                if(mesh==null||!AssetDatabase.GetAssetPath(mesh).StartsWith(FormationNativeAssetTools.ArtPath+"/",StringComparison.Ordinal))throw new InvalidOperationException("Non-native floor mesh: "+tile.name);
+                if(mesh==null||!AssetDatabase.GetAssetPath(mesh).StartsWith(nativeMeshRoot,StringComparison.Ordinal))throw new InvalidOperationException("Non-native floor mesh: "+tile.name);
                 var renderer=tile.GetComponent<MeshRenderer>();
-                if(Mathf.Abs(renderer.bounds.max.y-.12f)>.002f||tile.GetComponents<Collider>().Length>0||renderer.sharedMaterials.Any(m=>m.shader.name!=FormationBoardMaterialTools.SurfaceShaderName))throw new InvalidOperationException("Board cells must keep a clear level deployment surface and their independent materials.");
+                if(Mathf.Abs(renderer.bounds.max.y-.12f)>.002f||tile.GetComponents<Collider>().Length>0||!validSurface(renderer))throw new InvalidOperationException("Board cells must keep a clear level deployment surface and their independent materials.");
             }
             var perimeter=root.GetComponentsInChildren<Transform>().Single(t=>t.name=="Original LS-5 raised perimeter");
             var raised=perimeter.GetComponentsInChildren<MeshRenderer>();
@@ -243,7 +247,7 @@ namespace YesterdayConvoy.Editor
             if(projected.xMin<180||projected.xMax>1012||projected.yMin<65||projected.yMax>485)throw new InvalidOperationException("Saved native map projects outside original A safe frame: "+projected);
             foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())
                 if(renderer.sharedMaterials.Any(m=>m==null||string.IsNullOrEmpty(AssetDatabase.GetAssetPath(m))))throw new InvalidOperationException("Unsaved native material.");
-            Debug.Log("FORMATION_BOARD_VALIDATE_PASS: "+(FormationBattleModel.Width*FormationBattleModel.Height)+" level checker cells, "+raised.Length+" raised perimeter cells, independent source-lit surfaces, "+FormationBattleModel.Height+"+"+FormationBattleModel.Height+" full transparent gates, 60deg/40FOV camera, floorFrame="+projected);
+            Debug.Log("FORMATION_BOARD_VALIDATE_PASS: "+(FormationBattleModel.Width*FormationBattleModel.Height)+" saved base cells, "+raised.Length+" raised perimeter cells, "+FormationBattleModel.Height+"+"+FormationBattleModel.Height+" full transparent gates, 60deg/40FOV camera, floorFrame="+projected);
         }
 
         [MenuItem("Yesterday Convoy/Formation Battle/Capture Original LS-5 Scene")]
