@@ -1,5 +1,10 @@
 # 当前工程状态
 
+## 2026-11-22 正式新局棋盘展开
+
+- 首次启动和「菜单 → 重新开始本次挑战」进入同源石谷时，先播 5.5 秒棋盘展开。中央抬起，两翼各三段带石沿向外翻开，落稳后红蓝门依次亮起。镜头回到左侧整备位，再接三张起手角色、一件装备和暖白战略预案。棋盘展开期间隐藏棋子、备战席及操作界面。
+- 本机 Windows 构建运行源码 `dccd0a48`。EditMode 1236/1236、定向 PlayMode 5/5、Windows Player 展板专项 24/24、正式挑战前三战 142/142。 [Windows EXE](../Builds/Windows/YesterdayConvoy.exe) · [首次开局实机](../artifacts/formation-opening-unfold/opening-unfold.mp4) · [重开实机](../artifacts/formation-opening-unfold/opening-unfold-restart.mp4) · [验收记录](QA.md#2026-11-22-正式新局棋盘展开)
+
 ## 2026-11-22 整合运动激活后显示希望
 
 - 上阵阵容达到整合运动 3 人档时，备战席左侧显示希望面板。降至 2 人立即隐藏，重新激活后显示本局已累积的希望。

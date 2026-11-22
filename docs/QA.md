@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-22 正式新局棋盘展开
+
+- 运行源码 `dccd0a48437e8469825a4af12b78c463682daa0a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,359,294 字节、0 错误、退出 0。Runtime DLL SHA-256 `C30F6AFCE68A5863BB8A243233D15C815431D8DACF1B491DF664FE829717A339`。完整 EditMode **1236/1236**，定向 D3D11 PlayMode **5/5**。覆盖开局时原有格板的实际位置变化、原始位置及旋转恢复、蓝门显现、浅渠格保持禁用、补给与交易锁、重开重播。 [构建日志](../artifacts/formation-opening-unfold/build-final.log) · [EditMode XML](../artifacts/formation-opening-unfold/editmode-final.xml) · [PlayMode XML](../artifacts/formation-opening-unfold/playmode-final.xml)
+- 1280×720 D3D11 Player 开局专项 **24/24**，正式前三战 **142/142**，均零异常、退出 0。专项从正常入口和正式重开处理各运行一次。展开和补给沿实际时间播放，预案由验证程序调用正式选项，核对三名起手角色仍在备战席。 [开局专项](../artifacts/formation-opening-unfold/player-final/opening-unfold-smoke.json) · [正式前三战](../artifacts/formation-opening-unfold/campaign-final/campaign-smoke.json)
+- 两组正常时钟实机采样各 192 张，采样间隔随主机性能变化。短片按实际采集时间重采到 24 fps，保留 8 秒，静音。首次开局在约 0 秒可见收拢的中央板及两翼，约 1.79 秒石沿与地板同步转动，约 2.83 秒外侧板仍在放平，约 4.06 秒红门首批亮起，约 4.48 秒双门完全可见，约 5.32 秒镜头回到整备近景，约 6.34 秒可见补给飞行，约 7.36 秒可见预案翻面。全景远端保留一小段亮色沙岸。机械音轨已导入并由开场触发，短片未采集系统声音。 [首次开局](../artifacts/formation-opening-unfold/opening-unfold.mp4) · [重开](../artifacts/formation-opening-unfold/opening-unfold-restart.mp4) · [地形原作来源及看稿差异](art/source-records/formation-canyon.md#2026-11-22-新局棋盘展开)
+
 ## 2026-11-22 整合运动激活后显示希望
 
 - 运行源码 `5a1f47ae8bd173e94395ca108da55faf7b1c3879`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,289,698 字节，零错误，退出 0。Runtime DLL SHA-256 `A1F1F56A771E17DF2B3888882E912EC9A7A284D102124A607FBA3F19ADF0DC53`。EditMode 1236/1236，仓库检查通过 17,713 个跟踪文件。 [构建日志](../artifacts/formation-reunion-hope-active/build.log) · [EditMode XML](../artifacts/formation-reunion-hope-active/edit.xml)
