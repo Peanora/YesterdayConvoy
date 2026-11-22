@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-22 结城理攻速与生命调整
+
+- 运行源码 `f5fd6663cf85098ac52c082b68bb5eb2eddd09bf`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,876,598 字节、零错误。Runtime DLL SHA-256 为 `C28516354F2B89A9BF886730CFAB2B865AD621FB465C9353DB1FE7BDC35AAEA4`。 [构建日志](../artifacts/formation-makoto-tempo/build.log) · [新版 EXE](../Builds/Windows/YesterdayConvoy.exe)
+- 独立试玩三段生命为 180,000／240,000／225,000，共 645,000。塔纳托斯基础攻速倍率由 1.6 提高到 2.2，理论出手间隔 0.773 秒，25 毫秒固定步长下为 0.775 秒。原骨骼接触点是 0.80 源秒，按无减速动作倍率 4.4× 换算约 0.182 秒。正式 3-5 的 72,900 一档总生命及按档位缩放的治疗继续按遭遇预算计算。
+- 完整 EditMode 1236/1236。独立预设 89.950 秒清场、95.200 秒进蓝门。第三段 1,520 真实 DPS 对照到 150 秒超时，首领剩 3,260 HP，实际回复到 6,400 上限。正式 3-5 固定配装模型一档 45.500 秒进门，四档 90 秒超时、削减 34.77%。 [EditMode XML](../artifacts/formation-makoto-tempo/edit.xml)
+- 静态模型按 12–15 秒的接敌、转段和进门时间、全额回血和物法减伤计算，总有效输出门槛约从每秒 3,317–3,391 升至 4,949–5,059。口径为经护甲和法抗、尚未计守备减伤的伤害，真实伤害与实战存活率会改变结果。
+- 同版 1280×720 D3D11 Player，独立试玩 40/40、正式 3-5 一档 22/22，零异常、退出 0。独立试玩在 31.575 秒实际发起首个二阶段挥击，源接触时间 31.757 秒，同步更新到 31.775 秒结算伤害。记录的最短连续出手间隔为 0.775 秒。独立八人预设 92.800 秒清场、98.050 秒走进蓝门，3-5 一档 36.725 秒进门。 [独立试玩报告](../artifacts/formation-makoto-tempo/trial/makoto-boss-smoke.json) · [3-5 报告](../artifacts/formation-makoto-tempo/encounter/defense-smoke.json)
+- 对照见证荣光同皮肤实录约 0:53–0:54.5 的塔纳托斯弱点攻击。按新版正常速度和连续帧核对前摇、攻击方向、受击蓝光、间歇姿态和转为俄耳甫斯后的治疗。采用更短的实战间隔，动作和弱点接触共用原事件时钟。混战中部分刀光与其他特效叠加。短片为 24 fps、10.5 秒，五个间断采样用邻帧补足，完整解码通过。 [原作对照片段](https://www.bilibili.com/video/BV1QStJ6mEn6/?t=53) · [新版实机](../artifacts/formation-makoto-tempo/makoto-tempo-player.mp4) · [二阶段关键帧](../artifacts/formation-makoto-tempo/thanatos-attack-keyframes.jpg)
+
 ## 2026-11-22 结城理「开辟明日的剑刃」三形态修订
 
 - 运行源码 `2f5359be56c2814d20df6a6d9b546a61ba1c1b42`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,874,866 字节、零错误。Runtime DLL SHA-256 为 `1FDD27CA2D1C79523A6D7E30D0487FE63078E9B40916B3FBE29D3D893E4D4A13`。仓库检查通过 17,701 个跟踪文件。 [构建日志](../artifacts/formation-makoto-s3/build-final.log) · [Windows EXE](../Builds/Windows/YesterdayConvoy.exe)
