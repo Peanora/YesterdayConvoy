@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-22 整合运动激活后显示希望
+
+- 运行源码 `5a1f47ae8bd173e94395ca108da55faf7b1c3879`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,289,698 字节，零错误，退出 0。Runtime DLL SHA-256 `A1F1F56A771E17DF2B3888882E912EC9A7A284D102124A607FBA3F19ADF0DC53`。EditMode 1236/1236，仓库检查通过 17,713 个跟踪文件。 [构建日志](../artifacts/formation-reunion-hope-active/build.log) · [EditMode XML](../artifacts/formation-reunion-hope-active/edit.xml)
+- 1280×720 D3D11 Player 羁绊试玩 128/128、正式挑战前三战 142/142，均零异常、退出 0。整合试玩通过正式上下阵事务把已累积 32 希望的阵容从 3 人降至 2 人，面板与热区一起消失。将带徽章的第三人上阵后，面板恢复为 `32 / 45`。同时核对正式开局未激活截图。上下阵通过验证程序调用正式事务。 [未激活截图](../artifacts/formation-reunion-hope-active/synergy/01-整合-hope-inactive.png) · [重新激活截图](../artifacts/formation-reunion-hope-active/synergy/01-整合-hope-reactivated.png) · [羁绊试玩报告](../artifacts/formation-reunion-hope-active/synergy/synergy-smoke.json) · [正式挑战报告](../artifacts/formation-reunion-hope-active/campaign/campaign-smoke.json)
+
 ## 2026-11-22 整合运动希望面板
 
 - 在《货币战争》4.7 官方节目约 07:28 和 3-6 实机画面核对了幻月游戏在阵容左侧独立显示进度的做法。本作沿用暖灰备战界面，面板与现有备战席及队伍等级留有间隔。显示值直接读取 `FormationCampaignRun.Hope`，下一门槛复用希望发奖表，点击接入已有整合羁绊详情。 [官方节目](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=448) · [3-6 实机参考](https://www.miyoushe.com/sr/article/79618987)
