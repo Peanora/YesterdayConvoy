@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-22 棋盘开场与分段结算
+
+- 运行源码 `9a305500ad641f97e6cd8375de1f8b2ef9f6638c`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,284,314 字节、零错误、退出 0。Runtime DLL SHA-256 `4DCE7D46811F762D7C612C40B517B68EC44D5841C7BC31CC1DFBF074D5613E38`。完整 EditMode 1236/1236。 [构建日志](../artifacts/formation-battle-presentation/build-delivery.log) · [EditMode XML](../artifacts/formation-battle-presentation/edit-delivery.xml)
+- 同版 1280×720 D3D11 Player，专项 50/50、默认前三战 142/142，均零异常、退出 0。专项从正式入口三名起手角色开始，验证开场经过中间机位、开场期间单位与时钟保持初始值、开场后推进战斗。1-1 正常速度全清后实际进蓝门，队伍生命 100 → 100，随后本关入账 5 金币和 2 XP。1-3 仅布置一名未配装起手角色，按现行 90 秒时限超时，守军剩 2/5，队伍生命 100 → 94，随后入账 5 基础金币、1 利息和 2 XP。重入结算未重复扣血和发奖，留下的旧奖励球仍可到下次整备领取。1-2 和 1-3 的前段由验证程序加快推进真实模型，1-3 最后约 1 秒及两场结算按正常时钟播放。鼠标焦点限制下，专项走同一个开战处理和继续处理。 [动效专项报告](../artifacts/formation-battle-presentation/player-delivery/campaign-smoke.json) · [默认前三场报告](../artifacts/formation-battle-presentation/campaign-delivery/campaign-smoke.json)
+- 对照用户确认的第二版、明日方舟 SR-1 约 00:04.75–00:05.25 的固定战场和字幕，以及《货币战争》官方节目约 04:32.50–04:35.50 的结果、队伍生命和收益顺序。按同版连续帧检查左侧布阵、红门经过画面、右侧停稳后显示短标题、生命单独停留、收益再展开及继续按钮。保留现役棋盘原色，标题和结算用暖灰色及少量状态色。继续入口出现后恢复运营构图。败局有上一关遗留球时只提示可延后领取，避免将它们列成本关奖励。合并短片 294 帧、24 fps，完整解码通过，无黑帧段。独立 PlayMode 套件和完整三位面人工通关未执行。 [明日方舟实录](https://www.bilibili.com/video/BV1XXYR6cEEq/?t=4.75) · [货币战争官方片段](https://www.bilibili.com/video/BV1kc1uBkE4s/?t=272) · [同版实机短片](../artifacts/formation-battle-presentation/battle-presentation.mp4)
+
 ## 2026-11-22 结城理首领试玩配乐
 
 - 运行源码 `526d21bb1859fa1ad6b11bf522171a0a295fe83a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,256,698 字节，零错误。Runtime DLL SHA-256 `06CACD2D5A34F26A56375EF249088E333267091C6B1FC915BAA331CCD2D7ED10`。完整 EditMode 1236/1236，仓库检查通过 17,707 个跟踪文件。 [构建日志](../artifacts/formation-makoto-bgm/build.log) · [EditMode XML](../artifacts/formation-makoto-bgm/edit.xml)

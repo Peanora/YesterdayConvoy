@@ -1,5 +1,10 @@
 # 当前工程状态
 
+## 2026-11-22 棋盘开场与分段结算
+
+- 「开始进攻」沿实际棋盘从左侧布阵移向右侧守军，停稳后显示「作战开始」。镜头横移 1.38 秒，演出结束后部队和战斗计时开始推进。正式结算用暖灰面板先展示队伍生命，再展开实际收益和战利品，最后出现继续入口。 [棋盘操作](FORMATION_BATTLE.md#当前棋盘与表现)
+- 本地 Windows 构建对应 `9a305500`。EditMode 1236/1236，独立 Player 动效专项 50/50、默认前三场 142/142。实机 1-1 进门胜利保持 100 生命，1-3 超时后由 100 降至 94，随后发 5 基础金币、1 利息和 2 XP。 [Windows EXE](../Builds/Windows/YesterdayConvoy.exe) · [实机短片](../artifacts/formation-battle-presentation/battle-presentation.mp4) · [回归记录](QA.md#2026-11-22-棋盘开场与分段结算)
+
 ## 2026-11-22 结城理首领试玩配乐
 
 - 开战播放《Master of Shadow -Reload-》。塔纳托斯·改的血条开启时切入《It’s Going Down Now》，持续至第三阶段和进门，结算停播。Windows 实机 55/55，实录混音确认切歌一次，第三阶段延续播放。 [新版 EXE](../Builds/Windows/YesterdayConvoy.exe) · [验证记录](QA.md#2026-11-22-结城理首领试玩配乐)
