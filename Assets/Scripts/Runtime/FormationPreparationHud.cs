@@ -37,7 +37,8 @@ namespace YesterdayConvoy
             FormationExperienceRect.yMin - 77, FormationTraitSidebarRect.width + 8, 72);
 
         internal bool ReunionHopePanelVisible => Campaign != null && Model.Phase == FormationPhase.Preparation &&
-            (!Campaign.IsPractice || Campaign.ShowsHopeRewards);
+            (!Campaign.IsPractice || Campaign.ShowsHopeRewards) &&
+            Model.ActiveSynergies.TryGetValue("整合", out int tier) && tier > 0;
 
         void DrawReunionHopePanel()
         {

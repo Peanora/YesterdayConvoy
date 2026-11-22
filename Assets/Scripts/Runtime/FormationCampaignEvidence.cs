@@ -1314,6 +1314,30 @@ namespace YesterdayConvoy
                     Assert(controller.ReunionHopePanelVisible && progress >= 30 && run.NextHopeMilestone == 45,
                         "The next preparation uses the settled Hope and advances to the 45-point reward");
                     yield return Frame(imagePrefix + "-hope-after-retry");
+
+                    var members = controller.Session.Seats.Lineup(controller.Shop.Bench)
+                        .Where(piece => run.HasTrait(piece, id)).Skip(2).ToArray();
+                    var lastMember = members.Last();
+                    int lastSlot = controller.Session.Seats.For(lastMember.Instance).Value.Index;
+                    foreach (var member in members.Take(members.Length - 1))
+                    {
+                        int reserve = controller.Session.Seats.FirstEmpty(false, ShopSeatLayout.ReserveCapacity);
+                        Assert(controller.MovePiece(member.Instance, false, reserve).Success, "Reserve a deployed Reunion member");
+                    }
+                    Assert(controller.Model.ActiveSynergies[id] == 3 && controller.ReunionHopePanelVisible,
+                        "The Hope panel is visible at the first active tier");
+                    Assert(controller.MovePiece(lastMember.Instance, false,
+                        controller.Session.Seats.FirstEmpty(false, ShopSeatLayout.ReserveCapacity)).Success,
+                        "Move the third Reunion member to reserve");
+                    var panel = FormationBattleController.ReunionHopePanelRect;
+                    Assert(run.TraitCount(id) == 2 && !controller.ReunionHopePanelVisible && run.Hope == progress &&
+                        !controller.FormationTraitBlocksPoint(panel.center),
+                        "At two deployed members the panel and its hit area disappear while accumulated Hope is retained");
+                    yield return Frame(imagePrefix + "-hope-inactive");
+                    Assert(controller.MovePiece(lastMember.Instance, true, lastSlot).Success &&
+                        controller.ReunionHopePanelVisible && run.Hope == progress,
+                        "Redeploying the third member restores the panel and its progress");
+                    yield return Frame(imagePrefix + "-hope-reactivated");
                 }
             }
             controller.SelectPracticeBattle(0);
