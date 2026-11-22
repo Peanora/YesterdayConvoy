@@ -10,6 +10,7 @@ namespace YesterdayConvoy
         const float BossMusicVolume = .42f;
         const float SnowBossMusicUnderVoice = .23f;
         const float SupernovaMusicUnderVoice = .12f;
+        const string MakotoMusicRoot = "MakotoBoss/";
 
         readonly System.Random bossPhaseVoiceRandom = new System.Random();
         readonly List<int> bossPhaseVoiceStarts = new List<int>(2);
@@ -18,6 +19,7 @@ namespace YesterdayConvoy
         FormationBattleModel bossPhaseAudioBattle;
         FormationDefender bossPhaseAudioGuard;
         AudioSource bossPhaseMusic, bossPhaseVoice;
+        AudioClip makotoSecondPhaseMusic;
         int lastBossVoicePhase;
         bool bossPhaseAudioPaused;
 
@@ -37,44 +39,55 @@ namespace YesterdayConvoy
             {
                 StopBossPhaseAudio();
                 bossPhaseAudioBattle = Model;
-                bossPhaseAudioGuard = Model.Defenders.FirstOrDefault(guard => guard.IsTwoPhaseBoss && Model.IsBossDefender(guard));
+                bossPhaseAudioGuard = Model.Defenders.FirstOrDefault(guard => guard.HasBossHealthPhases && Model.IsBossDefender(guard));
                 if (bossPhaseAudioGuard == null) return;
 
-                bool supernova = bossPhaseAudioGuard.IsSupernovaBoss;
-                string root = supernova ? "SupernovaBoss/" : SnowBossAudioRoot;
-                for (int i = 0; i < BossPhaseVoiceCount; i++)
-                    bossPhaseVoiceClips[i] = Resources.Load<AudioClip>(root + "voice-" + (i + 1));
-                bossPhaseVoiceOrder[0] = bossPhaseVoiceRandom.Next(BossPhaseVoiceCount);
-                bossPhaseVoiceOrder[1] = bossPhaseVoiceRandom.Next(BossPhaseVoiceCount - 1);
-                if (bossPhaseVoiceOrder[1] >= bossPhaseVoiceOrder[0]) bossPhaseVoiceOrder[1]++;
                 bossPhaseVoiceStarts.Clear();
                 lastBossVoicePhase = 0;
-
                 bossPhaseMusic ??= CreateBossAudioSource(loop: true, volume: BossMusicVolume);
-                bossPhaseVoice ??= CreateBossAudioSource(loop: false, volume: .86f);
-                bossPhaseMusic.clip = Resources.Load<AudioClip>(root + (supernova ? "arsonist" : "battle"));
                 bossPhaseMusic.volume = BossMusicVolume;
-                bossPhaseMusic.mute = bossPhaseVoice.mute = !soundEnabled;
+                if (bossPhaseAudioGuard.IsMakotoBoss)
+                {
+                    bossPhaseMusic.clip = Resources.Load<AudioClip>(MakotoMusicRoot + "master-of-shadow-reload");
+                    makotoSecondPhaseMusic = Resources.Load<AudioClip>(MakotoMusicRoot + "its-going-down-now");
+                }
+                else
+                    ConfigureVoicedBossAudio();
+
+                bossPhaseMusic.mute = !soundEnabled;
                 if (bossPhaseMusic.clip != null) bossPhaseMusic.Play();
             }
 
             if (bossPhaseAudioGuard == null) return;
-            bossPhaseMusic.mute = bossPhaseVoice.mute = !soundEnabled;
+            bossPhaseMusic.mute = !soundEnabled;
+            if (bossPhaseVoice != null) bossPhaseVoice.mute = !soundEnabled;
             if (Model.Paused != bossPhaseAudioPaused)
             {
                 bossPhaseAudioPaused = Model.Paused;
                 if (bossPhaseAudioPaused)
                 {
                     bossPhaseMusic.Pause();
-                    bossPhaseVoice.Pause();
+                    bossPhaseVoice?.Pause();
                 }
                 else
                 {
                     bossPhaseMusic.UnPause();
-                    bossPhaseVoice.UnPause();
+                    bossPhaseVoice?.UnPause();
                 }
             }
             if (bossPhaseAudioPaused) return;
+
+            if (bossPhaseAudioGuard.IsMakotoBoss)
+            {
+                if (bossPhaseAudioGuard.MakotoBossPhase >= 2 &&
+                    makotoSecondPhaseMusic != null && bossPhaseMusic.clip != makotoSecondPhaseMusic)
+                {
+                    bossPhaseMusic.Stop();
+                    bossPhaseMusic.clip = makotoSecondPhaseMusic;
+                    bossPhaseMusic.Play();
+                }
+                return;
+            }
 
             float voiceMusicVolume = bossPhaseAudioGuard.IsSupernovaBoss ? SupernovaMusicUnderVoice : SnowBossMusicUnderVoice;
             int phase = bossPhaseAudioGuard.BossHealthPhase;
@@ -94,6 +107,19 @@ namespace YesterdayConvoy
             bossPhaseMusic.volume = Mathf.MoveTowards(bossPhaseMusic.volume, musicVolume, Time.unscaledDeltaTime * 2f);
         }
 
+        void ConfigureVoicedBossAudio()
+        {
+            bool supernova = bossPhaseAudioGuard.IsSupernovaBoss;
+            string root = supernova ? "SupernovaBoss/" : SnowBossAudioRoot;
+            for (int i = 0; i < BossPhaseVoiceCount; i++)
+                bossPhaseVoiceClips[i] = Resources.Load<AudioClip>(root + "voice-" + (i + 1));
+            bossPhaseVoiceOrder[0] = bossPhaseVoiceRandom.Next(BossPhaseVoiceCount);
+            bossPhaseVoiceOrder[1] = bossPhaseVoiceRandom.Next(BossPhaseVoiceCount - 1);
+            if (bossPhaseVoiceOrder[1] >= bossPhaseVoiceOrder[0]) bossPhaseVoiceOrder[1]++;
+            bossPhaseVoice ??= CreateBossAudioSource(loop: false, volume: .86f);
+            bossPhaseMusic.clip = Resources.Load<AudioClip>(root + (supernova ? "arsonist" : "battle"));
+        }
+
         void StopBossPhaseAudio()
         {
             if (bossPhaseMusic != null) bossPhaseMusic.Stop();
@@ -101,6 +127,7 @@ namespace YesterdayConvoy
             bossPhaseAudioBattle = null;
             bossPhaseAudioGuard = null;
             bossPhaseAudioPaused = false;
+            makotoSecondPhaseMusic = null;
         }
 
         AudioSource CreateBossAudioSource(bool loop, float volume)
