@@ -103,21 +103,30 @@ namespace YesterdayConvoy
             CloseFormationInspection();CloseFormationRouteDetails();CloseFormationEquipmentDetails();CancelFormationEquipmentInteraction();CancelFormationDrag();
         }
 
+        bool FormationSeaControlsVisible => Model.Phase == FormationPhase.Preparation &&
+            !MarketVisible && !ShopPanelTransitioning && Campaign.TraitCount("海嗣") >= 2;
+
+        float FormationSeaControlsTop => ReunionHopePanelVisible ? ReunionHopePanelRect.yMin - 50 : 575;
+
         void DrawCampaignToolbar()
         {
             if(Campaign==null)return;
-            bool prep=Model.Phase==FormationPhase.Preparation;
-            if(prep&&!MarketVisible&&!ShopPanelTransitioning&&Campaign.TraitCount("海嗣")>=2)
+            if(FormationSeaControlsVisible)
             {
-                if(OperationsButton(new Rect(16,575,145,21),campaignSeaPainting?"完成溟痕布置":"布置溟痕",campaignSeaPainting))
+                float controlsTop = FormationSeaControlsTop;
+                if(OperationsButton(new Rect(16,controlsTop,145,21),campaignSeaPainting?"完成溟痕布置":"布置溟痕",campaignSeaPainting))
                 {campaignSeaPainting=!campaignSeaPainting;CloseCampaignPanels();SetMarketVisible(false);if(campaignSeaPainting)SetFormationView(true);}
-                if(campaignSeaPainting&&OperationsButton(new Rect(16,600,145,21),"恢复推荐"))
+                if(campaignSeaPainting&&OperationsButton(new Rect(16,controlsTop+25,145,21),"恢复推荐"))
                 {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
             }
-            string resources=$"希望 {Campaign.Hope} · 刷新券 {Campaign.FreeRefreshes}";
+            bool showHope = ReunionHopePanelVisible;
+            if (showHope) DrawReunionHopePanel();
+            string resources=$"刷新券 {Campaign.FreeRefreshes}";
             if(Campaign.SynergyTrial?.Trait.Id=="泥岩")resources=$"巨像培育经验 {Campaign.MudrockXP} · "+resources;
-            if(!string.IsNullOrEmpty(notice)&&notice!=Campaign.SynergyTrial?.Hint)resources+="  ·  "+notice;
-            OperationsLabel(new Rect(117,FormationExperienceRect.yMin-20,1014,17),
+            if(!string.IsNullOrEmpty(notice)&&notice!=Campaign.SynergyTrial?.Hint&&
+                !(Campaign.ShowsHopeRewards&&notice==Campaign.LastTrialProgress))resources+="  ·  "+notice;
+            float left = showHope ? ReunionHopePanelRect.xMax + 8 : 117;
+            OperationsLabel(new Rect(left,FormationExperienceRect.yMin-20,1131-left,17),
                 resources+(Campaign.PendingDeliveries>0?"  ·  库存待领 "+Campaign.PendingDeliveries+" 份":""),
                 10,OperationsMuted);
         }

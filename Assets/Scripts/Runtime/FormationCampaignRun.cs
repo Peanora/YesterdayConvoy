@@ -150,6 +150,7 @@ namespace YesterdayConvoy
         string openingComponent;
         int ballSequence;
         readonly HashSet<string> settled=new HashSet<string>();
+        static readonly int[] HopeMilestones = { 10, 25, 45, 75, 110, 160, 220, 300 };
         readonly HashSet<int> hopeClaims=new HashSet<int>();
         readonly HashSet<int> suppliedPlanes=new HashSet<int>();
         readonly HashSet<int> marchPlanes=new HashSet<int>();
@@ -199,6 +200,7 @@ namespace YesterdayConvoy
         internal bool ShowsHopeRewards => SynergyTrial?.Trait.Id == "整合";
         public int SquadHP {get;private set;}=100;
         public int Hope {get;private set;}
+        internal int NextHopeMilestone => Array.Find(HopeMilestones, milestone => milestone > Hope);
         public bool Finished {get;private set;}
         public bool Won {get;private set;}
         public bool NodeSettled=>settled.Contains(CurrentNode.Id);
@@ -641,7 +643,7 @@ namespace YesterdayConvoy
         public void AddHope(int amount)
         {
             Hope+=amount;
-            foreach(int threshold in new[]{10,25,45,75,110,160,220,300})if(Hope>=threshold&&hopeClaims.Add(threshold))
+            foreach(int threshold in HopeMilestones)if(Hope>=threshold&&hopeClaims.Add(threshold))
             {
                 switch(threshold)
                 {

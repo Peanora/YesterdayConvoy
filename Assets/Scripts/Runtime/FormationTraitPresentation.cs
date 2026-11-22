@@ -42,7 +42,16 @@ namespace YesterdayConvoy
 
         public static Rect FormationTraitSidebarRect => new Rect(16, 85, 151, 482);
         public static Rect FormationTraitDetailsRect => new Rect(174, 85, 380, 527);
-        static Rect FormationTraitListRect => new Rect(16, 109, 151, 458);
+        Rect FormationTraitPanelRect
+        {
+            get
+            {
+                var panel = FormationTraitSidebarRect;
+                if (ReunionHopePanelVisible)
+                    panel.yMax = (FormationSeaControlsVisible ? FormationSeaControlsTop : ReunionHopePanelRect.yMin) - 5;
+                return panel;
+            }
+        }
         public string SelectedFormationTraitId => formationInspectedTag;
         public bool FormationTraitDetailsOpen => Campaign != null && SelectedFormationTrait != null;
         public FormationTraitView SelectedFormationTrait => FormationTraitView.For(Campaign, Shop, formationInspectedTag);
@@ -77,7 +86,8 @@ namespace YesterdayConvoy
         }
 
         public bool FormationTraitBlocksPoint(Vector2 point) => Campaign != null &&
-            (FormationTraitSidebarRect.Contains(point) || FormationTraitDetailsOpen && FormationTraitDetailsRect.Contains(point));
+            (FormationTraitPanelRect.Contains(point) || FormationTraitDetailsOpen && FormationTraitDetailsRect.Contains(point) ||
+                ReunionHopePanelVisible && ReunionHopePanelRect.Contains(point));
 
         static GUIStyle TraitText(int size, Color color, bool bold = false, TextAnchor align = TextAnchor.MiddleLeft)
         {
@@ -101,8 +111,8 @@ namespace YesterdayConvoy
         void DrawFormationTraitSidebar()
         {
             var rows = FormationTraitRows;
-            var panel = FormationTraitSidebarRect;
-            var list = FormationTraitListRect;
+            var panel = FormationTraitPanelRect;
+            var list = Rect.MinMaxRect(panel.xMin, panel.yMin + 24, panel.xMax, panel.yMax);
             float height = rows.Length * TraitRowHeight;
             var heading = new Rect(panel.x, panel.y, panel.width, 22);
             DrawFloatingTraitLabel(new Rect(heading.x + 7, heading.y, 82, heading.height), "军阵羁绊", 12, TraitInk, true);

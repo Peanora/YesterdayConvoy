@@ -1255,9 +1255,27 @@ namespace YesterdayConvoy
                 Assert(model.EnabledCount == trial.Roster.Count && model.Defenders.Count == run.CurrentNode.DefenderCount &&
                     model.ActiveSynergies[id] == tier, id + " deploys the actual top tier and real guards");
                 yield return ReadyArt();
+                if (id == "整合")
+                {
+                    var panel = FormationBattleController.ReunionHopePanelRect;
+                    Assert(controller.ReunionHopePanelVisible && run.Hope == 0 && run.NextHopeMilestone == 10 &&
+                        controller.FormationTraitBlocksPoint(panel.center) &&
+                        !panel.Overlaps(FormationBattleController.FormationBenchRect) &&
+                        !panel.Overlaps(FormationBattleController.BoardInputRect),
+                        "Reunion starts with a dedicated Hope panel clear of the bench and deployable board");
+                    if (Application.platform == RuntimePlatform.WindowsPlayer && StrategyUiWindow() != IntPtr.Zero)
+                    {
+                        yield return ClickStrategyUi(panel.center);
+                        Assert(controller.SelectedFormationTraitId == id, "The Hope panel opens Reunion reward details");
+                        yield return Frame(imagePrefix + "-hope-details");
+                        yield return ClickStrategyUi(panel.center);
+                        Assert(!controller.FormationTraitDetailsOpen, "Clicking the Hope panel again closes the details");
+                    }
+                }
                 yield return Frame(imagePrefix + "-preparation");
                 controller.StartBattle();
                 Assert(model.Phase == FormationPhase.Fighting && model.ActiveSynergies[id] == tier, id + " starts combat");
+                Assert(!controller.ReunionHopePanelVisible, id + " keeps the Hope panel off the battlefield");
                 var stage = new SynergyStage { id = id, node = run.CurrentNode.Id, tier = tier,
                     golem = model.Summons.FirstOrDefault(unit => unit.ArtId == "GOLEM")?.Name };
                 while (model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting)
@@ -1291,6 +1309,12 @@ namespace YesterdayConvoy
                 controller.ResetDemo();
                 Assert(controller.Campaign == run && controller.Model != model && controller.Model.Phase == FormationPhase.Preparation &&
                     progress == (id == "整合" ? run.Hope : run.MudrockXP), id + " retries the same trial and preserves progression");
+                if (id == "整合")
+                {
+                    Assert(controller.ReunionHopePanelVisible && progress >= 30 && run.NextHopeMilestone == 45,
+                        "The next preparation uses the settled Hope and advances to the 45-point reward");
+                    yield return Frame(imagePrefix + "-hope-after-retry");
+                }
             }
             controller.SelectPracticeBattle(0);
             Assert(controller.Campaign.IsPractice && controller.Campaign.SynergyTrial == null && controller.Campaign.HasBlockingChoice,

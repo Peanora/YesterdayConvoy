@@ -33,6 +33,43 @@ namespace YesterdayConvoy
         static readonly Color EconomyMuted = new Color32(199, 208, 232, 255);
         static readonly Color EconomyIce = new Color32(167, 217, 255, 255);
 
+        internal static Rect ReunionHopePanelRect => new Rect(FormationExperienceRect.x,
+            FormationExperienceRect.yMin - 77, FormationTraitSidebarRect.width + 8, 72);
+
+        internal bool ReunionHopePanelVisible => Campaign != null && Model.Phase == FormationPhase.Preparation &&
+            (!Campaign.IsPractice || Campaign.ShowsHopeRewards);
+
+        void DrawReunionHopePanel()
+        {
+            var panel = ReunionHopePanelRect;
+            int hope = Campaign.Hope;
+            int milestone = Campaign.NextHopeMilestone;
+            bool selected = formationInspectedTag == "整合";
+            bool interactive = GUI.enabled && !(pointerHeld && shopDragInstance > 0);
+            bool hovered = interactive && panel.Contains(Event.current.mousePosition);
+            var accent = FormationPreparationPalette.Amber;
+            Fill(panel, selected ? FormationPreparationPalette.Selected
+                : hovered ? FormationPreparationPalette.Hover : FormationPreparationPalette.Surface);
+            ApprovedUi.Border(panel, selected || hovered ? accent : FormationPreparationPalette.Edge);
+            Fill(new Rect(panel.x, panel.y, 3, panel.height), accent);
+            EconomyLabel(new Rect(panel.x + 11, panel.y + 5, 114, 21), "整合运动", 14, FormationPreparationPalette.Text, true);
+            EconomyLabel(new Rect(panel.xMax - 32, panel.y + 5, 21, 21), selected ? "−" : "›",
+                17, accent, false, TextAnchor.MiddleRight);
+            EconomyLabel(new Rect(panel.x + 11, panel.y + 27, 37, 28), "希望", 13, FormationPreparationPalette.Muted, true);
+            EconomyLabel(new Rect(panel.x + 45, panel.y + 24, 61, 32), hope.ToString(), 25, accent, true);
+            EconomyLabel(new Rect(panel.x + 106, panel.y + 28, panel.width - 117, 27),
+                milestone == 0 ? "已达成" : $"/ {milestone}", 13, FormationPreparationPalette.Text, false, TextAnchor.MiddleRight);
+            var track = new Rect(panel.x + 11, panel.yMax - 13, panel.width - 22, 5);
+            Fill(track, FormationPreparationPalette.Recess);
+            float progress = milestone == 0 ? 1f : Mathf.Clamp01((float)hope / milestone);
+            Fill(new Rect(track.x, track.y, track.width * progress, track.height), accent);
+            if (interactive && TraitHit(panel, "查看整合运动的希望奖励"))
+            {
+                if (selected) CloseFormationTraitDetails();
+                else InspectFormationTrait("整合");
+            }
+        }
+
         internal static Color FormationFeeColor(int cost) => cost switch
         {
             2 => new Color32(44, 132, 124, 255),
