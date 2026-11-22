@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-22 整合运动希望面板
+
+- 在《货币战争》4.7 官方节目约 07:28 和 3-6 实机画面核对了幻月游戏在阵容左侧独立显示进度的做法。本作沿用暖灰备战界面，面板与现有备战席及队伍等级留有间隔。显示值直接读取 `FormationCampaignRun.Hope`，下一门槛复用希望发奖表，点击接入已有整合羁绊详情。 [官方节目](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=448) · [3-6 实机参考](https://www.miyoushe.com/sr/article/79618987)
+- 运行源码 `cb6d4ce13cafb2cd4da5361d0dbcb9287767aad0`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,287,961 字节，零错误，退出 0。Runtime DLL SHA-256 `6C9BE5E0E666B944A32F4B313906CE81F3825C6DBAB5BC146A1A53A7E45CCDA5`。EditMode 1236/1236，仓库检查通过 17,713 个跟踪文件。 [构建日志](../artifacts/formation-reunion-hope/build.log) · [EditMode XML](../artifacts/formation-reunion-hope/edit.xml)
+- 同版 1280×720 D3D11 Player 羁绊试玩 118/118、正式前三战 142/142，均零异常、退出 0。目视确认整合试玩 `0 / 10`、首战获胜重试后的 `32 / 45` 与进度条，以及正式挑战备战出现、战斗和暂停隐藏。羁绊详情的现有入口通过正式回归。新版面板自身的鼠标点击因游戏窗口前台激活失败未完成实测。 [羁绊试玩报告](../artifacts/formation-reunion-hope/synergy/synergy-smoke.json) · [正式挑战报告](../artifacts/formation-reunion-hope/campaign/campaign-smoke.json) · [进度截图](../artifacts/formation-reunion-hope/synergy/01-整合-hope-after-retry.png) · [暂停截图](../artifacts/formation-reunion-hope/campaign/05-combat-paused-no-operating-ui.png)
+
 ## 2026-11-22 棋盘开场与分段结算
 
 - 运行源码 `9a305500ad641f97e6cd8375de1f8b2ef9f6638c`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,284,314 字节、零错误、退出 0。Runtime DLL SHA-256 `4DCE7D46811F762D7C612C40B517B68EC44D5841C7BC31CC1DFBF074D5613E38`。完整 EditMode 1236/1236。 [构建日志](../artifacts/formation-battle-presentation/build-delivery.log) · [EditMode XML](../artifacts/formation-battle-presentation/edit-delivery.xml)
