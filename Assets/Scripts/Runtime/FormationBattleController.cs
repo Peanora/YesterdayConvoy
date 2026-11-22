@@ -16,7 +16,7 @@ namespace YesterdayConvoy
         public ShopTrialModel Shop=>Session?.Shop;
         public bool Ready {get;private set;}
         public bool CombatViewActive=>Ready&&Model!=null&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting);
-        public bool FormationPreparationUiVisible=>Ready&&!CombatViewActive;
+        public bool FormationPreparationUiVisible=>Ready&&!CombatViewActive&&!CampaignSettlementKeepsBattleView;
         public int SelectedSlot {get;private set;}=0;
         public static Rect BattleRect=>new Rect(0,0,1280,720);
         public static Rect BoardInputRect=>new Rect(188,64,816,514);
@@ -84,9 +84,15 @@ namespace YesterdayConvoy
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
             RefreshFormationAnimationProfiles();
-            if(!FormationShowcaseRecorder.Drives(this))
-            {Model.Advance(Time.unscaledDeltaTime);TickCampaignSettlement();TickCampaignSupplyAdvance();}
+            bool showcaseDrives = FormationShowcaseRecorder.Drives(this);
+            bool opening = FormationBattleOpeningActive;
+            if(!showcaseDrives)
+            {
+                if(!opening)Model.Advance(Time.unscaledDeltaTime);
+                TickCampaignSettlement();TickCampaignSupplyAdvance();
+            }
             RefreshFormationOperatingVisibility();
+            TickFormationBattleOpening(Time.unscaledDeltaTime);
             TickFormationCamera(Time.unscaledDeltaTime);
             approvedShop?.Tick();
             TickFormationOpeningDelivery(Time.unscaledDeltaTime);
@@ -98,7 +104,7 @@ namespace YesterdayConvoy
             if(Input.GetKeyDown(KeyCode.Escape))
                 DismissFormationInteraction();
             EnsureFormationArt();UpdateDeploymentPreview();SyncActors();TickBattleRewardDrops();
-            if(!FormationShowcaseRecorder.Drives(this))
+            if(!showcaseDrives&&!opening)
             {
                 UpdateFormationSounds();
                 UpdateBossPhaseAudio();
@@ -216,20 +222,25 @@ namespace YesterdayConvoy
                 CancelFormationDrag();SyncActors();
             }
         }
-        public void StartBattle()
+        public void StartBattle() => TryStartFormationBattle(false);
+        internal bool StartFormationBattleOpening() => TryStartFormationBattle(true);
+
+        bool TryStartFormationBattle(bool playOpening)
         {
-            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||openingGroundBall!=null||Campaign!=null&&(!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return;
-            if(OverflowCount>0){notice="备战席还有溢出角色，请先上阵或出售。";return;}
-            if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return;}
-            if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return;}
+            if(!Ready||Model.Phase!=FormationPhase.Preparation||CampaignInteractionBlocked||openingGroundBall!=null||Campaign!=null&&(!Session.CanShop||Campaign.CurrentNode.Kind=="补给"))return false;
+            if(OverflowCount>0){notice="备战席还有溢出角色，请先上阵或出售。";return false;}
+            if(!RosterArtReady){notice="正在准备上阵角色动作，请稍候。";return false;}
+            if(Campaign!=null&&!Model.ValidateSeaPlacement(out var seaReason)){notice=seaReason;return false;}
             Session.SavePositions(Model);Session.ApplyTo(Model);
-            if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return;}
+            if(!Model.StartBattle()){notice="请先将至少一名已购买角色加入上阵席位。";return false;}
             campaignSeaPainting=false;rewardHistoryOpen=false;CloseFormationTraitDetails();CloseFormationInspection();CloseFormationRouteDetails();
             CancelFormationEquipmentInteraction();CloseFormationEquipmentDetails();SetMarketVisible(false);CancelFormationDrag();RefreshFormationOperatingVisibility();notice="自动攻击与技能已开启；清空守军后前往蓝门。";SyncActors();
-            SetFormationView(true);
+            if (playOpening) BeginFormationBattleOpening();
+            else SetFormationView(true);
+            return true;
         }
         public void Retry()
-        {if(!Ready)return;if(Session.Run!=null){notice="完整挑战的战斗结果已结算，请继续下一节点。";return;}Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(false);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
+        {if(!Ready)return;if(Session.Run!=null){notice="完整挑战的战斗结果已结算，请继续下一节点。";return;}CancelFormationBattleOpening();Session.SavePositions(Model);Session.Retry();lastSoundAt=-10;SetMarketVisible(false);SelectFirstLineup();notice="同一防线已恢复；已购买角色与站位保留，重试不重复领取奖励。";SyncActors();SetFormationView(false);}
         public void NextRound()
         {
             if(Session?.Run!=null){ContinueCampaign();return;}
@@ -327,6 +338,7 @@ namespace YesterdayConvoy
 
         void ResetFormationPreparation(string message)
         {
+            CancelFormationBattleOpening();
             CloseFormationMenu();CloseCampaignPanels();CloseFormationTraitDetails();
             finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;lastSoundAt=-10;
             campaignResultSettled=false;campaignSeaPainting=false;

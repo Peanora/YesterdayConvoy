@@ -440,7 +440,7 @@ namespace YesterdayConvoy
             if (EconomyButton(start, overflowBlocked ? "先处理溢出" : RosterArtReady ? "开始进攻  ›" : "准备动作…",
                 overflowBlocked ? "上阵或出售角色，清空溢出区后开战" :
                 "锁定本场阵容并发起进攻", FormationPreparationPalette.Rust, FormationPreparationPalette.Text, 15))
-                StartBattle();
+                StartFormationBattleOpening();
             Fill(new Rect(start.x, start.y, 3, start.height), GUI.enabled ? FormationPreparationPalette.RustEdge : FormationPreparationPalette.Line);
             GUI.enabled=enabled;
         }

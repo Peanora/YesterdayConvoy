@@ -13,9 +13,10 @@ namespace YesterdayConvoy
         Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll;
         public FormationCampaignRun Campaign=>Session?.Run;
         bool AwaitingOptionalRewards=>HasGroundRewards||Campaign?.PendingRewardChoices>0;
-        bool CampaignInteractionBlocked=>Campaign!=null&&(Campaign.OpeningRewardsPending||Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||
-            campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||campaignRewardChoiceOpen||
-            campaignResultSummaryOpen||formationExitOpen||FormationStrategyHistoryOpen);
+        bool CampaignModalOpen=>campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||
+            campaignRewardChoiceOpen||campaignResultSummaryOpen||formationExitOpen||FormationStrategyHistoryOpen;
+        bool CampaignInteractionBlocked=>Campaign!=null&&(CampaignSettlementKeepsBattleView||Campaign.OpeningRewardsPending||
+            Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||CampaignModalOpen);
 
         GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
         {
@@ -25,10 +26,21 @@ namespace YesterdayConvoy
         void CampaignLabel(Rect rect,string value,int size=13,bool bold=false)=>GUI.Label(rect,value??"",CampaignText(size,bold));
         void TickCampaignSettlement()
         {
-            if(Campaign==null||campaignResultSettled||(Campaign.IsPractice&&Campaign.SynergyTrial==null)||
+            if (campaignResultSettled)
+            {
+                TickCampaignSettlementPresentation();
+                return;
+            }
+            if(Campaign==null||(Campaign.IsPractice&&Campaign.SynergyTrial==null)||
                 (Model.Phase!=FormationPhase.Won&&Model.Phase!=FormationPhase.Lost))return;
             campaignResultSettled=true;
-            Session.SettleBattle(Model.Phase==FormationPhase.Won,Model.EncounterProgress,Model.InitialDefenderCount,Model.RemainingDefenders,Model.BossAlive);
+            var receipt = Session.SettleBattle(Model.Phase==FormationPhase.Won,Model.EncounterProgress,
+                Model.InitialDefenderCount,Model.RemainingDefenders,Model.BossAlive);
+            if (Campaign.LastBattleSettlement is { } result && result.NodeId == Campaign.CurrentNode.Id)
+            {
+                int battleGold = receipt == null ? 0 : Shop.Gold - receipt.GoldBefore - result.Gold;
+                StartCampaignSettlementPresentation(battleGold);
+            }
             notice=Campaign.LastTrialProgress??Campaign.LastSummary;
         }
         public ShopTrialModel.Result ChooseCampaignOption(int index)
@@ -111,11 +123,12 @@ namespace YesterdayConvoy
         }
         void DrawCampaignOverlays()
         {
-            if(Campaign==null)return;
+            if(Campaign==null || CampaignSettlementKeepsBattleView)return;
             if (DrawSupplyChoice()) return;
             if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
             if(campaignRewardChoiceOpen&&Campaign.PendingRewardChoices>0){DrawCampaignChoices(true);return;}
-            if(Campaign.Finished&&(!AwaitingOptionalRewards||campaignResultSummaryOpen)){DrawCampaignFinished();return;}
+            if(Campaign.Finished&&(campaignResultSummaryOpen||!CampaignSettlementResultVisible&&!AwaitingOptionalRewards))
+            {DrawCampaignFinished();return;}
             if(FormationStrategyHistoryOpen)DrawFormationStrategyHistory();
             else if(campaignInventoryOpen)DrawCampaignInventory();
             else if(campaignFormationOpen)DrawCampaignFormation();
@@ -173,29 +186,6 @@ namespace YesterdayConvoy
             CampaignLabel(new Rect(r.x+25,r.y+120,r.width-50,90),$"抵达 {Campaign.CurrentNode.Id}  ·  等级 {Shop.Level}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n战略预案：{FormationCampaignRules.FindRecord(Campaign.PreplanId)?.Name??"未选择"}",18,true);
             CampaignLabel(new Rect(r.x+25,r.y+220,r.width-50,110),"本局战略战备：\n"+string.Join("、",Campaign.AugmentIds.Select(id=>FormationCampaignRules.FindRecord(id)?.Name??id)),15);
             if(Button(new Rect(r.center.x-137.5f,r.yMax-80,275,45),"重新开始完整挑战",true,true))ResetDemo();
-        }
-        void DrawCampaignResult()
-        {
-            bool won=Model.Phase==FormationPhase.Won;
-            var r=new Rect(246,164,554,350);Fill(r,ApprovedUi.Paper);ApprovedUi.Border(r,ApprovedUi.Rule,2);
-            CampaignLabel(new Rect(r.x+25,r.y+20,r.width-50,35),won?"蓝门突破 · 本关胜利":"本关失利 · 调整后继续",25,true);
-            CampaignLabel(new Rect(r.x+25,r.y+68,r.width-50,85),Campaign.LastSummary,15);
-            CampaignLabel(new Rect(r.x+25,r.y+159,r.width-50,70),$"队伍生命 {Campaign.SquadHP}  ·  金币 {Shop.Gold}  ·  希望 {Campaign.Hope}\n遭遇削减进度 {Model.EncounterProgress:P1}  ·  本关只结算一次",14);
-            var names=new[]{"白","蓝","金","彩"};
-            for(int i=0;i<4;i++)
-            {
-                float x=r.x+25+i*125;
-                var art=SupplyOrbArt(names[i]);
-                if(art!=null)GUI.DrawTexture(new Rect(x,r.y+221,32,32),art,ScaleMode.ScaleToFit,true);
-                CampaignLabel(new Rect(x+35,r.y+228,88,23),names[i]+"球 ×"+Campaign.PendingBalls.Count(ball=>ball.Node==Campaign.CurrentNode.Id&&ball.Color==names[i]),13,true);
-            }
-            if(HasGroundRewards) CampaignLabel(new Rect(r.x+25,r.y+258,r.width-50,20),"棋盘前沿的战利品可以留到下次整备领取。",11);
-            string next=Campaign.HasBlockingChoice?"先完成必要选择":Campaign.Finished?"查看最终结算":"继续下一节点";
-            if(Button(new Rect(r.x+25,r.yMax-75,r.width-50,48),next,!Campaign.HasBlockingChoice&&openingGroundBall==null,true))
-            {
-                if (Campaign.Finished) campaignResultSummaryOpen=true;
-                else ContinueCampaign();
-            }
         }
         void DrawPracticeResult()
         {

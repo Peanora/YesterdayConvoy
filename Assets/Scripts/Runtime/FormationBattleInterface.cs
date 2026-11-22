@@ -38,9 +38,12 @@ namespace YesterdayConvoy
             if(Ready&&input!=null&&input.button==0&&(input.type==EventType.MouseDown||input.type==EventType.MouseDrag||input.type==EventType.MouseUp))
             {
                 var point=TacticalViewport.Current.FromTopLeft(input.mousePosition);
-                if (!ProcessFormationEquipmentPointer(input.type, point) &&
-                    !ProcessFormationRewardPointer(input.type, point)) ProcessPointer(input.type,point);
-                else input.Use();
+                if (!CampaignSettlementBlocksPoint(point))
+                {
+                    if (!ProcessFormationEquipmentPointer(input.type, point) &&
+                        !ProcessFormationRewardPointer(input.type, point)) ProcessPointer(input.type,point);
+                    else input.Use();
+                }
             }
             var previous=GUI.matrix;bool enabled=GUI.enabled;GUI.matrix=TacticalViewport.Current.Matrix;
             try
@@ -53,8 +56,25 @@ namespace YesterdayConvoy
                     DrawFormationMenuControls();
                     return;
                 }
+                if (CampaignSettlementKeepsBattleView)
+                {
+                    DrawCampaignResult();
+                    return;
+                }
                 if(CombatViewActive)
                 {
+                    if (FormationBattleOpeningActive)
+                    {
+                        if (FormationOpeningReachedDefenders) DrawWorldLabels();
+                        DrawFormationBattleOpening();
+                        if (FormationOpeningReachedDefenders) DrawFormationCombatHud();
+                        else if (Button(new Rect(1174, 12, 42, 36), Model.Paused ? "继续" : "暂停"))
+                            Model.Paused = !Model.Paused;
+                        DrawFormationPauseOverlay();
+                        GUI.enabled = enabled;
+                        DrawFormationMenuControls();
+                        return;
+                    }
                     DrawWorldLabels();
                     GUI.enabled=enabled&&!formationMenuOpen;
                     DrawFormationCombatHud();
@@ -77,7 +97,13 @@ namespace YesterdayConvoy
                 if(preparing)DrawFormationMarket();
                 if(!FormationStrategyHistoryOpen)DrawFormationStrategyHistoryToggle();
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
-                if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)DrawSettlement();
+                if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)
+                {
+                    if (CampaignSettlementResultVisible)
+                        GUI.enabled=enabled&&!shopOddsVisible&&!formationMenuOpen&&!CampaignModalOpen&&
+                            shopInputBlockedFrame!=Time.frameCount&&!FormationEquipmentDetailsRect.Contains(input.mousePosition);
+                    DrawSettlement();
+                }
                 GUI.enabled=enabled&&!formationMenuOpen;
                 if(shopOddsVisible)DrawFormationOdds();
                 bool showingSupply = Campaign?.SupplyPicksRemaining > 0;
@@ -369,7 +395,7 @@ namespace YesterdayConvoy
         void DrawSettlement()
         {
             if(Campaign?.IsPractice==true){DrawPracticeResult();return;}
-            if(Campaign!=null){if(!Campaign.Finished||AwaitingOptionalRewards&&!campaignResultSummaryOpen)DrawCampaignResult();return;}
+            if(Campaign!=null){if(CampaignSettlementResultVisible)DrawCampaignResult();return;}
             bool won=Model.Phase==FormationPhase.Won;Fill(new Rect(380,172,520,324),Dark);ApprovedUi.Border(new Rect(380,172,520,324),won?Cyan:Gold,2);
             Label(new Rect(405,191,470,45),won?"防线肃清 · 蓝门突破":"进攻未完成",29,won?Cyan:Gold,TextAnchor.MiddleCenter);
             Label(new Rect(410,245,460,32),won?$"剩余 {Model.TimeRemaining:0.0} 秒":$"仍有 {Model.Defenders.Count(d=>d.Alive)} 名守军，或未及时进门",16,White,TextAnchor.MiddleCenter);

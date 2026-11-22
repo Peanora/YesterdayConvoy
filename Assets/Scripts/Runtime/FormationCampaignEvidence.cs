@@ -189,6 +189,11 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (BattlePresentationRequested)
+            {
+                yield return VerifyBattlePresentation();
+                yield break;
+            }
             if (SupplyRequested)
             {
                 yield return VerifySupplyChoice();
@@ -401,6 +406,8 @@ namespace YesterdayConvoy
                     Assert(controller.ActiveBattleRewardDrops == 0, "No battle reward effect survives settlement");
                 Assert(controller.Campaign.NodeSettled,"Battle receipt uses actual result");
                 Assert(controller.Model.Phase==FormationPhase.Won||controller.Model.Phase==FormationPhase.Lost,"Battle has a legal terminal phase");
+                yield return WaitForStrategyUi(() => controller.CampaignSettlementActionsVisible,
+                    "Settlement animation releases the operating controls");
                 Assert(!controller.CombatViewActive&&controller.FormationPreparationUiVisible,"Natural settlement restores the operating layout "+battle);
                 result.battles=++battle;result.node=controller.Campaign.CurrentNode.Id;
                 yield return Frame("06-result-"+battle);

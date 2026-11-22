@@ -80,6 +80,39 @@ namespace YesterdayConvoy
             internal RewardDrop(int id,string node,string color,BallPayout payout,string component = null)
             { Id = id; Node = node; Color = color; Payout = payout; Component = component; }
         }
+        internal sealed class BattleSettlement
+        {
+            internal string NodeId { get; }
+            internal bool Won { get; }
+            internal int SquadHPBefore { get; }
+            internal int SquadHPAfter { get; }
+            internal int BaseGold { get; }
+            internal int Interest { get; }
+            internal int Streak { get; }
+            internal int DebtPaid { get; }
+            internal int BonusGold { get; }
+            internal int Experience { get; }
+            internal int Hope { get; }
+            internal int Gold => BaseGold + Interest + Streak - DebtPaid + BonusGold;
+            internal IReadOnlyList<RewardDrop> Drops { get; }
+
+            internal BattleSettlement(string nodeId, ShopTrialModel.RoundReward receipt, int squadHPBefore,
+                int squadHPAfter, int debtPaid, int bonusGold, int bonusExperience, int hope, RewardDrop[] drops)
+            {
+                NodeId = nodeId;
+                Won = receipt.Won;
+                SquadHPBefore = squadHPBefore;
+                SquadHPAfter = squadHPAfter;
+                BaseGold = receipt.Base + debtPaid;
+                Interest = receipt.Interest;
+                Streak = receipt.Streak;
+                DebtPaid = debtPaid;
+                BonusGold = bonusGold;
+                Experience = receipt.Experience + bonusExperience;
+                Hope = hope;
+                Drops = Array.AsReadOnly(drops);
+            }
+        }
         public sealed class RewardRecruit
         {
             public string CardId { get; }
@@ -162,6 +195,7 @@ namespace YesterdayConvoy
         internal string GuardTrialArt { get; set; }
         public FormationSynergyTrial SynergyTrial { get; }
         public string LastTrialProgress { get; private set; }
+        internal BattleSettlement LastBattleSettlement { get; private set; }
         internal bool ShowsHopeRewards => SynergyTrial?.Trait.Id == "整合";
         public int SquadHP {get;private set;}=100;
         public int Hope {get;private set;}
@@ -403,16 +437,25 @@ namespace YesterdayConvoy
         {
             string key=CurrentNode.Id;if(IsPractice||Finished||OpeningRewardsPending||CurrentNode.Kind=="补给")return null;
             if(!settled.Add(key))return null;
+            int healthBefore = SquadHP;
+            int previousDropSequence = ballSequence;
             bool reward=CurrentNode.Kind=="奖励";
-            int payment=5;if(debt>0){int paid=Math.Min(3,debt);payment-=paid;debt-=paid;}
-            var receipt=shop.SettleRound("formation-v07-"+key,won,payment,2,!reward);
+            int debtPaid = Math.Min(3, debt);
+            debt -= debtPaid;
+            var receipt=shop.SettleRound("formation-v07-"+key,won,5-debtPaid,2,!reward);
             int loss=won||reward?0:Math.Min(18,(CurrentNode.Plane==1?3:CurrentNode.Plane==2?5:7)+(int)Math.Ceiling(6d*remainingCount/Math.Max(1,initialCount))+(bossAlive?3:0));
             if(!won&&!reward&&PreplanId=="P14"&&CurrentNode.Kind=="遭遇")loss=Math.Min(21,loss+3);
             SquadHP=Math.Max(0,SquadHP-loss);
             if(savings>0){shop.AddGold(2);savings--;}
             if(!won&&!reward&&lossCompensation>0){shop.AddGold(4);lossCompensation--;}
-            if(PreplanId=="P05"&&won&&(CurrentNode.Kind=="战斗"||CurrentNode.Kind=="战斗战备")&&marchPlanes.Add(CurrentNode.Plane)){shop.AddGold(4);shop.AddExperience(4);}
-            AwardReunionHope(won);
+            int bonusExperience = 0;
+            if (PreplanId=="P05" && won && (CurrentNode.Kind=="战斗" || CurrentNode.Kind=="战斗战备") && marchPlanes.Add(CurrentNode.Plane))
+            {
+                bonusExperience = 4;
+                shop.AddGold(4);
+                shop.AddExperience(bonusExperience);
+            }
+            int gainedHope = AwardReunionHope(won);
             if(reward)RewardNode(key);
             if(EarnedEncounterBalls(progress))
             {foreach(string ball in EncounterBalls(CurrentEncounterTier))OpenBall(ball);if(PreplanId=="P14")OpenBall("蓝");}
@@ -429,6 +472,9 @@ namespace YesterdayConvoy
             OnShopChanged();
             if(SquadHP==0){Finished=true;Won=false;}
             else if(NodeIndex==FormationCampaignRules.Nodes.Length-1){Finished=true;Won=won;}
+            int bonusGold = shop.UnlimitedGold ? 0 : shop.Gold - receipt.GoldBefore - receipt.Total;
+            LastBattleSettlement = new BattleSettlement(key, receipt, healthBefore, SquadHP, debtPaid,
+                bonusGold, bonusExperience, gainedHope, pendingBalls.Where(drop => drop.Id > previousDropSequence).ToArray());
             return receipt;
         }
 

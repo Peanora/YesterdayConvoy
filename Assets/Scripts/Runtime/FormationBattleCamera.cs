@@ -31,7 +31,8 @@ namespace YesterdayConvoy
         Vector3 formationPanOrigin;
         Vector3 formationLeftPreparationPose, formationRightPreparationPose, formationRightBattlePose;
         readonly List<Vector3> formationCameraPoints = new List<Vector3>();
-        bool UseFormationBattleCamera => Model != null && (Model.Phase == FormationPhase.Fighting || Model.Phase == FormationPhase.Exiting);
+        bool UseFormationBattleCamera => Model != null &&
+            (Model.Phase == FormationPhase.Fighting || Model.Phase == FormationPhase.Exiting || CampaignSettlementKeepsBattleView);
 
         public bool FormationPointVisibleInView(Vector2 point)
         {
@@ -97,6 +98,13 @@ namespace YesterdayConvoy
             bool setPiece=HasFormationSetPiece();
             if(setPiece!=formationCameraHasSetPiece)RebuildFormationCameraPoses();
             bool preparing = Model.Phase == FormationPhase.Preparation;
+            if (FormationBattleOpeningActive)
+            {
+                formationCameraWasPreparing = preparing;
+                formationCameraRound = Model.Round;
+                ApplyFormationCamera(FormationBattleOpeningCameraPose());
+                return;
+            }
             if (preparing != formationCameraWasPreparing || preparing && Model.Round != formationCameraRound)
                 SetFormationView(!preparing, true);
             if (!preparing && !UseFormationBattleCamera && HasGroundRewards && ViewingDefenders)

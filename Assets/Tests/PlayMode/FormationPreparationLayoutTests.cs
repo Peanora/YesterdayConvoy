@@ -253,6 +253,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller.Model.Phase, Is.EqualTo(FormationPhase.Won).Or.EqualTo(FormationPhase.Lost));
             yield return null;
             Assert.That(controller.CombatViewActive, Is.False);
+            Assert.That(controller.FormationPreparationUiVisible, Is.False, "The team-life reveal holds the battle composition.");
+            double settlementDeadline = Time.realtimeSinceStartupAsDouble + 6;
+            while (!controller.FormationPreparationUiVisible && Time.realtimeSinceStartupAsDouble < settlementDeadline)
+                yield return null;
             Assert.That(controller.FormationPreparationUiVisible, Is.True, "The terminal result restores the preparation layer without allowing trait details over its receipt.");
             Assert.That(controller.Campaign.NodeSettled, Is.True);
             int rewards = 0;
