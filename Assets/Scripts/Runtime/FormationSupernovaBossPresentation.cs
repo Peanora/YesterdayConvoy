@@ -74,17 +74,18 @@ namespace YesterdayConvoy
             double age = (now - mode.StartedAt) * FormationVisualRate;
             Vector3 foot = FormationDisplayPoint(guard);
             bool flip = guard.Facing.x < 0;
+            float scale = FormationGuardBodyScale(guard, null);
+            float visualRatio = scale / SupernovaBossBodyScale;
             if (guard.SupernovaBossPhase == 1)
             {
                 string effect = mode.Animation == "supernova_s2_overload_begin" ? "02_buff_02" : "02_buff";
-                ShowSupernovaBossEffect(effect, "S2 state", age, guard.Position, foot, 10, flip: flip, loop: true);
+                ShowSupernovaBossEffect(effect, "S2 state", age, guard.Position, foot, 10, flip: flip, loop: true, scale: visualRatio);
                 return;
             }
 
             bool rear = SupernovaRearView(guard);
             ShowSupernovaBossEffect(rear ? "03_buff_b" : "03_buff_f", "S3 state", age, guard.Position, foot, 10,
-                flip: flip, loop: true);
-            float scale = FormationGuardBodyScale(guard, null);
+                flip: flip, loop: true, scale: visualRatio);
             // SPECIAL_0 follows the original chest bone in both views. Idle/Loop stays near (-3, 192).
             Vector3 shoulder = foot + (battleCamera.transform.up * 192 + battleCamera.transform.right * (flip ? 3 : -3))
                 * (scale / 320);
@@ -99,6 +100,7 @@ namespace YesterdayConvoy
         {
             bool overload = action.Animation == "supernova_s2_overload";
             double sinceRelease = (now - action.LaunchedAt) * action.Rate;
+            float visualRatio = FormationGuardBodyScale(guard, null) / SupernovaBossBodyScale;
             if (overload || action.Animation == "supernova_s2_volley")
             {
                 if (sinceRelease >= 0 && (overload || !action.ProjectileOnly))
@@ -106,7 +108,7 @@ namespace YesterdayConvoy
                     // The baked muzzle includes the transparent pre-release part of the source animation.
                     ShowSupernovaBossEffect(overload ? "02_overload_start" : "02_start", overload ? "S2 muzzle overload" : "S2 muzzle",
                         sinceRelease + 7d / 30, action.From, SupernovaBossMuzzle(guard, action, false), 66,
-                        flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)), scale: 1.25f);
+                        flip: SupernovaFacesLeft(guard, SupernovaShotDirection(action)), scale: 1.25f * visualRatio);
                 }
                 return;
             }
@@ -119,7 +121,7 @@ namespace YesterdayConvoy
                 ? (shotDirection.y > 0 ? "03_up_start" : "03_down_start") : "03_start";
             if (sinceRelease >= 0)
                 ShowSupernovaBossEffect(muzzleEffect, "S3 muzzle", sinceRelease + 16d / 30, action.From, muzzle, 66,
-                    flip: SupernovaFacesLeft(guard, shotDirection));
+                    flip: SupernovaFacesLeft(guard, shotDirection), scale: visualRatio);
             if (now < action.ContactAt)
             {
                 Vector2 destination = target?.Alive == true ? target.Position : action.To;

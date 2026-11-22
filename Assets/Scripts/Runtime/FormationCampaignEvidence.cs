@@ -1431,11 +1431,14 @@ namespace YesterdayConvoy
 
         void StageDefenseEvidenceRoster(int plane, bool probe)
         {
+            bool pairedElites = !probe && controller.Campaign.CurrentNode.Id == "3-5";
             var pieces = probe ? new[] { ("B10", 1) } : plane == 1
                 ? new[] { ("M27", 2), ("M11", 2), ("M21", 2), ("M12", 2), ("M25", 1) }
                 : new[] { ("M20", 2), ("M28", 3), ("B10", 2), ("M11", 3), ("WIS", 1) };
-            controller.Shop.Preset(pieces.Select(p => new ShopTrialModel.Piece
-                { Id = FormationCampaignRules.Find(p.Item1).CardId, Star = p.Item2 }), Array.Empty<string>(), pieces.Length, 0, 0);
+            var roster = pairedElites ? FormationShopSession.BossTrialPieces() : pieces.Select(p => new ShopTrialModel.Piece
+                { Id = FormationCampaignRules.Find(p.Item1).CardId, Star = p.Item2 }).ToArray();
+            controller.Shop.Preset(roster, Array.Empty<string>(), roster.Length, 0, 0);
+            if (pairedElites) controller.Session.EquipBossTrialRoster();
             controller.Session.ApplyTo(controller.Model);
             var allies = controller.Shop.Bench.ToArray();
             float targetRow = controller.Model.Defenders.Average(guard => guard.Position.y);

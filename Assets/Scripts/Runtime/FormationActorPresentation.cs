@@ -161,15 +161,19 @@ namespace YesterdayConvoy
 
         // Use the same board-unit scale per source skeleton unit as the native monsters.
         const float GuardWorldUnitsPerSourceUnit = .0045f;
-        static float FormationGuardBodyScale(FormationDefender guard, ArtCatalog source)
+        float FormationGuardBodyScale(FormationDefender guard, ArtCatalog source)
         {
             if (guard.IsSnowBoss) return PramanixBossScale;
-            if (guard.ArtId == "D31") return 2.6f;
-            if (guard.IsMakotoBoss) return 2.2f;
+            if (guard.ArtId == "D31")
+                return guard.IsSupernovaBoss && !Model.IsBossDefender(guard) ? 1.65f : SupernovaBossBodyScale;
+            if (guard.IsMakotoBoss)
+                return Model.IsBossDefender(guard) ? MakotoBossBodyScale : 1.4f;
             if (source == null || source.IdleCaptureScale <= 0 || !source.Clips.TryGetValue("idle", out var idle)) return 1;
             return idle.Ppu * GuardWorldUnitsPerSourceUnit / source.IdleCaptureScale;
         }
 
+        const float SupernovaBossBodyScale = 2.6f;
+        const float MakotoBossBodyScale = 2.2f;
         const float PramanixBossScale = 3.65f;
         // The retained idle frames all have visible alpha at 1.23–1.26 source units above the feet.
         const float PramanixScoutLabelTop = 1.23f;

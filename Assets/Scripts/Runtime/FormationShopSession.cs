@@ -88,8 +88,7 @@ namespace YesterdayConvoy
                         .OrderBy(_ => random.Next()).Take(3).Select(role => role.CardId).ToArray()
                     : Array.Empty<string>());
                 var pieces = bossTrial != FormationBossTrial.None
-                    ? BossTrialRoster.Select(card => new ShopTrialModel.Piece
-                        { Id = FormationCampaignRules.Find(card.Unit).CardId, Star = card.Star }).ToArray()
+                    ? BossTrialPieces()
                     : starting.Select(id => new ShopTrialModel.Piece { Id = id,
                         Star = trial?.Trait.Id == "泥岩" && FormationCampaignRun.HasNativeTrait(id, "泥岩") ? 3 : 1 }).ToArray();
                 Shop.Preset(pieces, Array.Empty<string>(), level: Math.Max(3, pieces.Length), xp: 0, gold: 8);
@@ -126,7 +125,14 @@ namespace YesterdayConvoy
             ("B01", 3, Array.Empty<string>())
         };
 
-        void EquipBossTrialRoster()
+        internal static ShopTrialModel.Piece[] BossTrialPieces() =>
+            BossTrialRoster.Select(card => new ShopTrialModel.Piece
+            {
+                Id = FormationCampaignRules.Find(card.Unit).CardId,
+                Star = card.Star
+            }).ToArray();
+
+        internal void EquipBossTrialRoster()
         {
             foreach (var card in BossTrialRoster)
             {
