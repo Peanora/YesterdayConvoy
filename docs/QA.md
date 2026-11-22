@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-22 正式关卡覆盖现役六星
+
+- Windows 运行源码 `0fecdd88`，Unity 6000.6.5f1 x64 Development 构建 1,393,879,198 字节、零错误。Runtime DLL SHA-256 `EBBB52EA924EB4EE840429211D620155338B5911E4BDB547FF08C252B1FF02D4`。完整 EditMode 1236/1236。逐节点、两组种子核对 16 名六星均在正式路线，守军格、预留格和 3-7 初雪单首领符合规则。3-5 四档面板按全阶段计算。一档总生命 514,500，四档 2,829,750。击穿每段时进度递增，补血转段时进度连续，仍存活的精英计入守军数。奖励关仍为逐人 1 HP。 [构建日志](../artifacts/formation-all-six-stars/build-delivery.log) · [EditMode XML](../artifacts/formation-all-six-stars/edit-delivery.xml)
+- 3-5 使用上一轮同一组高费配装预设。一档 37.975 秒清场、45.500 秒进蓝门，四档 90 秒超时、削减 76.71%。该固定阵容仅用于比较。 [正式守军配置](design/FORMATION_DEFENSE_CURVE.md)
+- 可见窗口 1280×720、D3D11，3-5 使用八人配装预设进行难度试玩。22/22、零异常，37.075 秒进蓝门。两人均实际出手与命中，观察到超新星第二段，以及结城理第二和第三段。补给实机鼠标确认 28/28、零异常，1-5 领取后直接进入 1-6 整备。 [3-5 报告](../artifacts/formation-all-six-stars/encounter-final/defense-smoke.json) · [补给报告](../artifacts/formation-all-six-stars/supply-final/supply-smoke.json)
+- 同一交付 Player 的独立首领试玩超新星 59/59、结城理 37/37，均零异常、退出 0。 [超新星报告](../artifacts/formation-all-six-stars/supernova-final/supernova-boss-smoke.json) · [结城理报告](../artifacts/formation-all-six-stars/makoto-final/makoto-boss-smoke.json)
+- 以超新星皮肤实录 30.3–31.3 秒的翼焰与落点、见证荣光时装对比 0:31–1:02 的竖琴、囚锁和剑刃为依据。正式 3-5 缩小两名精英到独立首领的约 64%，同步缩放附身层，炮口与竖琴发射点按身体比例移动，地面和受击层使用原绑定。实机核对侦察和接战的可见身体、结城理转段与刀光、超新星首段接触。3-5 的超新星第二段在高输出预设中很快被击破，分段影片只录到转段起势。 [3-5 两翼侦察](../artifacts/formation-all-six-stars/encounter-final/3-5-scout-two-wings.png) · [超新星首段接触](../artifacts/formation-all-six-stars/encounter-final/3-5-D31-contact.png) · [结城理三段片](../artifacts/formation-all-six-stars/encounter-final/3-5-D36-phase-3.mp4) · [超新星来源](art/source-records/formation-supernova-boss.md) · [结城理来源](art/source-records/formation-makoto-boss.md)
+
 ## 2026-11-22 正式棋盘试玩反馈
 
 - 交付 Windows 运行源码 `08d9297c`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,875,490 字节、0 错误、退出 0。Runtime DLL SHA-256 为 `91845C268264B67C8763A3D1949C1CEB8570DF3CA769051C89E7BE5E20995195`。上一运行源码 `46016bfb` 到交付源码仅增加未激活羁绊的分档段落淡色，并清理一条重复文字。 [构建日志](../artifacts/formation-playtest-feedback/build-final.log) · [Windows EXE](../Builds/Windows/YesterdayConvoy.exe)
