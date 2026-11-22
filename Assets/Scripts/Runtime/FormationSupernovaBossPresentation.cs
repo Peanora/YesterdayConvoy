@@ -30,7 +30,7 @@ namespace YesterdayConvoy
         };
 
         bool UsesSupernovaBossArt(string artId) => (artId == "D31" || artId == "D31B") &&
-            Model != null && Campaign?.CurrentNode.Id == FormationCampaignRules.SupernovaBossNodeId;
+            Model != null && Model.Defenders.Any(guard => guard.IsSupernovaBoss);
 
         static bool IsSupernovaBossClip(string key) => key.StartsWith(SupernovaBossClipPrefix, StringComparison.Ordinal);
         static string[] SupernovaBossBodyKeys(string artId) => artId == "D31" ? SupernovaBossFrontClips : SupernovaBossBodyClips;

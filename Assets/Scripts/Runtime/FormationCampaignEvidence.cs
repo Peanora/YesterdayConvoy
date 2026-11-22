@@ -31,6 +31,7 @@ namespace YesterdayConvoy
             public double battleSeconds;
             public List<string> filmedCasts = new List<string>();
             public List<string> observedSkillHits = new List<string>();
+            public List<string> phases = new List<string>();
         }
         [Serializable] sealed class SynergyStage
         {
@@ -1315,7 +1316,7 @@ namespace YesterdayConvoy
                 {
                     id = id,
                     side = defenders.Length == 1 ? "center" : "two-wings",
-                    initialHealth = Mathf.RoundToInt(defenders.Sum(d => d.MaxHealth)),
+                    initialHealth = Mathf.RoundToInt(defenders.Sum(d => d.MaxHealth + model.GuardFutureHealth(d))),
                 };
                 result.defenseStages.Add(entry);
                 result.node = id;
@@ -1349,6 +1350,7 @@ namespace YesterdayConvoy
                 var tracked = probe ? new[] { probeGuard } : model.Defenders.Where(d => FormationCampaignRules.DefenderByArtId(d.ArtId)?.Rarity == 6).ToArray();
                 var skillHits = new HashSet<string>();
                 var recorded = new HashSet<string>();
+                var observedPhases = new HashSet<(int, int)>();
                 while ((model.Phase == FormationPhase.Fighting || model.Phase == FormationPhase.Exiting) &&
                     (!probe || recorded.Count == 0 || skillHits.Count == 0))
                 {
@@ -1359,6 +1361,16 @@ namespace YesterdayConvoy
                         model.Advance(.025f);
                         foreach (var guard in tracked)
                         {
+                            if (id == "3-5" && guard.Alive && guard.HasBossHealthPhases &&
+                                observedPhases.Add((guard.Id, guard.BossHealthPhase)))
+                            {
+                                string phase = $"{guard.ArtId}-phase-{guard.BossHealthPhase}";
+                                entry.phases.Add($"{phase}@{model.Clock:0.000}");
+                                yield return Frame(id + "-" + phase);
+                                if (guard.BossHealthPhase > 1)
+                                    yield return CaptureInterfaceClip(id + "-" + phase + "-normal-speed", 48, "-formationDefenseClips",
+                                        () => guard.Alive && model.Phase == FormationPhase.Fighting);
+                            }
                             bool castObserved = guard.ArtId switch
                             {
                                 "D22" => model.GuardEffect(guard)?.Kind == "firewall",

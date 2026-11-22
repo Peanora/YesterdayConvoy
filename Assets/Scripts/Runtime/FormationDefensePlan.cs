@@ -102,7 +102,7 @@ namespace YesterdayConvoy
             Defense("3-2", "战斗战备", 36f, 2.76f, "D26 D01 D04 D06", "D07 D09 D35 D12"),
             Supply("3-3"),
             Defense("3-4", "战斗", 48f, 2.99f, "D22 D01 D05 D32", "D28 D07 D08 D12 D11"),
-            Defense("3-5", "遭遇", 60f, 3.18f, "D26 D01 D02 D04", "D24 D09 D10 D12 D08"),
+            Defense("3-5", "遭遇", 60f, 3.18f, "D36 D01 D02 D04", "D09 D31 D10 D12 D08"),
             Defense("3-6", "奖励", 1f, 1.80f, "D06 D04 D05", "D07 D08 D09"),
             Defense("3-7", "首领", 1f, 1f, "D27", "", 150f),
         };
@@ -210,6 +210,10 @@ namespace YesterdayConvoy
         {
             if (nodeId == "1-6" && artId == "D22")
                 return "进攻方首次进入3.2格范围后展开火墙，持续6秒，每战一次。穿墙的合格敌方弹道伤害降低15%。";
+            if (nodeId == "3-5" && artId == SupernovaBoss.ArtId)
+                return "两段生命。首段「饱和复仇」由最多三目标齐射转入过载四连发。转段后发动「爆裂黎明」，每轮发射六枚范围炮弹。";
+            if (nodeId == "3-5" && artId == MakotoBossArtId)
+                return "三段生命。依次以竖琴远射与自疗、囚锁恐惧与处决、剑刃弱点打击迎战。末段余血45%时转守备，减伤12%并限次自疗。";
             var boss = Bosses.FirstOrDefault(guard => guard.NodeId == nodeId && guard.ArtId == artId);
             if (boss != null) return boss.Effect;
             var defender = DefenderByArtId(artId);

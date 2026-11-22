@@ -16,7 +16,7 @@ namespace YesterdayConvoy
         public bool BossAlive => Defenders.Any(d => d.Alive && State(d).Boss);
         public float EncounterProgress => initialGuardHealth <= 0 ? 0 : Mathf.Clamp01(1 - Defenders.Where(d => State(d).InitialGuard).Sum(d =>
             State(d).LowestHealth + GuardFutureHealth(d)) / initialGuardHealth);
-        float GuardFutureHealth(FormationDefender guard) =>
+        internal float GuardFutureHealth(FormationDefender guard) =>
             guard.IsMakotoBoss ? MakotoFutureHealth(guard) : guard.BossHealthPhase == 1 ? guard.MaxHealth : 0;
         internal bool IsInitialGuard(FormationDefender guard) => State(guard).InitialGuard;
         internal bool IsBossDefender(FormationDefender guard) => combat.TryGetValue(guard.Id, out var state) && state.Boss;
@@ -312,8 +312,20 @@ namespace YesterdayConvoy
             var role = FormationCampaignRules.Defenders[guard.Role];
             bool isBoss = boss?.ArtId == artId;
             bool elite = guard.Rarity == 6;
+            // The phased elite kits use normal encounter seats and the stage's health budget.
+            bool campaignLineup = formation != null;
+            var eliteKit = campaignLineup && !isBoss ? artId switch
+            {
+                "D31" => FormationCampaignRules.SupernovaBoss,
+                FormationCampaignRules.MakotoBossArtId => FormationCampaignRules.MakotoBoss,
+                _ => null
+            } : null;
+            bool supernova = (isBoss || eliteKit != null) && artId == "D31";
+            bool makoto = (isBoss || eliteKit != null) && artId == FormationCampaignRules.MakotoBossArtId;
             float health = FormationCampaignRules.RoundedGuardStat(role.Health, node.HealthScale, elite ? 1.35m : 1m);
             float attack = FormationCampaignRules.RoundedGuardStat(role.Attack, node.AttackScale, elite ? 1.10m : 1m);
+            float encounterHealth = FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m);
+            if (eliteKit != null) attack = Mathf.Min(attack, eliteKit.Attack);
             var d = new FormationDefender
             {
                 Id = 100 + Defenders.Count,
@@ -325,19 +337,21 @@ namespace YesterdayConvoy
                 SkillCell = formation?.SkillCell(artId),
                 IsSnowBoss = isBoss && artId == "D27",
                 SnowBossPhase = isBoss && artId == "D27" ? 1 : 0,
-                IsSupernovaBoss = isBoss && artId == "D31",
-                SupernovaBossPhase = isBoss && artId == "D31" ? 1 : 0,
-                IsMakotoBoss = isBoss && artId == FormationCampaignRules.MakotoBossArtId,
-                MakotoBossPhase = isBoss && artId == FormationCampaignRules.MakotoBossArtId ? 1 : 0,
-                MaxHealth = isBoss ? boss.Health : node.Kind == "奖励" ? 1f :
-                    FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m),
+                IsSupernovaBoss = supernova,
+                SupernovaBossPhase = supernova ? 1 : 0,
+                IsMakotoBoss = makoto,
+                MakotoBossPhase = makoto ? 1 : 0,
+                MakotoHealthScale = makoto && !isBoss ? encounterHealth / MakotoTotalHealth : 1f,
+                MaxHealth = isBoss ? boss.Health : campaignLineup && node.Kind == "奖励" ? 1f :
+                    supernova ? encounterHealth / 2 : encounterHealth,
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
                 Armor = isBoss ? boss.Armor : role.Armor,
                 MagicResistance = isBoss ? boss.MagicResistance : role.MagicResistance,
-                Range = isBoss ? boss.Range : role.Range,
-                Interval = isBoss ? boss.Interval : artId == "D32" ? ChenAttackInterval : role.Interval,
-                SkillRequired = isBoss ? boss.RequiredSP : guard.RequiredSP ?? role.RequiredSP,
+                Range = isBoss ? boss.Range : eliteKit?.Range ?? role.Range,
+                Interval = isBoss ? boss.Interval : eliteKit?.Interval ?? (artId == "D32" ? ChenAttackInterval : role.Interval),
+                SkillRequired = isBoss ? boss.RequiredSP : eliteKit?.RequiredSP ?? guard.RequiredSP ?? role.RequiredSP,
             };
+            if (makoto && !isBoss) d.MaxHealth = MakotoPhaseHealth(d, 1);
             if (!d.IsSupernovaBoss && !d.IsMakotoBoss) ConfigureArchivedGuard(d);
             if (watchesApproach)
             {
@@ -360,8 +374,8 @@ namespace YesterdayConvoy
             state.BaseMR = d.MagicResistance;
             state.BaseInterval = d.Interval;
             state.BaseRange = d.Range;
-            state.GuardInitialSP = isBoss ? boss.InitialSP : guard.InitialSP ?? role.InitialSP;
-            state.GuardActionSeconds = isBoss ? boss.ActionSeconds : role.ActionSeconds;
+            state.GuardInitialSP = isBoss ? boss.InitialSP : eliteKit?.InitialSP ?? guard.InitialSP ?? role.InitialSP;
+            state.GuardActionSeconds = isBoss ? boss.ActionSeconds : eliteKit?.ActionSeconds ?? role.ActionSeconds;
             d.SkillCharge = state.GuardInitialSP;
             Defenders.Add(d);
         }

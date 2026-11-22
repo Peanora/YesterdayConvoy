@@ -129,8 +129,8 @@ namespace YesterdayConvoy.Tests
                 ["D09"] = "炎熔", ["D10"] = "芙蓉", ["D11"] = "安赛尔", ["D12"] = "梓兰",
                 ["D21"] = "荒芜拉普兰德", ["D22"] = "余", ["D23"] = "Mon3tr", ["D24"] = "新约能天使",
                 ["D25"] = "斩业星熊", ["D26"] = "凛御银灰", ["D27"] = "圣聆初雪", ["D28"] = "望",
-                ["D29"] = "塞雷娅", ["D30"] = "玛恩纳", ["D32"] = "赤刃明霄陈",
-                ["D33"] = "予愿安洁莉娜", ["D34"] = "克莱门莎", ["D35"] = "凯尔希·思衡托"
+                ["D29"] = "塞雷娅", ["D30"] = "玛恩纳", ["D31"] = "维什戴尔 · 超新星", ["D32"] = "赤刃明霄陈",
+                ["D33"] = "予愿安洁莉娜", ["D34"] = "克莱门莎", ["D35"] = "凯尔希·思衡托", ["D36"] = "结城理 · 见证荣光"
             };
             var north = new RectInt(15, 0, 5, 4);
             var south = new RectInt(15, 4, 5, 4);
@@ -205,6 +205,10 @@ namespace YesterdayConvoy.Tests
             }
 
             CollectionAssert.AreEquivalent(expectedNames.Keys, seenNames);
+            var implementedSixStars = Enumerable.Range(1, 99)
+                .Select(number => FormationCampaignRules.DefenderByArtId($"D{number:00}"))
+                .Where(guard => guard?.Rarity == 6).Select(guard => guard.ArtId);
+            Assert.That(seenNames, Is.SupersetOf(implementedSixStars));
         }
 
         [TestCase("1-7")]
@@ -217,8 +221,10 @@ namespace YesterdayConvoy.Tests
             ReachNode(run, nodeId);
             var model = new FormationBattleModel(seed, SavedTerrain());
             model.BindCampaign(run);
+            float TotalHealth(FormationDefender defender) =>
+                defender.MaxHealth + InvokeGuardTestHook<float>(model, "GuardFutureHealth", defender);
             var original = model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
-                defender.MaxHealth, defender.Attack)).ToArray();
+                Health: TotalHealth(defender), defender.Attack)).ToArray();
             (float Health, float Attack)[] scales = { (1f, 1f), (1.7f, 1.08f), (3f, 1.18f), (5.5f, 1.3f) };
             for (int tier = 2; tier <= scales.Length; tier++)
             {
@@ -231,7 +237,7 @@ namespace YesterdayConvoy.Tests
                     var expected = original[index];
                     var actual = model.Defenders[index];
                     Assert.That((actual.ArtId, actual.Position, actual.SkillCell), Is.EqualTo((expected.ArtId, expected.Position, expected.SkillCell)));
-                    Assert.That(actual.MaxHealth, Is.EqualTo(expected.MaxHealth * scales[tier - 1].Health).Within(1));
+                    Assert.That(TotalHealth(actual), Is.EqualTo(expected.Health * scales[tier - 1].Health).Within(1));
                     Assert.That(actual.Attack, Is.EqualTo(expected.Attack * scales[tier - 1].Attack).Within(1));
                 }
 
@@ -241,6 +247,50 @@ namespace YesterdayConvoy.Tests
                 Assert.That(model.Defenders.Select(defender => (defender.ArtId, defender.Position, defender.SkillCell,
                     defender.MaxHealth, defender.Attack)).ToArray(), Is.EqualTo(defense));
             }
+        }
+
+        [TestCase(1, 514500f, 48600f, 72900f)]
+        [TestCase(4, 2829750f, 267300f, 400950f)]
+        public void LateEncounterPhasedElitesShareTheExistingHealthBudget(int tier, float defenseHealth,
+            float supernovaHealth, float makotoHealth)
+        {
+            var model = Fixture(out var run, "M11");
+            ReachNode(run, "3-5", collectDrops: false);
+            run.CurrentEncounterTier = tier;
+            model.BindCampaign(run);
+            var supernova = model.Defenders.Single(guard => guard.IsSupernovaBoss);
+            var makoto = model.Defenders.Single(guard => guard.IsMakotoBoss);
+            Assert.That(supernova.Position.y < 4, Is.Not.EqualTo(makoto.Position.y < 4));
+            Assert.That(model.BossAlive, Is.False, "Phased elites do not add a boss-node defeat penalty.");
+            Assert.That(model.StartBattle(), Is.True);
+
+            var apply = typeof(FormationBattleModel).GetMethod("CombatDamage", BindingFlags.Instance | BindingFlags.NonPublic,
+                null, new[] { typeof(FormationActor), typeof(FormationActor), typeof(float), typeof(int),
+                    typeof(bool), typeof(bool), typeof(bool) }, null);
+            var fighter = model.Units.Single();
+            float RemoveStage(FormationDefender guard)
+            {
+                float health = guard.Health;
+                apply.Invoke(model, new object[] { fighter, guard, health, 2, true, false, false });
+                return health;
+            }
+
+            float dealt = RemoveStage(supernova);
+            dealt += RemoveStage(makoto);
+            Assert.That(model.EncounterProgress, Is.EqualTo(dealt / defenseHealth).Within(1e-5));
+            Assert.That(supernova.Alive && makoto.Alive, Is.True);
+            Advance(model, 1.3f);
+            Assert.That((supernova.SupernovaBossPhase, makoto.MakotoBossPhase), Is.EqualTo((2, 2)));
+            Assert.That(model.EncounterProgress, Is.EqualTo(dealt / defenseHealth).Within(1e-5));
+
+            dealt += RemoveStage(makoto);
+            Advance(model, .6f);
+            Assert.That(makoto.MakotoBossPhase, Is.EqualTo(3));
+            dealt += RemoveStage(makoto) + RemoveStage(supernova);
+            Assert.That(dealt, Is.EqualTo(supernovaHealth + makotoHealth).Within(1));
+            Assert.That(makoto.Alive || supernova.Alive, Is.False);
+            Assert.That(model.RemainingDefenders, Is.EqualTo(7));
+            Assert.That(model.EncounterProgress, Is.EqualTo(dealt / defenseHealth).Within(1e-5));
         }
 
         [Test]
@@ -397,7 +447,8 @@ namespace YesterdayConvoy.Tests
                 Assert.That(model.ActiveSynergies["连击"], Is.EqualTo(lineup == "low-cost-mature" ? 6 : 4));
                 Assert.That(model.ActiveSynergies["同频"], Is.EqualTo(5));
             }
-            float initialHealth = model.Defenders.Sum(defender => defender.MaxHealth);
+            float initialHealth = model.Defenders.Sum(defender =>
+                defender.MaxHealth + InvokeGuardTestHook<float>(model, "GuardFutureHealth", defender));
             Assert.That(model.StartBattle(), Is.True);
             double? clearAt = null;
             const float step = .025f;

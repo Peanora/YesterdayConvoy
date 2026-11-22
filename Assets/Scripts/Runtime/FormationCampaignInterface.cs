@@ -399,7 +399,10 @@ namespace YesterdayConvoy
             {
                 var guard=FormationCampaignRules.DefenderByArtId(d.ArtId);
                 string line=guard==null?"":(guard.Role<=2?"前排":"后排")+(guard.Rarity==6?" · 六星　":"　");
-                CampaignLabel(new Rect(0,row*110,850,24),line+d.Name+"　生命 "+d.MaxHealth.ToString("0")+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
+                string life = d.HasBossHealthPhases
+                    ? $"总生命 {d.MaxHealth + Model.GuardFutureHealth(d):0}（{d.BossHealthPhaseCount}段）"
+                    : $"生命 {d.MaxHealth:0}";
+                CampaignLabel(new Rect(0,row*110,850,24),line+d.Name+"　"+life+"　攻击 "+d.Attack.ToString("0")+"　护甲 "+d.Armor.ToString("0")+"　法抗 "+d.MagicResistance.ToString("0")+"　射程 "+d.Range.ToString("0.0"),14,true);
                 CampaignLabel(new Rect(0,row*110+28,850,25),"技力 "+d.SkillCharge.ToString("0")+" / "+d.SkillRequired.ToString("0")+"　攻击间隔 "+d.Interval.ToString("0.00")+"秒　部署格 "+d.Position,12);
                 string effect = Campaign.StandaloneBoss is { } boss && d.ArtId == boss.ArtId ? boss.Effect :
                     FormationCampaignRules.DefenderSkillDescription(Campaign.CurrentNode.Id,d.ArtId);

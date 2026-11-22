@@ -55,10 +55,12 @@ namespace YesterdayConvoy
         internal double SupernovaBossTransitionUntil { get; set; }
         public bool IsMakotoBoss { get; internal set; }
         public int MakotoBossPhase { get; internal set; }
+        internal float MakotoHealthScale { get; set; } = 1f;
         internal double MakotoBossTransitionUntil { get; set; }
         internal double BossHealthRefillAt { get; set; } = double.NegativeInfinity;
         internal bool IsTwoPhaseBoss => IsSnowBoss || IsSupernovaBoss;
         internal bool HasBossHealthPhases => IsTwoPhaseBoss || IsMakotoBoss;
+        internal int BossHealthPhaseCount => IsMakotoBoss ? 3 : IsTwoPhaseBoss ? 2 : 0;
         internal int BossHealthPhase => IsMakotoBoss ? MakotoBossPhase : IsSnowBoss ? SnowBossPhase : SupernovaBossPhase;
     }
 

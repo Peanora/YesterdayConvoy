@@ -37,7 +37,7 @@ namespace YesterdayConvoy
             {
                 StopBossPhaseAudio();
                 bossPhaseAudioBattle = Model;
-                bossPhaseAudioGuard = Model.Defenders.FirstOrDefault(guard => guard.IsTwoPhaseBoss);
+                bossPhaseAudioGuard = Model.Defenders.FirstOrDefault(guard => guard.IsTwoPhaseBoss && Model.IsBossDefender(guard));
                 if (bossPhaseAudioGuard == null) return;
 
                 bool supernova = bossPhaseAudioGuard.IsSupernovaBoss;

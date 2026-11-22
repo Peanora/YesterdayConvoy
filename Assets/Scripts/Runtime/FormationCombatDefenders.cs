@@ -374,13 +374,13 @@ namespace YesterdayConvoy
         }
 
         FormationDefender[] WoundedGuards(Vector2 origin, float radius, int cap, FormationDefender source) =>
-            Defenders.Where(d => d.Alive && d.Health < d.MaxHealth && (d == source || Kit(d).OutsideHealing < d.MaxHealth * .2f) &&
+            Defenders.Where(d => d.Alive && d.Health > 0 && d.Health < d.MaxHealth && (d == source || Kit(d).OutsideHealing < d.MaxHealth * .2f) &&
                 (d.Position - origin).sqrMagnitude <= radius * radius)
                 .OrderBy(d => d.Health / d.MaxHealth).ThenBy(d => d.Id).Take(cap).ToArray();
 
         float HealGuard(FormationDefender source, FormationDefender target, float raw, bool skill)
         {
-            if (!target.Alive) return 0;
+            if (!target.Alive || target.Health <= 0) return 0;
             var recipient = Kit(target);
             float amount = Mathf.Min(raw, target.MaxHealth - target.Health);
             if (source != target) amount = Mathf.Min(amount, target.MaxHealth * .2f - recipient.OutsideHealing);

@@ -63,7 +63,6 @@ namespace YesterdayConvoy
 
         void CompleteSupernovaBossTransition()
         {
-            if (Campaign.CurrentNode.Id != FormationCampaignRules.SupernovaBossNodeId) return;
             var guard = Defenders.FirstOrDefault(defender => defender.IsSupernovaBoss);
             if (guard == null || !guard.Alive || guard.SupernovaBossTransitionUntil == 0 ||
                 Clock + 1e-8 < guard.SupernovaBossTransitionUntil) return;

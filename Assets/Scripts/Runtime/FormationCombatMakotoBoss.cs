@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         internal const float MakotoRecoveryThreshold = .45f;
         internal const float MakotoRecoveryHeal = 800;
         internal const int MakotoRecoveryPulses = 8;
+        static float MakotoTotalHealth => FormationCampaignRules.MakotoBoss.Health + MakotoSecondHealth + MakotoThirdHealth;
         const double MakotoSwitchSourceSeconds = 1;
         const double MakotoAttackSourceSeconds = 1.8;
         const double MakotoAttackSourceContact = .8;
@@ -53,7 +54,7 @@ namespace YesterdayConvoy
             guard.MakotoBossTransitionUntil = 0;
             guard.BossHealthRefillAt = double.NegativeInfinity;
             guard.PhaseStage = 0;
-            guard.MaxHealth = guard.Health = State(guard).LowestHealth = FormationCampaignRules.MakotoBoss.Health;
+            guard.MaxHealth = guard.Health = State(guard).LowestHealth = MakotoPhaseHealth(guard, 1);
             kit.Makoto = new MakotoKit { FearRandom = new FormationRandom(unchecked((uint)Seed ^ 0x6c8e9cf5u)) };
         }
 
@@ -76,7 +77,6 @@ namespace YesterdayConvoy
 
         void CompleteMakotoBossTransition()
         {
-            if (!Campaign.IsMakotoBossTrial) return;
             var guard = Defenders.Find(defender => defender.IsMakotoBoss);
             if (guard == null || !guard.Alive || guard.MakotoBossTransitionUntil == 0 ||
                 Clock + 1e-8 < guard.MakotoBossTransitionUntil) return;
@@ -84,16 +84,28 @@ namespace YesterdayConvoy
             guard.MakotoBossTransitionUntil = 0;
             guard.MakotoBossPhase++;
             guard.PhaseStage = guard.MakotoBossPhase - 1;
-            guard.MaxHealth = guard.MakotoBossPhase == 2 ? MakotoSecondHealth : MakotoThirdHealth;
+            guard.MaxHealth = MakotoPhaseHealth(guard, guard.MakotoBossPhase);
             guard.Health = State(guard).LowestHealth = guard.MaxHealth;
             guard.BossHealthRefillAt = Clock;
             StartMakotoForm(guard, Kit(guard).Makoto);
         }
 
+        static float MakotoPhaseHealth(FormationDefender guard, int phase)
+        {
+            float second = Mathf.Round(MakotoSecondHealth * guard.MakotoHealthScale);
+            float third = Mathf.Round(MakotoThirdHealth * guard.MakotoHealthScale);
+            return phase switch
+            {
+                1 => Mathf.Round(MakotoTotalHealth * guard.MakotoHealthScale) - second - third,
+                2 => second,
+                _ => third
+            };
+        }
+
         float MakotoFutureHealth(FormationDefender guard) => guard.MakotoBossPhase switch
         {
-            1 => MakotoSecondHealth + MakotoThirdHealth,
-            2 => MakotoThirdHealth,
+            1 => MakotoPhaseHealth(guard, 2) + MakotoPhaseHealth(guard, 3),
+            2 => MakotoPhaseHealth(guard, 3),
             _ => 0,
         };
 
@@ -169,7 +181,7 @@ namespace YesterdayConvoy
             {
                 if (heal)
                 {
-                    if (HealGuard(guard, guard, 600, true) > 0) kit.HarpHeals++;
+                    if (HealGuard(guard, guard, 600 * guard.MakotoHealthScale, true) > 0) kit.HarpHeals++;
                 }
                 else if (target.Alive)
                     CombatDamage(guard, target, guard.Attack * 2.8f, 1, true, false);
@@ -258,7 +270,7 @@ namespace YesterdayConvoy
                 Skill = true, Heal = true, Animation = "makoto_s3_heal"
             };
             presentationActions.Add(action);
-            GuardContact(guard, action, () => HealGuard(guard, guard, MakotoRecoveryHeal, true), trackedTarget: guard);
+            GuardContact(guard, action, () => HealGuard(guard, guard, MakotoRecoveryHeal * guard.MakotoHealthScale, true), trackedTarget: guard);
         }
 
         bool MoveMakotoFear(FormationFighter unit, float dt)

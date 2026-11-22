@@ -315,7 +315,10 @@ namespace YesterdayConvoy
                 }
                 Fill(new Rect(bar.x + 1, bar.y + 1, (bar.width - 2) * fraction, bar.height - 2),
                     isBoss ? BossHealthRed : guard != null ? DefenderHealthRed : Cyan);
-                Label(new Rect(p.x-65,p.y-18,130,18),actor.Name,isBoss?13:11,White,TextAnchor.MiddleCenter);
+                bool showPhase = guard is { HasBossHealthPhases: true } && !isBoss && CombatViewActive;
+                string name = showPhase ? $"{actor.Name} {guard.BossHealthPhase}/{guard.BossHealthPhaseCount}" : actor.Name;
+                float nameWidth = showPhase ? 164 : 130;
+                Label(new Rect(p.x - nameWidth * .5f, p.y - 18, nameWidth, 18),name,isBoss?13:11,White,TextAnchor.MiddleCenter);
                 if (Model.Phase == FormationPhase.Preparation && actor is FormationFighter fighter)
                     DrawEquippedItemStrip(fighter.Instance, new Vector2(p.x + 27, p.y - 6), 18);
             }
