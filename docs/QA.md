@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-22 结城理首领试玩配乐
+
+- 运行源码 `526d21bb1859fa1ad6b11bf522171a0a295fe83a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,256,698 字节，零错误。Runtime DLL SHA-256 `06CACD2D5A34F26A56375EF249088E333267091C6B1FC915BAA331CCD2D7ED10`。完整 EditMode 1236/1236，仓库检查通过 17,707 个跟踪文件。 [构建日志](../artifacts/formation-makoto-bgm/build.log) · [EditMode XML](../artifacts/formation-makoto-bgm/edit.xml)
+- 1280×720 D3D11 Player，正常速度 55/55，零异常、退出 0。开战播放《Master of Shadow -Reload-》，第一条血条在 30.575 秒打空，塔纳托斯开启血条的 31.075 秒切入《It’s Going Down Now》。57.550 秒进入俄耳甫斯阶段，第二首的播放位置继续前进。暂停时播放位置冻结，恢复时延续，98.050 秒进门结算停播，重试整备安静。 [Player 报告](../artifacts/formation-makoto-bgm/trial/makoto-boss-smoke.json)
+- 同版本 Player 监听器录得 98.624 秒、48 kHz 立体声。将开战、切歌前后和第三阶段的四个片段逐一与两首导入音轨比对，四个片段均和预期曲目匹配。第二阶段到第三阶段的音源进度与录音进度均为 26.396 秒。实录满幅削波样本为零。 [波形核对](../artifacts/formation-makoto-bgm/trial/makoto-battle-mix-verification.json) · [音源和响度记录](art/source-records/formation-makoto-boss-audio-2026-11-22.json)
+- 同版超新星实机回归 59/59，零异常、退出 0。《Arsonist》跨转段连续播放，两段各播一句台词，64.100 秒进门。 [超新星 Player 报告](../artifacts/formation-makoto-bgm/supernova/supernova-boss-smoke.json)
+
 ## 2026-11-22 结城理攻速与生命调整
 
 - 运行源码 `f5fd6663cf85098ac52c082b68bb5eb2eddd09bf`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,876,598 字节、零错误。Runtime DLL SHA-256 为 `C28516354F2B89A9BF886730CFAB2B865AD621FB465C9353DB1FE7BDC35AAEA4`。 [构建日志](../artifacts/formation-makoto-tempo/build.log) · [新版 EXE](../Builds/Windows/YesterdayConvoy.exe)
