@@ -341,7 +341,6 @@ namespace YesterdayConvoy
                 SupernovaBossPhase = supernova ? 1 : 0,
                 IsMakotoBoss = makoto,
                 MakotoBossPhase = makoto ? 1 : 0,
-                MakotoHealthScale = makoto && !isBoss ? encounterHealth / MakotoTotalHealth : 1f,
                 MaxHealth = isBoss ? boss.Health : campaignLineup && node.Kind == "奖励" ? 1f :
                     supernova ? encounterHealth / 2 : encounterHealth,
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
@@ -351,7 +350,11 @@ namespace YesterdayConvoy
                 Interval = isBoss ? boss.Interval : eliteKit?.Interval ?? (artId == "D32" ? ChenAttackInterval : role.Interval),
                 SkillRequired = isBoss ? boss.RequiredSP : eliteKit?.RequiredSP ?? guard.RequiredSP ?? role.RequiredSP,
             };
-            if (makoto && !isBoss) d.MaxHealth = MakotoPhaseHealth(d, 1);
+            if (makoto)
+            {
+                d.MakotoHealthScale = isBoss ? MakotoTrialHealthScale : encounterHealth / MakotoTotalHealth;
+                d.MaxHealth = MakotoPhaseHealth(d, 1);
+            }
             if (!d.IsSupernovaBoss && !d.IsMakotoBoss) ConfigureArchivedGuard(d);
             if (watchesApproach)
             {

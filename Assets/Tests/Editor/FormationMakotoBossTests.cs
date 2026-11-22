@@ -25,6 +25,7 @@ namespace YesterdayConvoy.Tests
             {
                 Assert.That(session.Run.IsMakotoBossTrial && model.EnabledCount == 8, Is.True);
                 Assert.That(FormationCampaignRules.Nodes.Any(node => node.Id == session.Run.CurrentNode.Id), Is.False);
+                Assert.That(model.Defenders.Single().MaxHealth, Is.EqualTo(180000f), "Scouting shows the raised opening bar");
                 Assert.That(model.StartBattle(), Is.True);
                 var guard = model.Defenders.Single();
                 Assert.That(guard.IsMakotoBoss && model.Terrain.CanPlaceDefender(guard.Position), Is.True);
@@ -32,6 +33,7 @@ namespace YesterdayConvoy.Tests
                 var firstRealHit = new double[2];
                 var breaks = new double[2];
                 var swordMotions = new HashSet<string>();
+                var thanatosActions = new Dictionary<int, FormationPresentationAction>();
                 double guardFormOpened = 0, firstGuardHeal = 0, clear = 0;
                 bool damagedByGuardForm = false;
 
@@ -49,6 +51,12 @@ namespace YesterdayConvoy.Tests
                             swordMotions.Add(hit.Action.Animation);
                             if (firstRealHit[phase - 1] == 0) firstRealHit[phase - 1] = hit.At;
                         }
+                    }
+                    if (phase == 2)
+                    {
+                        foreach (var action in model.PresentationActions)
+                            if (action.ActorId == guard.Id && !action.ProjectileOnly && SwordBelongsToPhase(action.Animation, 2))
+                                thanatosActions.TryAdd(action.Sequence, action);
                     }
                     if (phase < 3 && breaks[phase - 1] == 0 && TransitionActive(model, guard))
                     {
@@ -83,7 +91,17 @@ namespace YesterdayConvoy.Tests
                 TestContext.WriteLine($"Makoto S3 preset: sword strikes at {string.Join(", ", firstRealHit)}; " +
                     $"breaks {string.Join(", ", breaks)}; guard {guardFormOpened:0.000}, first heal {firstGuardHeal:0.000}; clear {clear:0.000}; " +
                     $"result {model.Phase} at {model.Clock:0.000} with {guard.HealingDone:0} total healing.");
-                Assert.That(maximum, Is.EqualTo(new[] { 120000f, 160000f, 150000f }));
+                Assert.That(maximum, Is.EqualTo(new[] { 180000f, 240000f, 225000f }));
+                var thanatos = thanatosActions.Values.Where(action => !action.Cancelled).OrderBy(action => action.At).ToArray();
+                var fullSpeed = thanatos.FirstOrDefault(action => Math.Abs(action.Rate - 4.4f) < 1e-4);
+                Assert.That(fullSpeed, Is.Not.Null, "An unslowed Thanatos attack plays at source speed 2 × 2.2");
+                Assert.That(fullSpeed.ContactAt - fullSpeed.At, Is.EqualTo(.8 / 4.4).Within(.00001));
+                var fullSpeedGaps = thanatos.Zip(thanatos.Skip(1), (previous, next) => (previous, gap: next.At - previous.At))
+                    .Where(pair => Math.Abs(pair.previous.Rate - 4.4f) < 1e-4).Select(pair => pair.gap).ToArray();
+                Assert.That(fullSpeedGaps, Is.All.GreaterThanOrEqualTo(1.7 / 2.2 - 1e-5),
+                    "Attack cadence never gets ahead of the nominal unslowed interval");
+                TestContext.WriteLine($"Thanatos rate {fullSpeed.Rate:0.000}; windup {fullSpeed.ContactAt - fullSpeed.At:0.000}; " +
+                    $"shortest adjacent start interval {fullSpeedGaps.DefaultIfEmpty(0).Min():0.000}.");
                 Assert.That(firstRealHit[0], Is.InRange(1e-5, breaks[0]));
                 Assert.That(firstRealHit[1], Is.InRange(breaks[0] + 1e-5, breaks[1]));
                 Assert.That(swordMotions, Is.EquivalentTo(new[]
@@ -143,7 +161,7 @@ namespace YesterdayConvoy.Tests
                 double nextShotAt = model.Clock + 1;
                 while (model.Clock < checkHealingAt) AdvanceProbe();
                 float healingTotal = guard.HealingDone;
-                Assert.That(healingTotal - healingAtRecovery, Is.Positive.And.LessThanOrEqualTo(6400.01f));
+                Assert.That(healingTotal - healingAtRecovery, Is.EqualTo(6400f).Within(.01));
                 while (model.Phase == FormationPhase.Fighting) AdvanceProbe();
 
                 Assert.That(guard.HealingDone, Is.EqualTo(healingTotal).Within(.01),
@@ -162,7 +180,7 @@ namespace YesterdayConvoy.Tests
                     if (model.Phase == FormationPhase.Fighting && model.Clock + 1e-8 >= nextShotAt)
                     {
                         nextShotAt += 1;
-                        ApplyTrueDamage(model, probe, guard, 1030);
+                        ApplyTrueDamage(model, probe, guard, 1520);
                     }
                 }
             }

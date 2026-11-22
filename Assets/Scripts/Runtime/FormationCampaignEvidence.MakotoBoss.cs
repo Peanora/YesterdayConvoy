@@ -19,7 +19,8 @@ namespace YesterdayConvoy
             public int[] firstDamageType = new int[2];
             public string[] firstAttack = new string[2], renderedAttackSprites = new string[2];
             public double guardChangeStartAt, guardChangeEndAt, guardFormAt, firstHealAt, clearedAt, endAt;
-            public float firstHeal, totalHealing;
+            public float firstHeal, totalHealing, thanatosUnslowedRate;
+            public double thanatosUnslowedContactSeconds, thanatosShortestInterval;
             public string scoutSprite, outcome;
         }
 
@@ -69,7 +70,17 @@ namespace YesterdayConvoy
                 if (phase == 3) break;
                 yield return ObserveMakotoAttack(guard, attackKeys[index], phase, replay);
 
-                yield return ObserveMakotoUntil(() => model.MakotoBossTransitionActive(guard), "Lethal damage closes phase " + phase);
+                yield return ObserveMakotoUntil(() =>
+                {
+                    if (phase == 2) MeasureThanatosCadence(guard, attackKeys[index], replay);
+                    return model.MakotoBossTransitionActive(guard);
+                }, "Lethal damage closes phase " + phase);
+                if (phase == 2)
+                {
+                    Assert(Math.Abs(replay.thanatosUnslowedRate - 4.4f) < 1e-4 &&
+                        Math.Abs(replay.thanatosUnslowedContactSeconds - .8 / 4.4) < 1e-5,
+                        "An unslowed Thanatos attack plays at 4.4× with the original contact offset");
+                }
                 replay.transitionAt[index] = model.Clock;
                 Assert(model.BossAlive && model.RemainingDefenders == 1 && guard.Health == 0 &&
                     model.Phase == FormationPhase.Fighting &&
@@ -95,6 +106,8 @@ namespace YesterdayConvoy
                 }
             }
 
+            Assert(replay.phaseMaximum.SequenceEqual(new[] { 180000f, 240000f, 225000f }),
+                "The three standalone bars use the increased life pool");
             FormationPresentationAction guardChangeBegin = null, guardChangeEnd = null;
             FormationHit heal = null;
             bool offensiveMotionInGuard = false, damageInGuard = false;
@@ -144,6 +157,7 @@ namespace YesterdayConvoy
             yield return ObserveMakotoUntil(() => model.Phase == FormationPhase.Won, "A surviving attacker reaches the blue gate");
             replay.endAt = model.Clock;
             replay.totalHealing = guard.HealingDone;
+            Assert(replay.totalHealing > 0 && replay.totalHealing <= 6400.01f, "Guard healing remains capped at 6,400");
             replay.outcome = model.Phase.ToString();
             Assert(replay.clearedAt < replay.endAt && replay.endAt < model.LimitSeconds &&
                 model.Units.Any(unit => unit.Enabled && unit.Alive && unit.Position.x >= FormationBattleModel.Width - 1 - .0001f),
@@ -191,6 +205,27 @@ namespace YesterdayConvoy
                 Assert(contact.Skill && contact.DamageType is 0 or 1,
                     "Thanatos Kai resolves its weak-point hit to physical or Arts damage");
             yield return Frame((2 * phase).ToString("00") + "-phase-" + phase + "-contact");
+        }
+
+        void MeasureThanatosCadence(FormationDefender guard, string[] keys, MakotoBossReplay replay)
+        {
+            FormationPresentationAction previous = null;
+            foreach (var action in controller.Model.PresentationActions)
+            {
+                if (action.ActorId != guard.Id || action.Cancelled || action.ProjectileOnly || !keys.Contains(action.Animation)) continue;
+                if (previous != null && Math.Abs(previous.Rate - 4.4f) < 1e-4)
+                {
+                    double interval = action.At - previous.At;
+                    if (replay.thanatosShortestInterval <= 0 || interval < replay.thanatosShortestInterval)
+                        replay.thanatosShortestInterval = interval;
+                }
+                if (replay.thanatosUnslowedRate == 0 && Math.Abs(action.Rate - 4.4f) < 1e-4)
+                {
+                    replay.thanatosUnslowedRate = action.Rate;
+                    replay.thanatosUnslowedContactSeconds = action.ContactAt - action.At;
+                }
+                previous = action;
+            }
         }
 
         IEnumerator ObserveMakotoUntil(Func<bool> reached, string description)

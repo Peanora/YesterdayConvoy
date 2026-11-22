@@ -6,6 +6,8 @@ namespace YesterdayConvoy
     {
         internal const float MakotoSecondHealth = 160000;
         internal const float MakotoThirdHealth = 150000;
+        const float MakotoTrialHealthScale = 1.5f;
+        const float MakotoThanatosAttackFrequency = 2.2f;
         internal const float MakotoRecoveryReduction = .12f;
         internal const float MakotoHumanRange = 1.6f;
         internal const float MakotoRecoveryHeal = 800;
@@ -146,7 +148,7 @@ namespace YesterdayConvoy
             if (guard.MakotoBossPhase == 1)
                 TickMakotoHumanSword(guard, kit, target, frequency);
             else
-                TickMakotoThanatos(guard, kit, targets, frequency * 1.6f);
+                TickMakotoThanatos(guard, kit, targets, frequency * MakotoThanatosAttackFrequency);
         }
 
         void TickMakotoHumanSword(FormationDefender guard, MakotoKit kit, FormationFighter target, float frequency)
@@ -189,7 +191,8 @@ namespace YesterdayConvoy
                 Skill = true, Heal = true, Animation = "makoto_s3_heal"
             };
             presentationActions.Add(action);
-            GuardContact(guard, action, () => HealGuard(guard, guard, MakotoRecoveryHeal * guard.MakotoHealthScale, true), trackedTarget: guard);
+            float heal = MakotoRecoveryHeal * (IsBossDefender(guard) ? 1f : guard.MakotoHealthScale);
+            GuardContact(guard, action, () => HealGuard(guard, guard, heal, true), trackedTarget: guard);
         }
 
     }
