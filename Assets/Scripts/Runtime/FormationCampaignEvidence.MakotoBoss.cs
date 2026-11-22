@@ -187,7 +187,9 @@ namespace YesterdayConvoy
             replay.firstDamageType[index] = contact.DamageType;
             replay.renderedAttackSprites[index] = MakotoBossBody(guard)?.sprite.name;
             Assert(contact.At + 1e-5 >= contact.Action.ContactAt, "Phase " + phase + " damage occurs after contact");
-            if (phase == 2) Assert(contact.DamageType == 3, "Thanatos Kai applies the weak-point damage type");
+            if (phase == 2)
+                Assert(contact.Skill && contact.DamageType is 0 or 1,
+                    "Thanatos Kai resolves its weak-point hit to physical or Arts damage");
             yield return Frame((2 * phase).ToString("00") + "-phase-" + phase + "-contact");
         }
 
