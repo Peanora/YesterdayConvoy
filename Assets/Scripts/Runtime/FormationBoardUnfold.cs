@@ -22,6 +22,8 @@ namespace YesterdayConvoy
         readonly List<BoardUnfoldReveal> boardUnfoldReveals = new List<BoardUnfoldReveal>();
         bool boardUnfoldActorsWereActive;
         bool boardUnfoldPartsSettled;
+        Transform boardUnfoldRiver;
+        Vector3 boardUnfoldRiverPosition;
         internal bool FormationBoardUnfoldActive => boardUnfoldRun != null;
         internal float FormationBoardUnfoldElapsed { get; private set; }
 
@@ -41,7 +43,21 @@ namespace YesterdayConvoy
             foreach (Transform piece in tiles) boardUnfoldParts.Add(new BoardUnfoldPart(piece));
             foreach (Transform piece in terrain.transform) boardUnfoldParts.Add(new BoardUnfoldPart(piece));
 
-            var courtyard = maps.canyonScenery[3].transform.parent;
+            var perimeter = maps.canyonScenery[3].transform;
+            foreach (Transform piece in perimeter) boardUnfoldParts.Add(new BoardUnfoldPart(piece));
+
+            var scenery = maps.canyonScenery[1]?.transform;
+            if (scenery != null)
+            {
+                boardUnfoldRiver = scenery.Find("Native canyon river");
+                if (boardUnfoldRiver != null) boardUnfoldRiverPosition = boardUnfoldRiver.localPosition;
+                foreach (Transform piece in scenery)
+                    if (piece.name.StartsWith("S_Outworld_grass", StringComparison.OrdinalIgnoreCase) ||
+                        piece.name == "S_Outworld_out_2778")
+                        boardUnfoldParts.Add(new BoardUnfoldPart(piece));
+            }
+
+            var courtyard = perimeter.parent;
             foreach (Transform piece in courtyard)
             {
                 bool red = piece.name.StartsWith("Red gate row ", StringComparison.Ordinal);
@@ -49,7 +65,7 @@ namespace YesterdayConvoy
                 int row = Mathf.RoundToInt(piece.position.z + (FormationBattleModel.Height - 1) * .5f);
                 HideBoardUnfoldRenderers(piece, (red ? 3.95f : 4.13f) + row * .045f);
             }
-            var shelf = maps.canyonScenery[1]?.transform.Find("Front reward shelf");
+            var shelf = scenery?.Find("Front reward shelf");
             if (shelf != null) HideBoardUnfoldRenderers(shelf, BoardUnfoldReturnStart);
 
             boardUnfoldRun = Campaign;
@@ -106,7 +122,7 @@ namespace YesterdayConvoy
                 if (time >= BoardFoldSettled) RestoreBoardUnfoldParts();
                 else
                 {
-                    float lift = Mathf.Lerp(-.92f, 0, UnfoldEase(time, 0, 1.60f));
+                    float lift = Mathf.Lerp(-.42f, 0, UnfoldEase(time, 0, 1.60f));
                     // Each absolute panel angle relaxes on a delay. The previous outside
                     // edge remains the next panel's pivot, including while it is folded.
                     SetBoardUnfoldPanel(0, Vector3.up * lift, Quaternion.identity, Vector3.zero);
@@ -115,6 +131,12 @@ namespace YesterdayConvoy
                 }
             }
 
+            // Keep the local river below the low hinges until the board is flat.
+            // The small basin itself travels with the original center tiles.
+            if (boardUnfoldRiver != null)
+                boardUnfoldRiver.localPosition = boardUnfoldRiverPosition -
+                    Vector3.up * (.92f * (1 - UnfoldEase(time, 2.65f, BoardFoldSettled)));
+
             foreach (var entry in boardUnfoldReveals)
                 if (entry.Renderer != null && time >= entry.VisibleAt)
                     entry.Renderer.forceRenderingOff = entry.WasHidden;
@@ -122,7 +144,7 @@ namespace YesterdayConvoy
             float arc = UnfoldEase(time, .10f, 4.12f);
             var rotation = Quaternion.Slerp(BoardUnfoldStartRotation, FormationCameraRotation, arc);
             var focus = Vector3.up * Mathf.Lerp(.94f, BoardSurfaceY, arc);
-            var overhead = focus - rotation * Vector3.forward * Mathf.Lerp(22.3f, 20.3f, arc);
+            var overhead = focus - rotation * Vector3.forward * Mathf.Lerp(23.0f, 21.6f, arc);
             float returning = UnfoldEase(time, BoardUnfoldReturnStart, FormationBoardUnfoldDuration);
             battleCamera.transform.SetPositionAndRotation(Vector3.Lerp(overhead, formationLeftPreparationPose, returning), rotation);
         }
@@ -176,6 +198,8 @@ namespace YesterdayConvoy
             foreach (var entry in boardUnfoldReveals)
                 if (entry.Renderer != null) entry.Renderer.forceRenderingOff = entry.WasHidden;
             boardUnfoldReveals.Clear();
+            if (boardUnfoldRiver != null) boardUnfoldRiver.localPosition = boardUnfoldRiverPosition;
+            boardUnfoldRiver = null;
             if (actorRoot != null) actorRoot.gameObject.SetActive(boardUnfoldActorsWereActive);
             if (boardUnfoldAudio != null) boardUnfoldAudio.Stop();
             if (battleCamera != null) ApplyFormationCamera(FormationCameraTarget);

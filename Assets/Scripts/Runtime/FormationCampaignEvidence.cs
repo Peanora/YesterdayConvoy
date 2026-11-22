@@ -946,8 +946,13 @@ namespace YesterdayConvoy
                 bool sawCameraHandoff = false;
                 bool sawDeliveryAfterUnfold = false;
                 bool stayedInPreparation = true;
+                double firstFrame = -1;
+                var frameTimes = new List<string>();
                 yield return WaitForOpeningDelivery(prefix, _ =>
                 {
+                    double now = Time.realtimeSinceStartupAsDouble;
+                    if (firstFrame < 0) firstFrame = now;
+                    frameTimes.Add((now - firstFrame).ToString("F6", System.Globalization.CultureInfo.InvariantCulture));
                     float elapsed = controller.FormationBoardUnfoldElapsed;
                     if (controller.FormationBoardUnfoldActive)
                     {
@@ -968,9 +973,12 @@ namespace YesterdayConvoy
                     !controller.ViewingDefenders && !controller.CameraTransitioning &&
                     controller.CurrentFormationCameraSafeRect == FormationBattleController.LeftPreparationCameraSafeRect,
                     prefix + " finishes the 5.5 second reveal, then delivers supplies in the settled preparation view");
+                File.WriteAllLines(Path.Combine(directory, prefix, "frame-times.txt"), frameTimes);
+                var starters = controller.Shop.Bench.Select(piece => piece.Instance).ToArray();
                 yield return ResolveChoices();
                 Assert(controller.FormationPreparationUiVisible && controller.Session.CanShop &&
-                    controller.Model.EnabledCount == 0 && controller.Shop.Bench.Count == 3,
+                    controller.Model.EnabledCount == 0 &&
+                    starters.All(instance => controller.Shop.Bench.Any(piece => piece.Instance == instance)),
                     prefix + " restores ordinary preparation with the three delivered recruits still in reserve");
                 yield return Frame(prefix + "-preparation");
                 if (entry == 0)
