@@ -27,7 +27,7 @@ namespace YesterdayConvoy.Tests
             var reserved = board.Shop.RewardReservations.Select(ticket => ticket.Id).ToArray();
             Assert.That(reserved.Distinct().Count(), Is.EqualTo(3));
 
-            double deadline = Time.realtimeSinceStartupAsDouble + 8;
+            double deadline = Time.realtimeSinceStartupAsDouble + 12;
             while (run.OpeningRewardsPending && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             Assert.That(run.OpeningRewardsPending, Is.False, "The scene lands grants without opening ground rewards.");
             Assert.That(board.Shop.Gold, Is.EqualTo(8));
@@ -53,6 +53,96 @@ namespace YesterdayConvoy.Tests
                 int slot = board.Session.Seats.FirstEmpty(true, board.Shop.PopulationCap);
                 Assert.That(board.MovePiece(piece.Instance, true, slot).Success, Is.True);
             }
+        }
+
+        [UnityTest]
+        public IEnumerator FreshChallengeUnfoldsSavedBoardBeforeOpeningGrants()
+        {
+            FormationShopSession.StartNew(20261117, fullCampaign: true);
+            Transform outerTile = null;
+            Renderer basinTile = null;
+            Renderer[] blueGate = null;
+            Vector3 authoredPosition = default;
+            Quaternion authoredRotation = default;
+            Vector3 authoredScale = default;
+
+            void CaptureAuthoredBoard(Scene scene, LoadSceneMode mode)
+            {
+                if (scene.name != FormationBattleController.SceneName) return;
+                controller = UnityEngine.Object.FindAnyObjectByType<FormationBattleController>();
+                var scenery = controller.maps.canyonScenery;
+                outerTile = scenery[0].transform.Find("Tile 00,03");
+                basinTile = scenery[0].transform.Find("Tile 12,01").GetComponent<Renderer>();
+                blueGate = scenery[3].transform.parent.Find("Blue gate row 3").GetComponentsInChildren<Renderer>(true);
+                authoredPosition = outerTile.localPosition;
+                authoredRotation = outerTile.localRotation;
+                authoredScale = outerTile.localScale;
+            }
+
+            SceneManager.sceneLoaded += CaptureAuthoredBoard;
+            try
+            {
+                yield return SceneManager.LoadSceneAsync(FormationBattleController.SceneName);
+            }
+            finally
+            {
+                SceneManager.sceneLoaded -= CaptureAuthoredBoard;
+            }
+            Assert.That(outerTile, Is.Not.Null, "The authored board must be present before controller startup.");
+            Assert.That(blueGate, Is.Not.Empty);
+            Assert.That(basinTile.enabled, Is.False);
+
+            double readyDeadline = Time.realtimeSinceStartupAsDouble + 600;
+            while (!controller.Ready && Time.realtimeSinceStartupAsDouble < readyDeadline) yield return null;
+            Assert.That(controller.Ready, Is.True);
+
+            const BindingFlags nonPublic = BindingFlags.Instance | BindingFlags.NonPublic;
+            var type = typeof(FormationBattleController);
+            var activeProperty = type.GetProperty("FormationBoardUnfoldActive", nonPublic);
+            var elapsedProperty = type.GetProperty("FormationBoardUnfoldElapsed", nonPublic);
+            Assert.That(activeProperty, Is.Not.Null);
+            Assert.That(elapsedProperty, Is.Not.Null);
+            bool Active() => (bool)activeProperty.GetValue(controller);
+            bool AtAuthoredPose() => outerTile.localPosition.Equals(authoredPosition) &&
+                outerTile.localRotation.Equals(authoredRotation) && outerTile.localScale.Equals(authoredScale);
+            bool BlueGateCanRender() => blueGate.Any(part => part.gameObject.activeInHierarchy &&
+                part.enabled && !part.forceRenderingOff);
+
+            IEnumerator VerifyOpening()
+            {
+                var run = controller.Campaign;
+                double deadline = Time.realtimeSinceStartupAsDouble + 8;
+                while (!Active() && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
+                Assert.That(Active(), Is.True, "A fresh official challenge must unfold the board.");
+                bool moved = false;
+                bool grantsHeld = true;
+                bool gateWasHidden = false;
+                float elapsed = 0;
+                while (Active() && Time.realtimeSinceStartupAsDouble < deadline)
+                {
+                    moved |= !AtAuthoredPose();
+                    gateWasHidden |= !BlueGateCanRender();
+                    grantsHeld &= run.OpeningRewardsPending && !controller.Session.CanShop &&
+                        controller.Shop.Bench.Count == 0 && run.Inventory.Count == 0 && run.Choices.Count == 0;
+                    elapsed = (float)elapsedProperty.GetValue(controller);
+                    yield return null;
+                }
+                Assert.That(Active(), Is.False, "The board must finish unfolding automatically.");
+                Assert.That(elapsed, Is.GreaterThan(.25f), "The board must animate over multiple frames.");
+                Assert.That(moved, Is.True, "The saved outer tile must physically move during the unfold.");
+                Assert.That(grantsHeld, Is.True, "Shopping, grants and preplans must wait until the board is open.");
+                Assert.That(AtAuthoredPose(), Is.True, "The real tile must return to its exact authored pose.");
+                Assert.That(basinTile.enabled, Is.False, "The unfold must not restore the covered basin tile.");
+                Assert.That(gateWasHidden, Is.True, "The blue gate must wait for its part of the board to unfold.");
+                Assert.That(BlueGateCanRender(), Is.True, "The authored gate must render again after the unfold.");
+                yield return WaitForOpeningDelivery(controller);
+            }
+
+            yield return VerifyOpening();
+            var previousRun = controller.Campaign;
+            controller.ResetDemo();
+            Assert.That(controller.Campaign, Is.Not.SameAs(previousRun));
+            yield return VerifyOpening();
         }
 
         [UnityTest]

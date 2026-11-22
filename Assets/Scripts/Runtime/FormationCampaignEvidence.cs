@@ -44,13 +44,15 @@ namespace YesterdayConvoy
         static bool started;
         readonly Report result=new Report{scope="Production v0.7 choices, shop, deployments, equipment, ground rewards and the first three battles on the joined board. Left preparation uses the same tile scale as combat. Screenshots come from the Windows Player. Accelerated battles use normal simulation time through the campaign controller."};
         FormationBattleController controller;string directory;bool done;
-        internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested || SnowBossRequested || SupernovaBossRequested || MakotoBossRequested || MapVariantsRequested || SupplyRequested;
+        internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested || SnowBossRequested || SupernovaBossRequested || MakotoBossRequested || MapVariantsRequested || SupplyRequested || OpeningUnfoldRequested;
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
         static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
         static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
         static bool ReserveRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationReserveEvidence")>=0;
         static bool StrategyHistoryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationStrategyHistoryEvidence")>=0;
         static bool OpeningDeliveryRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationOpeningDeliveryEvidence")>=0;
+        const string OpeningUnfoldEvidenceFlag = "-formationOpeningUnfoldEvidence";
+        static bool OpeningUnfoldRequested => Array.IndexOf(Environment.GetCommandLineArgs(), OpeningUnfoldEvidenceFlag) >= 0;
         const string RewardDropEvidenceFlag = "-formationRewardDropEvidence";
         static bool RewardDropEvidenceRequested => Array.IndexOf(Environment.GetCommandLineArgs(), RewardDropEvidenceFlag) >= 0;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)] static void Reset()=>started=false;
@@ -66,7 +68,8 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            var fallback = SupplyRequested ? "artifacts/formation-supply/player" :
+            var fallback = OpeningUnfoldRequested ? "artifacts/formation-opening-unfold/player" :
+                SupplyRequested ? "artifacts/formation-supply/player" :
                 MakotoBossRequested ? "artifacts/formation-makoto-boss/player" :
                 MapVariantsRequested ? "artifacts/formation-map-variants/player" :
                 SupernovaBossRequested ? "artifacts/formation-supernova-boss/player" :
@@ -189,6 +192,11 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (OpeningUnfoldRequested)
+            {
+                yield return VerifyOpeningUnfold();
+                yield break;
+            }
             if (BattlePresentationRequested)
             {
                 yield return VerifyBattlePresentation();
@@ -824,9 +832,9 @@ namespace YesterdayConvoy
             yield return Frame(screenshot);
         }
 
-        IEnumerator WaitForStrategyUi(Func<bool> reached, string label)
+        IEnumerator WaitForStrategyUi(Func<bool> reached, string label, double timeoutSeconds = 4)
         {
-            double deadline = Time.realtimeSinceStartupAsDouble + 4;
+            double deadline = Time.realtimeSinceStartupAsDouble + timeoutSeconds;
             while (!reached() && Time.realtimeSinceStartupAsDouble < deadline) yield return null;
             Assert(reached(), label);
         }
@@ -896,7 +904,8 @@ namespace YesterdayConvoy
             yield return null;
         }
 
-        IEnumerator WaitForOpeningDelivery(string clip = null)
+        IEnumerator WaitForOpeningDelivery(string clip = null, Action<int> observeFrame = null,
+            string captureFlag = "-formationUiClips")
         {
             var run = controller.Campaign;
             Assert(run.OpeningRewardsPending && !run.HasBlockingChoice && !controller.Session.CanShop &&
@@ -909,8 +918,9 @@ namespace YesterdayConvoy
                     controller.Shop.ReservedRewards(recruit.CardId) == 1) &&
                 FormationCampaignRules.AllComponents.Any(item => item.Id == component),
                 "Three distinct 1–3 cost one-star starters occupy their original stock before delivery");
-            if (clip != null) yield return CaptureInterfaceClip(clip, 54);
-            yield return WaitForStrategyUi(() => !run.OpeningRewardsPending, "Normal updates complete opening delivery with no reward click");
+            if (clip != null) yield return CaptureInterfaceClip(clip, 192, captureFlag, beforeFrame: observeFrame);
+            yield return WaitForStrategyUi(() => !run.OpeningRewardsPending,
+                "Normal updates complete opening delivery with no reward click", timeoutSeconds: 10);
             Assert(controller.Shop.Bench.Select(piece => piece.Id).SequenceEqual(recruits.Select(recruit => recruit.CardId)) &&
                 controller.Shop.Bench.All(piece => piece.Star == 1 && controller.Session.Seats.For(piece.Instance) is { Lineup: false } &&
                     controller.Shop.ReservedRewards(piece.Id) == 0) && controller.Model.EnabledCount == 0 &&
@@ -919,6 +929,58 @@ namespace YesterdayConvoy
             Assert(run.Choices.Count == 3 && run.Choices.All(choice => choice.Strategy?.Tier == "") && !controller.Session.CanShop,
                 "Landing immediately opens the original three ungraded preplans and keeps trading locked");
             controller.Shop.Validate();
+        }
+
+        IEnumerator VerifyOpeningUnfold()
+        {
+            result.scope = "Windows Player recording at 24 fps from the normal campaign start and a fresh challenge. " +
+                "Opening and delivery play at normal speed. The runner uses the production choice and restart actions directly.";
+            for (int entry = 0; entry < 2; entry++)
+            {
+                string prefix = entry == 0 ? "01-first-start" : "02-fresh-challenge";
+                var run = controller.Campaign;
+                Assert(run.CurrentNode.Id == "1-1" && controller.FormationBoardUnfoldActive &&
+                    controller.FormationBoardUnfoldElapsed < .5f,
+                    prefix + " begins the board reveal on the first campaign node");
+                Vector3? unfoldCamera = null;
+                bool sawCameraHandoff = false;
+                bool sawDeliveryAfterUnfold = false;
+                bool stayedInPreparation = true;
+                yield return WaitForOpeningDelivery(prefix, _ =>
+                {
+                    float elapsed = controller.FormationBoardUnfoldElapsed;
+                    if (controller.FormationBoardUnfoldActive)
+                    {
+                        var cameraPosition = controller.battleCamera.transform.position;
+                        if (elapsed is > 1f and < 3.9f) unfoldCamera = cameraPosition;
+                        if (elapsed is > 4.75f and < 5.5f && unfoldCamera is { } boardView)
+                            sawCameraHandoff |= (cameraPosition - boardView).sqrMagnitude > .05f;
+                        stayedInPreparation &= controller.Model.Phase == FormationPhase.Preparation &&
+                            controller.Model.Clock == 0 && controller.Model.EnabledCount == 0 && run.OpeningRewardsPending &&
+                            !run.HasBlockingChoice && !controller.Session.CanShop && controller.Shop.Bench.Count == 0;
+                    }
+                    else sawDeliveryAfterUnfold |= run.OpeningRewardsPending;
+                }, OpeningUnfoldEvidenceFlag);
+                Assert(unfoldCamera.HasValue && sawCameraHandoff && stayedInPreparation,
+                    prefix + " shows intermediate reveal and camera frames before supplies or choices can start");
+                Assert(sawDeliveryAfterUnfold && !controller.FormationBoardUnfoldActive &&
+                    Mathf.Abs(controller.FormationBoardUnfoldElapsed - 5.5f) < .001f &&
+                    !controller.ViewingDefenders && !controller.CameraTransitioning &&
+                    controller.CurrentFormationCameraSafeRect == FormationBattleController.LeftPreparationCameraSafeRect,
+                    prefix + " finishes the 5.5 second reveal, then delivers supplies in the settled preparation view");
+                yield return ResolveChoices();
+                Assert(controller.FormationPreparationUiVisible && controller.Session.CanShop &&
+                    controller.Model.EnabledCount == 0 && controller.Shop.Bench.Count == 3,
+                    prefix + " restores ordinary preparation with the three delivered recruits still in reserve");
+                yield return Frame(prefix + "-preparation");
+                if (entry == 0)
+                {
+                    controller.ResetDemo();
+                    Assert(!ReferenceEquals(run, controller.Campaign), "The production restart creates a new campaign");
+                    yield return WaitForStrategyUi(() => controller.FormationBoardUnfoldActive,
+                        "The fresh campaign starts its own board reveal");
+                }
+            }
         }
 
         IEnumerator VerifyOpeningDelivery()
@@ -1515,14 +1577,16 @@ namespace YesterdayConvoy
         {
             done=true;result.error=error?.ToString();result.exceptionCount=result.exceptions.Count;result.assertions=result.checks.Count;
             result.passed=error==null&&result.exceptionCount==0;
-            string report = SupplyRequested ? "supply-smoke.json" : MakotoBossRequested ? "makoto-boss-smoke.json" :
+            string report = OpeningUnfoldRequested ? "opening-unfold-smoke.json" :
+                SupplyRequested ? "supply-smoke.json" : MakotoBossRequested ? "makoto-boss-smoke.json" :
                 MapVariantsRequested ? "map-variants-smoke.json" : SupernovaBossRequested ? "supernova-boss-smoke.json" :
                 SnowBossRequested ? "snow-boss-smoke.json" : SynergyRequested ? "synergy-smoke.json" :
                 DefenseRequested ? DefenseSkillProbe ? "defense-skill-probe.json" : "defense-smoke.json" :
                 OpeningDeliveryRequested ? "opening-delivery-smoke.json" : StrategyHistoryRequested ? "strategy-history-smoke.json" :
                 ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
             File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
-            string marker = SupplyRequested ? "FORMATION_SUPPLY_SMOKE_" : MakotoBossRequested ? "FORMATION_MAKOTO_BOSS_SMOKE_" :
+            string marker = OpeningUnfoldRequested ? "FORMATION_OPENING_UNFOLD_SMOKE_" :
+                SupplyRequested ? "FORMATION_SUPPLY_SMOKE_" : MakotoBossRequested ? "FORMATION_MAKOTO_BOSS_SMOKE_" :
                 MapVariantsRequested ? "FORMATION_MAP_VARIANTS_SMOKE_" : SupernovaBossRequested ? "FORMATION_SUPERNOVA_BOSS_SMOKE_" :
                 SynergyRequested ? "FORMATION_SYNERGY_SMOKE_" : DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";
             Debug.Log(marker+(result.passed?"PASS":"FAIL: "+result.error));

@@ -23,7 +23,7 @@ namespace YesterdayConvoy
         public bool ViewingDefenders { get; private set; }
         public bool CameraTransitioning => formationPanElapsed < FormationPanDuration;
         public bool CanEditFormationView => Ready && Model != null && Model.Phase == FormationPhase.Preparation &&
-            !ViewingDefenders && !CameraTransitioning;
+            !FormationBoardUnfoldActive && !ViewingDefenders && !CameraTransitioning;
         bool formationCameraInitialized, formationCameraWasPreparing;
         bool formationCameraHasSetPiece;
         int formationCameraRound;
@@ -58,7 +58,7 @@ namespace YesterdayConvoy
         }
         public void ToggleFormationView()
         {
-            if (Model == null || Model.Phase != FormationPhase.Preparation || openingGroundBall != null) return;
+            if (Model == null || FormationBoardUnfoldActive || Model.Phase != FormationPhase.Preparation || openingGroundBall != null) return;
             SetMarketVisible(false);
             CloseFormationTraitDetails();
             CloseFormationRouteDetails();

@@ -35,7 +35,7 @@ namespace YesterdayConvoy
         {
             var input=Event.current;
             if (input?.type == EventType.KeyDown && input.keyCode == KeyCode.Escape) ApprovedUi.ReleaseScrollDrag();
-            if(Ready&&input!=null&&input.button==0&&(input.type==EventType.MouseDown||input.type==EventType.MouseDrag||input.type==EventType.MouseUp))
+            if(Ready&&!FormationBoardUnfoldActive&&input!=null&&input.button==0&&(input.type==EventType.MouseDown||input.type==EventType.MouseDrag||input.type==EventType.MouseUp))
             {
                 var point=TacticalViewport.Current.FromTopLeft(input.mousePosition);
                 if (!CampaignSettlementBlocksPoint(point))
@@ -49,6 +49,7 @@ namespace YesterdayConvoy
             try
             {
                 if(!Ready){Fill(new Rect(0,0,1280,720),Dark);Label(new Rect(150,250,980,80),loading,23,Cyan,TextAnchor.MiddleCenter);return;}
+                if (FormationBoardUnfoldActive) return;
                 GUI.enabled=enabled&&!formationMenuOpen;
                 if (DrawStrategyChoice())
                 {

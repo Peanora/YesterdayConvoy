@@ -16,7 +16,7 @@ namespace YesterdayConvoy
         public ShopTrialModel Shop=>Session?.Shop;
         public bool Ready {get;private set;}
         public bool CombatViewActive=>Ready&&Model!=null&&(Model.Phase==FormationPhase.Fighting||Model.Phase==FormationPhase.Exiting);
-        public bool FormationPreparationUiVisible=>Ready&&!CombatViewActive&&!CampaignSettlementKeepsBattleView;
+        public bool FormationPreparationUiVisible=>Ready&&!FormationBoardUnfoldActive&&!CombatViewActive&&!CampaignSettlementKeepsBattleView;
         public int SelectedSlot {get;private set;}=0;
         public static Rect BattleRect=>new Rect(0,0,1280,720);
         public static Rect BoardInputRect=>new Rect(188,64,816,514);
@@ -68,6 +68,7 @@ namespace YesterdayConvoy
             foreach(string id in RequiredFormationArtIds().ToArray())yield return WarmFormationArt(id);
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
+            BeginFormationBoardUnfold();
             Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.7 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
         }
 
@@ -83,6 +84,11 @@ namespace YesterdayConvoy
         {
             if(!Ready)return;
             battleCamera.rect=TacticalViewport.Current.CameraRect(BattleRect);
+            if (FormationBoardUnfoldActive)
+            {
+                TickFormationBoardUnfold(Time.unscaledDeltaTime);
+                if (FormationBoardUnfoldActive) return;
+            }
             RefreshFormationAnimationProfiles();
             bool showcaseDrives = FormationShowcaseRecorder.Drives(this);
             bool opening = FormationBattleOpeningActive;
@@ -272,6 +278,7 @@ namespace YesterdayConvoy
             Session.ApplyTo(Model);
             if(!fullCampaign){Model.LimitSeconds=roundSeconds;Model.ReviveSeconds=reviveSeconds;}
             ResetFormationPreparation(fullCampaign?Campaign.LastSummary:"新挑战：无限测试金币，有限牌库与三人军团。");
+            BeginFormationBoardUnfold();
         }
 
         internal void SelectPracticeBattle(int node)
@@ -339,6 +346,7 @@ namespace YesterdayConvoy
         void ResetFormationPreparation(string message)
         {
             CancelFormationBattleOpening();
+            EndFormationBoardUnfold();
             CloseFormationMenu();CloseCampaignPanels();CloseFormationTraitDetails();
             finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;lastSoundAt=-10;
             campaignResultSettled=false;campaignSeaPainting=false;
@@ -367,13 +375,14 @@ namespace YesterdayConvoy
         }
         void OnRenderObject()
         {
-            if(!Ready||Camera.current!=battleCamera)return;
+            if(!Ready||FormationBoardUnfoldActive||Camera.current!=battleCamera)return;
             DrawDeploymentGrid();
             DrawCampaignSeaCells();
             if (Campaign == null) DrawFormationContactFeedback();
         }
         void OnDestroy()
         {
+            EndFormationBoardUnfold();
             DisposeGroundRewards();
             DisposeFormationNativeEffects();
             approvedShop?.Dispose();if(formationCoin!=null)Destroy(formationCoin);if(formationStar!=null)Destroy(formationStar);
