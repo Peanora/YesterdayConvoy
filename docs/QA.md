@@ -1,5 +1,13 @@
 # 验证证据与回归
 
+## 2026-11-22 结城理「开辟明日的剑刃」三形态修订
+
+- 运行源码 `2f5359be56c2814d20df6a6d9b546a61ba1c1b42`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,874,866 字节、零错误。Runtime DLL SHA-256 为 `1FDD27CA2D1C79523A6D7E30D0487FE63078E9B40916B3FBE29D3D893E4D4A13`。仓库检查通过 17,701 个跟踪文件。 [构建日志](../artifacts/formation-makoto-s3/build-final.log) · [Windows EXE](../Builds/Windows/YesterdayConvoy.exe)
+- 功能提交 `5e3b39d6` 完整 EditMode 1236/1236。独立试玩覆盖本体的两套剑击、塔纳托斯的两套弱点攻击，以及俄耳甫斯守备期间停止进攻、每秒治疗和实际进蓝门。预设阵容 66.350 秒进门。低输出对照从第三段满血开始，以 1,030 真实 DPS 持续输出，150 秒时结城理尚余 1,270 HP，累计自疗 6,400。正式 3-5 的固定配装模型一档 45.500 秒进门，四档 90 秒超时、削减 49.73%。 [EditMode XML](../artifacts/formation-makoto-s3/edit.xml)
+- 按三段原生命、第三段总自疗 6,400 和全段物理／法术减伤 12% 做静态模型，接敌、转段和进门共占 12–15 秒时约需 3,317–3,391 有效 DPS。计算以进入守备减伤前、不含真实伤害穿透的有效输出为口径，实际阵容取决于站位、伤害类型和技能轴。
+- 同版 1280×720 D3D11 Player，独立试玩 37/37，正式 3-5 一档 22/22，均零异常、退出 0。独立试玩的本体首次挥剑 7.550 秒开始、7.825 秒实际命中，塔纳托斯首次攻击 22.375 秒开始、22.625 秒命中。43.150 秒进入第二次换形，43.400 秒补足第三条生命，44.400 秒首次治疗 800，61.550 秒清场，66.800 秒进蓝门。正常暂停、重试、守备停止攻击均通过。3-5 的两名分阶段守军均有真实技能命中，36.925 秒进门。 [独立试玩报告](../artifacts/formation-makoto-s3/trial-final/makoto-boss-smoke.json) · [3-5 报告](../artifacts/formation-makoto-s3/encounter-final/defense-smoke.json)
+- 按同皮肤实录 0:27–0:29 的本体蓝色剑弧、约 0:53–0:54.5 的塔纳托斯弱点打击和约 0:56 的俄耳甫斯守备，对照最终同版棋盘正常速度和连续帧。剑弧朝向近身目标，接触层出现在真实受击位置。塔纳托斯形态和多人命中可辨，清空第二条生命后直接换俄耳甫斯，并可见地面圈和 +800 治疗。多人近身时身体局部和其它角色特效有重叠。10.5 秒摘录为 24 fps，五个间断采样以邻帧补足，完整解码通过。 [时装实录](https://www.bilibili.com/video/BV1QStJ6mEn6/) · [实机短片](../artifacts/formation-makoto-s3/makoto-s3-player.mp4) · [连续帧对照](../artifacts/formation-makoto-s3/makoto-s3-motion-review.jpg)
+
 ## 2026-11-22 正式关卡覆盖现役六星
 
 - Windows 运行源码 `0fecdd88`，Unity 6000.6.5f1 x64 Development 构建 1,393,879,198 字节、零错误。Runtime DLL SHA-256 `EBBB52EA924EB4EE840429211D620155338B5911E4BDB547FF08C252B1FF02D4`。完整 EditMode 1236/1236。逐节点、两组种子核对 16 名六星均在正式路线，守军格、预留格和 3-7 初雪单首领符合规则。3-5 四档面板按全阶段计算。一档总生命 514,500，四档 2,829,750。击穿每段时进度递增，补血转段时进度连续，仍存活的精英计入守军数。奖励关仍为逐人 1 HP。 [构建日志](../artifacts/formation-all-six-stars/build-delivery.log) · [EditMode XML](../artifacts/formation-all-six-stars/edit-delivery.xml)
