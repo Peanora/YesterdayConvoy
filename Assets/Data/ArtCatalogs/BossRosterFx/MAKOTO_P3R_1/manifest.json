@@ -807,6 +807,116 @@
           "height": 492
         }
       ]
+    },
+    {
+      "key": "makoto_attack_a_start_01_p3r#1",
+      "count": 44,
+      "width": 104,
+      "height": 88,
+      "columns": 19,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.38461538461538464,
+      "pivotY": 0.2563895312222567,
+      "duration": 1.4666666666666666,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_attack_a_start_01_p3r#1/00.png",
+          "count": 44,
+          "width": 1976,
+          "height": 264
+        }
+      ]
+    },
+    {
+      "key": "makoto_attack_a_hit_01_p3r#1",
+      "count": 34,
+      "width": 148,
+      "height": 96,
+      "columns": 13,
+      "ppu": 40.0,
+      "pivotX": 0.42567567567567566,
+      "pivotY": 0.42252373695373535,
+      "duration": 1.1333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_attack_a_hit_01_p3r#1/00.png",
+          "count": 34,
+          "width": 1924,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "makoto_attack_b_start_01_p3r#1",
+      "count": 43,
+      "width": 104,
+      "height": 92,
+      "columns": 19,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.49038461538461536,
+      "pivotY": 0.34306824725607166,
+      "duration": 1.4333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_attack_b_start_01_p3r#1/00.png",
+          "count": 43,
+          "width": 1976,
+          "height": 276
+        }
+      ]
+    },
+    {
+      "key": "makoto_attack_b_start_01_back_p3r#1",
+      "count": 43,
+      "width": 100,
+      "height": 96,
+      "columns": 20,
+      "ppu": 15.709090909090909,
+      "pivotX": 0.43,
+      "pivotY": 0.3183570702870687,
+      "duration": 1.4333333333333333,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_attack_b_start_01_back_p3r#1/00.png",
+          "count": 43,
+          "width": 2000,
+          "height": 288
+        }
+      ]
+    },
+    {
+      "key": "makoto_attack_b_hit_01_p3r#1",
+      "count": 32,
+      "width": 136,
+      "height": 128,
+      "columns": 15,
+      "ppu": 40.0,
+      "pivotX": 0.4117647058823529,
+      "pivotY": 0.4106428027153015,
+      "duration": 1.0666666666666667,
+      "hdrRange": 256.0,
+      "sourceStart": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "makoto_attack_b_hit_01_p3r#1/00.png",
+          "count": 32,
+          "width": 2040,
+          "height": 384
+        }
+      ]
     }
   ],
   "bindings": []

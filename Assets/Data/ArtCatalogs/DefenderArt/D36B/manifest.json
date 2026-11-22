@@ -431,6 +431,44 @@
           "height": 528
         }
       ]
+    },
+    {
+      "key": "attack_b",
+      "source": "Attack_B",
+      "count": 37,
+      "duration": 1.2000000476837158,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 304,
+      "cellHeight": 288,
+      "columns": 5,
+      "pivotX": 0.41118421052631576,
+      "pivotY": 0.16319444444444445,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "attack_b-00.png",
+          "count": 25,
+          "width": 1520,
+          "height": 1440
+        },
+        {
+          "file": "attack_b-01.png",
+          "count": 12,
+          "width": 1520,
+          "height": 864
+        }
+      ]
     }
   ],
   "height": 1.35,

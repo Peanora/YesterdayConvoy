@@ -901,6 +901,132 @@
       "pageSha256": {
         "makoto_skill_03_p2_heal_01_p3r#1/00.png": "1a039d0f23e63af8e6c4cf6a81b155116fa94e02b41e83beb34b9a192b944397"
       }
+    },
+    {
+      "key": "makoto_attack_a_start_01_p3r#1",
+      "role": "makoto_attack_a_start_01",
+      "crop": [
+        152,
+        152,
+        104,
+        88
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 25,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.5
+      ],
+      "pageSha256": {
+        "makoto_attack_a_start_01_p3r#1/00.png": "85d2dd6f46d45ebae1ae54ec0e910246929cec30d7167b4fe8dda987787b7f9b"
+      }
+    },
+    {
+      "key": "makoto_attack_a_hit_01_p3r#1",
+      "role": "makoto_attack_a_hit_01",
+      "crop": [
+        129,
+        162,
+        148,
+        96
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 31,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_attack_a_hit_01_p3r#1/00.png": "61b10394f0499454bef7a1e36f249e894efd041e29f389f476aad72c9d692cfa"
+      }
+    },
+    {
+      "key": "makoto_attack_b_start_01_p3r#1",
+      "role": "makoto_attack_b_start_01",
+      "crop": [
+        141,
+        157,
+        104,
+        92
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 25,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.5
+      ],
+      "pageSha256": {
+        "makoto_attack_b_start_01_p3r#1/00.png": "462185c1f08ce451e20d859d3649afe15b802be8d69c0f4ae79de9fd1ad1a55f"
+      }
+    },
+    {
+      "key": "makoto_attack_b_start_01_back_p3r#1",
+      "role": "makoto_attack_b_start_01_back",
+      "crop": [
+        149,
+        152,
+        100,
+        96
+      ],
+      "boardScale": 2.5462962962962963,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 25,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [
+        0.5
+      ],
+      "pageSha256": {
+        "makoto_attack_b_start_01_back_p3r#1/00.png": "acf9e133b47fe40491e09aaa81c4fb082432d51f51a4cd6adb001746c03495ab"
+      }
+    },
+    {
+      "key": "makoto_attack_b_hit_01_p3r#1",
+      "role": "makoto_attack_b_hit_01",
+      "crop": [
+        136,
+        142,
+        136,
+        128
+      ],
+      "boardScale": 1,
+      "reports": {
+        "status": "PASS",
+        "api": "Vulkan",
+        "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+        "frames": 66,
+        "visibleFrames": 29,
+        "edgePixels": 0,
+        "clippedPixels": 0
+      },
+      "delays": [],
+      "pageSha256": {
+        "makoto_attack_b_hit_01_p3r#1/00.png": "c8e20c270c893463576c4f0c2c023634678d0e1557aaeaa88b2671f08bae864b"
+      }
     }
   ]
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace YesterdayConvoy.Tests
             new[] { typeof(FormationActor), typeof(FormationActor), typeof(float), typeof(int), typeof(bool), typeof(bool), typeof(bool) }, null);
 
         [Test]
-        public void TrialPresetClearsAllThreeSkillsAndReachesTheGate()
+        public void TrialPresetClearsAllThreeS3FormsAndReachesTheGate()
         {
             var model = CreateTrial(out var session);
             try
@@ -28,18 +29,27 @@ namespace YesterdayConvoy.Tests
                 var guard = model.Defenders.Single();
                 Assert.That(guard.IsMakotoBoss && model.Terrain.CanPlaceDefender(guard.Position), Is.True);
                 var maximum = new float[3];
-                var firstRealHit = new double[3];
+                var firstRealHit = new double[2];
                 var breaks = new double[2];
-                double recovery = 0, clear = 0;
+                var swordMotions = new HashSet<string>();
+                double guardFormOpened = 0, firstGuardHeal = 0, clear = 0;
+                bool damagedByGuardForm = false;
 
                 while (model.Phase is FormationPhase.Fighting or FormationPhase.Exiting)
                 {
                     model.Advance(Step);
                     int phase = guard.MakotoBossPhase;
                     maximum[phase - 1] = guard.MaxHealth;
-                    var hit = model.Hits.FirstOrDefault(eventHit => eventHit.FromId == guard.Id && eventHit.Amount > 0 &&
-                        !eventHit.Heal && SkillBelongsToPhase(eventHit.Action?.Animation, phase));
-                    if (hit != null && firstRealHit[phase - 1] == 0) firstRealHit[phase - 1] = hit.At;
+                    if (phase <= 2)
+                    {
+                        foreach (var hit in model.Hits)
+                        {
+                            if (hit.FromId != guard.Id || hit.Amount <= 0 || hit.Heal ||
+                                !SwordBelongsToPhase(hit.Action?.Animation, phase)) continue;
+                            swordMotions.Add(hit.Action.Animation);
+                            if (firstRealHit[phase - 1] == 0) firstRealHit[phase - 1] = hit.At;
+                        }
+                    }
                     if (phase < 3 && breaks[phase - 1] == 0 && TransitionActive(model, guard))
                     {
                         breaks[phase - 1] = model.Clock;
@@ -51,7 +61,18 @@ namespace YesterdayConvoy.Tests
                         Assert.That(TransitionActive(model, guard), Is.True);
                         model.Paused = false;
                     }
-                    if (recovery == 0 && Recovering(model, guard)) recovery = model.Clock;
+                    if (phase == 3)
+                    {
+                        if (guardFormOpened == 0 && Recovering(model, guard)) guardFormOpened = model.Clock;
+                        if (firstGuardHeal == 0)
+                        {
+                            var heal = model.Hits.FirstOrDefault(hit => hit.FromId == guard.Id && hit.ToId == guard.Id &&
+                                hit.Heal && hit.Amount > 0 && hit.Action?.Animation == "makoto_s3_heal");
+                            if (heal != null) firstGuardHeal = heal.At;
+                        }
+                        damagedByGuardForm |= model.Hits.Any(hit => hit.FromId == guard.Id && !hit.Heal && hit.Amount > 0 &&
+                            hit.At > breaks[1]);
+                    }
                     if (clear == 0 && model.RemainingDefenders == 0)
                     {
                         clear = model.Clock;
@@ -59,14 +80,20 @@ namespace YesterdayConvoy.Tests
                     }
                 }
 
-                TestContext.WriteLine($"Makoto preset: hits at {string.Join(", ", firstRealHit)}; " +
-                    $"breaks {string.Join(", ", breaks)}; recovery {recovery:0.000}; clear {clear:0.000}; " +
+                TestContext.WriteLine($"Makoto S3 preset: sword strikes at {string.Join(", ", firstRealHit)}; " +
+                    $"breaks {string.Join(", ", breaks)}; guard {guardFormOpened:0.000}, first heal {firstGuardHeal:0.000}; clear {clear:0.000}; " +
                     $"result {model.Phase} at {model.Clock:0.000} with {guard.HealingDone:0} total healing.");
                 Assert.That(maximum, Is.EqualTo(new[] { 120000f, 160000f, 150000f }));
                 Assert.That(firstRealHit[0], Is.InRange(1e-5, breaks[0]));
                 Assert.That(firstRealHit[1], Is.InRange(breaks[0] + 1e-5, breaks[1]));
-                Assert.That(firstRealHit[2], Is.InRange(breaks[1] + 1e-5, recovery));
-                Assert.That(clear, Is.GreaterThan(recovery));
+                Assert.That(swordMotions, Is.EquivalentTo(new[]
+                {
+                    "makoto_s3_human_attack_a", "makoto_s3_human_attack_b",
+                    "makoto_s3_attack_a", "makoto_s3_attack_b"
+                }));
+                Assert.That(guardFormOpened, Is.GreaterThan(breaks[1]));
+                Assert.That(firstGuardHeal, Is.GreaterThan(guardFormOpened).And.LessThan(clear));
+                Assert.That(damagedByGuardForm, Is.False, "Makoto ceases all offensive contacts after switching to guard");
                 Assert.That(model.Phase, Is.EqualTo(FormationPhase.Won));
                 Assert.That(model.Clock, Is.GreaterThan(clear).And.LessThan(model.LimitSeconds));
                 Assert.That(model.Units.Any(unit => unit.Enabled && unit.Alive && unit.Position.x >= FormationBattleModel.Width - 1 - .0001f), Is.True);
@@ -105,11 +132,10 @@ namespace YesterdayConvoy.Tests
                     Assert.That(guard.Health, Is.EqualTo(guard.MaxHealth), "The next bar starts full");
                 }
 
-                Assert.That(ApplyTrueDamage(model, probe, guard, guard.MaxHealth * .60f), Is.EqualTo(90000).Within(.01));
-                AdvanceUntil(model, () => Recovering(model, guard), 12);
                 Assert.That(ApplyTrueDamage(model, probe, guard, 1000), Is.EqualTo(1000).Within(.01));
                 float artsBeforeReduction = 1000 * (1 - guard.MagicResistance / 100);
                 Assert.That(ApplyDamage(model, probe, guard, 1000, 1), Is.EqualTo(artsBeforeReduction * .88f).Within(.01));
+                AdvanceUntil(model, () => Recovering(model, guard), 12);
                 float healingAtRecovery = guard.HealingDone;
                 float healthBeforeSustainedDamage = guard.Health;
                 float damageBeforeSustainedDamage = probe.DamageDone;
@@ -136,7 +162,7 @@ namespace YesterdayConvoy.Tests
                     if (model.Phase == FormationPhase.Fighting && model.Clock + 1e-8 >= nextShotAt)
                     {
                         nextShotAt += 1;
-                        ApplyTrueDamage(model, probe, guard, 425);
+                        ApplyTrueDamage(model, probe, guard, 1030);
                     }
                 }
             }
@@ -146,11 +172,10 @@ namespace YesterdayConvoy.Tests
             }
         }
 
-        static bool SkillBelongsToPhase(string motion, int phase) => phase switch
+        static bool SwordBelongsToPhase(string motion, int phase) => phase switch
         {
-            1 => motion == "makoto_s1_attack",
-            2 => motion == "makoto_s2_attack",
-            3 => motion is "makoto_s3_attack_a" or "makoto_s3_attack_b",
+            1 => motion is "makoto_s3_human_attack_a" or "makoto_s3_human_attack_b",
+            2 => motion is "makoto_s3_attack_a" or "makoto_s3_attack_b",
             _ => false
         };
 

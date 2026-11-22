@@ -9,11 +9,7 @@ namespace YesterdayConvoy
         static readonly string[] MakotoEffectSuffixes =
         {
             "change_01", "change_01_l",
-            "skill_01_buff_01", "skill_01_buff_01_l", "skill_01_start_01", "skill_01_start_02",
-            "skill_01_start_01_back", "skill_01_start_02_back",
-            "skill_01_trail_01", "skill_01_hit_01", "skill_01_heal_01",
-            "skill_02_buff_01", "skill_02_buff_01_l", "skill_02_start_01", "skill_02_range_01",
-            "skill_02_range_02_start", "skill_02_range_02", "skill_02_hit_01", "skill_02_hit_01_finish",
+            "attack_a_start_01", "attack_a_hit_01", "attack_b_start_01", "attack_b_start_01_back", "attack_b_hit_01",
             "skill_03_p1_buff_01_l", "skill_03_p1_buff_01_r", "skill_03_p1_range_01_start", "skill_03_p1_range_01",
             "skill_03_p1_start_a_01", "skill_03_p1_start_b_01", "skill_03_p1_start_a_01_back", "skill_03_p1_start_b_01_back",
             "skill_03_p1_hit_01", "skill_03_p1_hit_02",
@@ -40,15 +36,6 @@ namespace YesterdayConvoy
             const int bodyAuraOrder = -8;
             switch (mode.Animation)
             {
-                case "makoto_s1_idle":
-                    ShowMakotoEffect("skill_01_buff_01" + side, age, cell, foot, bodyAuraOrder, loop: true, scale: scale);
-                    break;
-                case "makoto_s2_idle":
-                    ShowMakotoEffect("skill_02_buff_01" + side, age, cell, foot, bodyAuraOrder, loop: true, scale: scale);
-                    ShowMakotoEffect("skill_02_range_01", age, cell, ground, -80, loop: true, ground: true);
-                    ShowMakotoEffect("skill_02_range_02_start", age, cell, ground, -79, ground: true);
-                    ShowMakotoEffect("skill_02_range_02", age, cell, ground, -79, loop: true, ground: true);
-                    break;
                 case "makoto_s3_idle":
                     ShowMakotoEffect(left ? "skill_03_p1_buff_01_l" : "skill_03_p1_buff_01_r", age, cell, foot, bodyAuraOrder, loop: true, scale: scale);
                     ShowMakotoEffect("skill_03_p1_range_01_start", age, cell, ground, -80, ground: true);
@@ -72,25 +59,19 @@ namespace YesterdayConvoy
             string view = rear ? "_back" : "";
             Vector3 foot = LegacyOwnerPoint(guard, action.From);
             double age = (now - action.At) * action.Rate;
-            float bodyScale = FormationGuardBodyScale(guard, null);
-            float visualRatio = bodyScale / MakotoBossBodyScale;
+            float visualRatio = FormationGuardBodyScale(guard, null) / MakotoBossBodyScale;
             switch (action.Animation)
             {
-                case "makoto_s1_begin":
-                case "makoto_s2_begin":
                 case "makoto_s3_begin":
                 case "makoto_s3_change_end":
                     ShowMakotoEffect(left ? "change_01_l" : "change_01", (now - action.LaunchedAt) * action.Rate,
                         action.From, foot, 22, scale: visualRatio);
                     break;
-                case "makoto_s1_attack":
-                    ShowMakotoEffect((action.Heal ? "skill_01_start_01" : "skill_01_start_02") + view, age,
-                        action.From, foot, 20, flip: left, scale: visualRatio);
-                    if (!action.Heal && now >= action.LaunchedAt && now < action.ContactAt)
-                        PresentMakotoHarpProjectile(action, now, rear, left, foot, bodyScale);
-                    break;
-                case "makoto_s2_attack":
-                    ShowMakotoEffect("skill_02_start_01", age, action.From, foot, 20, flip: left, scale: visualRatio);
+                case "makoto_s3_human_attack_a":
+                case "makoto_s3_human_attack_b":
+                    // The source A swing shares a cast layer in both facings. B has a dedicated rear layer.
+                    ShowMakotoEffect(action.Animation == "makoto_s3_human_attack_a" ? "attack_a_start_01" : "attack_b_start_01" + view,
+                        age, action.From, foot, 20, flip: left, scale: visualRatio);
                     break;
                 case "makoto_s3_attack_a":
                 case "makoto_s3_attack_b":
@@ -105,29 +86,14 @@ namespace YesterdayConvoy
             }
         }
 
-        void PresentMakotoHarpProjectile(FormationPresentationAction action, double now, bool rear, bool left, Vector3 foot, float bodyScale)
-        {
-            var target = FormationFeedbackActor(action.TargetId);
-            Vector2 destination = target?.Alive == true ? target.Position : action.To;
-            Vector3 end = FormationFeedbackContactPoint(target, destination, .52f);
-            // The skin redirects the graphic projectile to OriginMuzzle. Sample that spine mount on OnAttack.
-            float worldPerSourcePixel = bodyScale / 320;
-            Vector3 start = foot + battleCamera.transform.up * (rear ? 466.97f : 410) * worldPerSourcePixel;
-            if (rear) start += battleCamera.transform.right * (left ? -.44f : .44f) * worldPerSourcePixel;
-            float progress = (float)((now - action.LaunchedAt) / (action.ContactAt - action.LaunchedAt));
-            ShowMakotoEffect("skill_01_trail_01", now - action.LaunchedAt,
-                Vector2.Lerp(action.From, destination, progress), Vector3.Lerp(start, end, progress), 52, direction: end - start);
-        }
-
         void PresentMakotoBossHit(FormationHit hit, double now)
         {
             var action = hit.Action;
             if (action == null) return;
             string suffix = action.Animation switch
             {
-                "makoto_s1_attack" => hit.Heal ? "skill_01_heal_01" : "skill_01_hit_01",
-                "makoto_s2_attack" => "skill_02_hit_01",
-                "makoto_s2_execute" => "skill_02_hit_01_finish",
+                "makoto_s3_human_attack_a" => "attack_a_hit_01",
+                "makoto_s3_human_attack_b" => "attack_b_hit_01",
                 "makoto_s3_attack_a" or "makoto_s3_attack_b" => hit.DamageType == 0 ? "skill_03_p1_hit_02" : "skill_03_p1_hit_01",
                 _ => null,
             };
@@ -138,25 +104,24 @@ namespace YesterdayConvoy
             var target = FormationFeedbackActor(hit.ToId);
             Vector3 contact = FormationFeedbackContactPoint(target, hit.To, .52f);
             Vector3 targetRoot = target == null ? ActorWorldPoint(hit.To) : LegacyOwnerPoint(target, hit.To);
-            bool onBody = suffix == "skill_01_hit_01" || suffix == "skill_03_p1_hit_02";
-            if (ShowMakotoEffect(suffix, age, hit.To, onBody ? contact : targetRoot, 54))
+            bool human = suffix == "attack_a_hit_01" || suffix == "attack_b_hit_01";
+            bool onBody = human || suffix == "skill_03_p1_hit_02";
+            if (ShowMakotoEffect(suffix, age, hit.To, onBody ? contact : targetRoot, 54, flip: human && hit.To.x < hit.From.x))
                 formationImpactOwners.Add(hit);
             if (suffix == "skill_03_p1_hit_02")
                 ShowMakotoEffect("skill_03_p1_weak_01", age, hit.To, contact, 56);
         }
 
         bool ShowMakotoEffect(string suffix, double age, Vector2 cell, Vector3 point, int order,
-            bool flip = false, bool loop = false, bool ground = false, Vector3? direction = null, float scale = 1)
+            bool flip = false, bool loop = false, bool ground = false, float scale = 1)
         {
             if (age < 0 || !FormationPointVisibleInView(cell)) return false;
             if (!BossRosterFxArt.TryGet(MakotoEffectKey(suffix), out var clip) || !clip.Sequence.Ready) return false;
             // Keep the source fade-in once. Later repeats use only the sustained part of the capture.
             if (loop && clip.Loop && age >= clip.Duration && clip.Duration > .55)
                 age = .55 + (age - .55) % (clip.Duration - .55);
-            float roll = direction.HasValue ? Mathf.Atan2(Vector3.Dot(direction.Value, battleCamera.transform.up),
-                Vector3.Dot(direction.Value, battleCamera.transform.right)) * Mathf.Rad2Deg : 0;
             var renderer = LegacyDraw(clip.At(age), legacyHdrMaterial, point, cell, scale, order, flip: flip,
-                hdr: clip.HdrRange, flat: ground, roll: roll, gammaOutput: true);
+                hdr: clip.HdrRange, flat: ground, gammaOutput: true);
             if (renderer == null) return false;
             renderer.name = MakotoBossEffectPrefix + suffix;
             return true;

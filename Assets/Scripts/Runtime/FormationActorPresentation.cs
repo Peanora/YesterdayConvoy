@@ -208,9 +208,10 @@ namespace YesterdayConvoy
 
         static string MakotoClip(string motion) => motion switch
         {
-            "makoto_s2_attack" or "makoto_s2_idle" => "skill_makoto_s2_loop",
+            "makoto_s3_human_idle" or null => "idle",
+            "makoto_s3_human_attack_a" => "attack",
+            "makoto_s3_human_attack_b" => "attack_b",
             "makoto_s3_recovery" => "skill_makoto_s3_guard",
-            null => "idle",
             _ => "skill_" + motion
         };
 
@@ -218,9 +219,9 @@ namespace YesterdayConvoy
         {
             if (!SupernovaRearView(guard)) return false;
             string clip = MakotoClip(ActiveMakotoBodyMotion(guard, Model.Clock) ?? Model.MakotoBossMode(guard).Animation);
-            // Switches and the second S3 form only have a front-facing original.
-            return clip is "idle" or "skill_makoto_s1_idle" or "skill_makoto_s1_attack" or "skill_makoto_s2_loop"
-                or "skill_makoto_s3_idle" or "skill_makoto_s3_attack_a" or "skill_makoto_s3_attack_b";
+            // The original rear view covers the human and Thanatos poses. Their switches and Orpheus use the front source.
+            return clip is "idle" or "attack" or "attack_b" or "skill_makoto_s3_idle"
+                or "skill_makoto_s3_attack_a" or "skill_makoto_s3_attack_b";
         }
 
         static string ActiveMakotoBodyMotion(FormationDefender guard, double now) =>
@@ -239,7 +240,7 @@ namespace YesterdayConvoy
 
             var mode = Model.MakotoBossMode(guard);
             string motion = ActiveMakotoBodyMotion(guard, now);
-            if (motion != null && motion != "makoto_s2_attack" && source.Clips.ContainsKey(MakotoClip(motion)))
+            if (motion != null && source.Clips.ContainsKey(MakotoClip(motion)))
             {
                 key = MakotoClip(motion);
                 age = Math.Max(0, now - guard.PresentationStartedAt) * guard.PresentationRate;
@@ -254,9 +255,9 @@ namespace YesterdayConvoy
             // Use the visible resting silhouette for a stable label during each form.
             labelTop = guard.MakotoBossPhase switch
             {
-                1 => source.Rear ? 1.65f : 1.62f,
-                2 => source.Rear ? 1.64f : 1.83f,
-                _ => Model.MakotoBossRecovering(guard) ? 1.63f : source.Rear ? 1.64f : 1.78f
+                1 => source.IdleVisibleTop,
+                2 => source.Rear ? 1.64f : 1.78f,
+                _ => 1.63f
             };
         }
 

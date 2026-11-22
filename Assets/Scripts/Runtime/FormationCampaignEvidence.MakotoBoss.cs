@@ -13,11 +13,12 @@ namespace YesterdayConvoy
         [Serializable]
         sealed class MakotoBossReplay
         {
-            public double[] phaseAt = new double[3], transitionAt = new double[2], firstAttackAt = new double[3],
-                firstContactAt = new double[3], firstDamageAt = new double[3];
-            public float[] phaseMaximum = new float[3], firstDamage = new float[3];
-            public string[] firstAttack = new string[3], renderedAttackSprites = new string[3];
-            public double recoveryAt, firstHealAt, clearedAt, endAt;
+            public double[] phaseAt = new double[3], transitionAt = new double[2], firstAttackAt = new double[2],
+                firstContactAt = new double[2], firstDamageAt = new double[2];
+            public float[] phaseMaximum = new float[3], firstDamage = new float[2];
+            public int[] firstDamageType = new int[2];
+            public string[] firstAttack = new string[2], renderedAttackSprites = new string[2];
+            public double guardChangeStartAt, guardChangeEndAt, guardFormAt, firstHealAt, clearedAt, endAt;
             public float firstHeal, totalHealing;
             public string scoutSprite, outcome;
         }
@@ -54,8 +55,7 @@ namespace YesterdayConvoy
             guard = model.Defenders.Single();
             string[][] attackKeys =
             {
-                new[] { "makoto_s1_attack" },
-                new[] { "makoto_s2_attack" },
+                new[] { "makoto_s3_human_attack_a", "makoto_s3_human_attack_b" },
                 new[] { "makoto_s3_attack_a", "makoto_s3_attack_b" }
             };
             for (int phase = 1; phase <= 3; phase++)
@@ -66,8 +66,8 @@ namespace YesterdayConvoy
                 replay.phaseAt[index] = model.Clock;
                 replay.phaseMaximum[index] = guard.MaxHealth;
                 Assert(guard.Health > guard.MaxHealth * .85f, "A fresh health bar opens phase " + phase);
-                yield return ObserveMakotoAttack(guard, attackKeys[index], phase, replay);
                 if (phase == 3) break;
+                yield return ObserveMakotoAttack(guard, attackKeys[index], phase, replay);
 
                 yield return ObserveMakotoUntil(() => model.MakotoBossTransitionActive(guard), "Lethal damage closes phase " + phase);
                 replay.transitionAt[index] = model.Clock;
@@ -88,27 +88,57 @@ namespace YesterdayConvoy
                     checkingSnowBossPause = false;
                     model.Paused = false;
                 }
-                else yield return Frame("05-phase-two-transition");
+                else
+                {
+                    StartCoroutine(CaptureInterfaceClip("phase-three-form-change-and-guard", 112, MakotoBossClipsFlag));
+                    yield return Frame("05-phase-two-transition");
+                }
             }
 
-            yield return ObserveMakotoUntil(() => model.MakotoBossRecovering(guard), "Phase three switches to its final form");
-            replay.recoveryAt = model.Clock;
-            StartCoroutine(CaptureInterfaceClip("phase-three-recovery", 64, MakotoBossClipsFlag));
-            yield return Frame("07-phase-three-final-form");
+            FormationPresentationAction guardChangeBegin = null, guardChangeEnd = null;
             FormationHit heal = null;
+            bool offensiveMotionInGuard = false, damageInGuard = false;
+            void ObserveGuardForm()
+            {
+                guardChangeBegin ??= model.PresentationActions.FirstOrDefault(action => action.ActorId == guard.Id &&
+                    action.Animation == "makoto_s3_change_begin" && !action.Cancelled);
+                guardChangeEnd ??= model.PresentationActions.FirstOrDefault(action => action.ActorId == guard.Id &&
+                    action.Animation == "makoto_s3_change_end" && !action.Cancelled);
+                double guardStarted = guardChangeBegin?.At ?? replay.phaseAt[2];
+                offensiveMotionInGuard |= model.PresentationActions.Any(action => action.ActorId == guard.Id &&
+                    !action.Cancelled && action.At + 1e-5 >= guardStarted && action.Animation?.Contains("_attack") == true);
+                damageInGuard |= model.Hits.Any(hit => hit.FromId == guard.Id && !hit.Heal &&
+                    hit.Amount > 0 && hit.At + 1e-5 >= guardStarted);
+                heal ??= model.Hits.FirstOrDefault(hit => hit.Heal && hit.Amount > 0 && hit.FromId == guard.Id &&
+                    hit.ToId == guard.Id && hit.Action?.Animation == "makoto_s3_heal" && hit.At >= guardStarted);
+            }
             yield return ObserveMakotoUntil(() =>
             {
-                heal = model.Hits.FirstOrDefault(hit => hit.Heal && hit.Amount > 0 && hit.FromId == guard.Id &&
-                    hit.ToId == guard.Id && hit.Action?.Animation == "makoto_s3_heal" && hit.At + 1e-5 >= replay.recoveryAt);
+                ObserveGuardForm();
+                return model.MakotoBossRecovering(guard) && guardChangeBegin != null && guardChangeEnd != null;
+            }, "Phase three opens with the Orpheus Kai guard transformation");
+            replay.guardChangeStartAt = guardChangeBegin.At;
+            replay.guardChangeEndAt = guardChangeEnd.At;
+            replay.guardFormAt = model.Clock;
+            Assert(replay.guardChangeEndAt >= replay.guardChangeStartAt, "The guard transformation plays in order");
+            yield return Frame("07-phase-three-orpheus-kai");
+            yield return ObserveMakotoUntil(() =>
+            {
+                ObserveGuardForm();
                 return heal != null;
-            }, "The final form restores actual health on the battle clock");
+            }, "Orpheus Kai restores actual health on the battle clock");
             replay.firstHealAt = heal.At;
             replay.firstHeal = heal.Amount;
             Assert(heal.At + 1e-5 >= heal.Action.ContactAt, "The recovery pulse applies after its presentation contact");
             yield return Frame("08-final-form-heal");
 
-            yield return ObserveMakotoUntil(() => model.RemainingDefenders == 0, "The supplied formation clears all three bars");
+            yield return ObserveMakotoUntil(() =>
+            {
+                ObserveGuardForm();
+                return model.RemainingDefenders == 0;
+            }, "The supplied formation clears all three bars");
             replay.clearedAt = model.Clock;
+            Assert(!offensiveMotionInGuard && !damageInGuard, "Orpheus Kai holds guard form without offensive motions or damage");
             Assert(!model.BossAlive && model.Phase == FormationPhase.Exiting, "Final clear opens the exit without settling early");
             yield return Frame("09-third-bar-cleared");
             yield return ObserveMakotoUntil(() => model.Phase == FormationPhase.Won, "A surviving attacker reaches the blue gate");
@@ -140,7 +170,7 @@ namespace YesterdayConvoy
                     !action.ProjectileOnly && keys.Contains(action.Animation));
                 return move != null;
             }, "Phase " + phase + " starts its signature action");
-            StartCoroutine(CaptureInterfaceClip("phase-" + phase + "-signature", 58, MakotoBossClipsFlag));
+            StartCoroutine(CaptureInterfaceClip(phase == 1 ? "phase-one-human-swords" : "phase-two-thanatos-kai", 58, MakotoBossClipsFlag));
             FormationHit contact = null;
             yield return ObserveMakotoUntil(() =>
             {
@@ -154,8 +184,10 @@ namespace YesterdayConvoy
             replay.firstContactAt[index] = contact.Action.ContactAt;
             replay.firstDamageAt[index] = contact.At;
             replay.firstDamage[index] = contact.Amount;
+            replay.firstDamageType[index] = contact.DamageType;
             replay.renderedAttackSprites[index] = MakotoBossBody(guard)?.sprite.name;
             Assert(contact.At + 1e-5 >= contact.Action.ContactAt, "Phase " + phase + " damage occurs after contact");
+            if (phase == 2) Assert(contact.DamageType == 3, "Thanatos Kai applies the weak-point damage type");
             yield return Frame((2 * phase).ToString("00") + "-phase-" + phase + "-contact");
         }
 

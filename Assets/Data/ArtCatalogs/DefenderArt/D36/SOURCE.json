@@ -466,6 +466,57 @@
         1.0216,
         1.5625
       ]
+    },
+    "attack_b": {
+      "source": "Attack_B",
+      "duration": 1.2000000476837158,
+      "sourceBounds": [
+        -285.39361572265625,
+        -88.22663116455078,
+        195.65411376953125,
+        434.4685974121094
+      ],
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "attack_b-00.png": "d77f1bbc6b3090b5c18a926705bc722da05afe34e7e62a6d74ae80f059095fbe",
+        "attack_b-01.png": "bc0de65d798c80015877d208c4d24b4b7fe22c7cd9c16bf0eabbb181f31dbfe1"
+      },
+      "visibleFrames": 37,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.1779,
+        1.3462
+      ]
+    },
+    "skill_makoto_s3_human_end": {
+      "source": "SwitchOut",
+      "duration": 1,
+      "sourceBounds": [
+        -193.8762664794922,
+        -4.166118144989014,
+        151.63555908203125,
+        418.0810546875
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s3_human_end-00.png": "450bc525d8a119e90841201e5511ca6ef9bcdaab4122f2b48efae74ade425f8c"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.262,
+        1.2921
+      ]
     }
   },
   "officialAnnouncement": "https://ak.hypergryph.com/news/9681",
@@ -480,7 +531,7 @@
   "reference": {
     "official": "https://ak.hypergryph.com/news/9681",
     "spineIndex": "https://torappu.prts.wiki/assets/char_spine/char_4217_makoto/meta.json",
-    "sourceAnimationPreview": "2026-11-21_Makoto-Glory-v1/makoto-witness-of-glory-body-preview.mp4",
+    "sourceAnimationPreview": "2026-11-21_Makoto-Glory-v1/makoto-witness-of-glory-s3-corrected-preview.mp4",
     "sameSkinInGame": [
       {
         "url": "https://www.bilibili.com/video/BV1QStJ6mEn6/",
@@ -488,7 +539,7 @@
       },
       {
         "url": "https://www.bilibili.com/video/BV1vdtq6qE2u/",
-        "scope": "Skin on right, slow motion. S1 01:08–01:25, S2 01:28–01:44, S3 01:48–02:16. P2 change at 02:08, Orpheus at 02:12, healing at 02:16."
+        "scope": "Skin on right, slow motion. Human sword 00:28–00:52. S3 01:48–02:16. Thanatos strikes 01:52–02:04, P2 change at 02:08, Orpheus at 02:12, healing at 02:16. S1 and S2 retain source archives."
       }
     ]
   },
@@ -496,7 +547,8 @@
     "s1Attack": "Shared damage and healing body clip, source OnAttack at 0.8s. Separate effects and combat targets.",
     "s2Loop": "Source role uses uninterrupted Doll_Skill_2_Loop. The skin skeleton has no OnAttack event for this loop.",
     "s3Change": "Source ChangeBegin 0.5s, ChangeEnd 1s with OnAttack at 0.8s. Only front has change or P2 loop.",
-    "healthBar": "Measurements use visible pixel alpha > 12; resting variant envelope positions the label."
+    "healthBar": "Measurements use visible pixel alpha > 12; resting variant envelope positions the label.",
+    "s3Human": "Attack_A and Attack_B alternate in the first boss phase. Both last 1.2 native seconds with OnAttack at 0.53333336 seconds. Original front SwitchOut lasts 1 native second."
   },
   "sourceMountAtS1OnAttack": {
     "F_Muzzle": [

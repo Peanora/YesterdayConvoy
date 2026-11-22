@@ -374,6 +374,7 @@ namespace YesterdayConvoy
             state.BaseMR = d.MagicResistance;
             state.BaseInterval = d.Interval;
             state.BaseRange = d.Range;
+            if (makoto) d.Range = MakotoHumanRange;
             state.GuardInitialSP = isBoss ? boss.InitialSP : eliteKit?.InitialSP ?? guard.InitialSP ?? role.InitialSP;
             state.GuardActionSeconds = isBoss ? boss.ActionSeconds : eliteKit?.ActionSeconds ?? role.ActionSeconds;
             d.SkillCharge = state.GuardInitialSP;
@@ -449,7 +450,6 @@ namespace YesterdayConvoy
             var target=FighterTarget(u);u.TargetId=target?.Id??-1;
             if (!summon && target != null && Key(u) == "M17") TryHeraldTreatment(u);
             if(Clock<u.ActionUntil||s.BusyUntil>Clock)return;
-            if(MoveMakotoFear(u,dt))return;
             if(MoveSnowBossInduced(u,dt))return;
             if(cadejo&&(!entered||target==null||Vector2.Distance(u.Position,target.Position)>u.Range))
             {

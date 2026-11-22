@@ -703,6 +703,68 @@
           "height": 1488
         }
       ]
+    },
+    {
+      "key": "attack_b",
+      "source": "Attack_B",
+      "count": 37,
+      "duration": 1.2000000476837158,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 268,
+      "cellHeight": 292,
+      "columns": 5,
+      "pivotX": 0.585820895522388,
+      "pivotY": 0.18835616438356165,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "pages": [
+        {
+          "file": "attack_b-00.png",
+          "count": 25,
+          "width": 1340,
+          "height": 1460
+        },
+        {
+          "file": "attack_b-01.png",
+          "count": 12,
+          "width": 1340,
+          "height": 876
+        }
+      ]
+    },
+    {
+      "key": "skill_makoto_s3_human_end",
+      "source": "SwitchOut",
+      "count": 31,
+      "duration": 1,
+      "fps": 30,
+      "loop": false,
+      "cellWidth": 200,
+      "cellHeight": 240,
+      "columns": 7,
+      "pivotX": 0.55,
+      "pivotY": 0.04583333333333333,
+      "pixelsPerUnit": 166.4,
+      "scale": 0.52,
+      "events": [],
+      "pages": [
+        {
+          "file": "skill_makoto_s3_human_end-00.png",
+          "count": 31,
+          "width": 1400,
+          "height": 1200
+        }
+      ]
     }
   ],
   "height": 1.35,

@@ -261,6 +261,36 @@
         1.2019,
         1.3522
       ]
+    },
+    "attack_b": {
+      "source": "Attack_B",
+      "duration": 1.2000000476837158,
+      "sourceBounds": [
+        -222.68861389160156,
+        -73.15724182128906,
+        321.5028991699219,
+        441.2103576660156
+      ],
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "attack_b-00.png": "e0796867173ef7092bd5c001588f993ac978e6d468bfe4e7f40c0477dc5744d6",
+        "attack_b-01.png": "f8657b7a567a2f6b4c50071dde3fcd9258f6be3d46e4a61187e9b386abc1b495"
+      },
+      "visibleFrames": 37,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.1599,
+        1.3702
+      ]
     }
   },
   "officialAnnouncement": "https://ak.hypergryph.com/news/9681",
@@ -275,7 +305,7 @@
   "reference": {
     "official": "https://ak.hypergryph.com/news/9681",
     "spineIndex": "https://torappu.prts.wiki/assets/char_spine/char_4217_makoto/meta.json",
-    "sourceAnimationPreview": "2026-11-21_Makoto-Glory-v1/makoto-witness-of-glory-body-preview.mp4",
+    "sourceAnimationPreview": "2026-11-21_Makoto-Glory-v1/makoto-witness-of-glory-s3-corrected-preview.mp4",
     "sameSkinInGame": [
       {
         "url": "https://www.bilibili.com/video/BV1QStJ6mEn6/",
@@ -283,7 +313,7 @@
       },
       {
         "url": "https://www.bilibili.com/video/BV1vdtq6qE2u/",
-        "scope": "Skin on right, slow motion. S1 01:08–01:25, S2 01:28–01:44, S3 01:48–02:16. P2 change at 02:08, Orpheus at 02:12, healing at 02:16."
+        "scope": "Skin on right, slow motion. Human sword 00:28–00:52. S3 01:48–02:16. Thanatos strikes 01:52–02:04, P2 change at 02:08, Orpheus at 02:12, healing at 02:16. S1 and S2 retain source archives."
       }
     ]
   },
@@ -291,7 +321,8 @@
     "s1Attack": "Shared damage and healing body clip, source OnAttack at 0.8s. Separate effects and combat targets.",
     "s2Loop": "Source role uses uninterrupted Doll_Skill_2_Loop. The skin skeleton has no OnAttack event for this loop.",
     "s3Change": "Source ChangeBegin 0.5s, ChangeEnd 1s with OnAttack at 0.8s. Only front has change or P2 loop.",
-    "healthBar": "Measurements use visible pixel alpha > 12; resting variant envelope positions the label."
+    "healthBar": "Measurements use visible pixel alpha > 12; resting variant envelope positions the label.",
+    "s3Human": "Attack_A and Attack_B alternate in the first boss phase. Both last 1.2 native seconds with OnAttack at 0.53333336 seconds. Original front SwitchOut lasts 1 native second."
   },
   "sourceMountAtS1OnAttack": {
     "B_Muzzle": [

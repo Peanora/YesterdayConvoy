@@ -123,8 +123,8 @@ namespace YesterdayConvoy
             NodeId = MakotoBossNodeId, ArtId = MakotoBossArtId, Name = "结城理 · 见证荣光",
             Health = 120000, Attack = 125, Armor = 30, MagicResistance = 25,
             Interval = 1.7f, Range = 4.5f,
-            Effect = "三段生命分别使用俄耳甫斯的竖琴、塔纳托斯的囚锁、开辟明日的剑刃。"
-                + "第三段余血45%时切入守备，物理与法术减伤12%，每秒回复800点生命，最多8次。击倒后进入蓝门。"
+            Effect = "「开辟明日的剑刃」分三段：本体近身挥剑，塔纳托斯高速攻击弱点，俄耳甫斯守备。"
+                + "守备期间物理与法术减伤12%，每秒回复800点生命，最多8次。击倒后进入蓝门。"
         };
 
         public static readonly BossDefinition[] Bosses =
