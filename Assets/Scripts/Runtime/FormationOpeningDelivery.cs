@@ -4,10 +4,10 @@ namespace YesterdayConvoy
 {
     public sealed partial class FormationBattleController
     {
-        const float OpeningFirstDispatch = .43f;
-        const float OpeningDispatchGap = .085f;
-        const float OpeningFlight = .36f;
-        const float OpeningSettle = .21f;
+        const float OpeningFirstDispatch = .64f;
+        const float OpeningDispatchGap = .15f;
+        const float OpeningFlight = .57f;
+        const float OpeningSettle = .29f;
         FormationCampaignRun openingDeliveryRun;
         float openingDeliveryAge;
 
@@ -43,7 +43,7 @@ namespace YesterdayConvoy
             float age = openingDeliveryAge;
             var recruits = Campaign.OpeningRecruits;
             float lastDispatch = OpeningFirstDispatch + recruits.Count * OpeningDispatchGap;
-            float panelAlpha = StrategyEaseOut(StrategyProgress(age, .13f)) * (1 - StrategyProgress(age - lastDispatch, .17f));
+            float panelAlpha = StrategyEaseOut(StrategyProgress(age, .19f)) * (1 - StrategyProgress(age - lastDispatch, .24f));
             var panel = new Rect(414, 238, 452, 167);
             if (panelAlpha > .005f)
             {
@@ -63,7 +63,7 @@ namespace YesterdayConvoy
                 var accent = equipment ? FormationPreparationPalette.Amber : FormationFeeColor(cost);
                 var origin = new Rect(panel.center.x - recruits.Count * 53 - 46 + index * 106, 277, 92, 112);
                 var target = equipment ? EquipmentTileOnScreen(0) : FormationReserveRect(index);
-                float appearance = StrategyEaseOut(StrategyProgress(age - .075f - index * .045f, .16f));
+                float appearance = StrategyEaseOut(StrategyProgress(age - .10f - index * .06f, .22f));
                 if (appearance <= .005f) continue;
 
                 float flightAge = age - OpeningFirstDispatch - index * OpeningDispatchGap;

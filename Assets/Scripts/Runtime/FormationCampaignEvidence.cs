@@ -918,7 +918,7 @@ namespace YesterdayConvoy
                     controller.Shop.ReservedRewards(recruit.CardId) == 1) &&
                 FormationCampaignRules.AllComponents.Any(item => item.Id == component),
                 "Three distinct 1–3 cost one-star starters occupy their original stock before delivery");
-            if (clip != null) yield return CaptureInterfaceClip(clip, 192, captureFlag, beforeFrame: observeFrame);
+            if (clip != null) yield return CaptureInterfaceClip(clip, 240, captureFlag, beforeFrame: observeFrame);
             yield return WaitForStrategyUi(() => !run.OpeningRewardsPending,
                 "Normal updates complete opening delivery with no reward click", timeoutSeconds: 10);
             Assert(controller.Shop.Bench.Select(piece => piece.Id).SequenceEqual(recruits.Select(recruit => recruit.CardId)) &&
@@ -1002,7 +1002,7 @@ namespace YesterdayConvoy
                 runs.Add(run);
                 string prefix = (round + 1).ToString("D2");
                 yield return WaitForOpeningDelivery(prefix + "-opening-delivery-and-preplan");
-                yield return new WaitForSecondsRealtime(.97f);
+                yield return new WaitForSecondsRealtime(1.55f);
                 yield return Frame(prefix + "-preplan-choices");
                 int pick = round == 0 ? 1 : 0;
                 string id = run.Choices[pick].Id;

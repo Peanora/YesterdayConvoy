@@ -9,6 +9,7 @@ namespace YesterdayConvoy
     {
         const float StrategyCardWidth = 340, StrategyCardHeight = 362, StrategyCardGap = 18;
         const float StrategyDealLead = .105f, StrategyDealGap = .092f, StrategyDealSeconds = .61f;
+        const float OpeningPreplanRevealScale = 1.6f;
         const float StrategyPickSeconds = .23f, StrategyConfirmSeconds = .535f, StrategyRerollSeconds = .273f;
         static readonly Color StrategyLight = new Color32(246, 247, 244, 255);
         static readonly Color StrategyMuted = new Color32(193, 208, 215, 255);
@@ -81,8 +82,9 @@ namespace YesterdayConvoy
             string title = preplan ? "选择战略预案" : "选择战略战备";
             string node = preplan ? (run.IsPractice ? "开局" : "1-1 开局") : run.CurrentNode.Id + " 战前";
             string count = options.Count == 3 ? "三选一" : options.Count == 2 ? "二选一" : "一项可选";
-            double openElapsed = now - strategyOpenedAt;
-            double dealElapsed = now - strategyDealtAt;
+            float revealScale = preplan && !run.IsPractice ? OpeningPreplanRevealScale : 1;
+            double openElapsed = (now - strategyOpenedAt) / revealScale;
+            double dealElapsed = (now - strategyDealtAt) / revealScale;
             double confirmElapsed = strategyConfirmedAt.HasValue ? now - strategyConfirmedAt.Value : 0;
             double rerollElapsed = strategyRerolledAt.HasValue ? now - strategyRerolledAt.Value : 0;
             float dealEnd = strategyDealLead + (options.Count - 1) * StrategyDealGap + StrategyDealSeconds;
