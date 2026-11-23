@@ -1,5 +1,12 @@
 # 验证证据与回归
 
+## 2026-11-23 顶部抉择抽屉
+
+- 运行源码 `ef6a5d803a4d9fb7e55145379ac60265c2b8e579`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,429,710 字节、0 错误、退出 0。Runtime DLL SHA-256 `7F58487C853CFDFFFCF1944FF9814BE615FF0DF3AE40FD9384484E2C37D33FA6`。同源码完整 EditMode **1236/1236**、正式挑战场景定向 PlayMode **1/1**。最初包含截图用例的无图形 PlayMode 运行卡在场景加载后的用例阶段，已停止。 [构建日志](../artifacts/formation-decision-drawer/build-verified.log) · [EditMode](../artifacts/formation-decision-drawer/edit-verified.xml) · [PlayMode](../artifacts/formation-decision-drawer/play-verified.xml)
+- 同版 1280×720 D3D11 Player 两轮专项均 **150/150**、零异常、退出 0。一轮直接调用正式抽屉处理，另一轮使用前台窗口的 Windows 鼠标和键盘。测试用固定在售和合法授卡触发塔露拉四条分支，验证预选无改动、必选期间封锁开战、升费原位改价与库存 10／9、强化后售出重购仍锁费、五费二星结束触发。正式战斗前三场回归 **142/142**、零异常、退出 0。 [实机专项](../artifacts/formation-decision-drawer/player-verified-live/decision-drawer-smoke.json) · [同处理函数复验](../artifacts/formation-decision-drawer/player-verified/decision-drawer-smoke.json) · [正式前三战](../artifacts/formation-decision-drawer/campaign-verified/campaign-smoke.json)
+- 专项验证了战略预案触发的必选徽章、两项连续奖励取消后重开及确认、萨卡兹五人与六人的双契门槛、同频领奏和伴奏按实例去重、便车配对、从同一入口打开海嗣铺设并在右侧落下一格，以及维维美二技能以 24 技力门槛实际开战。首轮在预热原有特效期间重新上阵会使正在枚举的角色列表失效。预热现在先取得效果列表，再异步加载。相同操作复跑零异常。
+- 对照确认的上抽屉预览检查展开、金边预选、确认和收起。展开和收起分别约 0.26 秒与 0.18 秒，实际棋盘镜头和备战席出现在抽屉后方。短片以 24 fps 采样，选中画面停留 1.25 秒供阅读。预案、战备和补给由各自的演出显示。 [展开与收起](../artifacts/formation-decision-drawer/decision-drawer-live.mp4) · [塔露拉预选](../artifacts/formation-decision-drawer/player-verified-live/02-three-cost-upgrade-selected.png) · [萨卡兹双契](../artifacts/formation-decision-drawer/player-verified-live/09-sarkaz-dual-selected.png) · [便车配对](../artifacts/formation-decision-drawer/player-verified-live/11-hitch-pair-selected.png) · [实机铺设](../artifacts/formation-decision-drawer/player-verified-live/12-sea-manual-tile.png)
+
 ## 2026-11-23 放慢开局发牌和战略预案
 
 - 运行源码 `ae11a65d8a08d870c54f707f5d31be7ac2d9b5dc`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,359,826 字节、0 错误、退出 0。Runtime DLL SHA-256 `24547AE8DC0F90D190BAA418DC2BC7C1DF28CD60CCC16BBB6A679F202CAF7173`。完整 EditMode **1236/1236**、定向 D3D11 PlayMode **5/5**。 [构建日志](../artifacts/formation-opening-pacing/build.log) · [EditMode](../artifacts/formation-opening-pacing/editmode.xml) · [PlayMode](../artifacts/formation-opening-pacing/playmode.xml)
