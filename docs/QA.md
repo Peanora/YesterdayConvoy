@@ -1,5 +1,10 @@
 # 验证证据与回归
 
+## 2026-11-23 放慢开局发牌和战略预案
+
+- 运行源码 `ae11a65d8a08d870c54f707f5d31be7ac2d9b5dc`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,359,826 字节、0 错误、退出 0。Runtime DLL SHA-256 `24547AE8DC0F90D190BAA418DC2BC7C1DF28CD60CCC16BBB6A679F202CAF7173`。完整 EditMode **1236/1236**、定向 D3D11 PlayMode **5/5**。 [构建日志](../artifacts/formation-opening-pacing/build.log) · [EditMode](../artifacts/formation-opening-pacing/editmode.xml) · [PlayMode](../artifacts/formation-opening-pacing/playmode.xml)
+- 同版 D3D11 Player，首开与重开专项 **24/24**、正式前三战 **142/142**，均零异常、退出 0。专项以正式处理确认预案和重开。重开录像约 6.04 秒四项补给同时可辨，6.81 秒仍可见各项陆续飞向槽位，7.46 秒四项落定，7.95 秒牌背摊开，8.37 秒第一张正在翻面，8.92 秒三张牌正面可读，9.40 秒免费重抽按钮已点亮。同版两次首开采样在展开交接处分别间隔 0.59 和 0.57 秒，上版同处为 0.72 秒。重开录像用于逐项比较画面。 [同版复测](../artifacts/formation-opening-pacing/player-recheck/opening-unfold-smoke.json) 两段录像保留真实时序，按时间戳重采为 24 fps，静音。 [首次开局](../artifacts/formation-opening-pacing/opening-pacing.mp4) · [重开](../artifacts/formation-opening-pacing/opening-pacing-restart.mp4) · [开局专项](../artifacts/formation-opening-pacing/player/opening-unfold-smoke.json) · [前三战](../artifacts/formation-opening-pacing/campaign/campaign-smoke.json)
+
 ## 2026-11-22 正式新局棋盘展开
 
 - 运行源码 `dccd0a48437e8469825a4af12b78c463682daa0a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,359,294 字节、0 错误、退出 0。Runtime DLL SHA-256 `C30F6AFCE68A5863BB8A243233D15C815431D8DACF1B491DF664FE829717A339`。完整 EditMode **1236/1236**，定向 D3D11 PlayMode **5/5**。覆盖开局时原有格板的实际位置变化、原始位置及旋转恢复、蓝门显现、浅渠格保持禁用、补给与交易锁、重开重播。 [构建日志](../artifacts/formation-opening-unfold/build-final.log) · [EditMode XML](../artifacts/formation-opening-unfold/editmode-final.xml) · [PlayMode XML](../artifacts/formation-opening-unfold/playmode-final.xml)
