@@ -10,13 +10,13 @@ namespace YesterdayConvoy
         bool campaignInventoryOpen,campaignFormationOpen,campaignRouteOpen,campaignScoutingOpen,campaignResultSettled,campaignSeaPainting;
         bool campaignRewardChoiceOpen,campaignResultSummaryOpen;
         int campaignSelectedItem,campaignCombineItem,campaignSelectedPiece;
-        Vector2 campaignChoiceScroll,campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll;
+        Vector2 campaignItemScroll,campaignUnitScroll,campaignRouteScroll,campaignScoutScroll,campaignTraitScroll;
         public FormationCampaignRun Campaign=>Session?.Run;
         bool AwaitingOptionalRewards=>HasGroundRewards||Campaign?.PendingRewardChoices>0;
         bool CampaignModalOpen=>campaignInventoryOpen||campaignFormationOpen||campaignRouteOpen||campaignScoutingOpen||
             campaignRewardChoiceOpen||campaignResultSummaryOpen||formationExitOpen||FormationStrategyHistoryOpen;
         bool CampaignInteractionBlocked=>Campaign!=null&&(CampaignSettlementKeepsBattleView||Campaign.OpeningRewardsPending||
-            Campaign.HasBlockingChoice||Campaign.Finished&&!AwaitingOptionalRewards||CampaignModalOpen);
+            Campaign.HasBlockingChoice||FormationDecisionClosing||Campaign.Finished&&!AwaitingOptionalRewards||CampaignModalOpen);
 
         GUIStyle CampaignText(int size=13,bool bold=false,TextAnchor align=TextAnchor.UpperLeft)
         {
@@ -52,7 +52,7 @@ namespace YesterdayConvoy
         }
         public bool ContinueCampaign()
         {
-            if(Campaign==null||Campaign.HasBlockingChoice||Campaign.Finished||openingGroundBall!=null)return false;
+            if(Campaign==null||Campaign.HasBlockingChoice||FormationDecisionClosing||Campaign.Finished||openingGroundBall!=null)return false;
             Session.SavePositions(Model);
             if(!Session.AdvanceNode(SelectFormationTerrain))return false;
             FormationStrategyHistoryOpen=false;
@@ -82,7 +82,7 @@ namespace YesterdayConvoy
             if(Campaign?.PendingRewardChoices>0&&!CombatViewActive&&!CampaignInteractionBlocked)
             {
                 CloseCampaignPanels(); SetMarketVisible(false); CloseFormationTraitDetails();
-                campaignChoiceScroll=Vector2.zero; campaignRewardChoiceOpen=true;
+                campaignRewardChoiceOpen=true;
                 return true;
             }
             return false;
@@ -92,12 +92,12 @@ namespace YesterdayConvoy
             var result=Campaign.ChooseReward(index);
             CampaignAction(result);
             if(Campaign.PendingRewardChoices==0)campaignRewardChoiceOpen=false;
-            campaignChoiceScroll=Vector2.zero;
             return result;
         }
         void CloseCampaignPanels()
         {
-            campaignInventoryOpen=campaignFormationOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;
+            campaignInventoryOpen=campaignRouteOpen=campaignScoutingOpen=campaignRewardChoiceOpen=campaignResultSummaryOpen=false;
+            CloseFormationTacticalDecisions();
             FormationStrategyHistoryOpen=false;
             rewardHistoryOpen=false;formationExitOpen=false;
             CloseFormationInspection();CloseFormationRouteDetails();CloseFormationEquipmentDetails();CancelFormationEquipmentInteraction();CancelFormationDrag();
@@ -108,6 +108,14 @@ namespace YesterdayConvoy
 
         float FormationSeaControlsTop => ReunionHopePanelVisible ? ReunionHopePanelRect.yMin - 50 : 575;
 
+        void EnterFormationSeaPaintingFromDecision()
+        {
+            CloseCampaignPanels();
+            SetMarketVisible(false);
+            campaignSeaPainting = true;
+            SetFormationView(true);
+        }
+
         void DrawCampaignToolbar()
         {
             if(Campaign==null)return;
@@ -115,7 +123,10 @@ namespace YesterdayConvoy
             {
                 float controlsTop = FormationSeaControlsTop;
                 if(OperationsButton(new Rect(16,controlsTop,145,21),campaignSeaPainting?"完成溟痕布置":"布置溟痕",campaignSeaPainting))
-                {campaignSeaPainting=!campaignSeaPainting;CloseCampaignPanels();SetMarketVisible(false);if(campaignSeaPainting)SetFormationView(true);}
+                {
+                    if (campaignSeaPainting) campaignSeaPainting = false;
+                    else EnterFormationSeaPaintingFromDecision();
+                }
                 if(campaignSeaPainting&&OperationsButton(new Rect(16,controlsTop+25,145,21),"恢复推荐"))
                 {Campaign.SeaCellIds.Clear();Model.RefreshSeaPreview();}
             }
@@ -133,14 +144,16 @@ namespace YesterdayConvoy
         void DrawCampaignOverlays()
         {
             if(Campaign==null || CampaignSettlementKeepsBattleView)return;
-            if (DrawSupplyChoice()) return;
-            if(Campaign.HasBlockingChoice){DrawCampaignChoices();return;}
-            if(campaignRewardChoiceOpen&&Campaign.PendingRewardChoices>0){DrawCampaignChoices(true);return;}
+            if (DrawSupplyChoice())
+            {
+                ResetFormationDecisionPresentation();
+                return;
+            }
+            if (DrawFormationDecision()) return;
             if(Campaign.Finished&&(campaignResultSummaryOpen||!CampaignSettlementResultVisible&&!AwaitingOptionalRewards))
             {DrawCampaignFinished();return;}
             if(FormationStrategyHistoryOpen)DrawFormationStrategyHistory();
             else if(campaignInventoryOpen)DrawCampaignInventory();
-            else if(campaignFormationOpen)DrawCampaignFormation();
             else if(campaignRouteOpen)DrawCampaignRoute();
             else if(campaignScoutingOpen)DrawCampaignScouting();
         }
@@ -153,41 +166,6 @@ namespace YesterdayConvoy
             CampaignLabel(new Rect(r.x+22,r.y+52,r.width-48,37),subtitle,12);
             if(close&&Button(new Rect(r.xMax-57,r.y+15,38,30),"×"))CloseCampaignPanels();
             return r;
-        }
-        void DrawCampaignChoices(bool optional = false)
-        {
-            var run=Campaign;
-            var r=CampaignWindow(optional?run.RewardChoiceTitle:run.ChoiceTitle,optional?"可关闭面板，稍后再选。":"选择会保留本局。初始角色、库存和已选奖励不会因重抽而重置。",optional);
-            var choices=(optional?run.RewardChoices:run.Choices).ToArray();int columns=choices.Length==2?2:3;
-            float width=(r.width-62-(columns-1)*12)/columns;
-            var viewport=new Rect(r.x+22,r.y+96,r.width-44,345);
-            float contentHeight=Mathf.Ceil(choices.Length/(float)columns)*185;
-            campaignChoiceScroll=ApprovedUi.BeginDragScrollView(viewport,campaignChoiceScroll,new Rect(0,0,viewport.width-18,Mathf.Max(viewport.height,contentHeight)));
-            for(int i=0;i<choices.Length;i++)
-            {
-                var option=choices[i];var card=new Rect(i%columns*(width+12),i/columns*185,width,173);
-                Fill(card,new Color(.90f,.91f,.90f));ApprovedUi.Border(card,ApprovedUi.Rule);
-                var art = SupplyItemArt(option.Id);
-                if (art != null) DrawSupplyItem(new Rect(card.x+11,card.y+7,32,32),option.Id);
-                float textInset = art != null ? 51 : 12;
-                CampaignLabel(new Rect(card.x+textInset,card.y+11,card.width-textInset-10,28),option.Name,16,true);
-                CampaignLabel(new Rect(card.x+12,card.y+44,card.width-24,84),option.Description,12);
-                if(Button(new Rect(card.x+12,card.yMax-35,card.width-24,27),"选择"))
-                {
-                    if(optional)
-                    {
-                        ChooseGroundRewardOption(i);
-                    }
-                    else ChooseCampaignOption(i);
-                    GUI.EndScrollView();return;
-                }
-            }
-            GUI.EndScrollView();
-            if(optional)return;
-            if(Button(new Rect(r.x+22,r.yMax-61,190,35),"免费重抽本组一次",run.CanRerollChoice))run.RerollChoice();
-            if (run.CanRerollChoice)
-                CampaignLabel(new Rect(r.x + 231, r.yMax - 57, 660, 36), run.ChoiceTitle?.Contains("战略预案") == true
-                    ? "换成未展示的预案，原组选项不会返回。" : "重抽本组战略战备，不改变已经选定的战备。", 12);
         }
         void DrawCampaignFinished()
         {
@@ -256,11 +234,6 @@ namespace YesterdayConvoy
             {CampaignAction(Campaign.Combine(first.Instance,second.Instance));campaignSelectedItem=campaignCombineItem=0;}
             if(Button(new Rect(r.xMax-218,r.yMax-39,190,25),"清空选择"))campaignSelectedItem=campaignCombineItem=0;
         }
-        int CycleCampaignPiece(int current,IEnumerable<ShopTrialModel.Piece> candidates)
-        {
-            var ids=new[]{0}.Concat(candidates.Select(p=>p.Instance)).Distinct().ToArray();int pos=Array.IndexOf(ids,current);
-            return ids[(pos+1+ids.Length)%ids.Length];
-        }
         string CampaignItemDescription(string key)
         {
             var data=FormationCampaignRules.FindRecord(key);
@@ -289,31 +262,6 @@ namespace YesterdayConvoy
         }
         string CampaignPieceName(int instance)
         {var p=Shop.Bench.FirstOrDefault(x=>x.Instance==instance);return p==null?"自动推荐":Shop.Definition(p.Id).Name;}
-        void CampaignPairLine(float y,string label,int value,Action<int> set,IEnumerable<ShopTrialModel.Piece> candidates)
-        {
-            CampaignLabel(new Rect(205,y,285,28),label,14,true);
-            if(Button(new Rect(502,y-2,550,31),CampaignPieceName(value)+"  ›"))set(CycleCampaignPiece(value,candidates));
-        }
-        void DrawCampaignFormation()
-        {
-            var r=CampaignWindow("军阵搭档与技能","点击右侧轮换角色；自动推荐会优先选择合法成员。配对与主C优先级只在开战时锁定，本场死亡不改变羁绊档位。");
-            var run=Campaign;var lineup=Session.Seats.Lineup(Shop.Bench).ToArray();
-            IEnumerable<ShopTrialModel.Piece> Trait(string tag)=>lineup.Where(p=>run.HasTrait(p,tag));
-            float y=r.y+104;
-            CampaignPairLine(y,"主C优先级 1",run.MainCarryInstance,v=>run.MainCarryInstance=v,lineup);y+=37;
-            CampaignPairLine(y,"主C优先级 2",run.SecondCarryInstance,v=>run.SecondCarryInstance=v,lineup);y+=37;
-            CampaignPairLine(y,"同频异响 · 领奏者",run.ResonanceLeaderInstance,v=>run.ResonanceLeaderInstance=v,Trait("同频"));y+=37;
-            CampaignPairLine(y,"同频异响 · 伴奏者",run.ResonancePartnerInstance,v=>run.ResonancePartnerInstance=v,Trait("同频"));y+=37;
-            CampaignPairLine(y,"提词接力 · 搭档 A",run.PromptPairA,v=>run.PromptPairA=v,Trait("提词"));y+=37;
-            CampaignPairLine(y,"提词接力 · 搭档 B",run.PromptPairB,v=>run.PromptPairB=v,Trait("提词"));y+=37;
-            CampaignPairLine(y,"接棒时刻 · 接棒者",run.RelayReceiverInstance,v=>run.RelayReceiverInstance=v,Trait("接棒"));y+=37;
-            CampaignPairLine(y,"无间剧场 · 主角",run.TheaterLeadInstance,v=>run.TheaterLeadInstance=v,Trait("剧场"));y+=43;
-            if(Button(new Rect(205,y,265,33),"维维美整备技能：S"+run.WisadelSkill))run.WisadelSkill=run.WisadelSkill%3+1;
-            string pact=run.SarkazPact==0?"血契":run.SarkazPact==1?"重契":"双契（6人）";
-            if(Button(new Rect(485,y,265,33),"萨卡兹："+pact)){run.SarkazPact=(run.SarkazPact+1)%3;run.SarkazBloodPact=run.SarkazPact!=1;}
-            if(Button(new Rect(765,y,287,33),"保存搭档并返回")){RefreshCampaignPreparation();CloseCampaignPanels();}
-            CampaignLabel(new Rect(205,y+43,847,30),"便车将按体型和距离推荐合法乘客／载具；重契降低攻频，血契降低生命，双契需达6萨卡兹。",11);
-        }
         void DrawCampaignRoute()
         {
             if (Campaign.StandaloneBoss is { } boss)

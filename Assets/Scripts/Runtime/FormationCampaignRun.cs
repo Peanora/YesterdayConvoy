@@ -34,6 +34,8 @@ namespace YesterdayConvoy
         public sealed class ChoiceOption
         {
             public string Id, Name, Description;
+            internal string Outcome, Icon;
+            internal int Cost;
             internal Action Apply;
             internal FormationCampaignRules.DataRecord Strategy;
             internal FormationCampaignRules.UnitDefinition SupplyUnit;
@@ -166,6 +168,7 @@ namespace YesterdayConvoy
         bool graduationPaid, talulahFinalReward, deferredAutoRefresh, deferredSupply;
         int lockedReunionCount;
         bool synergyTrialSettled;
+        IReadOnlyList<ChoiceOption> talulahThreeCostChoices, talulahFourCostChoices;
         public int NodeIndex {get;private set;}
         public FormationCampaignRules.NodeDefinition CurrentNode => bossTrial switch
         {
@@ -237,13 +240,38 @@ namespace YesterdayConvoy
         public string LastSummary {get;private set;}="请选择开局装备与战略预案";
         public int FreeRefreshes=>shop.FreeRefreshes;
         public int PendingDeliveries=>waiting.Sum(x=>x.Remaining);
-        public bool HasBlockingChoice=>shop.PendingTalulahChoice>0||selections.Count>0;
-        public string ChoiceTitle=>shop.PendingTalulahChoice>0?$"塔露拉 {shop.PendingTalulahChoice}费二星 · 立即抉择":selections.Count==0?null:selections.Peek().Title;
-        public IReadOnlyList<ChoiceOption> Choices=>shop.PendingTalulahChoice>0?new[]
+        internal int PendingTalulahChoiceFee => shop.PendingTalulahChoice;
+        public bool HasBlockingChoice => PendingTalulahChoiceFee > 0 || selections.Count > 0;
+        public string ChoiceTitle => PendingTalulahChoiceFee > 0
+            ? "塔露拉升星抉择"
+            : selections.TryPeek(out var selection) ? selection.Title : null;
+        public IReadOnlyList<ChoiceOption> Choices => PendingTalulahChoiceFee switch
         {
-            new ChoiceOption{Id="tal-up",Name=$"升为{shop.PendingTalulahChoice+1}费一星",Description="无需金币或希望；商店同名商品原位升费，库存实时重算。"},
-            new ChoiceOption{Id="tal-enhance",Name="强化自身并保留二星",Description=shop.PendingTalulahChoice==3?"攻击+20%，技能伤害+25%，所需SP降至18；本局锁定3费。":"主技改为4段，每次施法获得20%生命护盾8秒；本局锁定4费。"}
-        }:selections.Count==0?Array.Empty<ChoiceOption>():selections.Peek().Options;
+            3 => talulahThreeCostChoices ??= CreateTalulahChoices(3, "焚城", "余烬之誓",
+                "攻击 +20% · 技能伤害 +25%\n所需技力 22 → 18 · 本局锁定3费"),
+            4 => talulahFourCostChoices ??= CreateTalulahChoices(4, "火雨", "焚城之心",
+                "主技 3 段 → 4 段 · 本局锁定4费\n施法获得20%最大生命护盾，持续8秒"),
+            _ => selections.TryPeek(out var selection) ? selection.Options : Array.Empty<ChoiceOption>()
+        };
+
+        static IReadOnlyList<ChoiceOption> CreateTalulahChoices(int currentFee, string nextSkill,
+            string enhancement, string enhancementEffect)
+        {
+            int nextFee = currentFee + 1;
+            return Array.AsReadOnly(new[]
+            {
+                new ChoiceOption
+                {
+                    Id = "tal-up", Name = "升费", Outcome = $"变为{nextFee}费一星", Icon = "ascend", Cost = nextFee,
+                    Description = $"获得「{nextSkill}」 · 无需金币或希望\n在售同名卡同步改价"
+                },
+                new ChoiceOption
+                {
+                    Id = "tal-enhance", Name = enhancement, Outcome = $"保留{currentFee}费二星", Icon = "ember", Cost = currentFee,
+                    Description = enhancementEffect
+                }
+            });
+        }
         internal int SupplyPicksRemaining => shop.PendingTalulahChoice == 0 && selections.TryPeek(out var supply) &&
             supply.Options.Count > 0 && supply.Options[0].SupplyUnit != null ? supply.Picks : 0;
         internal bool SupplyEquipmentWithheld => SupplyPicksRemaining > 0 && selections.Peek().FirstSupplyComponentWithheld;

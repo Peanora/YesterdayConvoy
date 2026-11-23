@@ -123,7 +123,8 @@ namespace YesterdayConvoy
                 PinFormationEffects(source);
                 ArtMemoryCache.Pin(pinned);yield return source.Warm();
                 foreach(string key in FormationInitialMotionKeys(source,id))yield return source.WarmWindow(key,0,false);
-                foreach(var clip in FormationEffectSequences(source))if(!clip.Ready)yield return clip.Warm();
+                // A preparation choice can refresh the lineup while an effect is loading.
+                foreach(var clip in FormationEffectSequences(source).ToArray())if(!clip.Ready)yield return clip.Warm();
             }
             warmedFormationArt.Add(id);warmingFormationArt.Remove(id);
         }

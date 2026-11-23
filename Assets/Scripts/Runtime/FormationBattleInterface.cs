@@ -53,6 +53,7 @@ namespace YesterdayConvoy
                 GUI.enabled=enabled&&!formationMenuOpen;
                 if (DrawStrategyChoice())
                 {
+                    ResetFormationDecisionPresentation();
                     GUI.enabled=enabled;
                     DrawFormationMenuControls();
                     return;
@@ -95,7 +96,8 @@ namespace YesterdayConvoy
                 DrawFormationResources(preparing);
                 DrawFormationScoutControl();
                 approvedShop.DrawShopFlows();
-                if(preparing)DrawFormationMarket();
+                if (preparing && Campaign?.HasBlockingChoice != true && !FormationDecisionClosing)
+                    DrawFormationMarket();
                 if(!FormationStrategyHistoryOpen)DrawFormationStrategyHistoryToggle();
                 if(pointerHeld&&shopDragInstance>0&&Vector2.Distance(formationShopPointer,pointerStart)>6)DrawFormationSaleTargets();
                 if(Model.Phase==FormationPhase.Won||Model.Phase==FormationPhase.Lost)
@@ -116,7 +118,7 @@ namespace YesterdayConvoy
                     DrawFormationInspection();
                     DrawFormationEquipmentOverlay();
                 }
-                if (!showingSupply) DrawFormationRewardFlights();
+                if (!showingSupply && !FormationDecisionVisible && !FormationDecisionClosing) DrawFormationRewardFlights();
                 DrawHeldFormationActor();
                 DrawFormationOpeningDelivery();
                 DrawFormationExitConfirmation();

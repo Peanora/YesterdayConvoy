@@ -129,6 +129,7 @@ namespace YesterdayConvoy
         {
             CancelFormationDrag();
             if (formationMenuOpen) { CloseFormationMenu(); return; }
+            if (TryDismissFormationDecision()) return;
             if (formationExitOpen || campaignInventoryOpen || campaignFormationOpen || campaignRouteOpen ||
                 campaignScoutingOpen || campaignRewardChoiceOpen || campaignResultSummaryOpen || FormationStrategyHistoryOpen)
             { CloseCampaignPanels(); return; }
@@ -348,6 +349,7 @@ namespace YesterdayConvoy
             CancelFormationBattleOpening();
             EndFormationBoardUnfold();
             CloseFormationMenu();CloseCampaignPanels();CloseFormationTraitDetails();
+            ResetFormationDecisionPresentation();
             finalRewardClaimed=false;selectedPiece=0;formationInspectedTag=null;lastSoundAt=-10;
             campaignResultSettled=false;campaignSeaPainting=false;
             SetMarketVisible(false);approvedShop?.ResetShopPresentation();approvedShop?.SyncShopBenchModels();

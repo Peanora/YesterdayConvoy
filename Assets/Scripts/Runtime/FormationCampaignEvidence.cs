@@ -44,7 +44,7 @@ namespace YesterdayConvoy
         static bool started;
         readonly Report result=new Report{scope="Production v0.7 choices, shop, deployments, equipment, ground rewards and the first three battles on the joined board. Left preparation uses the same tile scale as combat. Screenshots come from the Windows Player. Accelerated battles use normal simulation time through the campaign controller."};
         FormationBattleController controller;string directory;bool done;
-        internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested || SnowBossRequested || SupernovaBossRequested || MakotoBossRequested || MapVariantsRequested || SupplyRequested || OpeningUnfoldRequested;
+        internal static bool Requested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationCampaignSmokeTest")>=0 || DefenseRequested || SynergyRequested || SnowBossRequested || SupernovaBossRequested || MakotoBossRequested || MapVariantsRequested || SupplyRequested || OpeningUnfoldRequested || DecisionDrawerRequested;
         static bool DefenseRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSmokeTest")>=0;
         static bool DefenseSkillProbe=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationDefenseSkillProbe")>=0;
         static bool SynergyRequested=>Array.IndexOf(Environment.GetCommandLineArgs(),"-formationSynergySmokeTest")>=0;
@@ -68,7 +68,8 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            var fallback = OpeningUnfoldRequested ? "artifacts/formation-opening-unfold/player" :
+            var fallback = DecisionDrawerRequested ? "artifacts/formation-decision-drawer/player" :
+                OpeningUnfoldRequested ? "artifacts/formation-opening-unfold/player" :
                 SupplyRequested ? "artifacts/formation-supply/player" :
                 MakotoBossRequested ? "artifacts/formation-makoto-boss/player" :
                 MapVariantsRequested ? "artifacts/formation-map-variants/player" :
@@ -192,6 +193,11 @@ namespace YesterdayConvoy
             {controller=FindAnyObjectByType<FormationBattleController>();if(controller!=null&&controller.Ready)break;yield return null;}
             Assert(controller!=null&&controller.Ready,"Full campaign controller became ready");
             Assert(controller.Campaign!=null&&!controller.Shop.UnlimitedGold,"Default formation mode uses finite v0.7 economy");
+            if (DecisionDrawerRequested)
+            {
+                yield return VerifyDecisionDrawer();
+                yield break;
+            }
             if (OpeningUnfoldRequested)
             {
                 yield return VerifyOpeningUnfold();
@@ -1585,7 +1591,8 @@ namespace YesterdayConvoy
         {
             done=true;result.error=error?.ToString();result.exceptionCount=result.exceptions.Count;result.assertions=result.checks.Count;
             result.passed=error==null&&result.exceptionCount==0;
-            string report = OpeningUnfoldRequested ? "opening-unfold-smoke.json" :
+            string report = DecisionDrawerRequested ? "decision-drawer-smoke.json" :
+                OpeningUnfoldRequested ? "opening-unfold-smoke.json" :
                 SupplyRequested ? "supply-smoke.json" : MakotoBossRequested ? "makoto-boss-smoke.json" :
                 MapVariantsRequested ? "map-variants-smoke.json" : SupernovaBossRequested ? "supernova-boss-smoke.json" :
                 SnowBossRequested ? "snow-boss-smoke.json" : SynergyRequested ? "synergy-smoke.json" :
@@ -1593,7 +1600,8 @@ namespace YesterdayConvoy
                 OpeningDeliveryRequested ? "opening-delivery-smoke.json" : StrategyHistoryRequested ? "strategy-history-smoke.json" :
                 ReserveRequested ? "reserve-smoke.json" : "campaign-smoke.json";
             File.WriteAllText(Path.Combine(directory,report),JsonUtility.ToJson(result,true));
-            string marker = OpeningUnfoldRequested ? "FORMATION_OPENING_UNFOLD_SMOKE_" :
+            string marker = DecisionDrawerRequested ? "FORMATION_DECISION_DRAWER_SMOKE_" :
+                OpeningUnfoldRequested ? "FORMATION_OPENING_UNFOLD_SMOKE_" :
                 SupplyRequested ? "FORMATION_SUPPLY_SMOKE_" : MakotoBossRequested ? "FORMATION_MAKOTO_BOSS_SMOKE_" :
                 MapVariantsRequested ? "FORMATION_MAP_VARIANTS_SMOKE_" : SupernovaBossRequested ? "FORMATION_SUPERNOVA_BOSS_SMOKE_" :
                 SynergyRequested ? "FORMATION_SYNERGY_SMOKE_" : DefenseRequested ? "FORMATION_DEFENSE_SMOKE_" : "FORMATION_CAMPAIGN_SMOKE_";

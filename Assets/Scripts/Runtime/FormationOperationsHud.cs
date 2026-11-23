@@ -147,7 +147,7 @@ namespace YesterdayConvoy
             bool enabled = GUI.enabled;
             GUI.enabled = enabled && preparing;
             if (OperationsButton(new Rect(1096, 20, 58, 36), "搭档"))
-            { OpenFormationOperationsPanel(); campaignFormationOpen = true; }
+                OpenFormationTacticalDecisions();
             GUI.enabled = enabled;
             if (OperationsButton(new Rect(1155, 20, 59, 36), trial != null ? "换羁绊" : Campaign.IsStandaloneBossTrial ? "规则" : "记录"))
             {
