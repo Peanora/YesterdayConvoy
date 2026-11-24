@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: B13
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B13_enemy_1567_pope
-  displayName: "\u201C\u5723\u5F92\u201D"
+  displayName: "\u5723\u5F92"
   moveSpeed: 0.65
-  gateDamage: 2
+  gateDamage: 1

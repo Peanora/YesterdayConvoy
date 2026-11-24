@@ -823,6 +823,29 @@
           "count": 167
         }
       ]
+    },
+    {
+      "key": "original-fire-screen-left",
+      "count": 480,
+      "width": 136,
+      "height": 120,
+      "columns": 15,
+      "ppu": 19.200000762939453,
+      "pivotX": 0.5,
+      "pivotY": 0.5,
+      "duration": 16.0,
+      "hdrRange": 16.0,
+      "status": "BOUND",
+      "pages": [
+        {
+          "file": "original-fire-screen-left-00.png",
+          "count": 255
+        },
+        {
+          "file": "original-fire-screen-left-01.png",
+          "count": 225
+        }
+      ]
     }
   ]
 }

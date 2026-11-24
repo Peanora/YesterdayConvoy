@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-22",
+  "characterId": "char_4217_makoto",
+  "scope": "Standalone Makoto boss trial",
+  "soundtrack": "https://www.atlus.co.jp/gamemusic/discography/agm-001/",
+  "tracks": [
+    {
+      "title": "Master of Shadow -Reload-",
+      "start": "Phase one, when combat begins",
+      "source": "https://audiomack.com/atlus-sound-team/song/master-of-shadow-reload",
+      "sourceArtist": "ATLUS Sound Team",
+      "sourceTrackId": 104573129,
+      "isrc": "JPK652300118",
+      "sourceSha256": "be5c8c9683de6ac2f915a97bf351a13d6d747b7eb94d9adb234cc63b5bfe976e",
+      "adaptation": "Full official soundtrack track, with a uniform -1.4 dB gain adjustment to match the second track",
+      "asset": "Assets/Audio/BGM/Resources/MakotoBoss/master-of-shadow-reload.ogg",
+      "assetSha256": "da3926ea2f78a5e2bf7f04a01da77aa28d127596e6648cc93da150023d0b8a25",
+      "runtimeSeconds": 150.070567,
+      "integratedLufs": -10.6,
+      "truePeakDbtp": -1.1
+    },
+    {
+      "title": "It’s Going Down Now",
+      "start": "Phase two, when Thanatos Kai becomes active and receives the next health bar",
+      "source": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-09-03-04-06-00_ed95a2/audio_sound_beta_2_music_act54side_m_bat2_act54side.dat",
+      "sourceBuild": "26-09-03-04-06-00_ed95a2",
+      "bundle": "audio/sound_beta_2/music/act54side/m_bat2_act54side.ab",
+      "bundleSha256": "9f1d482feb273c3c8a66df4e397c8d0a6485d185fac2dde61807450bc63db60c",
+      "reference": "https://music.apple.com/us/song/1733408557",
+      "sourceClips": [
+        { "name": "m_bat2_act54side_intro", "pathId": "2072677116224269799", "durationSeconds": 63.585239 },
+        { "name": "m_bat2_act54side_loop", "pathId": "6482967175074055436", "durationSeconds": 100 }
+      ],
+      "adaptation": "Arknights collaboration battle edit. The two original clips play back to back and continue through phase three and the exit",
+      "asset": "Assets/Audio/BGM/Resources/MakotoBoss/its-going-down-now.ogg",
+      "assetSha256": "6fca712cc03e36ae83a72aada8e241748045200b70dc9bbe7499ac082f78593c",
+      "runtimeSeconds": 163.585238,
+      "integratedLufs": -10.7,
+      "truePeakDbtp": -1.2
+    }
+  ],
+  "import": "44.1 kHz stereo Ogg Vorbis, streamed through the existing boss music source at volume 0.42",
+  "rights": "Original ATLUS/SEGA recordings. Open redistribution permission is unconfirmed."
+}

@@ -1,0 +1,233 @@
+{
+  "sourceUrl": "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/skin_table.json",
+  "sourceSha256": "6bcaa2ade4f6fffb43a5dc3e1aee8ae220c18c177c4f13afcdfd88d57dc2fb14",
+  "skins": [
+    {
+      "skinId": "char_1035_wisdel#1",
+      "charId": "char_1035_wisdel",
+      "tokenSkinMap": null,
+      "illustId": "illust_char_1035_wisdel_1",
+      "spIllustId": null,
+      "dynIllustId": null,
+      "spDynIllustId": null,
+      "avatarId": "char_1035_wisdel",
+      "spAvatarId": null,
+      "portraitId": "char_1035_wisdel_1",
+      "spPortraitId": null,
+      "dynPortraitId": null,
+      "dynEntranceId": null,
+      "buildingId": null,
+      "battleSkin": {
+        "overwritePrefab": false,
+        "skinOrPrefabId": "DefaultSkin"
+      },
+      "isBuySkin": false,
+      "tmplId": null,
+      "voiceId": null,
+      "voiceType": "NONE",
+      "displaySkin": {
+        "skinName": null,
+        "colorList": [
+          "",
+          "",
+          "#881d1e",
+          "",
+          ""
+        ],
+        "titleList": [
+          "",
+          ""
+        ],
+        "modelName": "Wiš'adel",
+        "drawerList": [
+          "Liduke"
+        ],
+        "designerList": null,
+        "skinGroupId": "ILLUST_0",
+        "skinGroupName": "默认服装",
+        "skinGroupSortIndex": -50,
+        "content": "维什戴尔在赦罪师的遗迹收集的行头。\n虽是捡来的装备，却兼顾实用性与美观性。",
+        "dialog": null,
+        "usage": null,
+        "description": null,
+        "obtainApproach": null,
+        "sortId": -3,
+        "displayTagId": null,
+        "getTime": 0,
+        "onYear": 0,
+        "onPeriod": 0
+      }
+    },
+    {
+      "skinId": "char_1035_wisdel#2",
+      "charId": "char_1035_wisdel",
+      "tokenSkinMap": null,
+      "illustId": "illust_char_1035_wisdel_2",
+      "spIllustId": null,
+      "dynIllustId": "dyn_illust_char_1035_wisdel_2",
+      "spDynIllustId": null,
+      "avatarId": "char_1035_wisdel_2",
+      "spAvatarId": null,
+      "portraitId": "char_1035_wisdel_2",
+      "spPortraitId": null,
+      "dynPortraitId": null,
+      "dynEntranceId": null,
+      "buildingId": null,
+      "battleSkin": {
+        "overwritePrefab": false,
+        "skinOrPrefabId": "DefaultSkin"
+      },
+      "isBuySkin": false,
+      "tmplId": null,
+      "voiceId": null,
+      "voiceType": "NONE",
+      "displaySkin": {
+        "skinName": null,
+        "colorList": [
+          "",
+          "",
+          "#bf0000",
+          "",
+          ""
+        ],
+        "titleList": [
+          "",
+          ""
+        ],
+        "modelName": "Wiš'adel",
+        "drawerList": [
+          "Liduke"
+        ],
+        "designerList": null,
+        "skinGroupId": "ILLUST_2",
+        "skinGroupName": "默认服装",
+        "skinGroupSortIndex": -10,
+        "content": "她依旧与爆炸为伴，以疯狂著称。\n但在这抹鲜红的装束之下，是笃定的决心和不可阻挡的锋芒。",
+        "dialog": null,
+        "usage": null,
+        "description": null,
+        "obtainApproach": null,
+        "sortId": -1,
+        "displayTagId": null,
+        "getTime": 0,
+        "onYear": 0,
+        "onPeriod": 0
+      }
+    },
+    {
+      "skinId": "char_1035_wisdel@sale#14",
+      "charId": "char_1035_wisdel",
+      "tokenSkinMap": [
+        {
+          "tokenId": "token_10035_wisdel_wward",
+          "tokenSkinId": "token_10035_wisdel_wward_sale#14"
+        }
+      ],
+      "illustId": "illust_char_1035_wisdel_sale#14",
+      "spIllustId": null,
+      "dynIllustId": "dyn_illust_char_1035_wisdel_sale#14",
+      "spDynIllustId": null,
+      "avatarId": "char_1035_wisdel_sale#14",
+      "spAvatarId": null,
+      "portraitId": "char_1035_wisdel_sale#14",
+      "spPortraitId": null,
+      "dynPortraitId": "dyn_portrait_char_1035_wisdel_sale#14",
+      "dynEntranceId": "dyn_entrance_char_1035_wisdel_sale#14",
+      "buildingId": "char_1035_wisdel_sale#14",
+      "battleSkin": {
+        "overwritePrefab": false,
+        "skinOrPrefabId": "char_1035_wisdel_sale#14"
+      },
+      "isBuySkin": true,
+      "tmplId": null,
+      "voiceId": "char_1035_wisdel_sale#14",
+      "voiceType": "ALL",
+      "displaySkin": {
+        "skinName": "超新星",
+        "colorList": [
+          "#888c95",
+          "#181818",
+          "#910900",
+          "#91335",
+          "#181818",
+          "",
+          ""
+        ],
+        "titleList": [],
+        "modelName": "Wiš'adel",
+        "drawerList": [
+          "板板"
+        ],
+        "designerList": null,
+        "skinGroupId": "2025#sale",
+        "skinGroupName": "忒斯特收藏/XV",
+        "skinGroupSortIndex": 16,
+        "content": "<color name=#ffffff>忒斯特收藏系列/超新星。维什戴尔为了解决失控的源石而踏足未知空间时的装扮。按本人的说法，既然是来清理垃圾的，那就要有相应的仪式感。</color>",
+        "dialog": "忒斯特收藏系列/超新星。维什戴尔为了解决失控的源石而踏足未知空间时的装扮。按本人的说法，既然是来清理垃圾的，那就要有相应的仪式感。",
+        "usage": "维什戴尔的私服之一。",
+        "description": "“终于上来了，博士，这艘漂在太空里的船算是你的老家？心疼了吗？不过也由不得你了。‘维什戴尔’，来摧毁你们疯狂的源石计划了。”",
+        "obtainApproach": "采购中心",
+        "sortId": 20,
+        "displayTagId": null,
+        "getTime": 1746072000,
+        "onYear": 6,
+        "onPeriod": 1
+      }
+    },
+    {
+      "skinId": "char_1035_wisdel@game#9",
+      "charId": "char_1035_wisdel",
+      "tokenSkinMap": null,
+      "illustId": "illust_char_1035_wisdel_game#9",
+      "spIllustId": null,
+      "dynIllustId": null,
+      "spDynIllustId": null,
+      "avatarId": "char_1035_wisdel_game#9",
+      "spAvatarId": null,
+      "portraitId": "char_1035_wisdel_game#9",
+      "spPortraitId": null,
+      "dynPortraitId": null,
+      "dynEntranceId": null,
+      "buildingId": "char_1035_wisdel_game#9",
+      "battleSkin": {
+        "overwritePrefab": false,
+        "skinOrPrefabId": "char_1035_wisdel_game#9"
+      },
+      "isBuySkin": true,
+      "tmplId": null,
+      "voiceId": null,
+      "voiceType": "NONE",
+      "displaySkin": {
+        "skinName": "绝对主角",
+        "colorList": [
+          "#c41c1c",
+          "#000000",
+          "#c41c1c",
+          "#c41c1c",
+          "#000000",
+          "",
+          ""
+        ],
+        "titleList": [],
+        "modelName": "Wiš'adel",
+        "drawerList": [
+          "大川ぶくぶ"
+        ],
+        "designerList": null,
+        "skinGroupId": "2026#game#2",
+        "skinGroupName": "成就之星/IX",
+        "skinGroupSortIndex": 242,
+        "content": "<color name=#ffffff>成就之星系列/绝对主角。维什戴尔在特别游戏活动中的变格形象。从脾气上能看得出她确实还是那个维什戴尔。</color>",
+        "dialog": "成就之星系列/绝对主角。维什戴尔在特别游戏活动中的变格形象。从脾气上能看得出她确实还是那个维什戴尔。",
+        "usage": "维什戴尔的角色扮演服饰之一。",
+        "description": "据她本人评价，这是有史以来最诡异的角色设计。",
+        "obtainApproach": "特典获得",
+        "sortId": 470,
+        "displayTagId": "特典获得",
+        "getTime": 1775016000,
+        "onYear": 6,
+        "onPeriod": 33
+      }
+    }
+  ]
+}

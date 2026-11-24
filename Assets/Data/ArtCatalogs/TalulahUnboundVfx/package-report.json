@@ -43,13 +43,14 @@
     "original-fire-stream",
     "original-fire-impact",
     "original-energy-stream",
-    "original-target-burn"
+    "original-target-burn",
+    "original-fire-screen-left"
   ],
   "missingBoundClips": [],
-  "frames": 4218,
-  "pages": 83,
-  "pngBytes": 22323799,
-  "boundPngBytes": 1577240,
+  "frames": 4698,
+  "pages": 85,
+  "pngBytes": 24309998,
+  "boundPngBytes": 3563439,
   "unboundPngBytes": 20746559,
   "cellAlignment": 4,
   "nativeToGameScale": 1.60714285694,
@@ -1920,6 +1921,53 @@
           "width": 2024,
           "height": 960,
           "sha256": "24e6753f2947d5064f277823c3be5b3acdebd16167769170931d32f23f88c55e"
+        }
+      ]
+    },
+    {
+      "key": "original-fire-screen-left",
+      "status": "BOUND",
+      "source": "native-probe/screen-bsnake/screen-left-fire",
+      "sourceCount": 480,
+      "sourceCrop": [
+        175,
+        100,
+        311,
+        220
+      ],
+      "sourcePPU": 19.200000762939453,
+      "runtimePPU": 19.200000762939453,
+      "cellAlignment": 4,
+      "paddingRight": 0,
+      "paddingBottom": 0,
+      "runtimeCellWidth": 136,
+      "runtimeCellHeight": 120,
+      "sourcePivot": [
+        0.5,
+        0.5
+      ],
+      "runtimePivot": [
+        0.5,
+        0.5
+      ],
+      "mirrorX": false,
+      "sourceFrameSetSha256": "f29ce787876cefe53bdc9305c42de21caf296ea9d0e8421c170cf27e59a30546",
+      "sourceReportSha256": "8b0f75d37978a71a8e92f39363864ed1b6f7745cc70974a66bce7a09c8e5616e",
+      "encodedFramesLosslesslyChecked": 480,
+      "pages": [
+        {
+          "file": "original-fire-screen-left-00.png",
+          "bytes": 952563,
+          "width": 2040,
+          "height": 2040,
+          "sha256": "ac57b4c8854943d7e1be56ac17e984dbef3b8e0a8f845a189f742aa063102a87"
+        },
+        {
+          "file": "original-fire-screen-left-01.png",
+          "bytes": 1033636,
+          "width": 2040,
+          "height": 1800,
+          "sha256": "9e018232a2aadd305e734496e80eee01d447048b07aede58473d45d7c6993b99"
         }
       ]
     }

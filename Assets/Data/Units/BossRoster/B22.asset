@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B22_enemy_1571_mirbst
   displayName: "\u72C2\u8E81\u5F02\u8D28\u88C2\u517D"
-  moveSpeed: 0.65
+  moveSpeed: 0.9
   gateDamage: 1

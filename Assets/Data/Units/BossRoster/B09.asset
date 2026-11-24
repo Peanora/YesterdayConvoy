@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: B09
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B09_enemy_1568_dirctr
-  displayName: "\u201C\u9152\u795E\u201D"
+  displayName: "\u9152\u795E"
   moveSpeed: 0.65
   gateDamage: 1

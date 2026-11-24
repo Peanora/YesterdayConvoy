@@ -4,6 +4,8 @@
   "ppu": 118.4,
   "referenceSpeed": 0.75,
   "height": 2,
+  "idleVisibleTop": 1.2159644,
+  "attackContact": 0.3333333432674408,
   "clips": [
     {
       "key": "idle",

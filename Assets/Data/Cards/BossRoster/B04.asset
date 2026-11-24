@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.CardDefinition
   cardId: CARD_B04
   displayName: "\u950F"
-  recruitCost: 2
+  recruitCost: 4
   unit: {fileID: 11400000, guid: f4558cf6b8887fe4a98ac619e9ca66bc, type: 2}
   portrait: {fileID: 0}
   battleSprite: {fileID: 0}

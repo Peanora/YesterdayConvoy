@@ -4,6 +4,7 @@
   "ppu": 120.8,
   "referenceSpeed": 0.75,
   "height": 1.25,
+  "idleVisibleTop": 1.2582781,
   "clips": [
     {
       "key": "idle",

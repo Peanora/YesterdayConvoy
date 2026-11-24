@@ -138,5 +138,13 @@
       "sha256": "47f10339b13d835f13fe5e881c0fb44401b6a840b7143c7789464f1768f7a13d"
     }
   ],
-  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1081_sotisd. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics."
+  "provenance": "Human approved M11-M20 preview 2026-10-22. Original Arknights model enemy_1081_sotisd. Public redistribution permission unconfirmed. Extra clips do not implement phase/skill mechanics.",
+  "attackContact": 0.85,
+  "attackContactProvenance": {
+    "kind": "EXISTING_APPROVED_ENGAGEMENT_WINDUP",
+    "asset": "Assets/Data/Battles/M18.asset",
+    "attackDuration": 1.7,
+    "sourceDuration": 1.7000000476837158,
+    "note": "Reuse the already authored legacy contact. This is not a newly recovered original skeleton event."
+  }
 }

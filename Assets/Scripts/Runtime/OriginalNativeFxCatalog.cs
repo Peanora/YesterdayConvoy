@@ -12,8 +12,9 @@ namespace YesterdayConvoy
         public Vector3 Position,Scale,Direction;
         public Quaternion BasisRotation;
         public bool FlipX;
+        public int? FormationSortingOrder;
         public OriginalNativeFxPose(Vector3 position,Quaternion basisRotation,Vector3 direction,bool flipX=false,Vector3 scale=default)
-        {Position=position;BasisRotation=basisRotation;Direction=direction;FlipX=flipX;Scale=scale==default?Vector3.one:scale;}
+        {Position=position;BasisRotation=basisRotation;Direction=direction;FlipX=flipX;Scale=scale==default?Vector3.one:scale;FormationSortingOrder=null;}
     }
     internal readonly struct OriginalNativeFxPathPoint
     {
@@ -55,6 +56,8 @@ namespace YesterdayConvoy
         static readonly Dictionary<string,Bundle> sources=new Dictionary<string,Bundle>(StringComparer.Ordinal);
         static readonly Dictionary<string,AssetBundle> loaded=new Dictionary<string,AssetBundle>(StringComparer.Ordinal);
         static readonly Dictionary<string,GameObject> prefabs=new Dictionary<string,GameObject>(StringComparer.Ordinal);
+        static readonly HashSet<string> loadingBundles=new HashSet<string>(StringComparer.Ordinal);
+        static readonly HashSet<string> loadingPrefabs=new HashSet<string>(StringComparer.Ordinal);
         static bool read;
         static void Read()
         {
@@ -79,6 +82,12 @@ namespace YesterdayConvoy
             read=true;
         }
         internal static bool Supports(string key){Read();return key!=null&&effects.ContainsKey(key);}
+        internal static IEnumerable<string> KeysFor(string artId)
+        {
+            Read();
+            string prefix="defender/"+artId+"/";
+            return effects.Keys.Where(key=>key.StartsWith(prefix,StringComparison.Ordinal));
+        }
         internal static bool TryGetPlacement(string key,out OriginalNativeFxPlacement placement)
         {
             placement=default;Read();if(key==null||!effects.TryGetValue(key,out var effect))return false;
@@ -101,22 +110,46 @@ namespace YesterdayConvoy
         internal static IEnumerator Prepare(IEnumerable<string> keys)
         {
             Read();var requested=(keys??Array.Empty<string>()).Where(Supports).Distinct().Select(k=>effects[k]).ToArray();
+            // Archived bundles are loaded before their platform material adapters run.
+            // Keep their diagnostic messages in the Player log and out of the battle HUD.
+            if(!Application.isEditor&&requested.Length>0)
+            {
+                Debug.developerConsoleEnabled=false;
+                Debug.developerConsoleVisible=false;
+            }
             var needed=new HashSet<string>(StringComparer.Ordinal);
             void Include(string id){if(!needed.Add(id))return;foreach(var dep in sources[id].dependencies??Array.Empty<string>())Include(dep);}
             foreach(var effect in requested)Include(effect.bundle);
             foreach(var id in needed)
             {
-                if(loaded.ContainsKey(id))continue;var source=sources[id];var resource=Resources.LoadAsync<TextAsset>(source.resource);yield return resource;
-                var text=resource.asset as TextAsset;if(text==null)throw new FileNotFoundException("Missing original native bundle resource: "+source.resource);
-                var bytes=text.bytes;if(source.bytes>0&&bytes.LongLength!=source.bytes)throw new InvalidDataException("Original native bundle length mismatch: "+id);
-                var request=AssetBundle.LoadFromMemoryAsync(bytes);yield return request;Resources.UnloadAsset(text);
-                if(request.assetBundle==null)throw new InvalidDataException("Original native bundle load failed: "+id);loaded.Add(id,request.assetBundle);
+                while(loadingBundles.Contains(id))yield return null;
+                if(loaded.ContainsKey(id))continue;
+                loadingBundles.Add(id);
+                try
+                {
+                    var source=sources[id];
+                    var resource=Resources.LoadAsync<TextAsset>(source.resource);yield return resource;
+                    var text=resource.asset as TextAsset;if(text==null)throw new FileNotFoundException("Missing original native bundle resource: "+source.resource);
+                    var bytes=text.bytes;if(source.bytes>0&&bytes.LongLength!=source.bytes)throw new InvalidDataException("Original native bundle length mismatch: "+id);
+                    var request=AssetBundle.LoadFromMemoryAsync(bytes);yield return request;Resources.UnloadAsset(text);
+                    if(request.assetBundle==null)throw new InvalidDataException("Original native bundle load failed: "+id);
+                    loaded.Add(id,request.assetBundle);
+                }
+                finally { loadingBundles.Remove(id); }
             }
             foreach(var effect in requested)
             {
-                string identity=effect.bundle+"/"+effect.asset;if(prefabs.ContainsKey(identity))continue;
-                var request=loaded[effect.bundle].LoadAssetAsync<GameObject>(effect.asset);yield return request;
-                var prefab=request.asset as GameObject;if(prefab==null)throw new InvalidDataException("Missing original native prefab: "+effect.key);prefabs.Add(identity,prefab);
+                string identity=effect.bundle+"/"+effect.asset;
+                while(loadingPrefabs.Contains(identity))yield return null;
+                if(prefabs.ContainsKey(identity))continue;
+                loadingPrefabs.Add(identity);
+                try
+                {
+                    var request=loaded[effect.bundle].LoadAssetAsync<GameObject>(effect.asset);yield return request;
+                    var prefab=request.asset as GameObject;if(prefab==null)throw new InvalidDataException("Missing original native prefab: "+effect.key);
+                    prefabs.Add(identity,prefab);
+                }
+                finally { loadingPrefabs.Remove(identity); }
             }
         }
         internal static bool TryPrepared(string key,out Effect effect,out GameObject prefab)

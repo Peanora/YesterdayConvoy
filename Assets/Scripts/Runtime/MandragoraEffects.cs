@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace YesterdayConvoy
@@ -35,7 +34,7 @@ namespace YesterdayConvoy
         readonly List<PillarCommand> pillarCommands=new List<PillarCommand>();
         public IReadOnlyList<PetrifyingGaze> Gazes=>gazes.AsReadOnly();
         public IReadOnlyList<PillarCommand> PillarCommands=>pillarCommands.AsReadOnly();
-        public bool UnitAirborne(DeployedUnitState u)=>BossRosterAirborne(u)||EngagementEnabled&&u!=null&&UnitCombat(u).Effects.Mandragora&&u.Active&&u.MandraPhase==MandragoraPhase.Second&&u.StoneShield;
+        public bool UnitAirborne(DeployedUnitState u)=>EngagementEnabled&&u!=null&&UnitCombat(u).Effects.Mandragora&&u.Active&&u.MandraPhase==MandragoraPhase.Second&&u.StoneShield;
         bool HasGazeSlow(DefenderState d)=>gazes.Exists(g=>!g.Ended&&g.TargetId==d.EntityId);
         void EndGaze(DeployedUnitState u,bool interrupted)
         {
@@ -87,8 +86,9 @@ namespace YesterdayConvoy
         }
         DefenderState GazeTarget(DeployedUnitState u)
         {
-            return defenders.Where(d=>d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=V2Skill(u,"gaze","range",1.5f))
-                .OrderByDescending(d=>DefenderSkillAttack(d)).ThenBy(d=>d.EntityId,StringComparer.Ordinal).FirstOrDefault();
+            // Defenders currently share one attack setting; stable spawn order breaks equal-attack ties.
+            foreach(var d in defenders)if(d.Alive&&!DefenderCamouflaged(d)&&GroundDistance(d.Position,u.Motion.Position)<=V2Skill(u,"gaze","range",1.5f))return d;
+            return null;
         }
         void LockGaze(PetrifyingGaze g,DefenderState d)
         {

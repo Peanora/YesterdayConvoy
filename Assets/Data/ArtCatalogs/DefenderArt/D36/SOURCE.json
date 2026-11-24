@@ -1,0 +1,563 @@
+{
+  "character": "Makoto Yuki",
+  "skin": "Witness of Glory / p3r#1",
+  "view": "front",
+  "spineVersion": "3.8.99",
+  "fps": 30,
+  "sourcePixelsPerUnit": 0.52,
+  "sourceUnitsPerWorldUnit": 320,
+  "method": "Spine source capture with constant per-clip viewport and retained root pivot.",
+  "source": [
+    {
+      "file": "Makoto/front/char_4217_makoto_p3r_1.atlas",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_4217_makoto/char_4217_makoto_p3r_1/front/char_4217_makoto_p3r_1.atlas",
+      "bytes": 33495,
+      "sha256": "2308fd7ab047732361cf9846721a82b3a5089ac5232f9dc57478d05ff3077da0"
+    },
+    {
+      "file": "Makoto/front/char_4217_makoto_p3r_1.skel",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_4217_makoto/char_4217_makoto_p3r_1/front/char_4217_makoto_p3r_1.skel",
+      "bytes": 2377459,
+      "sha256": "36800d3bf2498bdcbc5371488de6dfea110a6f9fb201c4ed83d124f5d903493d"
+    },
+    {
+      "file": "Makoto/front/char_4217_makoto_p3r_1.png",
+      "url": "https://torappu.prts.wiki/assets/char_spine/char_4217_makoto/char_4217_makoto_p3r_1/front/char_4217_makoto_p3r_1.png",
+      "bytes": 430172,
+      "sha256": "eb42b8c5660f1833b40b978895b4965509c3108b47887f423753699ffb06eec0"
+    }
+  ],
+  "clips": {
+    "skill_makoto_s1_attack": {
+      "source": "Doll_Skill_1_Attack",
+      "duration": 1.7999999523162842,
+      "sourceBounds": [
+        -318.795654296875,
+        -3.289923906326294,
+        146.06634521484375,
+        556.8944702148438
+      ],
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "skill_makoto_s1_attack-00.png": "f4ba161530552a374e3bfd03a5f5d2ae3e4b0f33133cf572d3a43e233af44fbe",
+        "skill_makoto_s1_attack-01.png": "2941e71661b4f6b6d36883c3b154f0196f80d34726eee7ae43bcd215d60252f9",
+        "skill_makoto_s1_attack-02.png": "c78e16ac34eb190a842b2721754c87baf2c5876158b9c6beae32fc044b41d386"
+      },
+      "visibleFrames": 55,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.5024,
+        1.6707
+      ]
+    },
+    "skill_makoto_s1_idle": {
+      "source": "Doll_Skill_1_Idle",
+      "duration": 2,
+      "sourceBounds": [
+        -208.91563415527344,
+        -3.289923906326294,
+        146.0089569091797,
+        515.49072265625
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s1_idle-00.png": "534fbbf35e43260a3b0ac9713c469214ee8872696d909f065917bdb45da10507",
+        "skill_makoto_s1_idle-01.png": "2621cdd34b87c2107df936dab68fe8faa868f900e1d6403c80415fbdf1340a80"
+      },
+      "visibleFrames": 60,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.5745,
+        1.6106
+      ]
+    },
+    "skill_makoto_s1_begin": {
+      "source": "Doll_Skill_1_SwitchIn",
+      "duration": 1,
+      "sourceBounds": [
+        -273.1790771484375,
+        -24.691373825073242,
+        186.84043884277344,
+        517.5519409179688
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s1_begin-00.png": "d46b3145fc7971574b6a16d4ede643471aa4495a334baceb586f28fe6e8ae26e",
+        "skill_makoto_s1_begin-01.png": "406e1e48c967b463bc734a8196d8ee347db689ac7396ee476480d4eb24d2d7d8"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.28,
+        1.6166
+      ]
+    },
+    "skill_makoto_s1_end": {
+      "source": "Doll_Skill_1_SwitchOut",
+      "duration": 1,
+      "sourceBounds": [
+        -290.5397033691406,
+        -74.71207427978516,
+        259.49517822265625,
+        515.49072265625
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s1_end-00.png": "30af10b2d8167829201097e891fd1d841082c45577662b5bdc539150f4e18ccb",
+        "skill_makoto_s1_end-01.png": "02886c874b872807ce4fe87bc535d114f6208d46839a9d524242bed851efe5b9"
+      },
+      "visibleFrames": 27,
+      "blankSourceFrames": 4,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.1538,
+        1.6106
+      ]
+    },
+    "skill_makoto_s2_loop": {
+      "source": "Doll_Skill_2_Loop",
+      "duration": 2,
+      "sourceBounds": [
+        -471.4156188964844,
+        -3.289923906326294,
+        217.15684509277344,
+        617.1365966796875
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s2_loop-00.png": "c6f58c111324aeb11d21e45f183b81c3efa3c2d99486805101f5f14945fedbeb",
+        "skill_makoto_s2_loop-01.png": "62f1c21a8845446255281dd4d657fdb6d126496823861a46910002f6d94b7e1a",
+        "skill_makoto_s2_loop-02.png": "f6bb14a9fbbe26862b546e18ed44a3cab0334cbeaa8dee9124631acce381c28a",
+        "skill_makoto_s2_loop-03.png": "003f3d0342f079dcde1113d3433b5f9bc6ce71080b75206c9503e477c4162837"
+      },
+      "visibleFrames": 60,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.7909,
+        1.8209
+      ]
+    },
+    "skill_makoto_s2_begin": {
+      "source": "Doll_Skill_2_SwitchIn",
+      "duration": 1,
+      "sourceBounds": [
+        -477.12744140625,
+        -3.289923906326294,
+        266.7640380859375,
+        620.4301147460938
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s2_begin-00.png": "eab750fcfc3ce86ff7c8b3e9473459af5e0267555ab93c711b474542ef6d160d",
+        "skill_makoto_s2_begin-01.png": "f4f8c8462b558f8215efdd7faa928bd04cc237084bfb1c7cccb282a502b6c1ef",
+        "skill_makoto_s2_begin-02.png": "8697e2ef0948c17b88e1e3114d6e67aa9f6fd0f37efd5aa5feb465f83f54a59d"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.28,
+        1.8269
+      ]
+    },
+    "skill_makoto_s2_end": {
+      "source": "Doll_Skill_2_SwitchOut",
+      "duration": 1,
+      "sourceBounds": [
+        -471.06103515625,
+        -74.71207427978516,
+        259.49517822265625,
+        616.2584838867188
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s2_end-00.png": "22865ccd098d6449536fd339674bd77c41c2100b603b42996df3574e377a940c",
+        "skill_makoto_s2_end-01.png": "d33c3cb58e0da164a90ffb339fc7f5fe1e5d1c180fed77a6730fd88f90c2037c",
+        "skill_makoto_s2_end-02.png": "e18c2d55bac454f06d2f9a14e2ad63bd383dd66e038f390e7a19c944339d9862"
+      },
+      "visibleFrames": 27,
+      "blankSourceFrames": 4,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.1538,
+        1.8209
+      ]
+    },
+    "skill_makoto_s3_attack_a": {
+      "source": "Doll_Skill_3_P1_Attack_A",
+      "duration": 1.7999999523162842,
+      "sourceBounds": [
+        -553.6547241210938,
+        -3.289923906326294,
+        335.77801513671875,
+        805.6087036132812
+      ],
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "skill_makoto_s3_attack_a-00.png": "d09bfb15b7f305505f518bbd7e81f864b0db53821f2bdc13e74c2be6d40ee02c",
+        "skill_makoto_s3_attack_a-01.png": "c3e7ace27550507c748c2ff902816e24de61b0945ae22329f0bab4ef7706345b",
+        "skill_makoto_s3_attack_a-02.png": "687ca043d50fc906c78bd7cc2e410e8c8167e34d7160c9bba47826b8a3515679",
+        "skill_makoto_s3_attack_a-03.png": "81d6c7bcf6c7161f14435f72e2b4c979a1120dcae65e1d7880df824fec3ada52",
+        "skill_makoto_s3_attack_a-04.png": "8e9499dda0b797fb9e72a80214104acf8c3df4b80da3b2aa62d7b918bdd5c78d",
+        "skill_makoto_s3_attack_a-05.png": "fc06b54af808f393232affc4dec410deb3c4ddf1d3f011c7716c073b4ffbe1a2",
+        "skill_makoto_s3_attack_a-06.png": "a73fdcd2d2d61e2a11e0623f135ee5d48833e59922c0023adf074e8b4d201338"
+      },
+      "visibleFrames": 55,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.7728,
+        2.512
+      ]
+    },
+    "skill_makoto_s3_attack_b": {
+      "source": "Doll_Skill_3_P1_Attack_B",
+      "duration": 1.7999999523162842,
+      "sourceBounds": [
+        -461.0768737792969,
+        -3.289923906326294,
+        322.96124267578125,
+        886.30419921875
+      ],
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "skill_makoto_s3_attack_b-00.png": "107c989302dded98a18aa3108564cb11d135f27c69bce220425da0fe496d5818",
+        "skill_makoto_s3_attack_b-01.png": "c56db6771111b236f2cd0a43ed65ad9a2ec1278ef299e248d249e000ce8ffd54",
+        "skill_makoto_s3_attack_b-02.png": "22e7ecacd8968cfe37378da9c54f101dc29dc2a593fd180a40b606eb8c68d782",
+        "skill_makoto_s3_attack_b-03.png": "decf031d06384e6936be535ed0be1ac6c1282fd66d793bc4834c58257113d9a8",
+        "skill_makoto_s3_attack_b-04.png": "aba992ccf94bcaa63175646056a5263d3dab7e6fae0160986f3bb623f8be0e3d",
+        "skill_makoto_s3_attack_b-05.png": "6a6accf88473d7e969b4e984eaa0ccb8731525dd9b12a97cfcd3428b435938dd",
+        "skill_makoto_s3_attack_b-06.png": "5be0e3fe9c7d988286ce3aadb0725af6727ef3c5ec50c799109813bbb66191b5"
+      },
+      "visibleFrames": 55,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.7668,
+        2.7644
+      ]
+    },
+    "skill_makoto_s3_idle": {
+      "source": "Doll_Skill_3_P1_Idle",
+      "duration": 2,
+      "sourceBounds": [
+        -439.93170166015625,
+        -3.289923906326294,
+        190.97608947753906,
+        580.9257202148438
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s3_idle-00.png": "819233ea3177bac0d749f8bbc1dcbc40b3c57a9684f37f1775f853919fa445aa",
+        "skill_makoto_s3_idle-01.png": "18fdcc27903ffdc547a0b2de0eb9a02986dda6a4758647895f20e2105aa01604",
+        "skill_makoto_s3_idle-02.png": "8dc8d7fbbe2186b3907246e945fc8b0d2d37ab7bf971c1fe11f1473984214251",
+        "skill_makoto_s3_idle-03.png": "867f2182de13952bbbd5d95d73d2a671f6140ba0a4aff2499a8b4d95159626c2"
+      },
+      "visibleFrames": 60,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.7368,
+        1.7728
+      ]
+    },
+    "skill_makoto_s3_begin": {
+      "source": "Doll_Skill_3_P1_SwitchIn",
+      "duration": 1,
+      "sourceBounds": [
+        -439.58843994140625,
+        -7.320964336395264,
+        298.5613098144531,
+        580.1600341796875
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s3_begin-00.png": "6481bae42199581a9a25b4a0c602ca86767dcabac9b561fd9a6857b6461bf082",
+        "skill_makoto_s3_begin-01.png": "e660139fd90f73118c835f2eea32cdcf1d19a55c1b2f6ee78bb19215e557beff",
+        "skill_makoto_s3_begin-02.png": "55d94dc2e535837db8ec86bb90bd78d00bb10814209defef304edd19febc00cc"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.28,
+        1.7728
+      ]
+    },
+    "skill_makoto_s3_change_begin": {
+      "source": "Doll_Skill_3_P1toP2_ChangeBegin",
+      "duration": 0.5,
+      "sourceBounds": [
+        -439.58843994140625,
+        -3.289923906326294,
+        190.9363250732422,
+        580.1600341796875
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s3_change_begin-00.png": "c9e85f51ab4e1f6aaca91e04217421a29cab33ad9b634ebc3fb2e2ebbf246df9"
+      },
+      "visibleFrames": 16,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.268,
+        1.7728
+      ]
+    },
+    "skill_makoto_s3_change_end": {
+      "source": "Doll_Skill_3_P1toP2_ChangeEnd",
+      "duration": 1,
+      "sourceBounds": [
+        -283.61163330078125,
+        -24.325944900512695,
+        190.40228271484375,
+        529.5264892578125
+      ],
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "skill_makoto_s3_change_end-00.png": "ad8b68c2ae7343f459a74275091320b1b39440ffec91a7b87c830405c002d4ba",
+        "skill_makoto_s3_change_end-01.png": "2ed24c9e59ccf2132f8f89f5f0c8d6b6812aeabfc3b2d1e1175110130ddae8a8"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.28,
+        1.6166
+      ]
+    },
+    "skill_makoto_s3_guard": {
+      "source": "Doll_Skill_3_P2_Loop",
+      "duration": 2,
+      "sourceBounds": [
+        -283.0440368652344,
+        -3.289923906326294,
+        146.0089569091797,
+        521.4862670898438
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s3_guard-00.png": "7f08b0d7335e158757e14a40eacd1d90b6aea5836535883eff23323560c8f8fb",
+        "skill_makoto_s3_guard-01.png": "793e93afedbf322b96c0c734a68e5b7e82ea0ee4f419e85b414e64fc8f6185e5"
+      },
+      "visibleFrames": 60,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.5144,
+        1.5625
+      ]
+    },
+    "idle": {
+      "source": "Idle",
+      "duration": 12,
+      "sourceBounds": [
+        -216.92098999023438,
+        -24.28508186340332,
+        207.92138671875,
+        417.83905029296875
+      ],
+      "events": [],
+      "hashes": {
+        "idle-00.png": "261f12260e975131cd28f574374b1aba949619b1dc4e696f0f5a133d1285d406",
+        "idle-01.png": "932a1e14f5d7e62caf83594dee9c5cb878669647ab59ff0e9cbb4a889951fe9b",
+        "idle-02.png": "60515338026924391ebeb4d3cf9d25bc0aae6ffc38609dd66ae07e97afda333e",
+        "idle-03.png": "e193237725fbeebaa13e80abf170f7ea528f9bafd8f604d7e07a6d2eb9837443",
+        "idle-04.png": "84c632184e569f4b54f99c5c60b906eb16d335e738820a7b01d6497d1eb732a1",
+        "idle-05.png": "e799deb8914649a6f687f09e91fedd3fc31966e425fbb99dd13cca4f407c8bd7",
+        "idle-06.png": "4ade8997c4a56d2d4bba0deafee2ec017e983ffca2a20b70ed3f4e47e102a1fe",
+        "idle-07.png": "2cb6460732d322d63b379eda582a13b31058bbe86ad3098105d497b094f9c413",
+        "idle-08.png": "04705d45206721603c7a74262d6ebd892c141ec20d18c56741cefd9fe7cc01b3",
+        "idle-09.png": "fb8711be3fbf375d665346267768b6eb333734aa94f0b858058f154d6a911064"
+      },
+      "visibleFrames": 360,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.244,
+        1.2921
+      ]
+    },
+    "attack": {
+      "source": "Attack_A",
+      "duration": 1.2000000476837158,
+      "sourceBounds": [
+        -296.0805969238281,
+        -70.42317199707031,
+        320.86328125,
+        465.9467468261719
+      ],
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "attack_a-00.png": "54203fc4808b0f1c09ff03cac50cd659751f3ee38be9b5216e6404d54a7c008c",
+        "attack_a-01.png": "095982e4d31e24996ec020869604d2135eb13c031b8affdb68aabdbbb0774291"
+      },
+      "visibleFrames": 37,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.22,
+        1.4543
+      ]
+    },
+    "death": {
+      "source": "Doll_Skill_3_P2_Die",
+      "duration": 1,
+      "sourceBounds": [
+        -282.7837829589844,
+        -44.462562561035156,
+        242.0478515625,
+        510.8162536621094
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_death-00.png": "95d30b39a1c23253b8418ac809e58322f44cb88419efe510a2fb74cc3a2e1011",
+        "skill_makoto_death-01.png": "35052db36ff54d2c2ee3bdb03428df6e2dcabcfb722e129d10faaf5568da356a"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.0216,
+        1.5625
+      ]
+    },
+    "attack_b": {
+      "source": "Attack_B",
+      "duration": 1.2000000476837158,
+      "sourceBounds": [
+        -285.39361572265625,
+        -88.22663116455078,
+        195.65411376953125,
+        434.4685974121094
+      ],
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "hashes": {
+        "attack_b-00.png": "d77f1bbc6b3090b5c18a926705bc722da05afe34e7e62a6d74ae80f059095fbe",
+        "attack_b-01.png": "bc0de65d798c80015877d208c4d24b4b7fe22c7cd9c16bf0eabbb181f31dbfe1"
+      },
+      "visibleFrames": 37,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.1779,
+        1.3462
+      ]
+    },
+    "skill_makoto_s3_human_end": {
+      "source": "SwitchOut",
+      "duration": 1,
+      "sourceBounds": [
+        -193.8762664794922,
+        -4.166118144989014,
+        151.63555908203125,
+        418.0810546875
+      ],
+      "events": [],
+      "hashes": {
+        "skill_makoto_s3_human_end-00.png": "450bc525d8a119e90841201e5511ca6ef9bcdaab4122f2b48efae74ade425f8c"
+      },
+      "visibleFrames": 31,
+      "blankSourceFrames": 0,
+      "edgeFrames": 0,
+      "visibleTopRangeWorldUnitsBeforeBossScale": [
+        1.262,
+        1.2921
+      ]
+    }
+  },
+  "officialAnnouncement": "https://ak.hypergryph.com/news/9681",
+  "assetIds": {
+    "character": "char_4217_makoto",
+    "skin": "char_4217_makoto@p3r#1",
+    "skeleton": "char_4217_makoto_p3r_1"
+  },
+  "rights": "Original Arknights and Persona 3 Reload crossover media. Local project use; open redistribution rights unconfirmed.",
+  "mountedPersonas": "Both Orpheus and Thanatos are in the same original skin skeleton; no separate body compositing.",
+  "orientationNotes": "Original rear skeleton has attack and core idle/loop clips. Switches, S3 defensive form and death use the original front skeleton.",
+  "reference": {
+    "official": "https://ak.hypergryph.com/news/9681",
+    "spineIndex": "https://torappu.prts.wiki/assets/char_spine/char_4217_makoto/meta.json",
+    "sourceAnimationPreview": "2026-11-21_Makoto-Glory-v1/makoto-witness-of-glory-s3-corrected-preview.mp4",
+    "sameSkinInGame": [
+      {
+        "url": "https://www.bilibili.com/video/BV1QStJ6mEn6/",
+        "scope": "Skin on left. S1 31–41 seconds, S2 42–52 seconds, S3 53–62 seconds."
+      },
+      {
+        "url": "https://www.bilibili.com/video/BV1vdtq6qE2u/",
+        "scope": "Skin on right, slow motion. Human sword 00:28–00:52. S3 01:48–02:16. Thanatos strikes 01:52–02:04, P2 change at 02:08, Orpheus at 02:12, healing at 02:16. S1 and S2 retain source archives."
+      }
+    ]
+  },
+  "clipTimingNotes": {
+    "s1Attack": "Shared damage and healing body clip, source OnAttack at 0.8s. Separate effects and combat targets.",
+    "s2Loop": "Source role uses uninterrupted Doll_Skill_2_Loop. The skin skeleton has no OnAttack event for this loop.",
+    "s3Change": "Source ChangeBegin 0.5s, ChangeEnd 1s with OnAttack at 0.8s. Only front has change or P2 loop.",
+    "healthBar": "Measurements use visible pixel alpha > 12; resting variant envelope positions the label.",
+    "s3Human": "Attack_A and Attack_B alternate in the first boss phase. Both last 1.2 native seconds with OnAttack at 0.53333336 seconds. Original front SwitchOut lasts 1 native second."
+  },
+  "sourceMountAtS1OnAttack": {
+    "F_Muzzle": [
+      0,
+      410
+    ],
+    "F_OriginMuzzle": [
+      0,
+      410
+    ]
+  }
+}

@@ -58,6 +58,11 @@ namespace YesterdayConvoy
             return Path.Combine(Application.isEditor?Path.Combine(Application.dataPath,"Data/ArtCatalogs"):Application.streamingAssetsPath,relative);
         }
 
+        public static bool PreserveNativeEffectPixels(string logicalRelative) =>
+            logicalRelative.StartsWith("BossRosterFx/B20/wisdel_skill_02_", StringComparison.Ordinal) ||
+            logicalRelative.StartsWith("BossRosterFx/B20/wisdel_skill_03_", StringComparison.Ordinal) ||
+            logicalRelative.StartsWith("BossRosterFx/" + BossRosterFxArt.MakotoTask + "/", StringComparison.Ordinal);
+
         public static bool IsSourceTexture(string assetPath)
         {
             if(assetPath==null||!assetPath.EndsWith(".png",StringComparison.OrdinalIgnoreCase))return false;

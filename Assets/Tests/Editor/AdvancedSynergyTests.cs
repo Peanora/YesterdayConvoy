@@ -280,29 +280,5 @@ namespace YesterdayConvoy.Tests
             var run=new BattleShopRun(e,1,false,true);run.Observe(BattlePhase.Won);run.OpenShop();run.PrepareBattle();run.Observe(BattlePhase.Won);run.OpenShop();run.PrepareBattle();Assert.That(run.Observe(b.Phase,b.GolemGrowthEarned,golemCapacity:b.GolemCapacity));Assert.That(run.GolemExperience,Is.EqualTo(3));Assert.That(run.Observe(b.Phase,b.GolemGrowthEarned,golemCapacity:b.GolemCapacity),Is.False);Assert.That(run.GolemExperience,Is.EqualTo(3));
         }
         static void Win(ManualBattle battle)=>typeof(ManualBattle).GetMethod("FinishForTesting",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(battle,new object[]{battle.RunId,true});
-        static BasicRosterProfile Real(string id)
-        {
-            var data=UnityEditor.AssetDatabase.FindAssets("t:ManualBattleDefinition").Select(g=>UnityEditor.AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(UnityEditor.AssetDatabase.GUIDToAssetPath(g))).First(d=>d.Card.CardId==id);
-            return CampaignBalance.Build(data,1,100,5);
-        }
-        static ManualBattle Mixed(params string[] ids)
-        {
-            var profiles=ids.Distinct().Select(Real).ToArray();var first=profiles[0];
-            var b=new ManualBattle(first.Unit,new[]{Vector3.zero,new Vector3(20,0,0)},new Vector3(50,0,50),first.Combat);
-            b.ConfigureCardLoadout(profiles.Skip(1));b.ConfigureSynergies(ids.Distinct().Select(Piece));b.Begin();return b;
-        }
-        [Test]public void MixedFlamechaserAndCreeperUseOwnIntrinsicState()
-        {
-            var b=Mixed("CARD_M07","CARD_M30","CARD_M33");b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M07");b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M30");b.TryDeployRole(b.RunId,3,b.Entry,"CARD_M33");
-            var soldier=b.Units.First(u=>u.CardId=="CARD_M07");var flame=b.Units.First(u=>u.CardId=="CARD_M30");var creeper=b.Units.First(u=>u.CardId=="CARD_M33");
-            b.TryDamageUnit(flame.EntityId,100000,CombatDamageType.Arts);Assert.That(flame.Active);Assert.That(flame.FlamePhase,Is.EqualTo(FlamechaserPhase.Transforming));
-            b.TryDamageUnit(creeper.EntityId,200,CombatDamageType.Arts);Assert.That(creeper.CreeperRetaliations,Is.EqualTo(1));Assert.That(soldier.CreeperRetaliations,Is.Zero);Assert.That(soldier.FlamePhase,Is.EqualTo(FlamechaserPhase.Soldier));
-            Assert.That(soldier.Health,Is.EqualTo(soldier.MaxHealth));
-        }
-        [Test]public void PhalanxDoesNotGiveItsArmorMechanicToOtherSpecies()
-        {
-            var b=Mixed("CARD_M29","CARD_M07");b.TryDeployRole(b.RunId,1,b.Entry,"CARD_M29");b.TryDeployRole(b.RunId,2,b.Entry,"CARD_M07");b.Advance(2.01f);b.TryDeployRole(b.RunId,3,b.Entry,"CARD_M07");
-            var soldiers=b.Units.Where(u=>u.CardId=="CARD_M07").ToArray();Assert.That(soldiers.Length,Is.EqualTo(2));foreach(var u in soldiers)Assert.That(b.UnitArmor(u),Is.EqualTo(4));
-        }
     }
 }

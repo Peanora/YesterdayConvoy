@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using UnityEditor;
@@ -17,8 +16,8 @@ namespace YesterdayConvoy.Editor
         public int callbackOrder=>-100;
         static bool verifiedThisSession;
         static string Cache=>Path.GetFullPath(Path.Combine(Application.dataPath,"../Library/PreparedArt"));
-        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","TalulahOriginal","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
-        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-B-caster"};
+        static readonly string[] Roots={"MonsterCombatArt","DefenderArt","OriginiumSlugOriginal","TalulahUnboundVfx","OriginalCombatVfx","BossRoster","BossRosterFx"};
+        static readonly string[] TalulahPhaseKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot","ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end","final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","original-fire-screen-left","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
         public void OnPreprocessBuild(BuildReport report)=>Prepare(!verifiedThisSession);
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -64,6 +63,15 @@ namespace YesterdayConvoy.Editor
         static Plan CreatePlan()
         {
             var plan=new Plan();
+            // Keep the defender library available independently of the current encounter lineup.
+            for(int defender=1;defender<=30;defender++)
+            {
+                string id=$"D{defender:00}";
+                if(!DefenderVfxArt.SupportsArtId(id))continue;
+                RequireSource($"DefenderArt/{id}/manifest.json");
+                RequireSource($"DefenderArt/{id}B/manifest.json");
+            }
+            RequireSource("DefenderArt/D28Chess/manifest.json");
             foreach(string logicalRoot in Roots)
             {
                 string sourceRoot=ArtSourcePaths.ManifestDirectory(logicalRoot);
@@ -79,7 +87,7 @@ namespace YesterdayConvoy.Editor
                     if(data==null||data.version!=1||data.clips==null||data.clips.Length==0)throw new InvalidDataException("Invalid art manifest: "+manifest);
                     plan.Files.Add(manifest,source);plan.Manifests++;
                     var seen=new HashSet<string>(StringComparer.Ordinal);
-                    var phaseKeys=logicalRoot=="TalulahUnboundVfx"?new HashSet<string>(TalulahPhaseKeys.Concat(BossRosterSupplementArt.SequencesFor("CARD_TALULAH_TRIAL").Select(s=>s.Key)),StringComparer.Ordinal):null;
+                    var phaseKeys=logicalRoot=="TalulahUnboundVfx"?new HashSet<string>(TalulahPhaseKeys,StringComparer.Ordinal):null;
                     foreach(var clip in data.clips)
                     {
                         if(clip==null||string.IsNullOrWhiteSpace(clip.key)||!seen.Add(clip.key)||clip.pages==null||clip.pages.Length==0)
@@ -133,12 +141,16 @@ namespace YesterdayConvoy.Editor
             foreach(string relative in plan.Images)
             {
                 string file=ArtSourcePaths.Resolve(relative),target=Path.Combine(Cache,relative+".ycart");
-                var info=new FileInfo(file);string stamp=info.Length+"|"+info.LastWriteTimeUtc.Ticks;
+                // Block compression distorts additive RGB and smooth gradients in these HDR layers.
+                bool keepHdrPixels=relative.StartsWith("TalulahUnboundVfx/original-fire-",StringComparison.Ordinal)||
+                    ArtSourcePaths.PreserveNativeEffectPixels(relative);
+                string format=keepHdrPixels?"|rgba32":"";
+                var info=new FileInfo(file);string stamp=info.Length+"|"+info.LastWriteTimeUtc.Ticks+format;
                 string record=File.Exists(target+".hash")?File.ReadAllText(target+".hash"):"";
                 if(!strict&&File.Exists(target)&&record.EndsWith("\n"+stamp,StringComparison.Ordinal))continue;
-                byte[] source=File.ReadAllBytes(file);hashed+=source.Length;string hash=Hash(source);
+                byte[] source=File.ReadAllBytes(file);hashed+=source.Length;string hash=Hash(source)+format;
                 if(File.Exists(target)&&(record==hash||record.StartsWith(hash+"\n",StringComparison.Ordinal))){File.WriteAllText(target+".hash",hash+"\n"+stamp);continue;}
-                var texture=Decode(file);try{Write(target,texture);File.WriteAllText(target+".hash",hash+"\n"+stamp);changed++;}finally{UnityEngine.Object.DestroyImmediate(texture);}
+                var texture=Decode(file);try{Write(target,texture,compress:!keepHdrPixels);File.WriteAllText(target+".hash",hash+"\n"+stamp);changed++;}finally{UnityEngine.Object.DestroyImmediate(texture);}
             }
             foreach(var pair in plan.Previews)
             {
@@ -200,7 +212,7 @@ namespace YesterdayConvoy.Editor
                         if(reader.BaseStream.Length<21||reader.ReadInt32()!=0x59434131)throw new InvalidDataException("Invalid prepared art: "+pair.Key);
             }
             // No cleanup can reach Assets: all canonical targets are checked below the resolved Player output.
-            var managed=new List<string>(Roots){"ShopTrial"};
+            var managed=new List<string>(Roots){"ShopTrial","TalulahOriginal"};
             foreach(string root in managed)
             {
                 string target=Path.GetFullPath(Path.Combine(output,root));
@@ -224,10 +236,10 @@ namespace YesterdayConvoy.Editor
         }
         static string Hash(byte[] bytes){using(var hash=SHA256.Create())return BitConverter.ToString(hash.ComputeHash(bytes));}
         static Texture2D Decode(string file){var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);if(!ImageConversion.LoadImage(texture,File.ReadAllBytes(file),false)){UnityEngine.Object.DestroyImmediate(texture);throw new InvalidDataException(file);}return texture;}
-        static void Write(string path,Texture2D texture)
+        static void Write(string path,Texture2D texture,bool compress=true)
         {
             // Same compression and pixels as the runtime path, performed once while preparing the build.
-            if(texture.width%4==0&&texture.height%4==0)texture.Compress(true);texture.Apply(false,false);var bytes=texture.GetRawTextureData<byte>().ToArray();
+            if(compress&&texture.width%4==0&&texture.height%4==0)texture.Compress(true);texture.Apply(false,false);var bytes=texture.GetRawTextureData<byte>().ToArray();
             Directory.CreateDirectory(Path.GetDirectoryName(path));using(var file=File.Create(path))
             {
                 using(var writer=new BinaryWriter(file,System.Text.Encoding.UTF8,true)){writer.Write(0x59434131);writer.Write(texture.width);writer.Write(texture.height);writer.Write((int)texture.format);writer.Write(bytes.Length);}

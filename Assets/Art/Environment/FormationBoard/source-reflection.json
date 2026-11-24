@@ -1,0 +1,173 @@
+{
+  "sourceGame": "Arknights",
+  "stage": "LS-5",
+  "resourceVersion": "26-10-29-15-36-11-33649006",
+  "assetBundle": "scenes/obt/weekly/level_weekly_killcost_5/level_weekly_killcost_5/lightingdata.ab",
+  "sourceRecord": "docs/art/source-records/formation-ls5-native.json",
+  "sourceCube": {
+    "name": "ReflectionProbe-0",
+    "pathId": "566058113256187754",
+    "file": "CAB-cd5594dc08d91e7f11959cd50e6f59fb",
+    "faceOrder": [
+      "px",
+      "nx",
+      "py",
+      "ny",
+      "pz",
+      "nz"
+    ],
+    "encoding": "RGBMEncoded (m_LightmapFormat=5), exact runtime HDR decode scale not stored in Texture2D",
+    "m_ColorSpace": 1,
+    "mipCount": 8,
+    "mips": [
+      {
+        "width": 128,
+        "height": 128,
+        "files": [
+          "ReflectionProbe-0-px-mip0.png",
+          "ReflectionProbe-0-nx-mip0.png",
+          "ReflectionProbe-0-py-mip0.png",
+          "ReflectionProbe-0-ny-mip0.png",
+          "ReflectionProbe-0-pz-mip0.png",
+          "ReflectionProbe-0-nz-mip0.png"
+        ]
+      },
+      {
+        "width": 64,
+        "height": 64,
+        "files": [
+          "ReflectionProbe-0-px-mip1.png",
+          "ReflectionProbe-0-nx-mip1.png",
+          "ReflectionProbe-0-py-mip1.png",
+          "ReflectionProbe-0-ny-mip1.png",
+          "ReflectionProbe-0-pz-mip1.png",
+          "ReflectionProbe-0-nz-mip1.png"
+        ]
+      },
+      {
+        "width": 32,
+        "height": 32,
+        "files": [
+          "ReflectionProbe-0-px-mip2.png",
+          "ReflectionProbe-0-nx-mip2.png",
+          "ReflectionProbe-0-py-mip2.png",
+          "ReflectionProbe-0-ny-mip2.png",
+          "ReflectionProbe-0-pz-mip2.png",
+          "ReflectionProbe-0-nz-mip2.png"
+        ]
+      },
+      {
+        "width": 16,
+        "height": 16,
+        "files": [
+          "ReflectionProbe-0-px-mip3.png",
+          "ReflectionProbe-0-nx-mip3.png",
+          "ReflectionProbe-0-py-mip3.png",
+          "ReflectionProbe-0-ny-mip3.png",
+          "ReflectionProbe-0-pz-mip3.png",
+          "ReflectionProbe-0-nz-mip3.png"
+        ]
+      },
+      {
+        "width": 8,
+        "height": 8,
+        "files": [
+          "ReflectionProbe-0-px-mip4.png",
+          "ReflectionProbe-0-nx-mip4.png",
+          "ReflectionProbe-0-py-mip4.png",
+          "ReflectionProbe-0-ny-mip4.png",
+          "ReflectionProbe-0-pz-mip4.png",
+          "ReflectionProbe-0-nz-mip4.png"
+        ]
+      },
+      {
+        "width": 4,
+        "height": 4,
+        "files": [
+          "ReflectionProbe-0-px-mip5.png",
+          "ReflectionProbe-0-nx-mip5.png",
+          "ReflectionProbe-0-py-mip5.png",
+          "ReflectionProbe-0-ny-mip5.png",
+          "ReflectionProbe-0-pz-mip5.png",
+          "ReflectionProbe-0-nz-mip5.png"
+        ]
+      },
+      {
+        "width": 2,
+        "height": 2,
+        "files": [
+          "ReflectionProbe-0-px-mip6.png",
+          "ReflectionProbe-0-nx-mip6.png",
+          "ReflectionProbe-0-py-mip6.png",
+          "ReflectionProbe-0-ny-mip6.png",
+          "ReflectionProbe-0-pz-mip6.png",
+          "ReflectionProbe-0-nz-mip6.png"
+        ]
+      },
+      {
+        "width": 1,
+        "height": 1,
+        "files": [
+          "ReflectionProbe-0-px-mip7.png",
+          "ReflectionProbe-0-nx-mip7.png",
+          "ReflectionProbe-0-py-mip7.png",
+          "ReflectionProbe-0-ny-mip7.png",
+          "ReflectionProbe-0-pz-mip7.png",
+          "ReflectionProbe-0-nz-mip7.png"
+        ]
+      }
+    ]
+  },
+  "rights": "Original media belongs to its rights holders; no open redistribution licence verified. Parser licence is not a media licence.",
+  "decode": "RGBM channels preserved. Preview-compatible decode 5 * alpha * RGB; source runtime HDR decode multiplier unverified.",
+  "sha256": {
+    "ReflectionProbe-0-px-mip2.png": "222cdd266d9f292bf90698b129f25cd0508e6cd81c37213697fe58fb61a90380",
+    "ReflectionProbe-0-nz-mip1.png": "7781f12e1916a49ee18269d2a14bcea70ecfb8f909ced3ceb198be5ba876f207",
+    "ReflectionProbe-0-px-mip4.png": "ecdc308886e8a0d5079396b08e9dacc08e6c42a5c2bc470f0c2b706ed29dbdf8",
+    "ReflectionProbe-0-pz-mip2.png": "754d059582cccb53773dda94d991a7c46ec37f45eb0d922b18ee64162282b2c5",
+    "ReflectionProbe-0-nz-mip2.png": "e3349cca655000fba82395241848e4db3ae064c1874314461b8db57c0558e57d",
+    "ReflectionProbe-0-pz-mip0.png": "027601b81a43d2c510153684fb0c5b424855a3c8ce8b5a9511c13158e12dcc5e",
+    "ReflectionProbe-0-px-mip6.png": "bed32726d686b4f2e85a665a9ab9697ae2bbce1cbfddf4b6a42fc3dc70988d1c",
+    "ReflectionProbe-0-nz-mip6.png": "9242068d9f5db7e44c9df24ebf0a07a0c3e75f1b620da49d0b6793386b83dc1e",
+    "ReflectionProbe-0-nz-mip7.png": "b5cfd4208669c0316ae68e0e3b968484260cb041114b84cf099a61b808cf3913",
+    "ReflectionProbe-0-nx-mip6.png": "35c77d0dc7bc9fd1ca64df933074c2b5f7a61590b094f11adfc961446e45976e",
+    "ReflectionProbe-0-nx-mip0.png": "6eb83f0fa1d62f3456121541fc7a0dfc74fbf0b1fd9c57b89220b35fc9fc3492",
+    "ReflectionProbe-0-ny-mip0.png": "d6e0a3e9f2fd815adaa36ad2178b01cdef90a751211e6b44813e819fc9ea988f",
+    "ReflectionProbe-0-py-mip0.png": "7aab03f76c6640ae42642f806358e6ab47dbdcc8ce06248ebde9c61e488d572b",
+    "ReflectionProbe-0-pz-mip6.png": "5b1a1c4a5284b99a201d2fa93eda8e942cdf45d23664b6fa194b3a238dae3ff6",
+    "ReflectionProbe-0-ny-mip4.png": "726d197e4aa1a8e980c1c6b99ee484e0c25ccb53c748c8209836e307a893979a",
+    "ReflectionProbe-0-py-mip5.png": "cc26fa0047f3512c0b77968ff392f6d7ed03268c280fed8a60ee45ffb159d11c",
+    "ReflectionProbe-0-nx-mip3.png": "d9094c9e691ce0ab83768ebac04929f83e0a227f19f4860a1091ace9df317c61",
+    "ReflectionProbe-0-nz-mip5.png": "36ff842889b31e2dc4b83918de97222ee980126680646e47cefed611f6573935",
+    "ReflectionProbe-0-ny-mip5.png": "c4a461a49ddf6db67b68072011026ae787da2b8f9cd875e51f2f213b3a6c37aa",
+    "ReflectionProbe-0-nx-mip4.png": "3c164438b0c165542e921e42dc157d45891884bd9a7eb015934b71feded5c6ef",
+    "ReflectionProbe-0-px-mip0.png": "57f4c4308c85047fb7a52f5bece28011797fb2d5ec8f088cdab3cd849db3a1c7",
+    "ReflectionProbe-0-nz-mip3.png": "f0f2a877f4259d7597f986c3b2d94e70e3cabeabbc51752a38ddb96fabeecfc3",
+    "ReflectionProbe-0-nx-mip2.png": "10a649dcf3e12e195e82e65106ac601459a3b3804bb26ea679418ceeb5ca5d06",
+    "ReflectionProbe-0-pz-mip4.png": "388ea4d4a9cb40c755dc5297caae02ad12191025d8fe3af9a7862df2021bd745",
+    "ReflectionProbe-0-ny-mip3.png": "f052767ca8573f39ea5e34d194b409ce063e53fe776ae0ef760cd18a643003f7",
+    "ReflectionProbe-0-ny-mip7.png": "aff58bd0cfaa8cf9b859278e6aa1c3d2f4f1d16f8f5ea7b8ec2189e21538ae8b",
+    "ReflectionProbe-0-nz-mip4.png": "bc491b2feee555e99590fd8e4773e1772efa9459b0563cc10dd582967e552d1d",
+    "ReflectionProbe-0-nx-mip5.png": "782ff6461b3b72c2d73cf2bd97b1644d23aa94821ee81d44860f870d8a970a93",
+    "ReflectionProbe-0-py-mip4.png": "3658751dc4d6cc9cc692f5104ed9e5a5332f1d6329effa143c613c1343748c47",
+    "ReflectionProbe-0-py-mip2.png": "94779965223666424ac59333cf9964ab0e6d5944917d6b4d9ee1c7171f89562a",
+    "ReflectionProbe-0-nx-mip1.png": "e28db59d4f1402477f8962415b0bb5150e159a6cef53fc02cedde7c69962d3f8",
+    "ReflectionProbe-0-ny-mip1.png": "6b87ce4502d433b234f11577fd6ef14ff5aa385d647ba0775f5cd10c6b2c9e48",
+    "ReflectionProbe-0-ny-mip2.png": "2c3c39e57967cd2b3bc5d431a815aadbec098a7cacf4600a87715407eb03950b",
+    "ReflectionProbe-0-px-mip1.png": "34f358c91f6784e4d8ceb8ef9924d6485351f0ee336058e120ee2875104e3656",
+    "ReflectionProbe-0-px-mip3.png": "773433f237d8cb1a66a079892311e4ad634036e243042fa165a411334cd95622",
+    "ReflectionProbe-0-nx-mip7.png": "55e673ba37ab628fbd1d3fe89c87c8eb00ba33e18682871b15256aa69bc97957",
+    "ReflectionProbe-0-pz-mip1.png": "895de0cffb2e340ea68afa009a7c83e8f973f6732e8e372b5131323a89b7a2c4",
+    "ReflectionProbe-0-ny-mip6.png": "05ccaca26a24bc7dfdaa9b471bfc2dfd9c97eb9c0962aca583dadb8b916a2fe7",
+    "ReflectionProbe-0-px-mip7.png": "548f688020b4fd2108dda09eef789b6acdae9dd672eed5315b9cfc2e27bc4ae7",
+    "ReflectionProbe-0-pz-mip5.png": "bfa0b485048a262014216c98b9e64f48a5ca4721a541608fddb2599e2cb59db7",
+    "ReflectionProbe-0-px-mip5.png": "993406b08ed1ed0a857a4e59cc3450d22de34d7932b955c30f27c96e2644366d",
+    "ReflectionProbe-0-pz-mip3.png": "bd1c9c221885f46e9e7bca23050c91b3581486ab33b81c128f7b1891bd4b150e",
+    "ReflectionProbe-0-py-mip7.png": "304bc4dc988cb489f2a2fb84091837655b17dd76ae7923e76af506f05e381eed",
+    "ReflectionProbe-0-nz-mip0.png": "c204c22100d800930339739401e67a5cb22cc849d864f2a10eeae539158adb67",
+    "ReflectionProbe-0-py-mip1.png": "0f086cd0821237d60297b5277f854602213e1af120d21a672246c848b0671c11",
+    "ReflectionProbe-0-py-mip6.png": "3a0ded70f3c4fc52cbe3864bc6a445c2d2427ec57953cd5dbecec292fdd2ef34",
+    "ReflectionProbe-0-py-mip3.png": "8ff8c763c19499cf3616bc8002ce6ca4b577cbd3f0b51e6271fa791d2cc2f2ed",
+    "ReflectionProbe-0-pz-mip7.png": "a3f774dca9fbf4cbef11606ad4a80f8a2e15af669e99fd47226dcad910b495b7"
+  }
+}

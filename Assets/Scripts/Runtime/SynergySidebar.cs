@@ -169,37 +169,20 @@ namespace YesterdayConvoy
         {
             if(!CampaignActive)return;
             DrawSnowstormFeedback();DrawMarineFieldFeedback();DrawReunionArrivalFeedback();
-            var summaries=CurrentSynergies;var bounds=SynergyBoundsFor(summaries.Length,Loop.CanShop);
-            Fill(new Rect(0,bounds.y,bounds.xMax,bounds.height),new Color(.065f,.11f,.165f,.95f));
-            GUI.Label(new Rect(bounds.x+1,bounds.y,55,22),"羁绊",CampaignText(12,color:new Color(.92f,.95f,.98f),weight:600));
-            GUI.Label(new Rect(bounds.x+65,bounds.y,bounds.width-70,22),summaries.Count(s=>s.Tier>0)+"条已激活",CampaignText(10,TextAnchor.MiddleRight,new Color(.61f,.70f,.80f)));
-            Fill(new Rect(bounds.x,bounds.y+22,bounds.width,1),new Color(.54f,.65f,.77f,.17f));
-            if(summaries.Length==0){inspectedSynergy=null;return;}
-            Rect viewport=SynergyViewportFor(bounds);float contentWidth=SynergyWidthFor(summaries.Length,viewport);
-            campaignSynergyScroll=GUI.BeginScrollView(viewport,campaignSynergyScroll,new Rect(0,0,contentWidth,Mathf.Max(1,summaries.Length*SynergyRowPitch)),false,false);
-            try
-            {
-                for(int i=0;i<summaries.Length;i++)
+            var summaries=CurrentSynergies;
+            ApprovedShopWidgets.DrawSynergies(summaries,Loop.CanShop,scene.InterfaceFont,ref campaignSynergyScroll,
+                s=>{if(inspectedSynergy==s.Name)CloseCampaignOverlay();else OpenSynergyDetails(s.Name);},
+                (row,s)=>
                 {
-                    var s=summaries[i];Rect row=SynergyRowAtWidth(i,contentWidth);
-                    if(GUI.Button(row,GUIContent.none,GUIStyle.none))
-                    {
-                        if(inspectedSynergy==s.Name)CloseCampaignOverlay();else OpenSynergyDetails(s.Name);
-                    }
-                    bool active=s.Tier>0,snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
-                    Color ink=active?new Color(.95f,.965f,.98f):new Color(.65f,.70f,.77f);
-                    SynergyBadgePresentation.DrawBadge(SynergyBadgeRect(row),s.Name,s.Tier,s.Count,scene.InterfaceFont);
-                    GUI.Label(SynergyNameRect(row),s.Name+(s.Name=="泥岩小队"||s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""),CampaignText(14,color:ink,weight:600));
-                    SynergyBadgePresentation.DrawThresholds(SynergyThresholdRect(row),s.Thresholds,s.Tier,scene.InterfaceFont);
+                    bool snowstorm=s.Name=="雪怪小队"&&SnowstormHudActive;
                     if(s.Name=="整合运动")DrawReunionRow(row,s);
                     else if(s.Name=="感染生物")DrawInfectionFormRow(row,s.Tier);
                     else if(s.Name=="泥岩小队")DrawGolemSidebarProgress(row);
                     else if(s.Name=="海嗣"&&s.Tier>0)DrawMarineRow(row);
                     else if(snowstorm)DrawSnowstormRow(row);
                     else if(s.Name=="雪怪小队"&&SnowstormChargeHudVisible)DrawSnowstormChargeRow(row);
-                }
-            }
-            finally {GUI.EndScrollView();}
+                },s=>s.Name+(s.Name=="泥岩小队"||s.Name=="感染生物"&&InfectionChoiceEditable?" ›":""));
+            if(summaries.Length==0){inspectedSynergy=null;return;}
             var detail=summaries.FirstOrDefault(s=>s.Name==inspectedSynergy);if(detail==null){inspectedSynergy=null;return;}
             if(detail.Name=="感染生物"&&infectionChoiceRequested){DrawInfectionFormPanel(detail);return;}
             DrawUnifiedSynergyDetails(detail);

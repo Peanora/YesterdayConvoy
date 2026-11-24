@@ -9,7 +9,6 @@ namespace YesterdayConvoy.Editor
     public static class InitialDemoTools
     {
         public const string ScenePath="Assets/Scenes/MonsterTrial.unity";
-        [MenuItem("Yesterday Convoy/Initial Demo/Open Current Scene")]
         public static void Initialize()
         {
             if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

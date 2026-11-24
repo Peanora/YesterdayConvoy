@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: B14
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.CardDefinition
   cardId: CARD_B14
-  displayName: "\u5361\u5FB7\u970D\uFF0C\u9ED1\u6D41\u4E4B\u6E90"
+  displayName: "\u5361\u5FB7\u970D\u9ED1\u6D41\u4E4B\u6E90"
   recruitCost: 3
   unit: {fileID: 11400000, guid: 9e48210c9b4475e4d8cee50f491c61e4, type: 2}
   portrait: {fileID: 0}

@@ -8,7 +8,6 @@ namespace YesterdayConvoy.Editor
     public static class DefenderTrialTools
     {
         private const string Root="Assets/Data/Resources/DefenderTrial.asset";
-        [MenuItem("Yesterday Convoy/Defender Trial/Prepare and Validate")]
         public static void Prepare()
         {
             AssetDatabase.Refresh();

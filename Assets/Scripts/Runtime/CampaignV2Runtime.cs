@@ -16,7 +16,6 @@ namespace YesterdayConvoy
         }
         internal float V2Skill(DeployedUnitState u,string skillId,string key,float legacy)
         {
-            if(BossRosterCatalog.Contains(u?.CardId))return legacy;
             if(!CampaignV2Enabled||u==null||u.SynergySupport||u.CardId==SilverWolfCombat.CardId)return legacy;
             return CampaignV2Balance.SkillValue(u.CardId,CampaignV2Balance.StarFor(u.Profile?.Unit??Settings),skillId,key);
         }

@@ -26,7 +26,7 @@ namespace YesterdayConvoy
         {var original=OriginalCombatVfxArt.Get("monster/"+key);return new BossRosterFxArt.Clip(original.Sequence,original.HdrRange,0,original.Loop);}
         internal static IEnumerable<ArtSequence> SequencesFor(string card)
         {
-            if(card=="CARD_TALULAH_TRIAL")foreach(var key in new[]{"ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target","summon-B-caster","target-burn-loop","orb-body-idle","orb-body-die","orb-map_fire_crystal_birth_01_start","orb-map_fire_crystal_birth_01_buff","orb-map_fire_crystal_buff_01_start","orb-map_fire_crystal_die_01_start","orb-map_fire_crystal_skill_01_start","original-energy-stream","original-fire-impact"})yield return Talulah(key).Sequence;
+            if(card=="CARD_TALULAH_TRIAL")foreach(var key in new[]{"ignite-A-caster","ignite-A-target","ignite-B-caster","ignite-B-target","explode-A-caster","explode-A-target","explode-B-caster","explode-B-target","summon-B-caster","target-burn-loop","orb-body-idle","orb-body-die","orb-map_fire_crystal_birth_01_start","orb-map_fire_crystal_birth_01_buff","orb-map_fire_crystal_buff_01_start","orb-map_fire_crystal_die_01_start","orb-map_fire_crystal_skill_01_start","original-fire-stream","original-fire-impact"})yield return Talulah(key).Sequence;
             if(card=="CARD_M14")foreach(var key in new[]{"firstar_skill_02_range_02","firstar_skill_02_range","firstar_skill_01_range"})yield return Frost(key).Sequence;
         }
     }

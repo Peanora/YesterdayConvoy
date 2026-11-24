@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: B14
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B14_enemy_2145_cadejo
-  displayName: "\u5361\u5FB7\u970D\uFF0C\u9ED1\u6D41\u4E4B\u6E90"
-  moveSpeed: 0.65
+  displayName: "\u5361\u5FB7\u970D\u9ED1\u6D41\u4E4B\u6E90"
+  moveSpeed: 0.75
   gateDamage: 1

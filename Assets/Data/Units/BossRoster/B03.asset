@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B03_enemy_1502_crowns
   displayName: "\u5F11\u541B\u8005"
-  moveSpeed: 0.65
+  moveSpeed: 0.9
   gateDamage: 1

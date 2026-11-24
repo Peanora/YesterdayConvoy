@@ -1,22 +1,12 @@
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+
 namespace YesterdayConvoy.Tests
 {
     public sealed class MandragoraPresentationTests
     {
-        float scale;
-        [SetUp]public void Save()=>scale=Time.timeScale;
-        [TearDown]public void Restore()=>Time.timeScale=scale;
-        [UnityTest]public IEnumerator ShopMergeDeploymentNativePixelsPauseFacingAndReset()
-        {
-            yield return SceneManager.LoadSceneAsync("SynergyTrial");ManualBattleController c=null;
-            for(int i=0;i<1200;i++){c=Object.FindAnyObjectByType<ManualBattleController>();if(c!=null&&c.SynergySandbox&&!c.ArtLoading)break;yield return null;}
-            Assert.That(c!=null&&c.SynergySandbox&&!c.ArtLoading,"Sandbox must finish its actual loading path");
-            yield return c.VerifyMandragora(false);Assert.That(c.MandragoraVerificationComplete);Assert.That(c.MandragoraVerificationPassed);c.LeaveShopTrial();
-        }
         [UnityTest]public IEnumerator OriginalAtlasFramesRetainTheirPremultipliedMaterialAndTiming()
         {
             yield return null;

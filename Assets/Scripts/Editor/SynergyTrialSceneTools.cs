@@ -11,7 +11,6 @@ namespace YesterdayConvoy.Editor
 {
     public static class SynergyTrialSceneTools
     {
-        [MenuItem("Yesterday Convoy/Synergy Trials/Create Missing Authored Scenes")]
         public static void CreateMissingScenes()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode)throw new InvalidOperationException("Stop Play Mode before authoring scenes.");
@@ -59,7 +58,6 @@ namespace YesterdayConvoy.Editor
             }
             finally {if(setup.Any(s=>s.isLoaded&&s.isActive&&!string.IsNullOrEmpty(s.path)))EditorSceneManager.RestoreSceneManagerSetup(setup);}
         }
-        [MenuItem("Yesterday Convoy/Synergy Trials/Validate Authored Scenes")]
         public static void ValidateExistingScenes()
         {
             for(int i=0;i<SceneManager.sceneCount;i++)if(SceneManager.GetSceneAt(i).isDirty)

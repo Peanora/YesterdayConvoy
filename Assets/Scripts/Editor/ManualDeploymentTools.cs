@@ -10,7 +10,6 @@ namespace YesterdayConvoy.Editor
     {
         public const string DefinitionPath="Assets/Data/Battles/ManualDemo.asset";
 
-        [MenuItem("Yesterday Convoy/Initial Demo/Enable Manual Deployment")]
         public static void Initialize()
         {
             if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

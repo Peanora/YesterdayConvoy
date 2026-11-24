@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B01_enemy_1504_cqbw
   displayName: W
-  moveSpeed: 0.65
+  moveSpeed: 0.7
   gateDamage: 1

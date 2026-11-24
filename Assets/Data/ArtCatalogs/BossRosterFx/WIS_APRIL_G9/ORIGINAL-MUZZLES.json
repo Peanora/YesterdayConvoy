@@ -1,0 +1,225 @@
+{
+  "note": "Original Spine bone pose at exact OnAttack event. Offsets are from the captured skeleton origin; caller applies actor facing/body-plane transform. No original FaceSwitcher position reapplied.",
+  "rows": [
+    {
+      "action": "Attack_A",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_A",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": -30.370008114365664,
+      "sourceY": 186.69999694824207,
+      "formationX": -0.13666503651464548,
+      "formationY": 0.8401499862670893,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_B",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_B",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 47.20997629520473,
+      "sourceY": 327.36000061035134,
+      "formationX": 0.21244489332842129,
+      "formationY": 1.473120002746581,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_C",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_C",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 225.56999372043833,
+      "sourceY": 85.81999969482416,
+      "formationX": 1.0150649717419724,
+      "formationY": 0.3861899986267087,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_Down_A",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 74.99999825961724,
+      "sourceY": 24.999999999999982,
+      "formationX": 0.3374999921682776,
+      "formationY": 0.1124999999999999,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_Down_A",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": -57.280007405329926,
+      "sourceY": 123.90999984741202,
+      "formationX": -0.25776003332398467,
+      "formationY": 0.5575949993133541,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_Down_B",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 74.99999825961724,
+      "sourceY": 24.999999999999982,
+      "formationX": 0.3374999921682776,
+      "formationY": 0.1124999999999999,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_Down_B",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 22.439984037902857,
+      "sourceY": 264.3600006103514,
+      "formationX": 0.10097992817056285,
+      "formationY": 1.189620002746581,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_Down_C",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 74.99999825961724,
+      "sourceY": 24.999999999999982,
+      "formationX": 0.3374999921682776,
+      "formationY": 0.1124999999999999,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Attack_Down_C",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 173.82000114003822,
+      "sourceY": -20.760002136230455,
+      "formationX": 0.7821900051301719,
+      "formationY": -0.09342000961303704,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_1",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_1",
+      "sourceTime": 0.6000000238418579,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 167.6399848247332,
+      "sourceY": 209.22000122070298,
+      "formationX": 0.7543799317112994,
+      "formationY": 0.9414900054931633,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_2_Loop",
+      "sourceTime": 0.2666666805744171,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_2_Loop",
+      "sourceTime": 0.2666666805744171,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 410.5400033293428,
+      "sourceY": 74.92000007629389,
+      "formationX": 1.8474300149820426,
+      "formationY": 0.3371400003433225,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_2_Overload_Loop",
+      "sourceTime": 0.2666666805744171,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_2_Overload_Loop",
+      "sourceTime": 0.2666666805744171,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 410.5400033293428,
+      "sourceY": 74.92000007629389,
+      "formationX": 1.8474300149820426,
+      "formationY": 0.3371400003433225,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_3_Loop",
+      "sourceTime": 0.5333333611488342,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_3_Loop",
+      "sourceTime": 0.5333333611488342,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 248.09999371755978,
+      "sourceY": 177.9199981689452,
+      "formationX": 1.116449971729019,
+      "formationY": 0.8006399917602534,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_Down_3_Loop",
+      "sourceTime": 0.5333333611488342,
+      "bone": "F_Muzzle",
+      "sourceX": 99.999993038469,
+      "sourceY": 99.99999999999993,
+      "formationX": 0.4499999686731105,
+      "formationY": 0.4499999999999996,
+      "worldAngleDegrees": 0
+    },
+    {
+      "action": "Skill_Down_3_Loop",
+      "sourceTime": 0.5333333611488342,
+      "bone": "F_OriginMuzzle",
+      "sourceX": 206.4700042232118,
+      "sourceY": -43.13000488281247,
+      "formationX": 0.9291150190044529,
+      "formationY": -0.19408502197265612,
+      "worldAngleDegrees": 0
+    }
+  ]
+}

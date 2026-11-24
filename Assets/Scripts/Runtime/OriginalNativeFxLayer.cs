@@ -79,8 +79,8 @@ namespace YesterdayConvoy
             if(pose.BasisRotation==default)instance.Pose.BasisRotation=Quaternion.identity;
             double delta=age-instance.Age;if(clock>instance.Clock+1e-7&&delta>1e-7)instance.Rate=delta/(clock-instance.Clock);
             ApplyPose(instance,instance.Pose);
-            int order=DemoSpriteVisual.GetSortingOrder(camera,pose.Position);
-            foreach(var sorting in instance.Sorting)sorting.Renderer.sortingOrder=order+32+sorting.Offset;
+            int order=pose.FormationSortingOrder??(DemoSpriteVisual.GetSortingOrder(camera,pose.Position)+32);
+            foreach(var sorting in instance.Sorting)sorting.Renderer.sortingOrder=order+sorting.Offset;
             if(!instance.Stopped&&age>=stopAge)Stop(instance);
             double target=instance.Stopped?Math.Min(age,instance.Age+Math.Max(0,clock-instance.Clock)*instance.Rate):age;
             double sample=instance.Age;

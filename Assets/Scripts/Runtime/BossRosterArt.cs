@@ -17,7 +17,7 @@ namespace YesterdayConvoy
         [Serializable] sealed class Alias {public string key,source;}
         [Serializable] internal sealed class ClipData
         {
-            public string key,source;public int count,cell,columns;public float duration,fps,pivotX,pivotY,pixelsPerUnit;
+            public string key,source;public int count,cell,columns;public float duration,fps,pivotX,pivotY,pixelsPerUnit,presentationTop;
             public bool loop,transparentWait;public SourceEvent[] events;public SegmentData[] segments;
         }
         [Serializable] internal sealed class SegmentData {public int firstFrame,count;public ArtSequence.Page[] pages;}
@@ -100,6 +100,9 @@ namespace YesterdayConvoy
             internal float Duration {get;private set;}
             internal float Fps {get;private set;}
             internal float Ppu {get;private set;}
+            // Painted source envelope, in the same unscaled world units as Height.
+            // Zero means the optional per-motion metadata has not been supplied.
+            internal float PresentationTop {get;private set;}
             internal Vector2 Pivot {get;private set;}
             internal bool Loop {get;private set;}
             internal bool TransparentWait {get;private set;}
@@ -163,7 +166,7 @@ namespace YesterdayConvoy
                 float clipPpu=data.pixelsPerUnit>0?data.pixelsPerUnit:defaultPpu;
                 if(clipPpu<=0||data.pivotX<0||data.pivotX>1||data.pivotY<0||data.pivotY>1)
                     throw new InvalidDataException("Invalid original Boss clip scale/pivot: "+root);
-                var result=new Clip{Source=data.source,Count=data.count,Duration=data.duration,Fps=data.fps,Ppu=clipPpu,
+                var result=new Clip{Source=data.source,Count=data.count,Duration=data.duration,Fps=data.fps,Ppu=clipPpu,PresentationTop=data.presentationTop,
                     Pivot=new Vector2(data.pivotX,data.pivotY),Loop=data.loop,TransparentWait=data.transparentWait,Events=data.events??Array.Empty<SourceEvent>()};
                 var attacks=new List<float>();
                 foreach(var e in result.Events)
@@ -205,9 +208,12 @@ namespace YesterdayConvoy
         internal static BossRosterArt For(string cardIdOrTask,string view="main")
         {
             if(cardIdOrTask==null)return null;
-            string task=coreTasks.TryGetValue(cardIdOrTask,out var core)?core:cardIdOrTask.StartsWith("CARD_",StringComparison.Ordinal)?cardIdOrTask.Substring(5):cardIdOrTask.StartsWith("AUX_",StringComparison.Ordinal)?cardIdOrTask.Substring(4):cardIdOrTask;
+            // The April outfit has its own original game#9 source package. B20 remains
+            // explicitly addressable as Supernova and must never override this card.
+            bool april=cardIdOrTask=="CARD_WISADEL_APRIL"||cardIdOrTask=="WISADEL_APRIL"||cardIdOrTask=="WIS_APRIL_G9";
+            string task=april?"WIS_APRIL_G9":coreTasks.TryGetValue(cardIdOrTask,out var core)?core:cardIdOrTask.StartsWith("CARD_",StringComparison.Ordinal)?cardIdOrTask.Substring(5):cardIdOrTask.StartsWith("AUX_",StringComparison.Ordinal)?cardIdOrTask.Substring(4):cardIdOrTask;
             bool auxiliary=task=="P14"||task=="P14H"||task=="P20"||task=="P26"||task=="P12I"||task=="P15C"||task=="P24D"||task=="P25M";
-            if(!auxiliary&&(task.Length!=3||task[0]!='B'||!int.TryParse(task.Substring(1),out int n)||n<1||n>26))return null;
+            if(!april&&!auxiliary&&(task.Length!=3||task[0]!='B'||!int.TryParse(task.Substring(1),out int n)||n<1||n>26))return null;
             if(task=="B20"&&view=="main")view="front";
             if(view!="main"&&view!="front"&&view!="back")throw new ArgumentException("Unsupported Boss source view",nameof(view));
             string root="BossRoster/"+task+"/"+view;
@@ -215,7 +221,7 @@ namespace YesterdayConvoy
             string manifest=ArtSourcePaths.Resolve(root+"/manifest.json");
             if(!File.Exists(manifest))return null;
             var data=JsonUtility.FromJson<Manifest>(File.ReadAllText(manifest));
-            string expectedCard=auxiliary?"AUX_"+task:"CARD_"+task;
+            string expectedCard=april?"CARD_WISADEL_APRIL":auxiliary?"AUX_"+task:"CARD_"+task;
             foreach(var pair in coreTasks)if(pair.Value==task){expectedCard=pair.Key;break;}
             if(data==null||data.version!=1||data.task!=task||data.cardId!=expectedCard||data.view!=view||data.ppu<=0||data.height<=0||data.clips==null||data.runtimeSources==null)
                 throw new InvalidDataException("Invalid original Boss identity/manifest: "+root);

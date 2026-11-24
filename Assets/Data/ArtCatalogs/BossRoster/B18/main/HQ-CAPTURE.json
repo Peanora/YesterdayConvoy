@@ -1,0 +1,1985 @@
+{
+  "version": 1,
+  "task": "B18",
+  "method": "ORIGINAL_SPINE_PER_MOTION_CAPTURE",
+  "fps": 60,
+  "worldUnitsPerSourceBone": 0.0045,
+  "note": "Original bones, source atlas pixels, source events and timings; fixed root pivot/PPU per motion. No AI enhancement, texture resizing or source animation retiming.",
+  "clips": [
+    {
+      "key": "Attack",
+      "source": "Attack",
+      "duration": 1.600000023841858,
+      "count": 98,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5560304973121463,
+      "pivotY": 0.15101420825346856,
+      "events": [
+        {
+          "time": 0.9333333373069763,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Attack-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Attack-006.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 181.95653243010796,
+      "captureBounds": [
+        -309.2912292480469,
+        -36.35005569458008,
+        239.21926879882812,
+        472.7930603027344
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.8188043959354857
+    },
+    {
+      "key": "Die",
+      "source": "Die",
+      "duration": 5.333333492279053,
+      "count": 322,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5088394722554814,
+      "pivotY": 0.32409864017241596,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Die-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-013.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-014.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-015.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-016.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-017.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-018.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-019.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Die-020.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 108.24622213333309,
+      "captureBounds": [
+        -470.3006591796875,
+        -90.44942474365234,
+        451.7182922363281,
+        460.2298278808594
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.4871079995999989
+    },
+    {
+      "key": "Idle",
+      "source": "Idle",
+      "duration": 4,
+      "count": 241,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5471246209649185,
+      "pivotY": 0.0901371267461149,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Idle-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-013.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-014.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Idle-015.png",
+          "count": 1,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 203.21562619512557,
+      "captureBounds": [
+        -271.94891357421875,
+        -7.5242156982421875,
+        219.17999267578125,
+        466.47796630859375
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.914470317878065
+    },
+    {
+      "key": "Move",
+      "source": "Move",
+      "duration": 1.600000023841858,
+      "count": 98,
+      "fps": 60,
+      "loop": true,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5437191180843829,
+      "pivotY": 0.08795944907610403,
+      "events": [],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Move-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Move-006.png",
+          "count": 2,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 204.98344516999126,
+      "captureBounds": [
+        -267.71331787109375,
+        -8.55633544921875,
+        219.17999267578125,
+        465.9694519042969
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.9224255032649606
+    },
+    {
+      "key": "Skill_1",
+      "source": "Skill_1",
+      "duration": 3,
+      "count": 181,
+      "fps": 60,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.48852016834787865,
+      "pivotY": 0.07514346661575583,
+      "events": [
+        {
+          "time": 1.8333333730697632,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Skill_1-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-022.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-023.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-024.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-025.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-026.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-027.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-028.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-029.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-030.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-031.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-032.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-033.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-034.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-035.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-036.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-037.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-038.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-039.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-040.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-041.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-042.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-043.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-044.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "hq-Skill_1-045.png",
+          "count": 1,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "pixelsPerUnit": 91.09743792497804,
+      "captureBounds": [
+        -271.9430236816406,
+        -25.74114990234375,
+        314.95684814453125,
+        1617.6376953125
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.40993847066240113
+    },
+    {
+      "key": "Skill_2",
+      "source": "Skill_2",
+      "duration": 7.199999809265137,
+      "count": 433,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.4299383833635174,
+      "pivotY": 0.18191731885388496,
+      "events": [
+        {
+          "time": 3.3333332538604736,
+          "name": "OnPlayAudio",
+          "int": 0,
+          "float": 0,
+          "string": "reborn_1"
+        },
+        {
+          "time": 6.4666666984558105,
+          "name": "OnPlayAudio",
+          "int": 0,
+          "float": 0,
+          "string": "reborn_2"
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Skill_2-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-013.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-014.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-015.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-016.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-017.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-018.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-019.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-020.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-021.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-022.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-023.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-024.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-025.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-026.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_2-027.png",
+          "count": 1,
+          "width": 2048,
+          "height": 512
+        }
+      ],
+      "pixelsPerUnit": 122.07414451686827,
+      "captureBounds": [
+        -343.4886169433594,
+        -111.00042724609375,
+        474.0888366699219,
+        703.930908203125
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5493336503259072
+    },
+    {
+      "key": "Skill_3",
+      "source": "Skill_3",
+      "duration": 3.6666667461395264,
+      "count": 222,
+      "fps": 60,
+      "loop": false,
+      "cell": 512,
+      "columns": 4,
+      "pivotX": 0.5154448202750789,
+      "pivotY": 0.23182199707395684,
+      "events": [
+        {
+          "time": 2.9000000953674316,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "transparentWait": false,
+      "pages": [
+        {
+          "file": "hq-Skill_3-000.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-001.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-002.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-003.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-004.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-005.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-006.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-007.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-008.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-009.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-010.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-011.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-012.png",
+          "count": 16,
+          "width": 2048,
+          "height": 2048
+        },
+        {
+          "file": "hq-Skill_3-013.png",
+          "count": 14,
+          "width": 2048,
+          "height": 2048
+        }
+      ],
+      "pixelsPerUnit": 130.1679554110195,
+      "captureBounds": [
+        -396.87042236328125,
+        -44.595481872558594,
+        369.8702697753906,
+        513.4158935546875
+      ],
+      "captureMargin": 1.14,
+      "sourcePixelsPerBone": 0.5857557993495878
+    }
+  ],
+  "files": [
+    {
+      "file": "hq-Attack-000.png",
+      "sha256": "f093aab0d43ec38fb5a9b4507babb41885042dc027ecd6c59b71994248b3c563",
+      "bytes": 2423362
+    },
+    {
+      "file": "hq-Attack-001.png",
+      "sha256": "d5e0e6ac763029c6d2f46ba01781ccdee3fe003181002a12cb0df12c541c0661",
+      "bytes": 2528106
+    },
+    {
+      "file": "hq-Attack-002.png",
+      "sha256": "85c5c2ebb832e6e85516d9119fa763e265c28fc6514102baecc0913f00971946",
+      "bytes": 2344612
+    },
+    {
+      "file": "hq-Attack-003.png",
+      "sha256": "8ae480264bbc43cdcd01dfca38eb71c444acf438fa656f0a8fae2196673d0a88",
+      "bytes": 2299314
+    },
+    {
+      "file": "hq-Attack-004.png",
+      "sha256": "e0045c19c4b77340c6ec50b7484f6011f7ffec97367ea9a0fe9e8915e1db8ada",
+      "bytes": 2544412
+    },
+    {
+      "file": "hq-Attack-005.png",
+      "sha256": "561d34762253ae1443b24961ff7fd0485f5446de9344e2739d2057c78ae706b4",
+      "bytes": 2464713
+    },
+    {
+      "file": "hq-Attack-006.png",
+      "sha256": "374dbdb88f09f2b847c562b145cc830bce8eed30e2f23fb8689eb64c4ec7058e",
+      "bytes": 185496
+    },
+    {
+      "file": "hq-Die-000.png",
+      "sha256": "b0b48b7e87daa68c567fe6b9c47c59954edbd5d7d8437765c83fc04974e7f324",
+      "bytes": 1049916
+    },
+    {
+      "file": "hq-Die-001.png",
+      "sha256": "c00f2b0709d6d1a9235d4461aa981484e4ede22e107c25de1a5289defbe13ca6",
+      "bytes": 1077172
+    },
+    {
+      "file": "hq-Die-002.png",
+      "sha256": "143fe6578a8fcdcda1d60073243524b75175d1ec07ae53e4f83d9bfe816803f6",
+      "bytes": 1027166
+    },
+    {
+      "file": "hq-Die-003.png",
+      "sha256": "b407a165a262f3a09801315714661de27cbe40e73ac910ddcaff8d545d990a99",
+      "bytes": 1022328
+    },
+    {
+      "file": "hq-Die-004.png",
+      "sha256": "87189a32e2004a643f7bd12b9e71dbde54ab4ffbf4bca572033b05825b79a5b9",
+      "bytes": 1027605
+    },
+    {
+      "file": "hq-Die-005.png",
+      "sha256": "848ab8363054507479db0362f15603e1e5a0d19b14d4d67eca9cdb7c2dad1dc4",
+      "bytes": 994353
+    },
+    {
+      "file": "hq-Die-006.png",
+      "sha256": "22ce8cfadeba8bc749d3b0b6aba897bd0c1622900d78536e88939da4d57f047f",
+      "bytes": 1008226
+    },
+    {
+      "file": "hq-Die-007.png",
+      "sha256": "75639eb2a712d113a1cb8b3efca83aa7a9cce594f9be9b1c01d0286d760095e1",
+      "bytes": 994711
+    },
+    {
+      "file": "hq-Die-008.png",
+      "sha256": "00bce67cc1a016ee0178f1f3d19428f1c0c4cd2b846f355921fe98b53ffbbebc",
+      "bytes": 1026660
+    },
+    {
+      "file": "hq-Die-009.png",
+      "sha256": "786a63f8ea60de2f8562f15d79142f57bcc21f16fa71ec094c16825f6102491e",
+      "bytes": 1008820
+    },
+    {
+      "file": "hq-Die-010.png",
+      "sha256": "86fdfb472da3b2bdcd7cc64c95b346fcac6721574e7b93c98022bdeb77095454",
+      "bytes": 1030045
+    },
+    {
+      "file": "hq-Die-011.png",
+      "sha256": "d5e05f0d41d9d0a6f52c2896f1ccf4dcc519be92464e311669ebb4ce3f4f9244",
+      "bytes": 1064737
+    },
+    {
+      "file": "hq-Die-012.png",
+      "sha256": "8a6c1254a0e44932f37a519201346861c80c3ee5db163b4508e9e8dbe058fd00",
+      "bytes": 1069471
+    },
+    {
+      "file": "hq-Die-013.png",
+      "sha256": "2fd158bfed8d913cf268dbaadcc611aa5efc69590e24267a7c012f73fba2de0f",
+      "bytes": 1019787
+    },
+    {
+      "file": "hq-Die-014.png",
+      "sha256": "d62545e70c5a9fcf53ac70d7a33d5dc3a8e401c5b78b023e393958b456fad840",
+      "bytes": 930700
+    },
+    {
+      "file": "hq-Die-015.png",
+      "sha256": "fb384c3221491d9996d9d5016ca329645d99b15a2dd5fe273bd13deceac4708d",
+      "bytes": 763454
+    },
+    {
+      "file": "hq-Die-016.png",
+      "sha256": "bd59ed350e9cf419344d293cd1edbca6be34087d7f7c9207b04e7f1dbbf2ceae",
+      "bytes": 668177
+    },
+    {
+      "file": "hq-Die-017.png",
+      "sha256": "c0343c799b4f746a90e768054369188096809fd44304af88e25f92f80086c2d4",
+      "bytes": 544625
+    },
+    {
+      "file": "hq-Die-018.png",
+      "sha256": "50001e35311c59061f5ed3c0f73970a1ac0d61a3e6618caa33a76e588ced3f79",
+      "bytes": 347397
+    },
+    {
+      "file": "hq-Die-019.png",
+      "sha256": "c5e82b198b10b23c3a4252da009d2695abd03687e58a65485a0a1be964b30bf8",
+      "bytes": 369387
+    },
+    {
+      "file": "hq-Die-020.png",
+      "sha256": "d0e1f4f58289d10df30fa0c00da9e0cbcf8cc9025644e56093858fd44fbb8a6e",
+      "bytes": 22239
+    },
+    {
+      "file": "hq-Idle-000.png",
+      "sha256": "2f5e575019a8eb17882360a67c2a922d756c6ceec705732b257205f3dc376149",
+      "bytes": 2597897
+    },
+    {
+      "file": "hq-Idle-001.png",
+      "sha256": "1eaeb41acbc13f83dfc62b15206d16d3c477dd3b921b25d179d8b7c0e2853863",
+      "bytes": 2742795
+    },
+    {
+      "file": "hq-Idle-002.png",
+      "sha256": "e9bfafba96073bc1f5ea69793f5d9de214d94ed07c05d2255879a327e69e5c76",
+      "bytes": 2687073
+    },
+    {
+      "file": "hq-Idle-003.png",
+      "sha256": "c24f46a32fa63a2ec4f672de2c06ffa996e37a5a79a40c8ec7fb3db1a8119684",
+      "bytes": 2792607
+    },
+    {
+      "file": "hq-Idle-004.png",
+      "sha256": "ffa4465b40aff703748ac7a0bfd5d34475c43d5b0d956a9c52ebe3a402bca6f6",
+      "bytes": 2828666
+    },
+    {
+      "file": "hq-Idle-005.png",
+      "sha256": "1a05ba5100775959bfbe77ba735cf4bb8a5812dbab022b32e52100a15e760e6c",
+      "bytes": 2709181
+    },
+    {
+      "file": "hq-Idle-006.png",
+      "sha256": "2faeb3d1e36fc8b4bd643dce3006a4226314766c034d75156b6e2685cf8da75c",
+      "bytes": 2790429
+    },
+    {
+      "file": "hq-Idle-007.png",
+      "sha256": "b6ec016919c791d18c305f536fed12b4b699279cec8cdb635b5b3fa001e98808",
+      "bytes": 2636288
+    },
+    {
+      "file": "hq-Idle-008.png",
+      "sha256": "7e7d07a10267c6ac0598f3a01978237477f187ee4f80a51cdac5fb47b06c818c",
+      "bytes": 2758412
+    },
+    {
+      "file": "hq-Idle-009.png",
+      "sha256": "b6a847d83c56d1c85c23781c2a0cf8e80141a6c42313122f52185a8adfc05797",
+      "bytes": 2771206
+    },
+    {
+      "file": "hq-Idle-010.png",
+      "sha256": "a4789747eb433cf00aecb97326e50a85bb1a937c0471d61fe3da61b72b3245a7",
+      "bytes": 2710918
+    },
+    {
+      "file": "hq-Idle-011.png",
+      "sha256": "6ca3dbff52e69c28ee6355f202374c920ecc54916d7045a8815b249d5f9b4888",
+      "bytes": 2739992
+    },
+    {
+      "file": "hq-Idle-012.png",
+      "sha256": "4dc06ea06ef93ec28fbd4a8dcc268c610c88407686eb495bef2dc877d1f14da2",
+      "bytes": 2782894
+    },
+    {
+      "file": "hq-Idle-013.png",
+      "sha256": "4a317cebdb16eaeaec827918a07367316bf878d5d55c7e8cb2da0bcd37ccf173",
+      "bytes": 2865005
+    },
+    {
+      "file": "hq-Idle-014.png",
+      "sha256": "69b706ebbb98743ffa63c501a8b409ccb5edba325e2fd53ccbebc8120b9fb5db",
+      "bytes": 2773693
+    },
+    {
+      "file": "hq-Idle-015.png",
+      "sha256": "1df739b32fe05b1351bffe47b36c2bf023fccbb2a9701e796a9b42e1a516eecb",
+      "bytes": 206560
+    },
+    {
+      "file": "hq-Move-000.png",
+      "sha256": "5c23c24dcd8f9d3f752c280f5ce1ffc7e6a5e46dd32220263c517987160c20c4",
+      "bytes": 2836299
+    },
+    {
+      "file": "hq-Move-001.png",
+      "sha256": "12531f727915e9dca54d4c75158904289b213746c1175defe5b409ab4049bddb",
+      "bytes": 2901253
+    },
+    {
+      "file": "hq-Move-002.png",
+      "sha256": "381860a8244b740a5ac2c373dd19d2c4213d5ed28e5086593466796dcaf63a6e",
+      "bytes": 2998641
+    },
+    {
+      "file": "hq-Move-003.png",
+      "sha256": "5e0c693875584bb6c0a23463b2a75047fb70a996f021da88da2736f77c6c86e4",
+      "bytes": 3011679
+    },
+    {
+      "file": "hq-Move-004.png",
+      "sha256": "7507d12e6624e0ec9a6c27ddac179662bf7a9b83e23ef90f71d1955e1a57f265",
+      "bytes": 2912159
+    },
+    {
+      "file": "hq-Move-005.png",
+      "sha256": "768981ac06f88ca5acc63df3167533bb796720ea8872c03a0fb76062570bbe92",
+      "bytes": 2838527
+    },
+    {
+      "file": "hq-Move-006.png",
+      "sha256": "a0ec5bc7d783d48e97e181448c6846b2ea0bda9627b974b3c53a9154154f499d",
+      "bytes": 220078
+    },
+    {
+      "file": "hq-Skill_1-000.png",
+      "sha256": "a6fc7d9d1fc1a9b5eeae5e0185a52e2fe9f70035aaff8e7570cc83ecc8573125",
+      "bytes": 242600
+    },
+    {
+      "file": "hq-Skill_1-001.png",
+      "sha256": "8a501563af287f0c9fe4e81a083e0e51e2429f0478c809acc30744e46504ce4b",
+      "bytes": 239977
+    },
+    {
+      "file": "hq-Skill_1-002.png",
+      "sha256": "260810acc91fd70e4a3bfd812fe359340810d0c8ca0fc4ae01ef89ea05efe04c",
+      "bytes": 237528
+    },
+    {
+      "file": "hq-Skill_1-003.png",
+      "sha256": "e5dff92bf437e9c31d9f6a46f890722aaa2f57d924ccc612374fc90b6cacbcd2",
+      "bytes": 232665
+    },
+    {
+      "file": "hq-Skill_1-004.png",
+      "sha256": "25dfb23fd801511aac2e8b6600c6f9dae7317e002d9771d1fa4fbeabcb626d8b",
+      "bytes": 238786
+    },
+    {
+      "file": "hq-Skill_1-005.png",
+      "sha256": "02c3927c077b88bad4b0c57ffe8e28dba36c163864f7bc3da84f47cbdd249618",
+      "bytes": 237602
+    },
+    {
+      "file": "hq-Skill_1-006.png",
+      "sha256": "664e4e1c2b315006b76e6596a4419d0974179ed19f8c2dc2c0d240b19e7bfc60",
+      "bytes": 237305
+    },
+    {
+      "file": "hq-Skill_1-007.png",
+      "sha256": "8ed07f5700b35d8f76c86fdbe8ac30c4a9de5f6705b032cc3ad71cb13f254405",
+      "bytes": 229286
+    },
+    {
+      "file": "hq-Skill_1-008.png",
+      "sha256": "0cef5c7de7a240a2fa9394c257dfba7c7163e152f1cedc24e42db19078b31869",
+      "bytes": 215774
+    },
+    {
+      "file": "hq-Skill_1-009.png",
+      "sha256": "f574efab4aed983a6b04f2b7da70a2e7e210bc69bdb89d5e639197d1c4e6c5fc",
+      "bytes": 212803
+    },
+    {
+      "file": "hq-Skill_1-010.png",
+      "sha256": "c329ed46dba5b9daae381f4bbcc63752ad13106394e0859e3aad6e09caa68479",
+      "bytes": 208580
+    },
+    {
+      "file": "hq-Skill_1-011.png",
+      "sha256": "4b02dd2f63b93b31f0d4680962a7e9f3fbf6a6226e3597dbae14313edb6ef00d",
+      "bytes": 207992
+    },
+    {
+      "file": "hq-Skill_1-012.png",
+      "sha256": "5b3a2807b82b0aadefec508806f041f5d90bc244643960ad538a25473e0b9efe",
+      "bytes": 211978
+    },
+    {
+      "file": "hq-Skill_1-013.png",
+      "sha256": "b7e6316a6169dfe70bf2a938bbb519ff570cd150bd58109b6c2c1827d7d76c4c",
+      "bytes": 217367
+    },
+    {
+      "file": "hq-Skill_1-014.png",
+      "sha256": "08f6dfabc49e2ae1d1604a6bdda0940c0fef28fb3c002ee84038d89c5a7fc1e1",
+      "bytes": 230732
+    },
+    {
+      "file": "hq-Skill_1-015.png",
+      "sha256": "802c1c23c8b8491cb9dfc695551aed2fed4d01e387cf3c5f9b6b559c2ebd6c16",
+      "bytes": 224865
+    },
+    {
+      "file": "hq-Skill_1-016.png",
+      "sha256": "f895bc44b2f23acd7cdc4399ef7649ade74f82bac77f1a803563086b7b4e2184",
+      "bytes": 222038
+    },
+    {
+      "file": "hq-Skill_1-017.png",
+      "sha256": "ecb49e9d5d23fdb1abe68b800a888370a5434ff9bd64bfe80338e40971c151d5",
+      "bytes": 222868
+    },
+    {
+      "file": "hq-Skill_1-018.png",
+      "sha256": "1df890cb25897ada14207dda5d5533b1e12675eb5438acf53f9923b74ed87baa",
+      "bytes": 209520
+    },
+    {
+      "file": "hq-Skill_1-019.png",
+      "sha256": "7486420f6478e476a38985531741480fe99ee8e3d5e79759da52aa7cbcf5e402",
+      "bytes": 213024
+    },
+    {
+      "file": "hq-Skill_1-020.png",
+      "sha256": "0682dc960275bcf3720477ab75f39e336819ab7b66412c5743949f7a36598001",
+      "bytes": 213251
+    },
+    {
+      "file": "hq-Skill_1-021.png",
+      "sha256": "4ba3515e06bfaa3da575887136e284b3d6b52a85ddbeabb7ecc32b19523f6a34",
+      "bytes": 214121
+    },
+    {
+      "file": "hq-Skill_1-022.png",
+      "sha256": "4af1ef7b5a3d17ac1649332f0cc1b2b6913230b1d776845fac70b7cf644fcb01",
+      "bytes": 215085
+    },
+    {
+      "file": "hq-Skill_1-023.png",
+      "sha256": "7aac1df7f89fd518df152b9f8ae93579bd7043774d2e5b86a116e618316b2f3b",
+      "bytes": 213883
+    },
+    {
+      "file": "hq-Skill_1-024.png",
+      "sha256": "90cb80dc48089b9393ffcce76897fddc332c26dbe3a4e8a9c1c37c0d922371d0",
+      "bytes": 213855
+    },
+    {
+      "file": "hq-Skill_1-025.png",
+      "sha256": "9521700dbe00ae2658e8c1ee2a429a0de3f9b5ca64477ae760c22477f1c6d9ef",
+      "bytes": 212238
+    },
+    {
+      "file": "hq-Skill_1-026.png",
+      "sha256": "885cd8838c0e56868f3cd9fb139dd334989b9d2c35ad3dd0b4d83893e528274e",
+      "bytes": 217592
+    },
+    {
+      "file": "hq-Skill_1-027.png",
+      "sha256": "fd1ea4db79ed679eb332bf83adb6f965d62f553cc8901314fb1019ccbabf8778",
+      "bytes": 217369
+    },
+    {
+      "file": "hq-Skill_1-028.png",
+      "sha256": "612e15dd9a227ae040a7b40abc65e5a9ba8e9bd0b0531d9669bf4f46b86b34c9",
+      "bytes": 226225
+    },
+    {
+      "file": "hq-Skill_1-029.png",
+      "sha256": "b84e84636f4313f551052928a6a1f1626e6624d6f782ad6cb3d48adbf027b8c2",
+      "bytes": 222263
+    },
+    {
+      "file": "hq-Skill_1-030.png",
+      "sha256": "8b00bbb3453f802a9e8d79f200938d9d34822004dc98d37a81e42374d298bc19",
+      "bytes": 228237
+    },
+    {
+      "file": "hq-Skill_1-031.png",
+      "sha256": "c749c3ffe7890ad75d367618f0bc665cfa8e1c882ddf5d472fce94d2acf0f344",
+      "bytes": 235103
+    },
+    {
+      "file": "hq-Skill_1-032.png",
+      "sha256": "8248f5fe5f15c17bafda349a3b094a2eb296f955bc2414e68ef407184ebb379a",
+      "bytes": 239692
+    },
+    {
+      "file": "hq-Skill_1-033.png",
+      "sha256": "7a75b1a93053b0b8741e1c1b4b61ddaf89f89ebb6499115fdbfbde7b09a2cdb5",
+      "bytes": 243104
+    },
+    {
+      "file": "hq-Skill_1-034.png",
+      "sha256": "cbeb560cea66ae09ee80c3b166d90add9e5adb6ea88ecfabd56f266d2ca6c6ea",
+      "bytes": 245903
+    },
+    {
+      "file": "hq-Skill_1-035.png",
+      "sha256": "148ed3b361bd573fb8be22ee2d3651e37f28da456d9a08bb49c988eb2b8a065c",
+      "bytes": 248639
+    },
+    {
+      "file": "hq-Skill_1-036.png",
+      "sha256": "00085a9ff08a6ef3cdbcbc159da9c8773091ee926337f568af4008d870dfc436",
+      "bytes": 250527
+    },
+    {
+      "file": "hq-Skill_1-037.png",
+      "sha256": "f888ec6913737d70a6da7cf4d4e904743ed250b102e07d7c685560598102b816",
+      "bytes": 251630
+    },
+    {
+      "file": "hq-Skill_1-038.png",
+      "sha256": "27a9fe86be06e09f481257b24035df037db87e519ec860e2e73ba78760b3cc79",
+      "bytes": 251579
+    },
+    {
+      "file": "hq-Skill_1-039.png",
+      "sha256": "c2bfb031712af6a9b9aa92d17168fd992702daad84d241ca9034567e94ca0aa1",
+      "bytes": 251728
+    },
+    {
+      "file": "hq-Skill_1-040.png",
+      "sha256": "910ab57d497cf14cbd96e977a5dd64b097bbd1bcb67b9d0fc4fda1fe41d06723",
+      "bytes": 247986
+    },
+    {
+      "file": "hq-Skill_1-041.png",
+      "sha256": "9cb60f960d3c4ee902fa5509ed2bb9feef31f2ce2c7cedd36666484e07d92ddd",
+      "bytes": 246873
+    },
+    {
+      "file": "hq-Skill_1-042.png",
+      "sha256": "cfcf6c45c893f27743a17938c311a513531d313ab080d783e04786cdebf90133",
+      "bytes": 240255
+    },
+    {
+      "file": "hq-Skill_1-043.png",
+      "sha256": "dbab8a6627f63fa2c61d20a400e1873e4dc28577bf6dc0744c21a8ecb13c397f",
+      "bytes": 236711
+    },
+    {
+      "file": "hq-Skill_1-044.png",
+      "sha256": "66b0debdf5e5837a22def4d96270d41d5f4358136879166f482a2e82239a0370",
+      "bytes": 231858
+    },
+    {
+      "file": "hq-Skill_1-045.png",
+      "sha256": "eaac0a1c1df2dcfe466b6be152864c7114b3facae8d32573cc051a5886f07453",
+      "bytes": 77866
+    },
+    {
+      "file": "hq-Skill_2-000.png",
+      "sha256": "272cb9356941c13cca3b20aa0bf7945f08f55cd885d94cb130a18e5eae284676",
+      "bytes": 1238126
+    },
+    {
+      "file": "hq-Skill_2-001.png",
+      "sha256": "1b61d3464820c650f841c9f78aaf4486cf230f7402d5b8baaae8daf6a5a941cc",
+      "bytes": 1214692
+    },
+    {
+      "file": "hq-Skill_2-002.png",
+      "sha256": "31631756559285e1e19f4f87a45f5ddc95cad37630a92759a4b233f0c55f8c1e",
+      "bytes": 1154299
+    },
+    {
+      "file": "hq-Skill_2-003.png",
+      "sha256": "c8f16716907f4c0968df8239420531651f3b6f67184a6a43542cc9ae3f142f55",
+      "bytes": 1106848
+    },
+    {
+      "file": "hq-Skill_2-004.png",
+      "sha256": "73f03890127018621eb099f577994f5542425bf9cfee9c52605fc591b428d750",
+      "bytes": 1127105
+    },
+    {
+      "file": "hq-Skill_2-005.png",
+      "sha256": "a8d62968c6b90995d43601a8223a818c5b31d528e7c651719d2897773ccfa5a8",
+      "bytes": 1136972
+    },
+    {
+      "file": "hq-Skill_2-006.png",
+      "sha256": "cc03bbd73affc52597a57e3152415eefb84354df2f84e5e244cf1ff070c58fc1",
+      "bytes": 1167076
+    },
+    {
+      "file": "hq-Skill_2-007.png",
+      "sha256": "b9e913b51c805f0ce5550637abf299872f37f8b841361dd93e0c233a5ff34e0e",
+      "bytes": 1111832
+    },
+    {
+      "file": "hq-Skill_2-008.png",
+      "sha256": "4f3d157c2c8a51df0955da13f75498702e349feb4418c3b977699eb8dce4cf02",
+      "bytes": 831682
+    },
+    {
+      "file": "hq-Skill_2-009.png",
+      "sha256": "f83cb32c9df3f19f1ce386dafd2b65c0471d6b8dedef24fa293ad71cede44ec3",
+      "bytes": 730812
+    },
+    {
+      "file": "hq-Skill_2-010.png",
+      "sha256": "be2ad962bd2b13c3bf6a5ba4c87fe8dbe01c27bdf94303fef68ac15ddaa6762b",
+      "bytes": 1087001
+    },
+    {
+      "file": "hq-Skill_2-011.png",
+      "sha256": "5ab01f96895965d65b790ff3d4f48cd1bb33c4a89a288b47a4020d261ef1bbea",
+      "bytes": 1209102
+    },
+    {
+      "file": "hq-Skill_2-012.png",
+      "sha256": "6ef5d647794c4d8eea99f61174ef06be62c25a3463d7d2ef90d549bc3c711b82",
+      "bytes": 1240317
+    },
+    {
+      "file": "hq-Skill_2-013.png",
+      "sha256": "15b9d555f63877c929cafa5c7f03c2589097fc01920e0f4d59b0be2d4ef53e56",
+      "bytes": 1221470
+    },
+    {
+      "file": "hq-Skill_2-014.png",
+      "sha256": "abab88004de8a6178d3f0434595c34836393abba76ca2a960cc9be2aac8e49e8",
+      "bytes": 1166604
+    },
+    {
+      "file": "hq-Skill_2-015.png",
+      "sha256": "74676e261068060b61dd90a57569f28fe7841b203b9561c1e7b22f15b0a5afd2",
+      "bytes": 1135713
+    },
+    {
+      "file": "hq-Skill_2-016.png",
+      "sha256": "0fa2828df973121ae44ebca768163e3888f248ee0a1e0307d357b25c3434c13e",
+      "bytes": 1161281
+    },
+    {
+      "file": "hq-Skill_2-017.png",
+      "sha256": "d945187a370ff89709ff066162d980b95367da1e5847ee61052e6b2b51a5399d",
+      "bytes": 1104140
+    },
+    {
+      "file": "hq-Skill_2-018.png",
+      "sha256": "c9681aeb470a3430a89e25f9cc1572fc2a3c6b28ee61754a5999fb8fe42dab17",
+      "bytes": 1041932
+    },
+    {
+      "file": "hq-Skill_2-019.png",
+      "sha256": "594d029dda8cc655af1b2351f24ea9d494e59f50c11e5fb904ee220f50f57150",
+      "bytes": 1031186
+    },
+    {
+      "file": "hq-Skill_2-020.png",
+      "sha256": "2555660df959759cea2a7ee9963184474d16adac4c6d32460ee9c542d847d3cd",
+      "bytes": 1038945
+    },
+    {
+      "file": "hq-Skill_2-021.png",
+      "sha256": "e5ae66fa8683849eeacacd41d10304bbd940c33ce7e0229683507830db4079db",
+      "bytes": 1111810
+    },
+    {
+      "file": "hq-Skill_2-022.png",
+      "sha256": "95558df94760108382dfe5722686d40483b33572c606c64d8641198d80e9ab0e",
+      "bytes": 1315579
+    },
+    {
+      "file": "hq-Skill_2-023.png",
+      "sha256": "0c1a72b48cacf6886d1938efbe7c10f6cefacb02ebc3de59b1ee83031126efd9",
+      "bytes": 1443548
+    },
+    {
+      "file": "hq-Skill_2-024.png",
+      "sha256": "a7cb62ae7e58c7a06f8ff50e28c1ea701d384a88bb7bd37ec29b528a15a04ba8",
+      "bytes": 1246094
+    },
+    {
+      "file": "hq-Skill_2-025.png",
+      "sha256": "9cc74d82e3362232f809107326ae8a1eaebaa61a7adddadb8e2e34284ce9874a",
+      "bytes": 1217602
+    },
+    {
+      "file": "hq-Skill_2-026.png",
+      "sha256": "1d0642a479eb891ed3bb0f871ed26c044f21237fc5009feab777f45d3c6c4a82",
+      "bytes": 1284461
+    },
+    {
+      "file": "hq-Skill_2-027.png",
+      "sha256": "cac6205c9eb6fdb3d90572bcdbef44f1d4bb670975f54fc660be7db78eef8d29",
+      "bytes": 105216
+    },
+    {
+      "file": "hq-Skill_3-000.png",
+      "sha256": "ea3324c12b401bf9d3355bf3dae9553b49fe3299b13c68b4c7e6ada09659521e",
+      "bytes": 1360746
+    },
+    {
+      "file": "hq-Skill_3-001.png",
+      "sha256": "874f691fe976eefa97200543612894c3f819818f2d2afbae28920f974ed22c95",
+      "bytes": 1422366
+    },
+    {
+      "file": "hq-Skill_3-002.png",
+      "sha256": "d56afbd593ba4bd83c5b79475bd1759352d568bc95a4e10bc1f10c623cceb0b4",
+      "bytes": 1295137
+    },
+    {
+      "file": "hq-Skill_3-003.png",
+      "sha256": "23cc86f1300bf8283fcdaa4f114df869721ce8de5e2e59e079d8d83416726976",
+      "bytes": 1313012
+    },
+    {
+      "file": "hq-Skill_3-004.png",
+      "sha256": "ccf8ff1daee9afb955ed443c7699584f78ad8720399097bf10cd6a7d0d52eb85",
+      "bytes": 1334371
+    },
+    {
+      "file": "hq-Skill_3-005.png",
+      "sha256": "b76aeb67aabd2335b5cd6d2fe22738d4313d9dde3e3ef07b2e615390d9865f3f",
+      "bytes": 1330613
+    },
+    {
+      "file": "hq-Skill_3-006.png",
+      "sha256": "888adde81d0bfa7a774ff4d24658263cbcb939662c7966fe738723a5443597b5",
+      "bytes": 1359601
+    },
+    {
+      "file": "hq-Skill_3-007.png",
+      "sha256": "7ed33119cccfae1ea429c7c7492fbf3f5b8ff5e21c548a4de52978407dfb96a2",
+      "bytes": 1320726
+    },
+    {
+      "file": "hq-Skill_3-008.png",
+      "sha256": "d1a029729f07cd7ea36f87f3ca1f92c714f97108857120a2750af8e4bdd2eb2d",
+      "bytes": 1357683
+    },
+    {
+      "file": "hq-Skill_3-009.png",
+      "sha256": "d47addfdae7cc546eb8800c23ae06cd183b7184448f20415134cbffae5457923",
+      "bytes": 1347128
+    },
+    {
+      "file": "hq-Skill_3-010.png",
+      "sha256": "ffb518846a1a297dc2d2ecbcda4d5e078549ea417e131636973e3e110bc97a4f",
+      "bytes": 1321332
+    },
+    {
+      "file": "hq-Skill_3-011.png",
+      "sha256": "752f1117db890094d1c6f15cd1e2dc7eaa69579ad8c8cbbf6bc514cad186b5f3",
+      "bytes": 1432379
+    },
+    {
+      "file": "hq-Skill_3-012.png",
+      "sha256": "ff851d7de2e4ce131873afd8c998f2608a202615adadc5329295cd503853b0f1",
+      "bytes": 1461662
+    },
+    {
+      "file": "hq-Skill_3-013.png",
+      "sha256": "c0099f67db64b88c90fd7e80caf89bf400452b99d72192f92113edc4a04eae8f",
+      "bytes": 1169093
+    }
+  ],
+  "alphaChecks": [
+    {
+      "source": "Attack",
+      "time": 0,
+      "visible": 64818,
+      "edge": 0
+    },
+    {
+      "source": "Attack",
+      "time": 0.4000000059604645,
+      "visible": 68876,
+      "edge": 0
+    },
+    {
+      "source": "Attack",
+      "time": 0.800000011920929,
+      "visible": 62785,
+      "edge": 0
+    },
+    {
+      "source": "Attack",
+      "time": 1.2000000178813934,
+      "visible": 68573,
+      "edge": 0
+    },
+    {
+      "source": "Attack",
+      "time": 1.598400023818016,
+      "visible": 64830,
+      "edge": 0
+    },
+    {
+      "source": "Die",
+      "time": 0,
+      "visible": 22936,
+      "edge": 0
+    },
+    {
+      "source": "Die",
+      "time": 1.3333333730697632,
+      "visible": 21177,
+      "edge": 0
+    },
+    {
+      "source": "Die",
+      "time": 2.6666667461395264,
+      "visible": 20806,
+      "edge": 0
+    },
+    {
+      "source": "Die",
+      "time": 4.0000001192092896,
+      "visible": 17922,
+      "edge": 0
+    },
+    {
+      "source": "Die",
+      "time": 5.328000158786773,
+      "visible": 263,
+      "edge": 0
+    },
+    {
+      "source": "Idle",
+      "time": 0,
+      "visible": 80854,
+      "edge": 0
+    },
+    {
+      "source": "Idle",
+      "time": 1,
+      "visible": 86014,
+      "edge": 0
+    },
+    {
+      "source": "Idle",
+      "time": 2,
+      "visible": 80213,
+      "edge": 0
+    },
+    {
+      "source": "Idle",
+      "time": 3,
+      "visible": 83762,
+      "edge": 0
+    },
+    {
+      "source": "Idle",
+      "time": 3.996,
+      "visible": 80857,
+      "edge": 0
+    },
+    {
+      "source": "Move",
+      "time": 0,
+      "visible": 80976,
+      "edge": 0
+    },
+    {
+      "source": "Move",
+      "time": 0.4000000059604645,
+      "visible": 81176,
+      "edge": 0
+    },
+    {
+      "source": "Move",
+      "time": 0.800000011920929,
+      "visible": 86122,
+      "edge": 0
+    },
+    {
+      "source": "Move",
+      "time": 1.2000000178813934,
+      "visible": 82510,
+      "edge": 0
+    },
+    {
+      "source": "Move",
+      "time": 1.598400023818016,
+      "visible": 80988,
+      "edge": 0
+    },
+    {
+      "source": "Skill_1",
+      "time": 0,
+      "visible": 16264,
+      "edge": 0
+    },
+    {
+      "source": "Skill_1",
+      "time": 0.75,
+      "visible": 15869,
+      "edge": 0
+    },
+    {
+      "source": "Skill_1",
+      "time": 1.5,
+      "visible": 13833,
+      "edge": 0
+    },
+    {
+      "source": "Skill_1",
+      "time": 2.25,
+      "visible": 15477,
+      "edge": 0
+    },
+    {
+      "source": "Skill_1",
+      "time": 2.997,
+      "visible": 16272,
+      "edge": 0
+    },
+    {
+      "source": "Skill_2",
+      "time": 0,
+      "visible": 29213,
+      "edge": 0
+    },
+    {
+      "source": "Skill_2",
+      "time": 1.7999999523162842,
+      "visible": 25433,
+      "edge": 0
+    },
+    {
+      "source": "Skill_2",
+      "time": 3.5999999046325684,
+      "visible": 25965,
+      "edge": 0
+    },
+    {
+      "source": "Skill_2",
+      "time": 5.3999998569488525,
+      "visible": 22338,
+      "edge": 0
+    },
+    {
+      "source": "Skill_2",
+      "time": 7.192799809455871,
+      "visible": 29205,
+      "edge": 0
+    },
+    {
+      "source": "Skill_3",
+      "time": 0,
+      "visible": 33176,
+      "edge": 0
+    },
+    {
+      "source": "Skill_3",
+      "time": 0.9166666865348816,
+      "visible": 30167,
+      "edge": 0
+    },
+    {
+      "source": "Skill_3",
+      "time": 1.8333333730697632,
+      "visible": 31650,
+      "edge": 0
+    },
+    {
+      "source": "Skill_3",
+      "time": 2.7500000596046448,
+      "visible": 27304,
+      "edge": 0
+    },
+    {
+      "source": "Skill_3",
+      "time": 3.663000079393387,
+      "visible": 33179,
+      "edge": 0
+    }
+  ],
+  "completed": true,
+  "sourceFiles": [
+    {
+      "file": "B18/source/main/enemy_1510_frstar2.skel",
+      "sha256": "4e8947287e3b569979ff92514865290ecf43f10df0098357fa61eeda3fe45cc5",
+      "bytes": 207109
+    },
+    {
+      "file": "B18/source/main/enemy_1510_frstar2.atlas",
+      "sha256": "1ac80951bd9f32088198878450087e62b7eca9100be86fa341d7741985ba36d2",
+      "bytes": 5840
+    },
+    {
+      "file": "B18/source/main/enemy_1510_frstar2.png",
+      "sha256": "8c683cb2e6acdbcff8f17d318592c106c759d54c3b5dc95076765a9bd7203716",
+      "bytes": 88330
+    }
+  ]
+}

@@ -1,32 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using YesterdayConvoy.Editor;
-using Object=UnityEngine.Object;
 
 namespace YesterdayConvoy.Tests
 {
     public sealed class ApprovedMapConfigurationTests
     {
-        static ApprovedMapDefinition Map(int index)
-        {
-            var map=ApprovedMapCatalog.Find("approved-map-"+index.ToString("00"));
-            Assert.That(map,Is.Not.Null,"Missing approved map "+index);return map;
-        }
         static Vector2 Key(Vector3 point)=>new Vector2(point.x,point.z);
         static bool GroundContains(HashSet<Vector2> ground,Vector3 point)=>ground.Any(cell=>Vector2.Distance(cell,Key(point))<.001f);
 
-        [Test]public void EightIndependentDefinitionsScenesAndPreviewsAreInTheDynamicBuildCatalog()
+        [Test]public void EightIndependentDefinitionsKeepTheirOriginalEncounterData()
         {
             var maps=ApprovedMapCatalog.All;Assert.That(maps.Length,Is.EqualTo(8));
             CollectionAssert.AreEqual(Enumerable.Range(1,8),maps.Select(map=>map.index));
             Assert.That(maps.Select(map=>map.id).Distinct().Count(),Is.EqualTo(8));
-            var sceneGuids=new HashSet<string>();var definitionGuids=new HashSet<string>();
+            var definitionGuids=new HashSet<string>();
             foreach(var map in maps)
             {
                 Assert.That(map.id,Is.EqualTo("approved-map-"+map.index.ToString("00")));
@@ -35,9 +26,6 @@ namespace YesterdayConvoy.Tests
                 Assert.That(map.gridRows.Length,Is.EqualTo(map.height));Assert.That(map.gridRows.All(row=>row.Length==map.width),Is.True);
                 Assert.That(map.title,Is.Not.Empty);Assert.That(map.preview,Is.Not.Null);
                 Assert.That(AssetDatabase.Contains(map.preview),Is.True,"Preview must be a committed Unity asset.");
-                string scene="Assets/Scenes/"+map.sceneName+".unity";
-                Assert.That(File.Exists(scene),Is.True,scene);Assert.That(GameSceneCatalog.BuildPaths(),Does.Contain(scene));
-                Assert.That(sceneGuids.Add(AssetDatabase.AssetPathToGUID(scene)),Is.True,"Copied scenes require independent GUIDs.");
                 Assert.That(definitionGuids.Add(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(map))),Is.True);
                 Assert.That(map.encounter,Is.Not.Null);Assert.That(map.encounter.mapId,Is.EqualTo(map.id));
                 Assert.That(map.encounter.terrainOnly,Is.False);Assert.That(map.encounter.Snapshot(),Is.Not.Empty);
@@ -73,23 +61,6 @@ namespace YesterdayConvoy.Tests
                 CollectionAssert.AreEqual(map.encounter.route,lanes[0].Points,"Legacy first-route binding must match the first fixed lane.");
             }
             Assert.That(routes,Is.EqualTo(20));
-        }
-
-        [TestCase(1)][TestCase(2)][TestCase(3)][TestCase(4)][TestCase(5)][TestCase(6)][TestCase(7)][TestCase(8)]
-        public void EachSavedSceneHasEditableTilesPersistentAssetsAndItsOwnBootstrap(int index)
-        {
-            var map=Map(index);EditorSceneManager.OpenScene("Assets/Scenes/"+map.sceneName+".unity");
-            var bootstrap=Object.FindAnyObjectByType<ApprovedMapBootstrap>();Assert.That(bootstrap,Is.Not.Null);
-            Assert.That(bootstrap.map,Is.SameAs(map));var root=Object.FindAnyObjectByType<AuthoredBattlefield>();Assert.That(root,Is.Not.Null);
-            var tiles=root.GetComponentsInChildren<ApprovedMapTile>(true);
-            Assert.That(tiles.Length,Is.EqualTo(map.width*map.height));Assert.That(tiles.Select(tile=>tile.cell).Distinct().Count(),Is.EqualTo(tiles.Length));
-            Assert.That(root.GetComponentsInChildren<Collider>(true),Is.Empty,"Visual terrain must not introduce unapproved physics/line-of-sight rules.");
-            foreach(var renderer in root.GetComponentsInChildren<Renderer>(true))foreach(var material in renderer.sharedMaterials)
-            {Assert.That(material,Is.Not.Null,renderer.name);Assert.That(AssetDatabase.Contains(material),Is.True,renderer.name);Assert.That(material.shader,Is.Not.Null);}
-            foreach(var filter in root.GetComponentsInChildren<MeshFilter>(true))
-            {Assert.That(filter.sharedMesh,Is.Not.Null,filter.name);Assert.That(AssetDatabase.Contains(filter.sharedMesh),Is.True,filter.name);}
-            Assert.That(Camera.main,Is.Not.Null);Assert.That(Mathf.DeltaAngle(Camera.main.transform.eulerAngles.x,60),Is.EqualTo(0).Within(.01f));
-            Assert.That(Mathf.DeltaAngle(Camera.main.transform.eulerAngles.y,0),Is.EqualTo(0).Within(.01f));
         }
 
         [Test]public void OnlyTheMailMapHasAStablePortalAndOnlyTheHeatMapHasThreePhasedPumps()

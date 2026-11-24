@@ -85,7 +85,8 @@ namespace YesterdayConvoy
             {
                 texture=new Texture2D(2,2,TextureFormat.RGBA32,false);owner.Objects.Add(texture);
                 if(!ImageConversion.LoadImage(texture,File.ReadAllBytes(source),false))throw new InvalidDataException("Invalid art PNG: "+relative);
-                texture.Compress(true);texture.Apply(false,!readable);RuntimePngLoads++;
+                if(!ArtSourcePaths.PreserveNativeEffectPixels(relative))texture.Compress(true);
+                texture.Apply(false,!readable);RuntimePngLoads++;
             }
             TextureLoads++;texture.name=relative;texture.filterMode=FilterMode.Bilinear;texture.wrapMode=TextureWrapMode.Clamp;return texture;
         }

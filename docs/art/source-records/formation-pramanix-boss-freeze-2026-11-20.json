@@ -1,0 +1,85 @@
+{
+  "version": "26-10-29-15-36-11-33649006",
+  "sourceBundle": "battle/prefabs/effects/buff.ab",
+  "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_buff.dat",
+  "md5": "700f08bceed9f5a9629c998dd9f88697",
+  "sha256": "461b5fcad0746d04ed3f2fb86f3e80cc899ce8f521cb52bd4ef7d73483cc8ab7",
+  "prefabs": [
+    "buff_autochess_frozen",
+    "buff_frozen",
+    "buff_frozen_to_enemy",
+    "buff_frozen_to_fly",
+    "buff_frozen_to_walk"
+  ],
+  "date": "2026-11-20",
+  "rights": "Original Arknights media, original rights holders. Individual artists and open redistribution permission unconfirmed.",
+  "clips": {
+    "buff_frozen": {
+      "role": "Stock frozen status shell for the boss.",
+      "sampler": "Unity 6000.6.5f1 Vulkan",
+      "frames": 105,
+      "fps": 30,
+      "duration": 3.5,
+      "firstVisibleFrame": 0,
+      "pixelsPerWorldUnit": 91.42857360839844,
+      "boundsProjectedWorld": [
+        1.4656,
+        1.2469
+      ],
+      "solidAlphaEnvelopeAtSourceFrame20": [
+        148,
+        184,
+        229,
+        234
+      ],
+      "clippedPixels": 0,
+      "edgePixels": 0,
+      "sourceComponents": "ParticleEffect and PauseEffectIf plus FollowMountPoint",
+      "sourceGeometry": "Mesh ice shell, ice floor, smoke, snowflakes and stars. No collider. Own orientation without following body scale.",
+      "sourceVisualRate": "Independent of attack playback speed",
+      "atlasSha256": "7d89cfdc91bae48217207ff44e1d99216cb06def63f112ee35823a6184bc789f"
+    },
+    "buff_frozen_to_walk": {
+      "role": "Ground enemy freeze shell selected by buff_frozen_to_enemy motion mode 0.",
+      "sampler": "Unity 6000.6.5f1 Vulkan",
+      "frames": 105,
+      "fps": 30,
+      "duration": 3.5,
+      "firstVisibleFrame": 0,
+      "pixelsPerWorldUnit": 91.42857360839844,
+      "boundsProjectedWorld": [
+        1.4437,
+        1.2469
+      ],
+      "solidAlphaEnvelopeAtSourceFrame20": [
+        148,
+        186,
+        228,
+        236
+      ],
+      "clippedPixels": 0,
+      "edgePixels": 0,
+      "sourceComponents": "ParticleEffect and PauseEffectIf",
+      "sourceGeometry": "Mesh ice shell, ice floor, smoke, snowflakes and stars. No collider. Own orientation without following body scale.",
+      "sourceVisualRate": "Independent of attack playback speed",
+      "atlasSha256": "61cf3370240cb1f99f222690a6d3f343cdeade0bdb3336059bd7ec1b598aea4f"
+    }
+  },
+  "bindings": {
+    "lethalTalent": {
+      "template": "sbell2_t2[escape_dead]",
+      "event": "ON_POST_TRY_SET_HP_ZERO",
+      "ownerFreezeBuff": "e2c_freeze",
+      "inRangeTargetFreezeBuff": "c2e_freeze[double_cold][freeze_key]",
+      "overrideEffectKey": null,
+      "heal": "Immediate lifetime sbell2_t2[heal]. Its OnBuffFinish performs HealViaMaxHpRatio and emits sbell2_revive."
+    },
+    "groundEnemyVariant": {
+      "wrapper": "buff_frozen_to_enemy",
+      "component": "OnPlayEmitterIf",
+      "motionMode0": "buff_frozen_to_walk",
+      "motionMode1": "buff_frozen_to_fly"
+    },
+    "limitations": "Default client status-to-prefab attachment is not serialized in the lethal buff graph. The stock status ice and exact ground-enemy branch are sampled individually. The board applies them to the owner and ground targets with projection and visible body anchor adaptations."
+  }
+}

@@ -1,6 +1,12 @@
 # 工程目录与场景规范
 
-2026-11-10军团攻擂：新增 `Assets/Scenes/WisadelBossArena.unity` 独立保存的9×7小棋盘与八处集结位，正式构建目录共25场景。源配置在 `Assets/Data/Resources/BossArena`，独立材质在 `Assets/Art/Environment/BossArena`，维什戴尔超新星运行图集为DefenderArt/D31与D31B。系统菜单及角色测试页进入，不替换默认十二节点行动；地形不在Play中生成。见[BOSS_ARENA_TRIAL](BOSS_ARENA_TRIAL.md)。
+当前正式版本的唯一地图和构建入口是 `Assets/Scenes/FormationBattle.unity`。三个位面共用这张实体棋盘。旧场景从当前工程和菜单退役，旧地图与已淘汰的进攻方模型由 Git 历史留存。现役角色与完整守军资源库位于 `Assets/Art/Characters`，动态加载清单位于 `Assets/Data/ArtCatalogs`，棋盘复用的门、地面材质与角色特效继续保留。使用 Unity 的 `Yesterday Convoy → Baseline → Validate` 或 `Build Windows` 校验和构建。
+
+下方按时间保留原目录迁移和旧场景实现的历史记录。
+
+2026-11-17工业庭院接入：`FormationBattle.unity`保留112格原坐标，新增保存的外围厂房／卷闸门／设备／货架及中线8红门、最右8蓝门。材质在`Assets/Art/Environment/FormationBattle/Industrial`；显式`FormationIndustrialTools.Apply`仅替换本Demo外围装饰和材质，不在Play执行，日常编辑直接保存场景。见[工业地图来源与边界](art/FORMATION_INDUSTRIAL_MAP.md)。
+
+2026-11-17 固定战场布阵 Demo：新增 `Assets/Scenes/FormationBattle.unity`，14×8 的112格地形、左右分区和右端蓝门均保存于场景；材质在 `Assets/Art/Environment/FormationBattle`。正常 EXE 右上菜单进入“矩形攻坚 · 新玩法 Demo”。`FormationBattleTools.Author` 仅创建缺失场景，不覆盖人工地图；运行时只生成角色和反馈。后续常规战斗规则以 [固定战场布阵](FORMATION_BATTLE.md) 和 GDD 顶部为准，旧行动与专项保留其现状。
 
 2026-11-09项目文件清理：试玩/预览 `.cmd` 启动器已从根目录、tools、文档预览与本地Builds中移除，后续不得再生成或复制，也不改用 `.bat`。标准入口只有 `Builds/Windows/YesterdayConvoy.exe`（默认十三关，其他模式走游戏内菜单），浏览器预览直接打开相应 HTML。保留Unity工程、角色资源、现有构建和必要IDE生成文件；不为清理启动器删除他人未提交修改或工程缓存。
 

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: B11
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B11_enemy_1548_ltniak
-  displayName: "\u8D6B\u5C14\u660F\u4F50\u4F26\uFF0F\u5DEB\u738B"
-  moveSpeed: 0.65
-  gateDamage: 2
+  displayName: "\u8D6B\u5C14\u660F\u4F50\u4F26\u5DEB\u738B"
+  moveSpeed: 0.6
+  gateDamage: 1

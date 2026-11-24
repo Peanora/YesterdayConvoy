@@ -23,22 +23,10 @@ namespace YesterdayConvoy
             var piece=shop.Bench[bench];int index=shopLineup.IndexOf(piece.Id);
             return index<0||!IsLineupPiece(piece)?Rect.zero:LoopRosterRect(index);
         }
-        GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)
-            =>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
-        bool LoopButton(Rect rect,string text,bool primary=false)
-        {
-            var style=LoopText(14,TextAnchor.MiddleCenter,primary?new Color(.26f,.23f,.16f):ApprovedUi.Ink,600);
-            style.padding=new RectOffset(5,5,0,0);style.border=new RectOffset();
-            foreach(var state in new[]{style.normal,style.hover,style.active,style.focused})
-            {state.textColor=primary?new Color(.26f,.23f,.16f):ApprovedUi.Ink;state.background=Texture2D.whiteTexture;}
-            Color old=GUI.backgroundColor;GUI.backgroundColor=primary?ApprovedUi.Gold:new Color(.82f,.87f,.90f);
-            bool clicked=GUI.Button(rect,text,style);GUI.backgroundColor=old;
-            ApprovedUi.Border(rect,new Color(.51f,.61f,.69f,GUI.enabled?.55f:.2f));
-            return clicked;
-        }
+        GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)=>OriginalShopPresentation.LoopText(size,alignment,color,weight);
+        bool LoopButton(Rect rect,string text,bool primary=false)=>OriginalShopPresentation.LoopButton(rect,text,primary);
         void DrawLoopHeader()
         {
-            if(BossArenaActive){DrawArenaHeader();return;}
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
             string mode=JourneyActive?"十二关行动 · v2":Battle.WavesEnabled?"波次进攻 · 独立试玩":BlackForestChallengeActive?"六星防线 · 独立试玩":Loop==null?"商店试验":CampaignActive?(SynergySandbox?"羁绊验证":"三阶段挑战"):Loop.LateGame?"后期演示":"基础演示";
             string phase=preparing?"整备阶段":Battle.IsPaused?"已暂停":Battle.Phase==BattlePhase.Running?"战斗进行中":"本关结束";
@@ -63,17 +51,19 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(1222,8,42,42),"菜单"))
             {loopMenuOpen=!loopMenuOpen;loopTestSettlementOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}
             DrawWaveHeader(preparing);
+            if(JourneyActive&&preparing)
+            {
+                var entry=Battle.WavesEnabled?new Rect(1012,495,250,38):new Rect(226,12,322,36);
+                if(LoopButton(entry,"战前布阵 · 新玩法试玩 ▶",true))
+                {
+                    Debug.Log("FORMATION_VISIBLE_ENTRY_SELECTED");
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);
+                }
+            }
         }
-        static void DrawLoopShield(Vector2 origin,Color color)
-        {
-            Vector2[] vertices={new Vector2(0,0),new Vector2(15,0),new Vector2(15,12),new Vector2(7.5f,19),new Vector2(0,12),new Vector2(0,0)};
-            for(int i=0;i<vertices.Length-1;i++)ShopLine(origin+vertices[i],origin+vertices[i+1],color,1.5f);
-            ShopLine(origin+new Vector2(5,4),origin+new Vector2(10,4),color,1.5f);
-            ShopLine(origin+new Vector2(7.5f,4),origin+new Vector2(7.5f,12),color,1.5f);
-        }
+        static void DrawLoopShield(Vector2 origin,Color color)=>ApprovedShopPresentation.DrawLoopShield(origin,color);
         void DrawLoopInterface()
         {
-            if(BossArenaActive&&!Loop.CanShop){DrawArenaFight();return;}
             EnsureStyles();var e=Event.current;
             Vector2 point=TacticalViewport.Current.FromTopLeft(e.mousePosition);
             TrackRouteHover(point);
@@ -143,7 +133,7 @@ namespace YesterdayConvoy
         {
             Fill(new Rect(0,552,1280,168),new Color(.12f,.20f,.26f,.35f));
             GUI.Label(new Rect(18,553,160,24),"部署栏",LoopText(14,TextAnchor.MiddleLeft,Color.white,600));
-            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 技能继续自动触发"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
+            GUI.Label(new Rect(150,553,720,24),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?$"点击卡牌部署至 {Battle.CurrentWaveLaneId} · 暂停可部署 · 次数全关共享":"出兵结束 · 场上单位继续推进 · 仍可点击角色使用技能"):"拖至红门部署 · 暂停时仍可放置",LoopText(11,TextAnchor.MiddleLeft,new Color(.86f,.92f,.96f)));
             for(int i=0;i<shopLineup.Count;i++)
             {
                 string id=shopLineup[i];var state=Battle.FindCard(id);if(state==null)continue;
@@ -177,20 +167,14 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(522,312,236,18),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?"可点击部署 · 空格继续":"出兵已结束 · 空格继续"):"可拖动部署 · 空格继续",LoopText(11,TextAnchor.MiddleCenter,ApprovedUi.Muted));
             }
         }
-        void DrawLoopCostBackground(Rect rect,int recruitCost)
-        {
-            Color tier=ApprovedUi.Tier(recruitCost),top=Color.Lerp(tier,Color.white,.30f);
-            for(int row=0;row<16;row++)Fill(new Rect(rect.x,rect.y+row*rect.height/16,rect.width,rect.height/16+1),Color.Lerp(top,tier,row/15f));
-            Fill(new Rect(rect.x,rect.yMax-5,rect.width,5),Color.Lerp(tier,Color.black,.28f));
-            ShopBorder(rect,Color.Lerp(tier,Color.white,.45f),1);
-        }
+        void DrawLoopCostBackground(Rect rect,int recruitCost)=>OriginalShopPresentation.DrawLoopCostBackground(rect,recruitCost);
         void DrawLoopShop()
         {
             DrawShopMarket(Loop.CanShop);
             DrawShopBench(LoopText(12,TextAnchor.MiddleCenter));
             GUI.Label(new Rect(1142,624,120,18),"开战后锁定本场编队",LoopText(10,TextAnchor.MiddleCenter,Color.white));
             GUI.enabled=Loop.CanShop&&!ShopPanelTransitioning;
-            if(LoopButton(new Rect(1142,643,120,50),BossArenaActive?"整队出击  ▶":JourneyActive&&Loop.RewardStage?"领取补给  ▶":JourneyActive||BlackForestChallengeActive?"开始战斗  ▶":"开始下一战  ▶",true))
+            if(LoopButton(new Rect(1142,643,120,50),JourneyActive&&Loop.RewardStage?"领取补给  ▶":JourneyActive||BlackForestChallengeActive?"开始战斗  ▶":"开始下一战  ▶",true))
             {if(JourneyActive&&Loop.RewardStage)ClaimCampaignSupply();else if(shopLineup.Count==0)ShopNotice("请至少编队一张卡");else PrepareNextLoopBattle();}
             GUI.enabled=true;
         }
@@ -247,8 +231,6 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(x,y,width,30),"满席三星样板")){EnterShopTrial(2,TacticalMapId);loopMenuOpen=false;return;}y+=37;
             }
             if(LoopButton(new Rect(x,y,width,30),"返回测试选择")){ReturnToTrialScene();return;}y+=37;
-            if(!BossArenaActive)
-            {if(LoopButton(new Rect(x,y,width,30),"军团攻擂 · 维什戴尔")){UnityEngine.SceneManagement.SceneManager.LoadScene(BossArenaRules.SceneName);return;}y+=37;}
             if(CampaignActive&&Loop.CanDeploy)
             {if(LoopButton(new Rect(x,y,width,30),"重开本关（保留运营）")){RestartCampaignEncounter();return;}y+=37;}
             if(Debug.isDebugBuild&&Loop!=null&&Loop.CanDeploy&&!JourneyActive)
@@ -256,7 +238,7 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(x,y,width,30),"验证工具 · 直接结算"))
                 {loopTestSettlementOpen=true;loopMenuOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}y+=37;
             }
-            if(LoopButton(new Rect(x,y,width,30),"关闭菜单"))loopMenuOpen=false;
+            if(LoopButton(new Rect(x,y,width,30),"矩形攻坚 · 新玩法 Demo"))UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);
         }
         void ReturnToTrialScene()
         {

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: B24
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.UnitDefinition
   unitId: B24_enemy_1602_blksnk
-  displayName: "\u4E0D\u6B7B\u7684\u9ED1\u86C7\uFF082026\u7248\uFF09"
+  displayName: "\u4E0D\u6B7B\u7684\u9ED1\u86C7"
   moveSpeed: 0.65
   gateDamage: 1

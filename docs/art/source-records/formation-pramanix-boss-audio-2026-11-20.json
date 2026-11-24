@@ -1,0 +1,397 @@
+{
+  "date": "2026-11-20",
+  "characterId": "char_1046_sbell2",
+  "voiceLanguage": "Mandarin zh-CN",
+  "skin": "default",
+  "rights": "Original Arknights voice, music, sound effects and recordings. Original rights holders retain rights. Open redistribution permission unconfirmed.",
+  "references": {
+    "spokenLineMap": "https://prts.wiki/w/Pramanix_the_Prerita",
+    "rawAudioCueData": "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/audio_data.json",
+    "originalMusicHotUpdateIndex": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/cn/bundles/hot_update_list.json",
+    "officialEventAlbum": "https://monster-siren.hypergryph.com/music/048767"
+  },
+  "voice": {
+    "source": {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_voice_cn_char_1046_sbell2.dat",
+      "archive": "audio/sound_beta_2/voice_cn/char_1046_sbell2.ab",
+      "md5": "1c9d1a23ca8f14725e5106833ce1b418",
+      "sha256": "1f7ac87523a9ae1acce66c04f606065bf1b8cfb0d7edd2b508604cf34dadbc92",
+      "verifiedAgainstHotIndex": true,
+      "version": "26-10-29-15-36-11-33649006"
+    },
+    "clips": {
+      "3": {
+        "sourceClip": "CN_027",
+        "projectFile": "Assets/Audio/SFX/Resources/SnowBoss/voice-3.wav",
+        "seconds": 2.2034013605442175,
+        "samples": 97170,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "referenceRole": "BATTLE_SKILL_3",
+        "text": "这是群山许诺于我的力量",
+        "sha256": "5669fe10691546bcd9250dd42d191edba957f05168af43b3f14f450fb696134c",
+        "peakDbfs": -3.19,
+        "rmsDbfs": -16.36
+      },
+      "4": {
+        "sourceClip": "CN_028",
+        "projectFile": "Assets/Audio/SFX/Resources/SnowBoss/voice-4.wav",
+        "seconds": 1.4140589569160997,
+        "samples": 62360,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "referenceRole": "BATTLE_SKILL_4",
+        "text": "渺小的抗争",
+        "sha256": "8628a8e00ae42d7e991016c6f41c962e04e019c524310daa0414110a5862fe56",
+        "peakDbfs": -1.36,
+        "rmsDbfs": -17.58
+      },
+      "2": {
+        "sourceClip": "CN_026",
+        "projectFile": "Assets/Audio/SFX/Resources/SnowBoss/voice-2.wav",
+        "seconds": 2.5607256235827665,
+        "samples": 112928,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "referenceRole": "BATTLE_SKILL_2",
+        "text": "冰雪不曾怀有怜悯",
+        "sha256": "99668a7c341dc482cbef4b394afe132fe5849f08fe8f33e5bbfd65cf86ed0800",
+        "peakDbfs": -1.24,
+        "rmsDbfs": -16.73
+      },
+      "1": {
+        "sourceClip": "CN_025",
+        "projectFile": "Assets/Audio/SFX/Resources/SnowBoss/voice-1.wav",
+        "seconds": 2.8700680272108845,
+        "samples": 126570,
+        "channels": 1,
+        "frequency": 44100,
+        "bits": 16,
+        "referenceRole": "BATTLE_SKILL_1",
+        "text": "寒风不曾心存偏私",
+        "sha256": "def173592c53b5fa0bdc589711705b0b3df4fbde7d13a6a857acb398c7925d0f",
+        "peakDbfs": -1.29,
+        "rmsDbfs": -17.94
+      }
+    },
+    "decode": "Original Unity AudioClips decoded to PCM 16-bit 44.1 kHz mono. No normalization or edits."
+  },
+  "music": {
+    "version": "26-11-13-06-37-23-89286612",
+    "source": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-11-13-06-37-23-89286612/audio_sound_beta_2_music_act46side_m_bat1_act46side.dat",
+    "archive": "audio/sound_beta_2/music/act46side/m_bat1_act46side.ab",
+    "md5": "766cc80b2b7e2a9f0ae116eee8dd9bb2",
+    "sha256": "e2a8e9b8eb68a32b3658e6dc94ba033355899362d886c4e5ded229c6edbcc674",
+    "name": "m_bat1_act46side_loop",
+    "cue": "battle.ON_GAME_READY.act46side1",
+    "intro": null,
+    "projectFile": "Assets/Audio/BGM/Resources/SnowBoss/battle.ogg",
+    "compressedBytes": 3187368,
+    "clipStats": {
+      "sampleRate": 44100,
+      "channels": 2,
+      "loopSamples": 7632692,
+      "seconds": 173.07691609977323
+    },
+    "outputProbe": {
+      "codec_name": "vorbis",
+      "sample_rate": "44100",
+      "channels": 2,
+      "duration_ts": 7632692,
+      "duration": "173.076916"
+    },
+    "outputSHA256": "2bdec408e3538d194b6c5f7bb930cf46c00ef1bba7e997382225bfb803286c02",
+    "selection": "Normal event battle cue. The original is one complete loop without an intro. EX battle, lobby and two boss tracks are separate cues.",
+    "decode": "Original Unity AudioClip decoded and stored as stereo Ogg Vorbis quality 6. No trimming, gain, fade or loop remix. Source and output have identical audio sample counts."
+  },
+  "soundEffects": {
+    "version": "26-10-29-15-36-11-33649006",
+    "packages": [
+      {
+        "bundle": "audio/sound_beta_2/player/p_atk_5.ab",
+        "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_player_p_atk_5.dat",
+        "md5": "95dfa04b428737030262d65b1d5290fb",
+        "sha256": "8eb82b1612be1437376c9893af611c4c7f96b85fff81d3d442ec24621ef71d72"
+      },
+      {
+        "bundle": "audio/sound_beta_2/player/p_imp_1.ab",
+        "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_player_p_imp_1.dat",
+        "md5": "cc01078f0caac721fb35f016bdc4ce4a",
+        "sha256": "fa7e5917cd1a9e762d0cd98015dcbb93a8d27580171c7c961ef06d1c45a01de2"
+      },
+      {
+        "bundle": "audio/sound_beta_2/player/p_imp_2.ab",
+        "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_player_p_imp_2.dat",
+        "md5": "fe80837d4662e10c49802a012590cd0b",
+        "sha256": "94b3e42a5786a0c8a437761c1b2004001721afb9d767dd519016f733ac833b4b"
+      },
+      {
+        "bundle": "audio/sound_beta_2/player/p_imp_3.ab",
+        "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_player_p_imp_3.dat",
+        "md5": "80bc2915a371abf4eb4edbe26153ef65",
+        "sha256": "d574cb69673b15839e5d919581263f6b46a6342979ae1de1e100432af55c364c"
+      },
+      {
+        "bundle": "audio/sound_beta_2/player/p_skill_20.ab",
+        "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/audio_sound_beta_2_player_p_skill_20.dat",
+        "md5": "3c78ef4e78e5924e192f12b86f2a014c",
+        "sha256": "5cf21865a654522a25a182e8f04d33ab51066d5ab604ce010e80f190bd6dde60"
+      }
+    ],
+    "clips": {
+      "p_atk_swlprdbl_s": {
+        "bundle": "audio/sound_beta_2/player/p_atk_5.ab",
+        "name": "p_atk_swlprdbl_s",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_atk_swlprdbl_s.wav",
+        "seconds": 2.3744375,
+        "rate": 48000,
+        "channels": 2,
+        "sha256": "56fe1f21813f64803feaf8c55180e79e97e367888c8921423de312d7121fb2c5",
+        "sourceRole": "Third skill attack animation start",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_ABILITY_START.char_1046_sbell2.attack.2",
+            "asset": "Audio/Sound_Beta_2/Player/p_atk/p_atk_swlprdbl_s",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -0.0,
+        "rmsDbfs": -18.87
+      },
+      "p_atk_swlprdbl_h": {
+        "bundle": "audio/sound_beta_2/player/p_atk_5.ab",
+        "name": "p_atk_swlprdbl_h",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_atk_swlprdbl_h.wav",
+        "seconds": 1.6346041666666666,
+        "rate": 48000,
+        "channels": 2,
+        "sha256": "7c49c9cf1979f3cfaeabf61f52ffb0b1d43a7eca9a879a62b6b045323ec78740",
+        "sourceRole": "Second skill attack animation start",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_ABILITY_START.char_1046_sbell2.attack.1",
+            "asset": "Audio/Sound_Beta_2/Player/p_atk/p_atk_swlprdbl_h",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -6.1,
+        "rmsDbfs": -26.26
+      },
+      "p_atk_swlprdblrs_h": {
+        "bundle": "audio/sound_beta_2/player/p_atk_5.ab",
+        "name": "p_atk_swlprdblrs_h",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_atk_swlprdblrs_h.wav",
+        "seconds": 2.003979166666667,
+        "rate": 48000,
+        "channels": 2,
+        "sha256": "fffc820339500b7d9d09a9132c2b4bec58dd5f7ee0b28c2dd2555622688bd56a",
+        "sourceRole": "Second skill source contact at OnAttack, original body frame 42 / 60fps",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_ABILITY_ON.char_1046_sbell2.attack.1",
+            "asset": "Audio/Sound_Beta_2/Player/p_atk/p_atk_swlprdblrs_h",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -0.5,
+        "rmsDbfs": -16.06
+      },
+      "p_imp_swlprdbl_s": {
+        "bundle": "audio/sound_beta_2/player/p_imp_1.ab",
+        "name": "p_imp_swlprdbl_s",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_imp_swlprdbl_s.wav",
+        "seconds": 1.2112291666666666,
+        "rate": 48000,
+        "channels": 1,
+        "sha256": "4d61e61da9d94319dc983d353ec56e9ffdf39c5c3b987c7a34f6e6a1ca043974",
+        "sourceRole": "Third skill direct target impact, original body frame 40 / 60fps for A/B/C",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_ABILITY_HIT.char_1046_sbell2.attack.2",
+            "asset": "Audio/Sound_Beta_2/Player/p_imp/p_imp_swlprdbl_s",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": 0.0,
+        "rmsDbfs": -16.06
+      },
+      "p_imp_swcvr_h": {
+        "bundle": "audio/sound_beta_2/player/p_imp_2.ab",
+        "name": "p_imp_swcvr_h",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_imp_swcvr_h.wav",
+        "seconds": 0.7494583333333333,
+        "rate": 48000,
+        "channels": 1,
+        "sha256": "c4e35b0707ad5cf19cd003f0ce378e3c4861cb0ec735d4a04e8d3c909a858b0f",
+        "sourceRole": "Second skill snow damage tick",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_CUSTOM_TRIGGER.sbell2_skill2_dot_audio",
+            "asset": "Audio/Sound_Beta_2/Player/p_imp/p_imp_swcvr_h",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -4.7,
+        "rmsDbfs": -22.27
+      },
+      "p_imp_swcvr": {
+        "bundle": "audio/sound_beta_2/player/p_imp_2.ab",
+        "name": "p_imp_swcvr",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_imp_swcvr.wav",
+        "seconds": 1.1095208333333333,
+        "rate": 48000,
+        "channels": 1,
+        "sha256": "2250e43617a94d889204649bd408143d00f0e7ae289ab1c268c265742aa5dec7",
+        "sourceRole": "Snow accumulation tier refresh",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_CUSTOM_TRIGGER.sbell2_snow_refresh_audio",
+            "asset": "Audio/Sound_Beta_2/Player/p_imp/p_imp_swcvr",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -2.22,
+        "rmsDbfs": -15.25
+      },
+      "p_imp_swlprdbl_n": {
+        "bundle": "audio/sound_beta_2/player/p_imp_3.ab",
+        "name": "p_imp_swlprdbl_n",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_imp_swlprdbl_n.wav",
+        "seconds": 1.47625,
+        "rate": 48000,
+        "channels": 1,
+        "sha256": "e9bb2a61e9259d843478639420df6b8e14f778a6f6a04fab792a109c52004541",
+        "sourceRole": "Second skill direct target impact",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_CUSTOM_TRIGGER.sbell2_snow_tile_enter_damage_audio",
+            "asset": "Audio/Sound_Beta_2/Player/p_imp/p_imp_swlprdbl_n",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          },
+          {
+            "event": "battle.ON_ABILITY_HIT.skchr_sbell2_1",
+            "asset": "Audio/Sound_Beta_2/Player/p_imp/p_imp_swlprdbl_n",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          },
+          {
+            "event": "battle.ON_ABILITY_HIT.char_1046_sbell2.attack.1",
+            "asset": "Audio/Sound_Beta_2/Player/p_imp/p_imp_swlprdbl_n",
+            "delay": 0.0,
+            "minPitch": 0.8,
+            "maxPitch": 1.2,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": 0.0,
+        "rmsDbfs": -21.96
+      },
+      "p_skill_swlprdbl_h": {
+        "bundle": "audio/sound_beta_2/player/p_skill_20.ab",
+        "name": "p_skill_swlprdbl_h",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_skill_swlprdbl_h.wav",
+        "seconds": 7.1108125,
+        "rate": 48000,
+        "channels": 2,
+        "sha256": "16410b94b98ffe1d8e307767f7bd12e176e9974294e4145068b91dcbf5e5ca19",
+        "sourceRole": "Second skill activation",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_ABILITY_START.skchr_sbell2_2",
+            "asset": "Audio/Sound_Beta_2/Player/p_skill/p_skill_swlprdbl_h",
+            "delay": 0.0,
+            "minPitch": 1.0,
+            "maxPitch": 1.0,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -1.23,
+        "rmsDbfs": -19.4
+      },
+      "p_skill_swlprdbl": {
+        "bundle": "audio/sound_beta_2/player/p_skill_20.ab",
+        "name": "p_skill_swlprdbl",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_skill_swlprdbl.wav",
+        "seconds": 4.023375,
+        "rate": 48000,
+        "channels": 2,
+        "sha256": "86f21c59fb4b0c23d43595c130cd69186c0cef391fee6400fd77d65178ce1be2",
+        "sourceRole": "Lethal talent heal/freeze transition",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_CUSTOM_TRIGGER.sbell2_talent_heal_audio",
+            "asset": "Audio/Sound_Beta_2/Player/p_skill/p_skill_swlprdbl",
+            "delay": 0.0,
+            "minPitch": 1.0,
+            "maxPitch": 1.0,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -0.87,
+        "rmsDbfs": -15.28
+      },
+      "p_skill_swlprdbl_s": {
+        "bundle": "audio/sound_beta_2/player/p_skill_20.ab",
+        "name": "p_skill_swlprdbl_s",
+        "file": "Assets/Audio/SFX/Resources/SnowBoss/p_skill_swlprdbl_s.wav",
+        "seconds": 6.526041666666667,
+        "rate": 48000,
+        "channels": 2,
+        "sha256": "9152da79db0063f6fda7d961ae84afae249dd4ed25171517f9c1dc3578581c32",
+        "sourceRole": "Third skill activation",
+        "audioTableBindings": [
+          {
+            "event": "battle.ON_SKILL_START.skchr_sbell2_3",
+            "asset": "Audio/Sound_Beta_2/Player/p_skill/p_skill_swlprdbl_s",
+            "delay": 0.0,
+            "minPitch": 1.0,
+            "maxPitch": 1.0,
+            "minVolume": 1.0,
+            "maxVolume": 1.0
+          }
+        ],
+        "peakDbfs": -0.49,
+        "rmsDbfs": -17.85
+      }
+    },
+    "decode": "Original Unity AudioClips decoded to PCM 16-bit 48 kHz. No normalization or edits."
+  },
+  "verification": "Source package MD5s matched the corresponding original hot-update indices. Clip names, channels, rates, duration and nonzero sample data were checked offline. In-game playback and mixing are recorded separately in QA."
+}

@@ -125,20 +125,28 @@ def dimensions(path):
     return struct.unpack(">II", data[16:24])
 
 
-def segments(clip):
-    result, pages, count, first = [], [], 0, 0
+def segments(clip, max_pixels=None):
+    result, pages, count, first, pixels = [], [], 0, 0, 0
     for page in clip["pages"]:
-        if pages and count + page["count"] > 600:
+        page_pixels = page["width"] * page["height"] if max_pixels else 0
+        if pages and (count + page["count"] > 600 or max_pixels and pixels + page_pixels > max_pixels):
             result.append({"firstFrame": first, "count": count, "pages": pages})
             first += count
-            pages, count = [], 0
+            pages, count, pixels = [], 0, 0
         if page["count"] > 600:
             raise ValueError("A source page exceeds one ArtSequence cache unit")
         pages.append(dict(page))
         count += page["count"]
+        pixels += page_pixels
     if pages:
         result.append({"firstFrame": first, "count": count, "pages": pages})
     return result
+
+
+def recaptured_body_segments(task, clip):
+    # Preserve B08 layout. New high-resolution bodies stream bounded groups
+    # instead of loading a whole long motion as one GPU resource.
+    return segments(clip, None if task == "B08" else 24 * 1024 * 1024)
 
 
 def validate_source(folder, data):
@@ -278,11 +286,81 @@ def package(project, source, task, view="main"):
     return verify(project, task, view)
 
 
+def verify_recaptured_body(project, task, view, data, source):
+    """Validate an explicitly re-rendered original body without claiming byte reuse."""
+    catalogs = project / "Assets/Data/ArtCatalogs/BossRoster" / task / view
+    out = project / "Assets/Art/Characters/Monsters/BossRoster" / task / view
+    capture_path = catalogs / "HQ-CAPTURE.json"
+    capture = read_json(capture_path)
+    preview = Path(source["sourcePreview"])
+    legacy = read_json(preview / "atlases" / task / view / "manifest.json")
+    original = next(m for m in read_json(preview / "MODEL-REPORT.json")["models"]
+                    if (m["task"], m["view"]) == (task, view))
+    natives = {clip["name"]: clip for clip in original["animations"]}
+    old_clips = {clip["source"]: clip for clip in legacy["clips"]}
+    assert capture["completed"] and capture["task"] == task
+    assert source["atlasManifestSha256"] == sha256(capture_path)
+    assert data["cardId"] == CORE_CARDS.get(task, "CARD_" + task)
+    assert data["zeroDurationStates"] == legacy["zeroDurationStates"]
+    assert data["ppu"] == legacy["scale"] / WORLD_UNITS_PER_BONE
+    assert len(data["clips"]) == len(capture["clips"]) == len(legacy["clips"])
+    source_hashes = {record["file"]: record["sha256"] for record in source["sourceFiles"]}
+    for record in capture["sourceFiles"]:
+        assert record["sha256"] == source_hashes[record["file"]]
+        assert sha256(preview / record["file"]) == record["sha256"]
+    hashes = {record["file"]: record["sha256"] for record in capture["files"]}
+    assert hashes == {record["file"]: record["sha256"] for record in source["atlasFiles"]}
+    pages = 0
+    for clip, expected in zip(data["clips"], capture["clips"]):
+        old = old_clips[clip["source"]]
+        for key in ("source", "duration", "count", "fps", "events", "loop", "transparentWait"):
+            assert clip[key] == expected[key] == old[key], (task, clip["source"], key)
+        assert clip["duration"] == natives[clip["source"]]["duration"]
+        assert clip["events"] == natives[clip["source"]]["events"]
+        for key in ("cell", "columns", "pivotX", "pivotY", "pixelsPerUnit", "pages"):
+            assert clip[key] == expected[key]
+        assert 0 <= clip["pivotX"] <= 1 and 0 <= clip["pivotY"] <= 1
+        assert clip["pixelsPerUnit"] == expected["sourcePixelsPerBone"] / WORLD_UNITS_PER_BONE
+        assert clip["segments"] == recaptured_body_segments(task, expected)
+        assert sum(page["count"] for page in clip["pages"]) == clip["count"]
+        for page in clip["pages"]:
+            path = out / page["file"]
+            assert sha256(path) == hashes[page["file"]]
+            assert dimensions(path) == (page["width"], page["height"])
+            assert max(page["width"], page["height"]) <= 2048
+            assert path.with_name(path.name + ".meta").exists()
+            pages += 1
+    legacy_hashes = {record["file"]: record["sha256"] for record in legacy["files"]}
+    for file, expected_hash in legacy_hashes.items():
+        assert sha256(out / file) == expected_hash
+    assert {p.name for p in out.glob("*.png")} == set(hashes) | set(legacy_hashes) | {"portrait.png"}
+    assert sha256(out / "portrait.png") == source["portraitSha256"]
+    assert all(row["edge"] == 0 for row in capture["alphaChecks"])
+    result = {"task": task, "view": view, "timedClips": len(data["clips"]),
+              "frames": sum(clip["count"] for clip in data["clips"]), "pages": pages,
+              "zeroDurationMetadataStates": len(data["zeroDurationStates"]),
+              "runtimeSources": data["runtimeSources"], "ppu": data["ppu"],
+              "pngBytes": sum((out / file).stat().st_size for file in hashes),
+              "cacheSegments": sum(len(clip["segments"]) for clip in data["clips"]),
+              "originalBytesAndHashesPreserved": False,
+              "originalInputHashesPreserved": True, "sourceRecapturedAtHigherDensity": True,
+              "originalTimingEventsAndPivotPreserved": True,
+              "pivotPolicy": "World root preserved via matching per-motion pixel pivots and PPU; normalized image pivots intentionally differ.",
+              "unityTests": "NOT_RUN"}
+    write_json(catalogs / "PACKAGE-QA.json", result)
+    return result
+
+
 def verify(project, task, view):
     out = project / "Assets/Art/Characters/Monsters/BossRoster" / task / view
     catalogs = project / "Assets/Data/ArtCatalogs/BossRoster" / task / view
     data = read_json(catalogs / "manifest.json")
     source = read_json(catalogs / "SOURCE-RECORD.json")
+    if data.get("capturePolicy") in {
+        "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_A_1024_B_FIXED_WORLD_ORIGIN",
+        "ORIGINAL_SPINE_PER_MOTION_VIEWPORT_512_768_FIXED_WORLD_ORIGIN",
+    }:
+        return verify_recaptured_body(project, task, view, data, source)
     preview = Path(source["sourcePreview"])
     auxiliary = task.startswith("P")
     expected = read_json(catalogs / "CAPTURE-MANIFEST.json" if auxiliary else preview / "atlases" / task / view / "manifest.json")
@@ -356,7 +434,7 @@ def main():
                    "timedClips": sum(r["timedClips"] for r in results), "frames": sum(r["frames"] for r in results),
                    "pages": sum(r["pages"] for r in results), "zeroDurationMetadataStates": sum(r["zeroDurationMetadataStates"] for r in results),
                    "pngBytes": sum(r["pngBytes"] for r in results), "cacheSegments": sum(r["cacheSegments"] for r in results),
-                   "originalBytesAndHashesPreserved": True, "originalTimingEventsAndPivotPreserved": True,
+                   "originalBytesAndHashesPreserved": all(r["originalBytesAndHashesPreserved"] for r in results), "originalTimingEventsAndPivotPreserved": True,
                    "packages": results, "unityTests": "NOT_RUN_BY_PACKAGER"}
         path = project / "Assets/Data/ArtCatalogs/BossRoster/PACKAGE-QA.json"
         write_json(path, summary)

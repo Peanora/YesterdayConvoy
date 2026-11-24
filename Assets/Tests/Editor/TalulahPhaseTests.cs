@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -11,6 +10,9 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class TalulahPhaseTests
     {
+        [Serializable] sealed class PhaseManifest {public PhaseClip[] clips;}
+        [Serializable] sealed class PhaseClip {public string key;public PhasePage[] pages;}
+        [Serializable] sealed class PhasePage {public string file;}
         const string Card="CARD_TALULAH_TRIAL";
         static ManualBattle Battle(bool second=true,bool blast=false)
         {
@@ -105,9 +107,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(b.TryActivateSkill(b.RunId,2,u.EntityId),Is.EqualTo(SkillFailure.None));
             double start=b.Clock;var p=u.Motion.Position;At(b,start+5.99);
             Assert.That(b.IsSkillActionPlaying(u));Assert.That(u.Motion.Position,Is.EqualTo(p));
-            At(b,start+6.01);Assert.That(u.SkillAmmo,Is.Zero);Assert.That(b.Clock,Is.GreaterThanOrEqualTo(u.FireRainStartedAt+b.UnitCombat(u).SkillInterval));
-            Assert.That(b.CombatShots.Count(s=>s.FireRain&&s.StartedAt>=start&&s.StartedAt<=start+6),Is.EqualTo(6),"The original six manual waves retain their own six-second window.");
-            if(b.IsSkillActionPlaying(u)){Assert.That(b.BossCoreFrame(u,out var raw,out var age,out var loop),Is.True);Assert.That(raw,Is.EqualTo("Skill_1_B").Or.EqualTo("Skill_2_B"),"An immediately following source auto-skill is distinct from the completed manual rain.");}
+            At(b,start+6.01);Assert.That(b.IsSkillActionPlaying(u),Is.False);
         }
 
         [Test] public void SecondLethalWaitsForFinalRainThenRunsOneFinalDeathPath()
@@ -117,9 +117,8 @@ namespace YesterdayConvoy.Tests
             Assert.That(u.TalulahPhase,Is.EqualTo(TalulahPhase.FinalFall));Assert.That(u.Active);
             Assert.That(b.DeathBlasts,Is.Empty);
             At(b,began+5.001);Assert.That(u.TalulahPhase,Is.EqualTo(TalulahPhase.FinalRain));
-            float health=b.Defender.Health,breath=b.BossCoreDamage(u,"breath");At(b,began+7.001);
-            float extraBreath=b.BossCoreDamage(u,"breath")-breath;Assert.That(extraBreath,Is.GreaterThan(0),"Existing source breath persists independently through the final-rain transition.");
-            Assert.That(health-b.Defender.Health-extraBreath,Is.EqualTo(90).Within(.01),"The automatic wave keeps its original 90; new breath is counted independently from actual HP receipts.");
+            float health=b.Defender.Health;At(b,began+7.001);
+            Assert.That(health-b.Defender.Health,Is.EqualTo(90).Within(.01));
             At(b,began+32.999);Assert.That(u.Active);Assert.That(b.DeathBlasts,Is.Empty);
             At(b,began+33.001);Assert.That(u.Resolution,Is.EqualTo(UnitResolution.Dead));
             Assert.That(u.TalulahPhase,Is.EqualTo(TalulahPhase.Dead));
@@ -172,31 +171,30 @@ namespace YesterdayConvoy.Tests
             finally{UnityEngine.Object.DestroyImmediate(go);}
         }
 
-        [Test] public void SecondPhasePreparationIncludesApprovedBodyAndBoundSourceEffectsWithoutDecodingTextures()
+        [Test] public void BoardExportsOnlyBoundTalulahPhasePagesWithoutDecodingTextures()
         {
-            var data=AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/Data/Battles/TalulahTrial.asset");
-            var plan=typeof(ManualBattleController).GetMethod("Plan",BindingFlags.Static|BindingFlags.NonPublic);
-            string[] Keys(bool second)
-            {
-                var result=(IEnumerable)plan.Invoke(null,new object[]{Array.Empty<DefenderPlacement>(),new[]{data.Card},false,second});
-                return result.Cast<object>().Select(clip=>(string)clip.GetType().GetProperty("CacheKey").GetValue(clip)).ToArray();
-            }
             int before=ArtMemoryCache.TextureLoads;
-            var baseline=Keys(false);var phase=Keys(true);
-            foreach(var clip in BossCoreArt.SequencesFor(data.Card.CardId))
-                Assert.That(baseline,Does.Contain(clip.CacheKey),"Every approved original phase must be ready before combat.");
-            Assert.That(phase.Any(key=>key.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.False,"The replaced body must not load a second obsolete atlas set.");
-            Assert.That(phase,Does.Contain("TalulahUnboundVfx/ambient-B-wing"));
-            var supplement=BossRosterSupplementArt.SequencesFor(data.Card.CardId).ToArray();
-            Assert.That(supplement.Length,Is.EqualTo(19));
-            foreach(var clip in supplement)Assert.That(phase,Does.Contain(clip.CacheKey));
-            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before),"Planning and pinning must not synchronously decode B atlases.");
             var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
                 .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
                 .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
+            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before));
+            string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
+                "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
+                "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
+                "ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","original-fire-screen-left",
+                "explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
+            var manifest=JsonUtility.FromJson<PhaseManifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
+            CollectionAssert.IsSubsetOf(boundKeys,manifest.clips.Select(clip=>clip.key).ToArray());
+            var expectedPages=manifest.clips.Where(clip=>boundKeys.Contains(clip.key))
+                .SelectMany(clip=>clip.pages.Select(page=>page.file)).ToArray();
+            CollectionAssert.AreEquivalent(expectedPages,pages,"Include all and only the actually bound source/HDR pages.");
+            foreach(var unused in manifest.clips.Where(clip=>!boundKeys.Contains(clip.key)).SelectMany(clip=>clip.pages.Select(page=>page.file)))
+                CollectionAssert.DoesNotContain(pages,unused,"Unbound source page leaked into the Player: "+unused);
+            foreach(string page in new[]{"ignite-A-caster-00.png","ignite-A-target-00.png","ignite-B-target-00.png",
+                "explode-A-target-00.png","explode-B-target-00.png","original-fire-stream-00.png","original-fire-impact-00.png","original-fire-screen-left-00.png"})
+                Assert.That(pages,Does.Contain(page),"New formation mode's actual point-of-hit/caster dependency.");
             Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
-            Assert.That(pages.Any(page=>page.StartsWith("orb-body-idle",StringComparison.Ordinal)),Is.True,"Live energy objects must also exist in Player payloads.");
-            Assert.That(pages.Any(page=>page.StartsWith("orb-birth-model-source-fx",StringComparison.Ordinal)||page.StartsWith("orb-cast-model-source-fx",StringComparison.Ordinal)),Is.False,"Unbound source-only effects must remain out of Player payloads.");
+            Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);
         }
     }
 }

@@ -158,7 +158,6 @@ namespace YesterdayConvoy
         }
         void FrameShopMap()
         {
-            if(BossArenaActive){FrameBossArena();return;}
             shopWindowWidth=Screen.width;shopWindowHeight=Screen.height;
             var camera=Camera.main;camera.rect=TacticalViewport.Current.CameraRect(CurrentShopBattlefieldRect);camera.transform.position=shopMapCameraPosition;camera.fieldOfView=shopPreviousFieldOfView;
             var points=ShopMapPlayablePoints().ToArray();
@@ -316,30 +315,10 @@ namespace YesterdayConvoy
                 if(!defender.Settings.Skill.Enabled)continue;
                 bool active=Battle.DefenderSkillActive(defender);
                 float progress=active?(float)((defender.SkillActiveUntil-Battle.Clock)/defender.Settings.Skill.Duration):defender.SkillSP/defender.Settings.Skill.RequiredSP;
-                if(active&&Battle.SeventhUsesAmmo(defender))progress=(float)defender.Ammo/Battle.SeventhAmmoCapacity(defender);
                 Fill(new Rect(p.x-24,p.y+8,48,4),new Color(.03f,.05f,.06f));Fill(new Rect(p.x-23,p.y+9,46*Mathf.Clamp01(progress),2),active?new Color(1,.8f,.2f):new Color(.25f,.65f,1));
             }
         }
-        static Texture2D CreateShopStar()
-        {
-            var points=new Vector2[10];for(int i=0;i<10;i++){float angle=(90+i*36)*Mathf.Deg2Rad,r=i%2==0?29:13;points[i]=new Vector2(32+Mathf.Cos(angle)*r,32+Mathf.Sin(angle)*r);}
-            var pixels=new Color[64*64];
-            for(int y=0;y<64;y++)for(int x=0;x<64;x++)
-            {
-                int coverage=0;for(int sy=0;sy<2;sy++)for(int sx=0;sx<2;sx++)
-                {
-                    float px=x+(sx+.5f)/2,py=y+(sy+.5f)/2;bool inside=false;
-                    for(int i=0,j=9;i<10;j=i++)if((points[i].y>py)!=(points[j].y>py)&&px<(points[j].x-points[i].x)*(py-points[i].y)/(points[j].y-points[i].y)+points[i].x)inside=!inside;
-                    if(inside)coverage++;
-                }
-                pixels[y*64+x]=new Color(1,1,1,coverage/4f);
-            }
-            var texture=new Texture2D(64,64,TextureFormat.RGBA32,false){name="Shop promotion star",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};texture.SetPixels(pixels);texture.Apply();return texture;
-        }
-        void DrawShopStars(Rect bounds,int count,Color color)
-        {
-            Color previous=GUI.color;GUI.color=color;float size=Mathf.Min(bounds.height,bounds.width/count),start=bounds.center.x-count*size/2;
-            for(int i=0;i<count;i++)GUI.DrawTexture(new Rect(start+i*size,bounds.y,size,size),shopStar,ScaleMode.ScaleToFit,true);GUI.color=previous;
-        }
+        static Texture2D CreateShopStar()=>ApprovedShopPresentation.CreateShopStar();
+        void DrawShopStars(Rect bounds,int count,Color color)=>OriginalShopPresentation.DrawShopStars(bounds,count,color);
     }
 }
