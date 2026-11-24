@@ -1,0 +1,334 @@
+{
+  "task": "B08",
+  "name": "“万火归一”",
+  "reference": "https://prts.wiki/w/%E2%80%9C%E4%B8%87%E7%81%AB%E5%BD%92%E4%B8%80%E2%80%9D",
+  "view": "main",
+  "model": "enemy_1563_fthlgj",
+  "folder": "B08/source/main",
+  "version": "3.8.99",
+  "skin": "default",
+  "skins": [
+    "default"
+  ],
+  "bones": 279,
+  "slots": 110,
+  "bounds": [
+    -926.48486328125,
+    -398.16357421875,
+    3966.60498046875,
+    2138.584716796875
+  ],
+  "animations": [
+    {
+      "name": "A_Attack",
+      "duration": 1.6666666269302368,
+      "bounds": [
+        -769.1388549804688,
+        -126.05252838134766,
+        385.0976867675781,
+        647.1318969726562
+      ],
+      "events": [
+        {
+          "time": 0.8999999761581421,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 35346,
+      "loop": false
+    },
+    {
+      "name": "A_Default",
+      "duration": 0,
+      "bounds": [
+        -662.05615234375,
+        -13.066364288330078,
+        326.49554443359375,
+        518.327392578125
+      ],
+      "events": [],
+      "verticesMeasured": 1356,
+      "loop": false
+    },
+    {
+      "name": "A_Die_End",
+      "duration": 1.1666666269302368,
+      "bounds": [
+        -686.5304565429688,
+        -167.16543579101562,
+        361.6126708984375,
+        557.709228515625
+      ],
+      "events": [],
+      "verticesMeasured": 15100,
+      "loop": false
+    },
+    {
+      "name": "A_Die_End_2",
+      "duration": 2,
+      "bounds": [
+        -876.1854858398438,
+        -382.70513916015625,
+        614.9552001953125,
+        1256.300537109375
+      ],
+      "events": [],
+      "verticesMeasured": 24754,
+      "loop": false
+    },
+    {
+      "name": "A_Die_Loop",
+      "duration": 0,
+      "bounds": [
+        -681.9868774414062,
+        -162.46014404296875,
+        344.21466064453125,
+        251.9752197265625
+      ],
+      "events": [],
+      "verticesMeasured": 532,
+      "loop": false
+    },
+    {
+      "name": "A_Die_Start",
+      "duration": 1,
+      "bounds": [
+        -691.3391723632812,
+        -162.46014404296875,
+        380.3305358886719,
+        640.86767578125
+      ],
+      "events": [],
+      "verticesMeasured": 14588,
+      "loop": false
+    },
+    {
+      "name": "A_Idle",
+      "duration": 2.6666667461395264,
+      "bounds": [
+        -669.5884399414062,
+        -26.873201370239258,
+        335.50982666015625,
+        646.525634765625
+      ],
+      "events": [],
+      "verticesMeasured": 56686,
+      "loop": true
+    },
+    {
+      "name": "A_Move",
+      "duration": 2,
+      "bounds": [
+        -670.5751342773438,
+        -41.21128845214844,
+        326.49554443359375,
+        647.539306640625
+      ],
+      "events": [],
+      "verticesMeasured": 42272,
+      "loop": true
+    },
+    {
+      "name": "A_Skill_1",
+      "duration": 2,
+      "bounds": [
+        -757.0245971679688,
+        -114.23302459716797,
+        433.29998779296875,
+        689.3222045898438
+      ],
+      "events": [
+        {
+          "time": 0.9666666388511658,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 42254,
+      "loop": false
+    },
+    {
+      "name": "A_Skill_2",
+      "duration": 2.8333332538604736,
+      "bounds": [
+        -791.3358154296875,
+        -165.6400146484375,
+        355.1997375488281,
+        730.0281982421875
+      ],
+      "events": [
+        {
+          "time": 0.8999999761581421,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 59602,
+      "loop": false
+    },
+    {
+      "name": "B_Attack",
+      "duration": 1.6666666269302368,
+      "bounds": [
+        -911.7265625,
+        -43.93689727783203,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "events": [
+        {
+          "time": 0.8666666746139526,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 25037,
+      "loop": false
+    },
+    {
+      "name": "B_Default",
+      "duration": 0,
+      "bounds": [
+        -826.2861938476562,
+        12.810391426086426,
+        243.3627471923828,
+        823.1326904296875
+      ],
+      "events": [],
+      "verticesMeasured": 954,
+      "loop": false
+    },
+    {
+      "name": "B_Die",
+      "duration": 1,
+      "bounds": [
+        -925.1505737304688,
+        -327.9360046386719,
+        547.1943969726562,
+        913.9207153320312
+      ],
+      "events": [],
+      "verticesMeasured": 14787,
+      "loop": false
+    },
+    {
+      "name": "B_Idle",
+      "duration": 4,
+      "bounds": [
+        -926.48486328125,
+        -398.16357421875,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "events": [],
+      "verticesMeasured": 58427,
+      "loop": true
+    },
+    {
+      "name": "B_Move",
+      "duration": 4,
+      "bounds": [
+        -921.966552734375,
+        -390.298095703125,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "events": [],
+      "verticesMeasured": 58427,
+      "loop": true
+    },
+    {
+      "name": "B_Skill_1",
+      "duration": 1.6666666269302368,
+      "bounds": [
+        -920.962890625,
+        -310.7434997558594,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 25037,
+      "loop": false
+    },
+    {
+      "name": "B_Skill_2",
+      "duration": 2.8333332538604736,
+      "bounds": [
+        -921.358642578125,
+        -362.5544738769531,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "events": [
+        {
+          "time": 0.800000011920929,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 41732,
+      "loop": false
+    },
+    {
+      "name": "B_Skill_3_End",
+      "duration": 1,
+      "bounds": [
+        -923.217529296875,
+        -503.1659851074219,
+        3966.60498046875,
+        2138.584716796875
+      ],
+      "events": [],
+      "verticesMeasured": 15020,
+      "loop": false
+    },
+    {
+      "name": "B_Skill_3_Loop",
+      "duration": 1.3333333730697632,
+      "bounds": null,
+      "events": [
+        {
+          "time": 0,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "verticesMeasured": 0,
+      "loop": true
+    },
+    {
+      "name": "B_Skill_3_Start",
+      "duration": 1.2666666507720947,
+      "bounds": [
+        -879.17041015625,
+        -495.44451904296875,
+        872.2438354492188,
+        1821.2718505859375
+      ],
+      "events": [],
+      "verticesMeasured": 18126,
+      "loop": false
+    }
+  ]
+}

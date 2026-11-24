@@ -1,0 +1,311 @@
+{
+  "version": 1,
+  "task": "B05",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "enemy_shdbjg_attack_hit_01",
+      "count": 21,
+      "width": 56,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2857142857142857,
+      "pivotY": 0.4990105628967285,
+      "duration": 0.7,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_attack_hit_01/00.png",
+          "count": 21,
+          "width": 672,
+          "height": 64
+        }
+      ]
+    },
+    {
+      "key": "enemy_shdbjg_attack_hit_02",
+      "count": 23,
+      "width": 56,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.2857142857142857,
+      "pivotY": 0.4990105628967285,
+      "duration": 0.7666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_attack_hit_02/00.png",
+          "count": 23,
+          "width": 672,
+          "height": 64
+        }
+      ]
+    },
+    {
+      "key": "enemy_shdbjg_attack_start_01",
+      "count": 34,
+      "width": 40,
+      "height": 36,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.575,
+      "pivotY": 0.16578716701931429,
+      "duration": 1.1333333333333333,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_attack_start_01/00.png",
+          "count": 34,
+          "width": 480,
+          "height": 108
+        }
+      ]
+    },
+    {
+      "key": "enemy_shdbjg_attack_start_02",
+      "count": 12,
+      "width": 28,
+      "height": 16,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.39285714285714285,
+      "pivotY": 0.49802112579345703,
+      "duration": 0.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_attack_start_02/00.png",
+          "count": 12,
+          "width": 336,
+          "height": 16
+        }
+      ]
+    },
+    {
+      "key": "enemy_shdbjg_light_hit",
+      "count": 60,
+      "width": 92,
+      "height": 76,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.4891304347826087,
+      "pivotY": 0.539057079114412,
+      "duration": 2.0,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_light_hit/00.png",
+          "count": 60,
+          "width": 1104,
+          "height": 380
+        }
+      ]
+    },
+    {
+      "key": "enemy_shdbjg_light_start_01",
+      "count": 12,
+      "width": 68,
+      "height": 44,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.4852941176470588,
+      "pivotY": 0.3664549047296698,
+      "duration": 0.4,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_light_start_01/00.png",
+          "count": 12,
+          "width": 816,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "key": "enemy_shdbjg_light_trail_01",
+      "count": 25,
+      "width": 28,
+      "height": 20,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.42857142857142855,
+      "pivotY": 0.5484169006347657,
+      "duration": 0.8333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "enemy_shdbjg_light_trail_01/00.png",
+          "count": 25,
+          "width": 336,
+          "height": 60
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "enemy_shdbjg_attack_hit_01",
+        "enemy_shdbjg_attack_hit_02",
+        "enemy_shdbjg_attack_start_01",
+        "enemy_shdbjg_attack_start_02",
+        "enemy_shdbjg_light_hit",
+        "enemy_shdbjg_light_start_01",
+        "enemy_shdbjg_light_trail_01"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_shdbjg_attack_start_02",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_shdbjg_attack_hit_02",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_shdbjg_attack_start_01",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Combat",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_shdbjg_attack_hit_01",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Combat",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "shining",
+      "key": "enemy_shdbjg_light_start_01",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "shining",
+      "key": "enemy_shdbjg_light_trail_01",
+      "attach": "projectile",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "shining",
+      "key": "enemy_shdbjg_light_hit",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": true
+    }
+  ]
+}

@@ -1,5 +1,706 @@
 # 验证证据与回归
 
+## 2026-11-23 顶部抉择抽屉
+
+- 运行源码 `ef6a5d803a4d9fb7e55145379ac60265c2b8e579`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,429,710 字节、0 错误、退出 0。Runtime DLL SHA-256 `7F58487C853CFDFFFCF1944FF9814BE615FF0DF3AE40FD9384484E2C37D33FA6`。同源码完整 EditMode **1236/1236**、正式挑战场景定向 PlayMode **1/1**。最初包含截图用例的无图形 PlayMode 运行卡在场景加载后的用例阶段，已停止。 [构建日志](../artifacts/formation-decision-drawer/build-verified.log) · [EditMode](../artifacts/formation-decision-drawer/edit-verified.xml) · [PlayMode](../artifacts/formation-decision-drawer/play-verified.xml)
+- 同版 1280×720 D3D11 Player 两轮专项均 **150/150**、零异常、退出 0。一轮直接调用正式抽屉处理，另一轮使用前台窗口的 Windows 鼠标和键盘。测试用固定在售和合法授卡触发塔露拉四条分支，验证预选无改动、必选期间封锁开战、升费原位改价与库存 10／9、强化后售出重购仍锁费、五费二星结束触发。正式战斗前三场回归 **142/142**、零异常、退出 0。 [实机专项](../artifacts/formation-decision-drawer/player-verified-live/decision-drawer-smoke.json) · [同处理函数复验](../artifacts/formation-decision-drawer/player-verified/decision-drawer-smoke.json) · [正式前三战](../artifacts/formation-decision-drawer/campaign-verified/campaign-smoke.json)
+- 专项验证了战略预案触发的必选徽章、两项连续奖励取消后重开及确认、萨卡兹五人与六人的双契门槛、同频领奏和伴奏按实例去重、便车配对、从同一入口打开海嗣铺设并在右侧落下一格，以及维维美二技能以 24 技力门槛实际开战。首轮在预热原有特效期间重新上阵会使正在枚举的角色列表失效。预热现在先取得效果列表，再异步加载。相同操作复跑零异常。
+- 对照确认的上抽屉预览检查展开、金边预选、确认和收起。展开和收起分别约 0.26 秒与 0.18 秒，实际棋盘镜头和备战席出现在抽屉后方。短片以 24 fps 采样，选中画面停留 1.25 秒供阅读。预案、战备和补给由各自的演出显示。 [展开与收起](../artifacts/formation-decision-drawer/decision-drawer-live.mp4) · [塔露拉预选](../artifacts/formation-decision-drawer/player-verified-live/02-three-cost-upgrade-selected.png) · [萨卡兹双契](../artifacts/formation-decision-drawer/player-verified-live/09-sarkaz-dual-selected.png) · [便车配对](../artifacts/formation-decision-drawer/player-verified-live/11-hitch-pair-selected.png) · [实机铺设](../artifacts/formation-decision-drawer/player-verified-live/12-sea-manual-tile.png)
+
+## 2026-11-23 放慢开局发牌和战略预案
+
+- 运行源码 `ae11a65d8a08d870c54f707f5d31be7ac2d9b5dc`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,359,826 字节、0 错误、退出 0。Runtime DLL SHA-256 `24547AE8DC0F90D190BAA418DC2BC7C1DF28CD60CCC16BBB6A679F202CAF7173`。完整 EditMode **1236/1236**、定向 D3D11 PlayMode **5/5**。 [构建日志](../artifacts/formation-opening-pacing/build.log) · [EditMode](../artifacts/formation-opening-pacing/editmode.xml) · [PlayMode](../artifacts/formation-opening-pacing/playmode.xml)
+- 同版 D3D11 Player，首开与重开专项 **24/24**、正式前三战 **142/142**，均零异常、退出 0。专项以正式处理确认预案和重开。重开录像约 6.04 秒四项补给同时可辨，6.81 秒仍可见各项陆续飞向槽位，7.46 秒四项落定，7.95 秒牌背摊开，8.37 秒第一张正在翻面，8.92 秒三张牌正面可读，9.40 秒免费重抽按钮已点亮。同版两次首开采样在展开交接处分别间隔 0.59 和 0.57 秒，上版同处为 0.72 秒。重开录像用于逐项比较画面。 [同版复测](../artifacts/formation-opening-pacing/player-recheck/opening-unfold-smoke.json) 两段录像保留真实时序，按时间戳重采为 24 fps，静音。 [首次开局](../artifacts/formation-opening-pacing/opening-pacing.mp4) · [重开](../artifacts/formation-opening-pacing/opening-pacing-restart.mp4) · [开局专项](../artifacts/formation-opening-pacing/player/opening-unfold-smoke.json) · [前三战](../artifacts/formation-opening-pacing/campaign/campaign-smoke.json)
+
+## 2026-11-22 正式新局棋盘展开
+
+- 运行源码 `dccd0a48437e8469825a4af12b78c463682daa0a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,359,294 字节、0 错误、退出 0。Runtime DLL SHA-256 `C30F6AFCE68A5863BB8A243233D15C815431D8DACF1B491DF664FE829717A339`。完整 EditMode **1236/1236**，定向 D3D11 PlayMode **5/5**。覆盖开局时原有格板的实际位置变化、原始位置及旋转恢复、蓝门显现、浅渠格保持禁用、补给与交易锁、重开重播。 [构建日志](../artifacts/formation-opening-unfold/build-final.log) · [EditMode XML](../artifacts/formation-opening-unfold/editmode-final.xml) · [PlayMode XML](../artifacts/formation-opening-unfold/playmode-final.xml)
+- 1280×720 D3D11 Player 开局专项 **24/24**，正式前三战 **142/142**，均零异常、退出 0。专项从正常入口和正式重开处理各运行一次。展开和补给沿实际时间播放，预案由验证程序调用正式选项，核对三名起手角色仍在备战席。 [开局专项](../artifacts/formation-opening-unfold/player-final/opening-unfold-smoke.json) · [正式前三战](../artifacts/formation-opening-unfold/campaign-final/campaign-smoke.json)
+- 两组正常时钟实机采样各 192 张，采样间隔随主机性能变化。短片按实际采集时间重采到 24 fps，保留 8 秒，静音。首次开局在约 0 秒可见收拢的中央板及两翼，约 1.79 秒石沿与地板同步转动，约 2.83 秒外侧板仍在放平，约 4.06 秒红门首批亮起，约 4.48 秒双门完全可见，约 5.32 秒镜头回到整备近景，约 6.34 秒可见补给飞行，约 7.36 秒可见预案翻面。全景远端保留一小段亮色沙岸。机械音轨已导入并由开场触发，短片未采集系统声音。 [首次开局](../artifacts/formation-opening-unfold/opening-unfold.mp4) · [重开](../artifacts/formation-opening-unfold/opening-unfold-restart.mp4) · [地形原作来源及看稿差异](art/source-records/formation-canyon.md#2026-11-22-新局棋盘展开)
+
+## 2026-11-22 整合运动激活后显示希望
+
+- 运行源码 `5a1f47ae8bd173e94395ca108da55faf7b1c3879`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,289,698 字节，零错误，退出 0。Runtime DLL SHA-256 `A1F1F56A771E17DF2B3888882E912EC9A7A284D102124A607FBA3F19ADF0DC53`。EditMode 1236/1236，仓库检查通过 17,713 个跟踪文件。 [构建日志](../artifacts/formation-reunion-hope-active/build.log) · [EditMode XML](../artifacts/formation-reunion-hope-active/edit.xml)
+- 1280×720 D3D11 Player 羁绊试玩 128/128、正式挑战前三战 142/142，均零异常、退出 0。整合试玩通过正式上下阵事务把已累积 32 希望的阵容从 3 人降至 2 人，面板与热区一起消失。将带徽章的第三人上阵后，面板恢复为 `32 / 45`。同时核对正式开局未激活截图。上下阵通过验证程序调用正式事务。 [未激活截图](../artifacts/formation-reunion-hope-active/synergy/01-整合-hope-inactive.png) · [重新激活截图](../artifacts/formation-reunion-hope-active/synergy/01-整合-hope-reactivated.png) · [羁绊试玩报告](../artifacts/formation-reunion-hope-active/synergy/synergy-smoke.json) · [正式挑战报告](../artifacts/formation-reunion-hope-active/campaign/campaign-smoke.json)
+
+## 2026-11-22 整合运动希望面板
+
+- 在《货币战争》4.7 官方节目约 07:28 和 3-6 实机画面核对了幻月游戏在阵容左侧独立显示进度的做法。本作沿用暖灰备战界面，面板与现有备战席及队伍等级留有间隔。显示值直接读取 `FormationCampaignRun.Hope`，下一门槛复用希望发奖表，点击接入已有整合羁绊详情。 [官方节目](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=448) · [3-6 实机参考](https://www.miyoushe.com/sr/article/79618987)
+- 运行源码 `cb6d4ce13cafb2cd4da5361d0dbcb9287767aad0`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,287,961 字节，零错误，退出 0。Runtime DLL SHA-256 `6C9BE5E0E666B944A32F4B313906CE81F3825C6DBAB5BC146A1A53A7E45CCDA5`。EditMode 1236/1236，仓库检查通过 17,713 个跟踪文件。 [构建日志](../artifacts/formation-reunion-hope/build.log) · [EditMode XML](../artifacts/formation-reunion-hope/edit.xml)
+- 同版 1280×720 D3D11 Player 羁绊试玩 118/118、正式前三战 142/142，均零异常、退出 0。目视确认整合试玩 `0 / 10`、首战获胜重试后的 `32 / 45` 与进度条，以及正式挑战备战出现、战斗和暂停隐藏。羁绊详情的现有入口通过正式回归。新版面板自身的鼠标点击因游戏窗口前台激活失败未完成实测。 [羁绊试玩报告](../artifacts/formation-reunion-hope/synergy/synergy-smoke.json) · [正式挑战报告](../artifacts/formation-reunion-hope/campaign/campaign-smoke.json) · [进度截图](../artifacts/formation-reunion-hope/synergy/01-整合-hope-after-retry.png) · [暂停截图](../artifacts/formation-reunion-hope/campaign/05-combat-paused-no-operating-ui.png)
+
+## 2026-11-22 棋盘开场与分段结算
+
+- 运行源码 `9a305500ad641f97e6cd8375de1f8b2ef9f6638c`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,284,314 字节、零错误、退出 0。Runtime DLL SHA-256 `4DCE7D46811F762D7C612C40B517B68EC44D5841C7BC31CC1DFBF074D5613E38`。完整 EditMode 1236/1236。 [构建日志](../artifacts/formation-battle-presentation/build-delivery.log) · [EditMode XML](../artifacts/formation-battle-presentation/edit-delivery.xml)
+- 同版 1280×720 D3D11 Player，专项 50/50、默认前三战 142/142，均零异常、退出 0。专项从正式入口三名起手角色开始，验证开场经过中间机位、开场期间单位与时钟保持初始值、开场后推进战斗。1-1 正常速度全清后实际进蓝门，队伍生命 100 → 100，随后本关入账 5 金币和 2 XP。1-3 仅布置一名未配装起手角色，按现行 90 秒时限超时，守军剩 2/5，队伍生命 100 → 94，随后入账 5 基础金币、1 利息和 2 XP。重入结算未重复扣血和发奖，留下的旧奖励球仍可到下次整备领取。1-2 和 1-3 的前段由验证程序加快推进真实模型，1-3 最后约 1 秒及两场结算按正常时钟播放。鼠标焦点限制下，专项走同一个开战处理和继续处理。 [动效专项报告](../artifacts/formation-battle-presentation/player-delivery/campaign-smoke.json) · [默认前三场报告](../artifacts/formation-battle-presentation/campaign-delivery/campaign-smoke.json)
+- 对照用户确认的第二版、明日方舟 SR-1 约 00:04.75–00:05.25 的固定战场和字幕，以及《货币战争》官方节目约 04:32.50–04:35.50 的结果、队伍生命和收益顺序。按同版连续帧检查左侧布阵、红门经过画面、右侧停稳后显示短标题、生命单独停留、收益再展开及继续按钮。保留现役棋盘原色，标题和结算用暖灰色及少量状态色。继续入口出现后恢复运营构图。败局有上一关遗留球时只提示可延后领取，避免将它们列成本关奖励。合并短片 294 帧、24 fps，完整解码通过，无黑帧段。独立 PlayMode 套件和完整三位面人工通关未执行。 [明日方舟实录](https://www.bilibili.com/video/BV1XXYR6cEEq/?t=4.75) · [货币战争官方片段](https://www.bilibili.com/video/BV1kc1uBkE4s/?t=272) · [同版实机短片](../artifacts/formation-battle-presentation/battle-presentation.mp4)
+
+## 2026-11-22 结城理首领试玩配乐
+
+- 运行源码 `526d21bb1859fa1ad6b11bf522171a0a295fe83a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,398,256,698 字节，零错误。Runtime DLL SHA-256 `06CACD2D5A34F26A56375EF249088E333267091C6B1FC915BAA331CCD2D7ED10`。完整 EditMode 1236/1236，仓库检查通过 17,707 个跟踪文件。 [构建日志](../artifacts/formation-makoto-bgm/build.log) · [EditMode XML](../artifacts/formation-makoto-bgm/edit.xml)
+- 1280×720 D3D11 Player，正常速度 55/55，零异常、退出 0。开战播放《Master of Shadow -Reload-》，第一条血条在 30.575 秒打空，塔纳托斯开启血条的 31.075 秒切入《It’s Going Down Now》。57.550 秒进入俄耳甫斯阶段，第二首的播放位置继续前进。暂停时播放位置冻结，恢复时延续，98.050 秒进门结算停播，重试整备安静。 [Player 报告](../artifacts/formation-makoto-bgm/trial/makoto-boss-smoke.json)
+- 同版本 Player 监听器录得 98.624 秒、48 kHz 立体声。将开战、切歌前后和第三阶段的四个片段逐一与两首导入音轨比对，四个片段均和预期曲目匹配。第二阶段到第三阶段的音源进度与录音进度均为 26.396 秒。实录满幅削波样本为零。 [波形核对](../artifacts/formation-makoto-bgm/trial/makoto-battle-mix-verification.json) · [音源和响度记录](art/source-records/formation-makoto-boss-audio-2026-11-22.json)
+- 同版超新星实机回归 59/59，零异常、退出 0。《Arsonist》跨转段连续播放，两段各播一句台词，64.100 秒进门。 [超新星 Player 报告](../artifacts/formation-makoto-bgm/supernova/supernova-boss-smoke.json)
+
+## 2026-11-22 结城理攻速与生命调整
+
+- 运行源码 `f5fd6663cf85098ac52c082b68bb5eb2eddd09bf`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,876,598 字节、零错误。Runtime DLL SHA-256 为 `C28516354F2B89A9BF886730CFAB2B865AD621FB465C9353DB1FE7BDC35AAEA4`。 [构建日志](../artifacts/formation-makoto-tempo/build.log) · [新版 EXE](../Builds/Windows/YesterdayConvoy.exe)
+- 独立试玩三段生命为 180,000／240,000／225,000，共 645,000。塔纳托斯基础攻速倍率由 1.6 提高到 2.2，理论出手间隔 0.773 秒，25 毫秒固定步长下为 0.775 秒。原骨骼接触点是 0.80 源秒，按无减速动作倍率 4.4× 换算约 0.182 秒。正式 3-5 的 72,900 一档总生命及按档位缩放的治疗继续按遭遇预算计算。
+- 完整 EditMode 1236/1236。独立预设 89.950 秒清场、95.200 秒进蓝门。第三段 1,520 真实 DPS 对照到 150 秒超时，首领剩 3,260 HP，实际回复到 6,400 上限。正式 3-5 固定配装模型一档 45.500 秒进门，四档 90 秒超时、削减 34.77%。 [EditMode XML](../artifacts/formation-makoto-tempo/edit.xml)
+- 静态模型按 12–15 秒的接敌、转段和进门时间、全额回血和物法减伤计算，总有效输出门槛约从每秒 3,317–3,391 升至 4,949–5,059。口径为经护甲和法抗、尚未计守备减伤的伤害，真实伤害与实战存活率会改变结果。
+- 同版 1280×720 D3D11 Player，独立试玩 40/40、正式 3-5 一档 22/22，零异常、退出 0。独立试玩在 31.575 秒实际发起首个二阶段挥击，源接触时间 31.757 秒，同步更新到 31.775 秒结算伤害。记录的最短连续出手间隔为 0.775 秒。独立八人预设 92.800 秒清场、98.050 秒走进蓝门，3-5 一档 36.725 秒进门。 [独立试玩报告](../artifacts/formation-makoto-tempo/trial/makoto-boss-smoke.json) · [3-5 报告](../artifacts/formation-makoto-tempo/encounter/defense-smoke.json)
+- 对照见证荣光同皮肤实录约 0:53–0:54.5 的塔纳托斯弱点攻击。按新版正常速度和连续帧核对前摇、攻击方向、受击蓝光、间歇姿态和转为俄耳甫斯后的治疗。采用更短的实战间隔，动作和弱点接触共用原事件时钟。混战中部分刀光与其他特效叠加。短片为 24 fps、10.5 秒，五个间断采样用邻帧补足，完整解码通过。 [原作对照片段](https://www.bilibili.com/video/BV1QStJ6mEn6/?t=53) · [新版实机](../artifacts/formation-makoto-tempo/makoto-tempo-player.mp4) · [二阶段关键帧](../artifacts/formation-makoto-tempo/thanatos-attack-keyframes.jpg)
+
+## 2026-11-22 结城理「开辟明日的剑刃」三形态修订
+
+- 运行源码 `2f5359be56c2814d20df6a6d9b546a61ba1c1b42`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,874,866 字节、零错误。Runtime DLL SHA-256 为 `1FDD27CA2D1C79523A6D7E30D0487FE63078E9B40916B3FBE29D3D893E4D4A13`。仓库检查通过 17,701 个跟踪文件。 [构建日志](../artifacts/formation-makoto-s3/build-final.log) · [Windows EXE](../Builds/Windows/YesterdayConvoy.exe)
+- 功能提交 `5e3b39d6` 完整 EditMode 1236/1236。独立试玩覆盖本体的两套剑击、塔纳托斯的两套弱点攻击，以及俄耳甫斯守备期间停止进攻、每秒治疗和实际进蓝门。预设阵容 66.350 秒进门。低输出对照从第三段满血开始，以 1,030 真实 DPS 持续输出，150 秒时结城理尚余 1,270 HP，累计自疗 6,400。正式 3-5 的固定配装模型一档 45.500 秒进门，四档 90 秒超时、削减 49.73%。 [EditMode XML](../artifacts/formation-makoto-s3/edit.xml)
+- 按三段原生命、第三段总自疗 6,400 和全段物理／法术减伤 12% 做静态模型，接敌、转段和进门共占 12–15 秒时约需 3,317–3,391 有效 DPS。计算以进入守备减伤前、不含真实伤害穿透的有效输出为口径，实际阵容取决于站位、伤害类型和技能轴。
+- 同版 1280×720 D3D11 Player，独立试玩 37/37，正式 3-5 一档 22/22，均零异常、退出 0。独立试玩的本体首次挥剑 7.550 秒开始、7.825 秒实际命中，塔纳托斯首次攻击 22.375 秒开始、22.625 秒命中。43.150 秒进入第二次换形，43.400 秒补足第三条生命，44.400 秒首次治疗 800，61.550 秒清场，66.800 秒进蓝门。正常暂停、重试、守备停止攻击均通过。3-5 的两名分阶段守军均有真实技能命中，36.925 秒进门。 [独立试玩报告](../artifacts/formation-makoto-s3/trial-final/makoto-boss-smoke.json) · [3-5 报告](../artifacts/formation-makoto-s3/encounter-final/defense-smoke.json)
+- 按同皮肤实录 0:27–0:29 的本体蓝色剑弧、约 0:53–0:54.5 的塔纳托斯弱点打击和约 0:56 的俄耳甫斯守备，对照最终同版棋盘正常速度和连续帧。剑弧朝向近身目标，接触层出现在真实受击位置。塔纳托斯形态和多人命中可辨，清空第二条生命后直接换俄耳甫斯，并可见地面圈和 +800 治疗。多人近身时身体局部和其它角色特效有重叠。10.5 秒摘录为 24 fps，五个间断采样以邻帧补足，完整解码通过。 [时装实录](https://www.bilibili.com/video/BV1QStJ6mEn6/) · [实机短片](../artifacts/formation-makoto-s3/makoto-s3-player.mp4) · [连续帧对照](../artifacts/formation-makoto-s3/makoto-s3-motion-review.jpg)
+
+## 2026-11-22 正式关卡覆盖现役六星
+
+- Windows 运行源码 `0fecdd88`，Unity 6000.6.5f1 x64 Development 构建 1,393,879,198 字节、零错误。Runtime DLL SHA-256 `EBBB52EA924EB4EE840429211D620155338B5911E4BDB547FF08C252B1FF02D4`。完整 EditMode 1236/1236。逐节点、两组种子核对 16 名六星均在正式路线，守军格、预留格和 3-7 初雪单首领符合规则。3-5 四档面板按全阶段计算。一档总生命 514,500，四档 2,829,750。击穿每段时进度递增，补血转段时进度连续，仍存活的精英计入守军数。奖励关仍为逐人 1 HP。 [构建日志](../artifacts/formation-all-six-stars/build-delivery.log) · [EditMode XML](../artifacts/formation-all-six-stars/edit-delivery.xml)
+- 3-5 使用上一轮同一组高费配装预设。一档 37.975 秒清场、45.500 秒进蓝门，四档 90 秒超时、削减 76.71%。该固定阵容仅用于比较。 [正式守军配置](design/FORMATION_DEFENSE_CURVE.md)
+- 可见窗口 1280×720、D3D11，3-5 使用八人配装预设进行难度试玩。22/22、零异常，37.075 秒进蓝门。两人均实际出手与命中，观察到超新星第二段，以及结城理第二和第三段。补给实机鼠标确认 28/28、零异常，1-5 领取后直接进入 1-6 整备。 [3-5 报告](../artifacts/formation-all-six-stars/encounter-final/defense-smoke.json) · [补给报告](../artifacts/formation-all-six-stars/supply-final/supply-smoke.json)
+- 同一交付 Player 的独立首领试玩超新星 59/59、结城理 37/37，均零异常、退出 0。 [超新星报告](../artifacts/formation-all-six-stars/supernova-final/supernova-boss-smoke.json) · [结城理报告](../artifacts/formation-all-six-stars/makoto-final/makoto-boss-smoke.json)
+- 以超新星皮肤实录 30.3–31.3 秒的翼焰与落点、见证荣光时装对比 0:31–1:02 的竖琴、囚锁和剑刃为依据。正式 3-5 缩小两名精英到独立首领的约 64%，同步缩放附身层，炮口与竖琴发射点按身体比例移动，地面和受击层使用原绑定。实机核对侦察和接战的可见身体、结城理转段与刀光、超新星首段接触。3-5 的超新星第二段在高输出预设中很快被击破，分段影片只录到转段起势。 [3-5 两翼侦察](../artifacts/formation-all-six-stars/encounter-final/3-5-scout-two-wings.png) · [超新星首段接触](../artifacts/formation-all-six-stars/encounter-final/3-5-D31-contact.png) · [结城理三段片](../artifacts/formation-all-six-stars/encounter-final/3-5-D36-phase-3.mp4) · [超新星来源](art/source-records/formation-supernova-boss.md) · [结城理来源](art/source-records/formation-makoto-boss.md)
+
+## 2026-11-22 正式棋盘试玩反馈
+
+- 交付 Windows 运行源码 `08d9297c`。Unity 6000.6.5f1 Windows x64 Development 构建 1,393,875,490 字节、0 错误、退出 0。Runtime DLL SHA-256 为 `91845C268264B67C8763A3D1949C1CEB8570DF3CA769051C89E7BE5E20995195`。上一运行源码 `46016bfb` 到交付源码仅增加未激活羁绊的分档段落淡色，并清理一条重复文字。 [构建日志](../artifacts/formation-playtest-feedback/build-final.log) · [Windows EXE](../Builds/Windows/YesterdayConvoy.exe)
+- 交付源码完整 EditMode 1234/1234。包含满员开球失败后原球可保留并补领、满员时合成招募实际扣费腾位、奖励胜利额外希望、多段火雨在首个目标阵亡后继续、八次灼烧扣血与跳字、3-7 免伤结束当刻允许落伤，以及拥挤转向回归。D3D11 非批处理 PlayMode 3/3，覆盖市场和备战、成员状态和遮挡、模拟失焦与手动暂停。 [EditMode XML](../artifacts/formation-playtest-feedback/edit-delivery.xml) · [PlayMode XML](../artifacts/formation-playtest-feedback/play-visible.xml)
+- 两个固定种子下，配装并培养后的阵容通过 1-3 和 1-4，原样起手三人均超时。相同高费阵容在 3-5 一档 40.250 秒进门，旧版为 27.650 秒，四档 90 秒削减 78.36%。同一高费预设在 3-7 以 132.200 秒进门。两组低费阵容分别削减 32.62% 与 39.06% 后超时。关卡时间依据实际棋盘战斗模型，三个位面自然运营的通关率待实测。 [EditMode XML](../artifacts/formation-playtest-feedback/edit-retest.xml) · [守军配置](design/FORMATION_DEFENSE_CURVE.md)
+- 依据《货币战争》客户端教学保留低压随机掉落。以固定种子做 10 万次仅前两关掉落的临时抽样，球数 4／5 → 2／3，装备折算保底 2／5 → 2／3。掉落金币中位数 15 → 8，基础等价卡中位数 7 → 3，含开局装备的折算装备中位数 5 → 3。抽样不计战备、预案、希望、实际缺货或领球时机。 [《货币战争》客户端教学](https://hsr.gachabase.net/tutorials/currency-wars/100036/planes-and-nodes/release?lang=chs)
+- 独立 Windows Player，D3D11，1280×720。`46016bfb` 用实际鼠标确认 1-5 补给，28/28、零异常，自动回到 1-6 整备。`08d9297c` 正式入口前三战为 139/139，满备战与溢出专项 54/54，均零异常。目视检查商店下沿、角色详情、档位数字、雪怪两段浅色、成员底色、装备合成，以及靠右上方无外框溢出。备战专项使用固定赠卡制造溢出。全部面板的鼠标拖动、高库存装备换列和奖励球造成溢出后的红色提示待单独录制。 [补给报告](../artifacts/formation-playtest-feedback/supply/supply-smoke.json) · [前三战报告](../artifacts/formation-playtest-feedback/campaign-final/campaign-smoke.json) · [羁绊截图](../artifacts/formation-playtest-feedback/campaign-final/04-trait-members-and-tiers.png) · [备战报告](../artifacts/formation-playtest-feedback/reserve-final/reserve-smoke.json)
+- `46016bfb` 在 2-2、2-5、3-1、3-2、3-4 验证两翼与合法格、真实战斗、结算。79/79、零异常，固定阵容赢四场，3-4 超时。3-1 看到玛恩纳技能和接触，3-2 看到凯尔希·思衡托命中与绿色治疗，3-4 看到赤刃明霄陈接触，以及左侧复活倒计时。予愿安洁莉娜、克莱门莎的技能另用单角色棋盘预设观察。源动作、皮肤及既有时间点见守军配置页，后两名使用预设验证出手和命中，未在这次正式节点的阵容下触发技能。日志仍有原包 Torappu 组件引用警告，历史运行日志也有同项。 [守军报告](../artifacts/formation-playtest-feedback/defense-visible/defense-smoke.json) · [接触帧](../artifacts/formation-playtest-feedback/defense-visible/guard-contacts.jpg) · [予愿安洁莉娜](../artifacts/formation-playtest-feedback/six-star-visible/clips/71-D33.mp4) · [克莱门莎](../artifacts/formation-playtest-feedback/six-star-visible/clips/72-D34.mp4) · [原作对照](design/FORMATION_DEFENSE_CURVE.md)
+- 同一运行源码五费塔露拉棋盘预设 22 秒、528 帧。8–22 秒段观察到先施法，再有贴地火浪、直接命中与多排后续扣血跳字，最后恢复普攻。原作 2× 片段的横向火流与本作展示一致保留低位推进，棋盘地形、覆盖与数值反馈按玩法适配，使用既有原包绑定。三名近距展示靶的跳字在个别帧重叠。窗口隐藏试验只能产生黑帧，复验使用可见窗口。此预设验证火雨画面，3-7 转阶段时序另有正式节点模型回归。 [火雨实录](../artifacts/formation-playtest-feedback/talulah-visible/clips/48-TAL5.mp4) · [连续取样](../artifacts/formation-playtest-feedback/talulah-visible/skill1s.jpg) · [原包与源实录时点](art/FORMATION_RANGED_SOURCE_BINDINGS.md#2026-11-21-复核并重接塔露拉原包层)
+
+## 2026-11-22 正式挑战补给展开
+
+- Windows 运行源码 531fb0693617c0a892d954383de08a16f4d008d6。Unity 6000.6.5f1 x64 构建退出 0、零错误，构建报告 1,393,864,390 字节。Runtime DLL SHA-256 为 5B8B4DD0522C7F4388BF90C4EE00ADED94DA311CA653F5F3701D6C63D703C3E2。完整 EditMode 1228/1228，含同组选项与实际发放一致，以及双倍搭配抽检、预付只扣首件。 [构建日志](../artifacts/formation-supply/build-final.log) · [EditMode XML](../artifacts/formation-supply/edit-final.xml)
+- 1600×900、D3D11 的独立 Windows Player 28/28、零异常、退出 0。入口是正式挑战，前四战使用受控胜利结算，透过正式续关进入 1-5。用实际鼠标预选酒神与战术终端，再点确认领取。未选择时 Enter 无效，单击预选未发放，确认后对应角色和装备各发放一份，未选预留返库，金币与经验一致，成功续到 1-6。五张卡、五件装备的图像可见，二费绿、三费蓝。2-3 和 3-3 继承同一渲染入口，本轮未逐节点实机录制。 [Player 报告](../artifacts/formation-supply/window-final/player/supply-smoke.json) · [展开帧](../artifacts/formation-supply/window-final/player/02-supply-open.png)
+- 对照《货币战争》05:14.8–05:16.2 的开场横扫与五列，以及 07:53.3–07:53.9 的装备后显。实机短片 0.20 秒可见棋盘和闭合箱，0.40 秒抬盖扫光，0.60 秒卡牌排开，0.80 秒装备开始显露，1.20 秒五列稳定，2.80 秒确认的整组位于中央，3.20 秒回到棋盘。开箱和错峰是本作适配，使用项目原费用底色与静态角色卡图。短片只录游戏窗口，保留实时时长，封装为 30 fps。 [素材来源与对照](art/source-records/formation-supply-reveal.md) · [实机短片](../artifacts/formation-supply/supply-player.mp4) · [关键帧](../artifacts/formation-supply/supply-player-keyframes.jpg)
+
+## 2026-11-22 结城理三阶段首领
+
+- Windows 运行源码 `438f9a84777fca26440b92e43ce0534dfdf44fb2`。Unity 6000.6.5f1 x64 构建成功、退出 0。Runtime DLL SHA-256 为 `8C4D5B022AA682850FB73E380B160A80964259BEDE92A710877218985346C473`。构建后处理导出 5,506 个运行资源，先前运行中的旧版本保留在原路径。 [构建日志](../artifacts/formation-makoto-boss/build-reviewed.log) · [本轮 Windows EXE](../Builds/MakotoBoss/YesterdayConvoy.exe)
+- 功能提交 `09b2655a` 的完整 EditMode 1226/1226。八人预设的三技首次命中为 4.875、19.500、42.775 秒，59.300 秒清场，68.025 秒实际进入蓝门。低输出用例直接建立第三阶段守备条件，以 425 真实 DPS 持续攻击，150 秒时首领剩 1,840 生命。本用例另验了法术减伤、真实伤害的结算、两次转段免伤与回血上限 6,400。 [EditMode 报告](../artifacts/formation-makoto-boss/edit.xml)
+- 数值预估按三段 120,000／160,000／150,000 生命、所有回血用满、末段 45% 血下物理和法术减伤 12% 计算。若接敌、转段和进门占用 12–15 秒，约需 3,262–3,334 DPS。若耗时 15 秒且在第二阶段再损失 20% 输出时间，则约需 3,631 DPS。这里的 DPS 是经过护甲、法抗且尚未经过守备减伤的有效输出。实战还受到阵容、恐惧和技能时序影响。 [规则与参数](FORMATION_BATTLE.md#结城理见证荣光首领试玩)
+- 最终版 1280×720 D3D11 Player 37/37、零异常。正常首领试玩预设在 1× 战斗时钟下于 16.700、40.900 秒打空首两段，51.925 秒转守备，53.175 秒实际回复首个 800 点，60.075 秒清场、64.925 秒进蓝门。暂停冻结空血条期间的动作，重试恢复第一段并保留阵容站位。 [Player 报告](../artifacts/formation-makoto-boss/player-reviewed/makoto-boss-smoke.json) · [实机短片](../artifacts/formation-makoto-boss/makoto-boss-player.mp4)
+- 对照同皮肤原作慢放 1:08–1:25、1:28–1:44 和 1:48–2:16。棋盘一技能 4.250 秒开始动作，4.650 秒发射，4.875 秒接触，实机可见蓝光从角色到目标。二技能 19.450 秒起手，19.850 秒命中，蓝色波纹及地面外圈独立呈现。三技能 41.900 秒开始动作，42.150 秒在多个目标处显示弱点打击，随后可见俄耳甫斯守备及治疗。复验将角色常驻光移到身体后面，皮肤与人格面具的轮廓可辨，前景施法和命中继续分层。范围按棋盘格适配，近身混战时局部命中仍与进攻方重叠。短片按采集时点封装为 24 fps，重复邻帧补足五个间断取样。 [同皮肤原作慢放](https://www.bilibili.com/video/BV1vdtq6qE2u/) · [实机连续关键帧](../artifacts/formation-makoto-boss/makoto-boss-motion-review.jpg) · [原包和分层绑定](art/source-records/formation-makoto-boss.md)
+
+## 2026-11-21 高台与实际行军路线验收
+
+Windows 运行源码 `117868dc85d84713a1777c4bc7ac3fd5c6332ee3`。Unity 6000.6.5f1 Windows x64 Development 构建 1,382,837,274 字节，零错误、退出 0。Runtime DLL SHA-256 为 `F6754A8EEA0736C874413687C0F72B776E17A759EBC3E9689FE60AE91FB3BA0F`。EditMode 1224/1224，新增回归验证开阔地连线可走时寻路仍能选择中轴，清场后也优先从主路走向蓝门。编辑器验证保存地形、守军站位和全图可达。 [构建日志](../artifacts/formation-terrain-routes/build.log) · [EditMode XML](../artifacts/formation-terrain-routes/edit.xml)
+
+实机三图 76/76。按实际地图检查了旧石谷高台与掩体层是否隐藏，以及三条示例路径是否走过各自标记铺装。三场均完成真实自动攻坚和进蓝门，换回石谷会恢复自己的实体高台。默认挑战前三战 163/163，初雪两阶段 61/61，147.450 秒进蓝门，三组 Player 退出 0、零异常。 [三图报告](../artifacts/formation-terrain-routes/maps/map-variants-smoke.json) · [默认挑战](../artifacts/formation-terrain-routes/campaign/campaign-smoke.json) · [初雪](../artifacts/formation-terrain-routes/snow/snow-boss-smoke.json)
+
+核对四张实机战斗图，石谷高台改用 #02 同包砂岩，街庭白石、回廊饰金、雪谷冰台分别使用各自原包。常速行军片每段取 72 帧，1280×720、24 fps，三段完整解码。路线权重保留平地侧翼，硬地形占格依然生效。完整三位面自然招募试玩未执行。 [四图实机](../artifacts/formation-terrain-routes/boards.jpg) · [街庭行军](../artifacts/formation-terrain-routes/maps/1-4-advance.mp4) · [回廊行军](../artifacts/formation-terrain-routes/maps/2-1-advance.mp4) · [雪谷行军](../artifacts/formation-terrain-routes/maps/3-1-advance.mp4)
+
+## 2026-11-21 三张新地图实机验收
+
+运行内容源码 `d43a19463e4985d2fcf7a8dfbad807cd3147a3af`。Unity 6000.6.5f1 Windows x64 Development 构建 1,382,839,857 字节，零错误，退出 0。Runtime DLL SHA-256 为 `95A8E89504E314B8E4523202E6DFF133C190AF8EE1A980EE6C8109FCB21238AA`。完整 EditMode 1223/1223。编辑器核对三套存盘 Prefab 的 528 格、共用门列、各自材质族及所有战斗节点两套种子的守军生成。另逐格检查可踏格到蓝门的路径和指定守军的接近点。 [构建日志](../artifacts/formation-map-variants/build-final.log) · [EditMode XML](../artifacts/formation-map-variants/edit-final.xml)
+
+同版 D3D11 Windows Player 三图 73/73、零运行异常。经正式推进验证 1-4 自动换图且保留阵容与站位，此段使用受控结算。三图分别经过难度试玩的正式选择命令、整备、侦察和真实自动战斗，完成清场和实际进蓝门，验证换图、暂停及重试。使用固定合法阵容，片段为游戏 1×，截图后的尾段加速验证通关。默认开局前三战另跑 163/163、零异常。 [三图报告](../artifacts/formation-map-variants/final/map-variants-smoke.json) · [默认挑战报告](../artifacts/formation-map-variants/campaign/campaign-smoke.json)
+
+同版蓝冰雪谷的圣聆初雪预设 61/61、零异常。背景采集模式仅解除失焦自动暂停，实际战斗按 1× 运行。140.875 秒清空第二段生命，147.450 秒进入蓝门，距 150 秒上限 2.550 秒。校验了两阶段积雪、暂停、重试和正式 3-7 的守军落点。 [初雪实机报告](../artifacts/formation-map-variants/snow-final/snow-boss-smoke.json) · [胜利帧](../artifacts/formation-map-variants/snow-final/08-trial-victory.png)
+
+以本机 #05、#09、#12 的官方缩略图核对各自铺装、绿植／冰壁／金饰和高低台，实时看到三种独立布局。1-4 观察环街绕过花园，2-1 观察双格直道与对称侧台，3-1 观察冰脊与浅蓝冰面。三支 1280×720 实机片各 2 秒，按 24 fps 封装并完整解码。实机机位比 Blender 看稿宽，延伸各自原包景底，斜冰面与行走平面齐平。未执行按自然招募打完整个三位面的人工试玩。 [叙拉古街庭](../artifacts/formation-map-variants/final/1-4.mp4) · [金饰回廊](../artifacts/formation-map-variants/final/2-1.mp4) · [蓝冰雪谷](../artifacts/formation-map-variants/final/3-1.mp4) · [原作来源](art/source-records/formation-map-variants.md)
+
+## 2026-11-21 生命成长与首领治疗验收
+
+运行内容源码 `8aaac2820fbd285df557b5db6ee48a56ce2b000a`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,087,910 字节，零错误，退出 0。Runtime DLL SHA-256 为 `B7D394972996F408B3C7BD9D1B2F148EFCDAC25DD7AF9CC038406B461E6ADC4B`。仓库检查核对 17,130 个跟踪文件。完整 EditMode 1223/1223。 [构建日志](../artifacts/formation-survival-balance/build-delivery.log) · [EditMode XML](../artifacts/formation-survival-balance/edit-tuned.xml)
+
+初雪二阶段对照使用同五名受攻击者和相同站位，场景直接进入转段，奶妈从相同的技力差开始，后续由正常战斗结算命中和治疗。无奶、一星梅菲斯特、二星梅菲斯特到第三次阵亡经过 7.475、8.650、9.800 秒，两次有奶的首轮群疗实际为 675 和 1215。另核对传令兵治疗范围和暂停冷却、百夫长普攻与主技队疗，以及旧 3-7 九人十四格装备预算于 139.875 秒进蓝门。保存场景中的高费样本于 115.975 秒胜利，三次阵亡。1-3 两组原样三张一星分别于 86.500 和 80.925 秒险胜，阵亡八次和三次。 [战斗回归](../artifacts/formation-survival-balance/edit-tuned.xml)
+
+同版 1280×720 D3D11 正常窗口的初雪 Player 61/61、零异常，132.275 秒清场，141.500 秒实际进蓝门，核对了二阶段头顶血条、直击画面和胜利帧。超新星 Player 59/59，64.100 秒进蓝门。默认入口前三战 163/163。后两项在后台执行，报告记录了战斗和界面状态通过，后台帧仅用于诊断。全三位面自然招募与运营的通关率仍待长局试玩。 [初雪正常窗口报告](../artifacts/formation-survival-balance/snow-rendered/snow-boss-smoke.json) · [二阶段命中](../artifacts/formation-survival-balance/snow-rendered/06-s3-native-direct-impact.png) · [胜利帧](../artifacts/formation-survival-balance/snow-rendered/08-trial-victory.png) · [超新星报告](../artifacts/formation-survival-balance/supernova/supernova-boss-smoke.json) · [默认入口报告](../artifacts/formation-survival-balance/campaign/campaign-smoke.json)
+
+## 2026-11-21 战斗伤害排行与首领头顶血条验收
+
+源码 `760576fa8e60118e85ed0b0fde9a87f1343c7443`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,085,197 字节，零错误，退出 0。Runtime DLL SHA-256 `3C9DEAE1D3548707DB8E6DB25A8783D02F35FEFF27EE13BCFB9023A34D8C1304`。EditMode 1220/1220。 [构建日志](../artifacts/formation-battle-hud/build-delivery.log) · [EditMode XML](../artifacts/formation-battle-hud/edit-delivery.xml)
+
+默认入口 1080p D3D11 Player 163/163，走完前三场战斗和结算。1-1 交战帧可见三名上阵角色按 356、174、121 降序，合计 651。暂停切换为「已暂停」并保持排行，下一次整备隐藏。排行沿用编队实际扣血字段，单独记账的召唤物伤害未计入。普通守军头顶显示红条，进攻方头顶显示青条。最终轮默认流程使用 Unity 的 D3D11 单线程渲染参数。前一轮一次并行启动的诊断在进入战斗前发生原生访问异常，最终轮三组 Player 均退出 0、零异常。 [战斗截图](../artifacts/formation-battle-hud/delivery/campaign/05-combat-0.png) · [暂停截图](../artifacts/formation-battle-hud/delivery/campaign/05-combat-paused-no-operating-ui.png) · [默认 Player 报告](../artifacts/formation-battle-hud/delivery/campaign/campaign-smoke.json)
+
+超新星 1080p D3D11 Player 59/59，预设阵容按 1× 战斗时钟于 63.7 秒进入蓝门。对照《明日方舟》IW-9 岁相实录 00:20 的暗底红条，保留红填充和暗槽组合，依用户修订放在首领头顶。超新星第一段清空时画面只有一个空槽，第二段开始后同一槽的红色填充逐帧从 0 增至 40、118、213、303、368、385 像素，内槽宽 387 像素。回填完成后，条宽随当段真实扣血缩短。回填采用 0.75 秒战斗时钟，录像由同版截图序列封装，第 14 帧使用同一时段单独保存的第二阶段画面。守军 720p D3D11 Player 47/47，实机抽查 1-6 普通守军、1-9 斩业星熊、2-7 塞雷娅。最终加长版未单独重跑初雪 Player。 [原作实录](https://www.bilibili.com/video/BV1Cq4y1C71y/?t=20) · [回填实机](../artifacts/formation-battle-hud/delivery/supernova/boss-refill.mp4) · [回填关键帧](../artifacts/formation-battle-hud/delivery/supernova/boss-refill-keyframes.jpg) · [超新星报告](../artifacts/formation-battle-hud/delivery/supernova/supernova-boss-smoke.json) · [守军报告](../artifacts/formation-battle-hud/delivery/defense/defense-smoke.json)
+
+## 2026-11-21 超新星配乐与两段开场语音验收
+
+源码 `b8c15510384c8352881bcf67e4863cd3d6609e25`。Unity 6000.6.5f1 Windows x64 Development 构建 1,361,085,186 字节，零错误，退出 0。Runtime DLL SHA-256 `827C62D6968646AF99FB3DD6ADE9DEA4510D97C0E93438FB854E10C30A9D7917`。EditMode 1220/1220。构建重试使用进程级 Windows NLS 设置，并在共享编译服务失去响应后恢复 C# 编译。 [构建日志](../artifacts/formation-supernova-audio/build-delivery.log) · [EditMode XML](../artifacts/formation-supernova-audio/edit-final.xml)
+
+超新星 1080p D3D11 Player 60/60、零异常。通过正常关卡选择及开战命令进入，八人预设在 1× 战斗时钟通过两段并于 63.700 秒走进蓝门。第一段 0.150 秒播放 `voice-1`，第二段 33.725 秒播放 `voice-3`。一阶段生命清空到转段完成之间未提前播第二句。暂停冻结播放位置，恢复时原曲继续，结算与重试准备界面均无配乐或台词在播。 [Player 报告](../artifacts/formation-supernova-audio/supernova/supernova-boss-smoke.json)
+
+用 FFmpeg `ebur128` 测得《Arsonist》源文件前 7 秒和 33.725 秒起的 7 秒分别为 −15.9、−7.2 LUFS，四条原声为 −16.2 至 −15.3 LUFS。超新星配乐平时按 0.42 增益，台词期间按 0.12，尾音结束后恢复。实机监听器录音对齐确认同一首配乐和两句原声，两句的波形对齐位置与播放标记相差约 15、20 毫秒。录屏 3,989 帧，实际约 49 fps，15.62 秒的剪辑按真实时间封装至 1080p60、48 kHz 双声道，约在 0.26 和 8.07 秒起播两句。 [音源记录](art/source-records/formation-supernova-boss-audio-2026-11-21.json) · [波形核对](../artifacts/formation-supernova-audio/supernova/audio-waveform-match.json) · [两段有声实机](../artifacts/formation-supernova-audio/arsonist-phase-intros.mp4)
+
+同版初雪 Player 回归 61/61、零异常，预设阵容 133.650 秒进入蓝门。初雪仍播放自有曲目 `battle`，两段分别抽中 `voice-2`、`voice-4`。实机检查了初雪的播放、暂停、跨阶段继续和结算停止。 [初雪 Player 报告](../artifacts/formation-supernova-audio/snow/snow-boss-smoke.json)
+
+## 2026-11-21 超新星爆裂黎明落点放大验收
+
+源码 `1530b7dc13161326f7f61ccf5da8a031f83c801e`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,158,626 字节，零错误，退出 0。Runtime DLL SHA-256 `241A1CB5F07FB0CDA7823D6CDF05DB86C9D1795A3095058F2586CEE1A8653CC8`。EditMode 1220/1220。 [构建日志](../artifacts/formation-supernova-peak/build.log) · [EditMode XML](../artifacts/formation-supernova-peak/edit-final.xml)
+
+同版 1080p D3D11 Player 41/41、零异常。由游戏关卡选择命令启动超新星试玩，八人预设以 1× 战斗时钟打到通关。首炮 34.417 秒发射、34.466 秒到达、34.475 秒结算伤害，34.550 秒记录到独立的落地、上扬爆花和 WIS。三层均为 48 PPU ARGB32，投影矩形约为 815×586、623×528、662×331 像素，含透明边缘。实际伤害半径仍为 2.2 格，63.700 秒由存活本体进入蓝门。重试复位通过。 [Player 报告](../artifacts/formation-supernova-peak/after/supernova-boss-smoke.json)
+
+以用户给出的原作峰值截图核对白热中心、红黑飞溅和两侧扩散。在相同棋盘镜头，正常速度可看到命中后地面向前展开、红黑碎片上扬，再露出逐步消退的余光。选取落地计时标记后约 40、90、120 毫秒的对应帧，在同一窗口区域 `x540–1419 / y430–889` 内扣除爆前帧，按 `R≥150`、`R−G>26`、`ΔR≥40` 统计，亮红像素约为 2.0 万→7.7 万、2.2 万→9.9 万、2.1 万→10.4 万。约 90 毫秒帧的亮区中央 90% 横向跨度由 269 增至 377 像素。镜头、地形及混战站位与原图有差异，实际画面中部分角色和 WIS 有短暂重叠。 [峰值同机位对比](../artifacts/formation-supernova-peak/blast-peak-before-after.png) · [连续关键帧](../artifacts/formation-supernova-peak/blast-matched-frames.png) · [原作与适配记录](art/source-records/formation-supernova-boss.md)
+
+1920×1080 窗口采集共 3,858 帧，实际约 49 fps。两段实机片按真实时钟封装至 60 fps，已完整解码。 [有声实机](../artifacts/formation-supernova-peak/supernova-hd.mp4) · [动态前后对比](../artifacts/formation-supernova-peak/supernova-before-after.mp4)
+
+## 2026-11-21 超新星首段提速与爆裂黎明重做验收
+
+源码 `d25a3628576fff209adbb143e86e827911d2fcb5`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,156,754 字节，零错误，退出 0。Runtime DLL SHA-256 `E110F50919764794BEA6465389AF3908C551C0E38906ED3872F2C6B3BAB39ECA`。最终 EditMode 1220/1220。定向预设阵容验证到多轮 1.050 秒普通齐射和 0.900 秒无减速过载，减速期为 1.125 秒，过载四发的原发间距按当前动作倍率换算。三技能完成六发、范围命中、装填以及真实蓝门通关。 [构建](../artifacts/formation-supernova-rework/build-final.log) · [EditMode](../artifacts/formation-supernova-rework/edit-delivery.xml)
+
+同版 1080p D3D11 Player 41/41、零异常。13 个必验实机图层均读取 ARGB32，采样密度为 32–76.8 PPU。首轮普通齐射依次在 3.300、4.350、5.400 秒启动。33.725 秒切入三技能，34.417 秒发射，34.475 秒结算命中，约 34.55 秒开始呈现停止爆炸分层。63.700 秒由存活本体进入蓝门，重试复位通过。 [Player 结构化报告](../artifacts/formation-supernova-rework/after-final/supernova-boss-smoke.json)
+
+对照原作 30.3–31.3 秒和 33.2–33.7 秒，逐帧检查白粉翼焰、弹芯、直立字样与地面爆裂。实机有声剪辑 0.53 秒见普通炮口、4.87 秒见过载、8.98 秒开技、9.30 秒见翼焰、9.55 秒飞行、9.63 秒受击、9.70 秒见 WIS、9.77 秒见独立地面层。首炮前与两炮间均可辨翼焰，近身短弹道约 0.05 秒，字样和落点仍会与部分单位轮廓重叠。原停止爆炸与目标锁定的专用音频缺本地波形。 [原作参考和差异](art/source-records/formation-supernova-boss.md) · [同机位对比](../artifacts/formation-supernova-rework/final-s3-blast-before-after.png) · [连续关键帧](../artifacts/formation-supernova-rework/final-s3-layer-review.png)
+
+1920×1080 窗口采集 3,752 帧，实际约 47.7 fps。两段成片按真实时间以 60 fps 为目标封装，完整解码，约 15 秒。试玩通过游戏关卡选择命令进入，使用默认八人预设自然战斗。 [有声实机](../artifacts/formation-supernova-rework/supernova-hd.mp4) · [前后对比](../artifacts/formation-supernova-rework/supernova-before-after.mp4)
+
+## 2026-11-21 超新星高清与攻击辨识实机验收
+
+源码 `a600bf71b19ceb497f4a24146a229f179cde548e`。Unity 6000.6.5f1 的 Windows x64 Development 构建成功，零错误，编辑器退出 0。Runtime DLL SHA-256 `436B5913F45C944038DB0C10360875BE4AF8DA920D62B344FF708F70DD8BE043`。最终 EditMode 1220/1220。23 段原骨骼动作按 30 fps 重采，147 页 1,841 帧，保持脚点。阶段、伤害和出手规则沿用原试关。 [构建日志](../artifacts/formation-supernova-fidelity/build.log) · [EditMode XML](../artifacts/formation-supernova-fidelity/edit-final.xml) · [正背面重采与原事件](art/source-records/formation-supernova-boss.md)
+
+D3D11 Player 实战 36/36、零异常。两版均按 1920×1080 实际游戏机位录制，同时间画面按 HUD 对齐至 0.1 秒内，也对照两版各自可见的攻击帧。侦察时新版的五官、发梢和炮管边缘更清楚。二技能首发约 3.45 秒显示粉白炮口，3.50 秒命中，约 11.88 秒显示过载炮口。三技能渲染记录在 34.425 秒出现炮口和拖尾，34.475 秒真实命中，34.55 秒出现独立落地层。录像约 34.44 秒可见粉色拖尾斜向目标。近身首炮的可视飞行约 0.05 秒。64.900 秒由存活本体进入蓝门，结算后重试检查通过。 [实机报告](../artifacts/formation-supernova-fidelity/after-wgc/supernova-boss-smoke.json) · [本体对照](../artifacts/formation-supernova-fidelity/body-before-after.png) · [二技能炮口](../artifacts/formation-supernova-fidelity/s2-muzzle-active-before-after.png) · [三技能飞行](../artifacts/formation-supernova-fidelity/s3-trail-active-before-after.png) · [三技能落地](../artifacts/formation-supernova-fidelity/s3-ground-before-after.png)
+
+窗口有效采集约 50 fps，两段成片按实际时间以 60 fps 为目标重采样，已完整解码。有声片约 14.6 秒，0.54 秒见二技能炮口，4.90 秒见过载命中，9.04、9.10、9.20 秒依次见三技能的发射飞行、接触和地面爆炸。试玩由游戏的关卡选择命令进入，使用预设阵容按 1× 战斗时钟推进。 [前后对比](../artifacts/formation-supernova-fidelity/supernova-before-after.mp4) · [有声实机](../artifacts/formation-supernova-fidelity/supernova-hd.mp4)
+
+## 2026-11-21 超新星双阶段首领实机验收
+
+源码 `3780261d561b29427b8241dd5efcafa7fa99befb`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,150,254 字节、零错误、退出 0。Runtime DLL SHA-256 `AF5CBC4D0F5488BC900C94A30DD7E3DAA870F369018423E57719D1DACB67777B`。最终 EditMode 1220/1220，定向用例验证三目标齐射、过载四发的源间隔、两段独立生命与暂停、六炮重装、同炮范围伤害和蓝门。 [构建日志](../artifacts/formation-supernova-boss/build.log) · [EditMode XML](../artifacts/formation-supernova-boss/edit-final.xml)
+
+同版 D3D11 Player 用默认八人阵容、1× 模拟时钟打完整关，35/35、零运行异常。3.300 秒二技能首次齐射起手，3.500 秒首次真实伤害，11.700 秒进入过载。32.475 秒首段耗尽，暂停时转段与动作均停住，33.725 秒恢复第二段 220,000 生命。34.150 秒第一发三技能重炮起手，34.475 秒接触结算，渲染检查记录了独立瞄准、炮口、飞行、命中与地面余波。59.500 秒清场，64.900 秒本体实际过蓝门，重试还原首段并保留阵容。 [Player 报告](../artifacts/formation-supernova-boss/player/supernova-boss-smoke.json)
+
+逐帧复看 `sale#14` 原动作，二技能常规射姿、过载抬炮和三技能横扛重炮可区分。19.08 秒有声剪辑按实录时间戳封装，截图实际采样约 9–10 fps，输出为 1280×720、24 fps。剪辑约 0.32 秒可见二技能粉白炮口，3.79 秒可见地面闪光，6.90 秒可见过载期间的多处红色受击。12.57 秒可见三技能同炮的多体受击，15.45 秒和 18.29 秒可见脚下橙红余波。原作动作基准为 2×。三技能近距离短弹道在实际渲染层中可测，近身混战的录制画面中难以单独辨认。 [正常速度实机片段](../artifacts/formation-supernova-boss/supernova-boss.mp4) · [原作对照时间](art/source-records/formation-supernova-boss.md)
+
+两条过载专用原声与三技能后视常驻层缺可用采样。Player 通过游戏的关卡选择命令启动，Windows 前台焦点阻止了物理鼠标用例，结算和通关使用实际战斗推进。 [侦察](../artifacts/formation-supernova-boss/player/02-supernova-scout.png) · [转段暂停](../artifacts/formation-supernova-boss/player/06-transition-paused.png) · [胜利](../artifacts/formation-supernova-boss/player/10-trial-victory.png)
+
+## 2026-11-21 同源石谷原素材接入验收
+
+对应 `632bd50c5aaf9fc8d0ebff5b3ecca8334e2a1e82`。Unity 6000.6.5f1 Windows x64 Development 构建 1,355,110,218 字节、0 错误、退出 0。Runtime DLL SHA-256 `169CF88DCD2E45EF53AF49A43C66453D647760BDCD7EB646DB14D6C96CCEE583`。176 个保存格，16 个原门。EditMode 1219/1219（包含 1-3 与望五子落子）；D3D11 定向 PlayMode 2/2，覆盖浅渠非通行、两岸和桥、原门、角色脚点/深度与水面暂停。Windows 默认入口 D3D11 三战及奖励扩展验证 175/175，0 异常；不是十三关完整人工通关。
+
+以本机 #02 常规场地原始预览核对砂岩与裂石高低关系、原纹样板、低草、桥和围合岩壁。正常速度 [1-1 实机连续片](../artifacts/formation-canyon/canyon-combat.mp4) 为 1280×720、24 fps、54 帧；0.0 与 2.0 秒复看时，浅渠及外河有连续微幅纹理变化，颜色不抢角色；红蓝门、桥和两处高台能辨，未见正常取景的外围空底。暂停冻结另由 PlayMode 读取同一材质相位确认，不以一张暂停图证明。[战斗](../artifacts/formation-canyon/ship-player/05-guard-reward-landing.png) · [整备](../artifacts/formation-canyon/ship-player/03-left-preparation.png) · [暂停](../artifacts/formation-canyon/ship-player/05-combat-paused-no-operating-ui.png)
+
+大水域版本曾使 1-3 的既定阵容失利并破坏望的落点验证；收回原掩体占格后两个回归均通过。保留题材、原 UV 和镜头，未保留看稿的全部水域面积；水面为同包素材兼容表现，不声称复刻原材质焦散、反射。未执行第二台机器或全流程人类试玩。[原包记录](art/source-records/formation-canyon.md)
+
+## 2026-11-21 望「天下劫」五子连爆实机核对
+
+验收 Windows Player 对应 `37c7b80c7526c6cd748ce8b6ce8169679c08c1de`。Unity 6000.6.5f1 Windows x64 Development 构建 1,376,768,342 字节，0 错误、退出 0。Runtime DLL SHA-256 为 `4F724993FF27A839B883544095FF399F1A028D3DB13BCF416458370A8EAB03C9`。EditMode 1219/1219，覆盖正式 3-4 的南北站位及各自的五次实际命中。D3D11 定向 PlayMode 24/24，覆盖暂停、五次爆炸和棋盘寿命。Windows 默认入口三战 163/163，四个正式节点专项检视 48/48，均为 0 异常。
+
+6.50 秒的同版实机使用固定展示靶。正常速度及逐帧复看时，约 1.60、1.86、2.12、2.39、2.63 秒分别可见中心、左、右、下、上落子的金光。中心棋子的黑色本体部分被靶遮挡，落点可辨。五次真实范围命中和各自原声发生在 2.783、3.033、3.283、3.533、3.783 秒，爆光随对应棋格依次出现。4.25 秒棋盘仍可见，4.42 秒已收。AAC 封装通过，1280×720、60 fps 共 390 帧，1 条开技声、5 组起手与命中声，0 条不可读。 [连续实机](../artifacts/formation-wang-cross/player/roles/66-D28-望.mp4) · [关键帧](../artifacts/formation-wang-cross/wang-keyframes.jpg)
+
+原作实录 59–61 秒用于核对落子光、底图和爆裂形状。原包跟子间隔为 0.25 秒，含随机选格与各子接触触发。中心加四邻固定顺序、全部落好后每隔 0.25 秒逐颗引爆是本轮棋盘适配。 [原作实录](https://www.bilibili.com/video/BV1c3FmzHE6J/?p=2) · [原包记录](art/source-records/formation-guard-combat-2026-11-20.md)
+
+## 2026-11-21 六星持续攻击与历史守军实机复核
+
+验收 Windows Player 对应 `5d441d79e12a2816472ab21896bfe8848e31da01`。Unity 6000.6.5f1 Windows x64 Development 构建 1,376,765,986 字节，0 错误、退出 0。Runtime DLL SHA-256 为 `9BBAC265F754D43156C5D07B1D914B940B111EE8BB9F278EC8674E9C3C7F5AE3`。完整 EditMode 1219/1219，D3D11 定向 PlayMode 24/24，Windows 默认入口三战 163/163、0 异常。另在同版 Player 的正式阵容站位运行技能检视，2-4、2-5、3-2、3-4 四关 48/48、0 异常，实际遇到 Mon3tr、圣聆初雪、银灰、望的技能与伤害。 [实机与回归证据](../artifacts/formation-guard-combat-recheck/)
+
+| 角色 | 同版实机结果 |
+| --- | --- |
+| 荒芜拉普兰德 | 5.9–7.3 秒见三道狼轨散开追击，持续段到约 45 秒仍有实际接触，46.4 秒回到普通挂点狼头。剪辑记录 174 个本角色实际接触。 |
+| 凛御银灰 | 5.84–6.12 秒、7.08–7.34 秒的冷蓝刀波沿地面经过靶，技能中段继续挥砍，约 53.4 秒冰域结束。记录 39 轮挥砍，另有起手和收势。 |
+| 望 | 约 1.8 秒展开五颗棋子。测试靶分别经过五个落点，3.53–7.53 秒逐颗实际爆裂，8.4 秒底图已收。录得一次开技与五组独立的起手、命中原声。 |
+| 玛恩纳 | 约 4.5 秒开始技能段，5、9.8、15.8、23、29 秒均可抽到原金色斩击，31.8 秒回到收剑。一次全窗口录到 22 个真正接触。 |
+| 赤刃明霄陈 | 1.53–6.03 秒录到连续普攻，实机帧之间约 1.12 秒。6.5 秒起为完整技能，红龙绕当前棋盘边界转向，剑光和目标接触按三次源事件结算。原声轨有普通、技能、红龙事件合计 86 条。 |
+| 四名历史守军 | D31 见原超新星炮击，D33 见原弩弹与金色格域，D34 见水纹及连续攻击，D35 见治疗与技能药弹。各角色正常进入当前场景，声音绑定所用原作事件附在录像清单中。 |
+
+上述九份 1280×720、60 fps 每人一片均通过 AAC 音视频封装、尺寸、帧数及片长检查，素材不可读数均为 0。录像使用现役棋盘与真实技能结算，省去部分候技时间。望的录像依次摆放测试靶以复核五颗触发，原作库存与弹药仍属于原作规则。安洁莉娜的空中拦截美术保存在资源库，现役使用固守技能。凯尔希的技能药弹分支与延迟副作用缺独立原声绑定。 [原版参考与录像索引](../artifacts/formation-guard-combat-recheck/index.html)
+
+## 2026-11-21 六星旧版素材与怪物清晰度实机验收
+
+Windows Player 构建内容源为 `a66d73d0044858e74e8e1641a294af7f272df8be`。Unity 6000.6.5f1 的 `BaselineTools.BuildWindows` 成功（1,346,605,050 字节，0 错误、退出 0），运行 DLL SHA-256 为 `8552B2CF075E644988F16FC4223BB6E54A3A9274C487FBEF4B67CC92388929CC`。完整 EditMode 1217/1217，D3D11 定向 PlayMode 21/21。同版本正常棋盘独立 Player 163/163、完成 3 场、0 异常。 [验证目录](../artifacts/formation-archived-signatures/)
+
+同版 Player 的 71 个逐角色录像全部通过分辨率、帧率、片长、帧数和 AAC 封装检查。验证对应用剪辑时间，技能前的等待可跳过，动画使用约定的 2× 基础速度，战斗时钟为 1×。逐项观察原版录像、正常速度的显现与接触过程，并抽取关键帧。 [全部角色录像](../artifacts/formation-archived-signatures/final/index.html)
+
+| 对象 | 本次实机复核 |
+| --- | --- |
+| B23、M14 | 赎罪者约 12.77 秒在首靶正前方约一格起手、13.22 秒出现命中，旧版约三格外起手。霜星约 10.50 秒出现三靶命中，23 秒后有倒地和返场片段。源骨骼与动作包检查均通过。 |
+| 塔露拉 | 五费火雨 25.51 秒释放；26.56、27.56、31.56 秒的左侧火色覆盖分别增加 32.4%、40.3%、41.2%。沿用约八秒截止和屏幕上下留白。JT8-3 的整体火势仍因地图和阵容而异。 |
+| 荒芜拉普兰德、余 | D21 在 5.4 秒见身后头部，6.07–6.90 秒见三道狼展开，约 7.05 秒回到实际目标。D22 在 2.5–7.5 秒可见从上沿到下沿的整列原火墙。 |
+| Mon3tr | 首次构建中，通用治疗片的时长错误地遮住了重构待机。修正后在 6.8、7、8.5、9.8、13.8、15.3 秒见重构身体，6.25 秒见红色爪击，16.4 秒见归位人形。D3D11 定向项验证了两次斩击的 1.35 秒节奏、原接触标记和两次斩击间的源待机。 |
+| 斩业星熊、凛御银灰、望 | D25 自 5.5 秒可见电蓝色边线和盾光。D26 约 5.65 秒展开冰域，约 6 秒命中。D28 在 1.75 秒展开棋盘、约 2.8 秒真实触发，边框随技能结束退去。 |
+| 玛恩纳、火陈 | D30 3.05 秒可见原金色斩击。D32 自 4.8 秒出现红龙、6.7–7.0 秒出现剑光和三次源闪光，约 10.3 秒见沿现役棋盘转向。两人现役关卡未排入；使用资源库中的独立实机检视。 |
+
+D21–D30 新旧录像所使用的每一组实际音源和原作音频事件键一致。Mon3tr 的音频事件次数按实际增加的爪击提高。旧资源的复用与当前棋盘中的时序、站位差别见[旧版与本次实机](../artifacts/formation-archived-signatures/index.html)。
+
+## 2026-11-21 早期原声、守军本体与六星特效恢复
+
+- **早期小怪原声。** 从本机客户端 Actor 定位战斗编号，补回宿主士兵和深池方阵战士的独立出手及命中。游击队猎犬、壳海狂奔者恢复原事件表的吠声和加权无声分支。雪怪术师恢复寒冷技能的接触声。200 条绑定、169 份原 PCM 已对照原表和文件摘要。旧棋盘试玩仍有的合成命中路径已移除。源石虫与游击队猎犬、传令兵与壳海狂奔者各自保留原包共用的接触声。9 支 60 fps 实机片确认 86 次原声事件与文件，零读取失败、零错配。宿主士兵各录到 8 次出手和接触，深池方阵战士各 6 次，游击队猎犬和壳海狂奔者分别录到 1 和 2 次原吠声，雪怪术师录到 2 次寒冷命中。游击队猎犬的第二种吠声已核实源素材，该次录制未选中。囊海爬行者的两次实际反击仍静音。[早期音效实机](../artifacts/formation-presentation-calibration/focus/early-audio-comparison.html) · [源文件校验](../artifacts/formation-early-audio/source-audit.json)
+- **六星守军。** 以 11 月 14 日实录 `b1ae4cfc` 为基线。现役九名六星接回原生粒子、模型及材质，圣聆初雪沿用确认过的分层版。38 个闭合依赖包通过 SHA-256 检查。139 条已搭载的挂点轨迹对应的 397 张正背面图集页与旧版文件相同。此前的 55 条守军音效绑定一致，D21–D30 两版实机对照的 146 个音效事件在源文件、顺序、音量、音高和战斗时间上均相同。范围和源效果跟随现役棋盘事件，历史空投、伙伴或额外伤害阶段保持各自历史记录。兼容诊断保留在 Player 日志，交付版战斗画面不打开开发控制台。[旧版与现役](../artifacts/formation-presentation-calibration/sixstar-restoration.html) · [守军来源记录](art/source-records/formation-guard-combat-2026-11-20.md) · [音效前后比对](../artifacts/formation-presentation-calibration/focus/sixstar-audio-preservation.json)
+- **守军尺寸。** 同时量本机守军默认正面根缩放和本作既有怪物标尺，扫描 4,324 张守军待机帧。22 名常规守军画面高度由 1.17–1.27 格到 1.64–2.06 格，保留落脚点、占地、战斗参数、怪物尺寸和终局初雪的特例。60 fps 同机位对照，炎熔主轮廓 77→109 像素，新约能天使 67→102，脚点均在原 y=472。两组怪物身体区域逐像素一致。不同历史怪物图集归一的原有偏差仍存在。[同站姿实机](../artifacts/formation-presentation-calibration/guard-reference/index.html) · [比例与采样依据](art/FORMATION_SOURCE_SCALE.md)
+- **塔露拉左侧火焰。** 本机 `screen.ab` 的 `screen_bsnake` 是原 `ScreenAttack` 与 `FinalScreenAttack` 在开始和结束事件控制的屏幕层。本作五费火雨接入该层的左侧原火苗、余烬及流动纹理。480 帧逐像素与原包烘焙帧一致。60 fps 实机中，左边同一采样区橙色像素在起火前为 7，持续段为 1616–1873，收束后为 5。右侧横向火浪、战斗时点和界面均在连续录像核对。[原版和玩家实机](../artifacts/formation-talulah-left-fire/screen-fire-comparison.html) · [源绑定](art/FORMATION_RANGED_SOURCE_BINDINGS.md)
+- **交付构建。** Windows x64 Development 运行源码 `4542e464c3bf07b338430c10eeeed80b4e9fb077`，Unity 6000.6.5f1 构建 1337270394 bytes，0 错误，退出 0。运行 DLL SHA-256 为 `1BF1AB090013441CE6BCBE5EA54A7E77C4E48B8844A6AF4A401F8FEF2AC5BC6C`。EditMode 1215/1215，重点 D3D11 PlayMode 19/19，正常棋盘前三场实机 163/163 且退出 0、零异常。新版 70 支、30576 帧全部成功解码。音效核对 687 次角色原声和 50 次初雪专用原声，零读取失败、零错配，65 支有声片独立重混的有效 PCM 样本误差不超过 1。最终 24 fps 录像中六星 D21–D30 的 10 条原始 WAV 与上一版逐字节相同。复看新约能天使和斩业星熊终版实机截图，原生资源的兼容信息已从画面移至日志记录，角色像素一致。[总入口](../artifacts/formation-presentation-calibration/index.html) · [最终音效核对](../artifacts/formation-presentation-calibration/all-roles/audio-comparison.html) · [构建](../artifacts/formation-presentation-calibration/build-delivery.log) · [EditMode](../artifacts/formation-presentation-calibration/edit-delivery.xml) · [PlayMode](../artifacts/formation-presentation-calibration/play-delivery.xml) · [实机回归](../artifacts/formation-presentation-calibration/default-player/campaign-smoke.json)
+
+## 2026-11-21 战斗音画原包复核
+
+- **声源和触发。** 用本机《明日方舟》Windows 资源包版本 `26-10-20-11-10-38-04170990` 与留存原事件表对应 185 条绑定和 163 份原 PCM。正式棋盘按实际起手、出手或命中选文件。每条来源记录包含资源名、事件键、摘要及源并发设置。通用合成命中声和额外身体闪白不再覆盖正式棋盘。深池焚毁者在首次真实接触播放一次持续喷火声。维维美一技能试录的五次同声已收回到原动作出手点的一次。二技能由原投射物在 0.10 源秒后附着，随后在 0.15 源秒的原停止延时显示地面层，保持原本无飞行主体。望只在棋子实际触发时重用原棋子接触声。[音效来源](art/source-records/formation-original-combat-audio-2026-11-20.json)
+- **塔露拉。** 原包复查两个形态的 `Skill_1 / Ignite`、`Skill_2 / DragonFireExplode` 和 `ScreenAttack`，39 段、4218 帧离线原素材逐帧符合保留的裁切、对齐和镜像。60 fps 实机 `fc84f3c9` 三费在 9.600 秒实际命中，四费在 17.200 秒可见龙炎所选目标的起手层，晚于起手的实际出手约在 17.517 秒。五费在 26.733、27.733 秒可见八行低位火流及重叠的两波。原作 2× 实录和本作在同一条横向观测线上均为每秒一波。原作复生火浪的拦截、首波绝对偏移和关卡光照仍有差异。本作五费继续按六段直伤和八秒灼烧走独立的战斗结算，同屏可看到远处目标先受本作伤害，然后火头到达。[塔露拉原包与实机](../artifacts/formation-original-fidelity/reference/talulah-comparison.html) · [原包和采样记录](art/FORMATION_RANGED_SOURCE_BINDINGS.md#2026-11-21-复核并重接塔露拉原包层)
+- **守军。** 60 fps `fc84f3c9` 实机 1.683–1.733 秒核对新约能天使枪口、独立飞行和命中，6.417–6.600 秒核对三技能短飞行和五发接触。斩业星熊使用 60 fps 源帧 F20 和 F30 的两种动作接触标记，`4b24df99` 实机约 6.833 秒见首段技能命中。炎熔的地面层曾因把负数的我方单位编号误判为无目标而漏播。`65742c4f` 的 60 fps 实机 1.983 秒和 5.950 秒分别看见普攻和技能脚边火苗，均与身体命中层分开。仍有安赛尔飞行、Mon3tr 次级链疗、凛御银灰武器拖尾、望附加棋子命中和斩业星熊后续原作段落的缺口。[守军对照](../artifacts/formation-original-fidelity/reference/guard-comparison.html) · [守军来源与标记](art/source-records/formation-guard-combat-2026-11-20.md)
+- **构建与实机路径。** Windows x64 Development 运行源码 `0f49929ca3f51e152e569ea0a46bc613ca7b8de0`，Unity 6000.6.5f1 构建 1026550894 bytes、0 错误、退出 0。运行 DLL SHA-256 为 `C9512AF5EF6910E0C1B773A906492C718AFEE3A1CAFBDFA2C1BE6FAC19BD6E31`。完整 EditMode 1215/1215，定向 D3D11 PlayMode 18/18。正常棋盘入口的前三场实机 163/163 项通过，0 异常并退出 0。PlayMode 定位断言验证炎熔两层的实际注册及脚点位置，火苗颜色和可见性另用 60 fps 原片核对。[构建](../artifacts/formation-original-fidelity/build-matched.log) · [EditMode](../artifacts/formation-original-fidelity/editmode-matched.xml) · [PlayMode](../artifacts/formation-original-fidelity/playmode-delivery.xml) · [默认实机](../artifacts/formation-original-fidelity/default-replay/campaign-smoke.json)
+- **同版逐角色视频。** 1280×720、24 fps 实机共 30576 帧，70 支角色影片，包含 46 名进攻方、22 名守军、2 种召唤物。每个角色一支，变化形态和技能以片内章节区分。主角真实触发的音轨记录 650 次能追溯到角色、事件和源文件的播放，另有终局初雪的 50 次专用原声，零解码遗漏、零来源错配。用原 PCM 独立重混 63 支有声影片，17,966,161 个有效样本的最大差为 1 个 16 位整数单位。望的棋子原声在战斗 0.025 秒确实触发。七支片段未触发已核实音效，保留安静。守军在本作固守，坎诺特和梅菲斯特的原步态为独立的棋盘检视。录像使用真实窗口、真实规则触发及对照阵容。70 支成片的画面和音轨都完整解码通过，四个核对入口均可打开。所列原作差异仍未达到整套一致。[影片与原包核对入口](../artifacts/formation-original-fidelity/index.html) · [逐角色音源核对](../artifacts/formation-original-fidelity/role-replays/audio-comparison.html) · [录像清单](../artifacts/formation-original-fidelity/role-replays/manifest.json)
+
+## 2026-11-20 原作出手、命中反馈与逐角色实机
+
+- 从本机 Windows 客户端资源版本 `26-10-20-11-10-38-04170990` 核对角色、动作、原声触发和图集。169 份 PCM 与 190 条已证实绑定涵盖 65 个现役角色音效标识。起手、释放和接触各由对应实战事件驱动。深池焚毁者按原音效表只播放一份喷火音，后续实际接触可替换前一份。宿主士兵、深池方阵战士、囊海爬行者缺可核实的逐项专属绑定，仍用本作接触声。原音频开放再分发许可未核实。[原作音效来源](art/source-records/formation-original-combat-audio-2026-11-20.json)
+- 守军恢复已有的武器火光、护体与身体命中、治疗接触和技能层。按原正面骨骼的 `OnAttack` 设置 12 名三星守军的普通攻击或治疗接触点。玫兰莎和月见夜包含独立起手段。接触补入淡化身体反馈，图集、淡化和声音都读取实际事件。动作为既定 2×，攻速按原规则计算。守军范围、伤害、技力与固定站位继续使用当前棋盘规则。[守军来源、时点和缺口](art/source-records/formation-guard-combat-2026-11-20.md)
+- 构建源码 `6145962185d693b83712eff94336221e1731b3e6`。Unity 6000.6.5f1 Windows x64 Development 构建 1030897830 字节、0 错误、退出 0。完整 EditMode **1213/1213**，D3D11 画面定向 **18/18**，正式入口独立版 **163/163、0 异常**，完成前三战及其结算。新增断言覆盖真实命中后受击身体淡化、暂停、原裂兽声音与命中同刻、炎熔原标记的出手和伤害时点。[构建日志](../artifacts/formation-combat-presentations/build-delivery.log) · [逻辑测试](../artifacts/formation-combat-presentations/editmode-final.xml) · [画面测试](../artifacts/formation-combat-presentations/playmode-final.xml) · [独立版报告](../artifacts/formation-combat-presentations/default-player/campaign-smoke.json)
+- 同源实机录了 46 名进攻方、22 名守军和卡德霍猎犬、泥岩巨像。前后各段使用预置阵容、对照靶及部分自然回转切段。44 名主动进攻方均有实际技能动作。望的棋子有真实接触，模型不记录独立施法。玛恩纳保留在资源库，片中展示其源技能动作。梅菲斯特和坎诺特的原走路段是在同版棋盘上由程序往返录制并拼入各自主片。视频音轨按实机事件和实际音频资源混制，未用完整桌面混音；保留触发 1073 次，0 个样本读取失败，玛恩纳源动作检视片为静音。录像器拒绝黑屏帧。70 支合计 30576 帧、21 分 14 秒，均为 H.264/AAC、1280×720、24 fps，索引在浏览器核对了筛选、搜索、播放和章节跳转。[逐角色索引](../artifacts/formation-combat-presentations/role-videos-final/index.html) · [逐片完整解码及音频核对](../artifacts/formation-combat-presentations/role-videos-final/qa/role-video-qa.md)
+- 在本次同源影片抽查了以下时点。深池焚毁者约 9.50–10.70 秒可持续看到喷口到目标的火焰。维维美约 12.90 秒能见红弹飞行，13.35 秒命中后出现大头。塔露拉五费自约 26 秒可见低位多排火浪。岁的首轮约 8.80 秒落爪并在约 13.50 秒追加实际接触。炎熔在约 1.542–1.917 秒挥杖，约 1.958 秒受击者出现反馈，贴身构图中地面层未能单独辨认。抽看芙蓉和安赛尔的治疗、余的地面火墙、Mon3tr 的重构攻击和望的棋子。新约能天使枪口层在这次取景偏低，守军独立弹道、安赛尔拖尾和 Mon3tr 链疗连线仍待补齐。首轮隐藏窗口生成的黑屏文件不计入交付。完整长局和第二台电脑未测。[重点帧](../artifacts/formation-combat-presentations/work/) · [逐角色抽帧](../artifacts/formation-combat-presentations/role-videos-final/qa/)
+
+## 2026-11-20 大伤害红字
+
+- 对照《明日方舟》新约能天使三技能原客户端录像约 0:05 的红色 `1398`。棋盘沿用项目字体，加粗红色整数并加深色描边，命中后弹出上浮，约 0.8 秒淡出。红字采用我方对守军的单笔实际扣血，门槛为至少 100 点且达到普通伤害估算的 1.5 倍。普通伤害按同次命中的伤害类型和目标防御计算。100 点下限、粗字与弹出曲线是本作适配。治疗继续走原青色提示，守军对我方的伤害保留实际扣血与受击事件。[原作录像](https://www.bilibili.com/video/BV18JVGzNEJb/?t=5)
+- 运行源码 `be63f51a0cebfee3c004cce87c7702f1cf305454`。Unity 6000.6.5f1 Windows x64 Development 构建通过，1001980086 bytes、0 错误、退出 0。定向 EditMode **98/98**。仓库完整性检查覆盖 14312 个跟踪文件。[构建](../artifacts/formation-red-damage/build-final.log) · [定向测试](../artifacts/formation-red-damage/editmode.xml)
+- 1280×720 D3D11 独立版正常首领试玩 **61/61、零异常**，133.650 秒进入蓝门。核对 99/100、149/150 两组边界，以及治疗、全吸收、守军来源。实机看到我方的 11918 红字，初雪二、三技能实际扣约 329、251 点时我方身上无伤害数字，约 28 点积雪伤害仍结算。复看两阶段连续出手及关键帧，短片按采集时间重采样为 173 帧、24 fps，含游戏混音，完整解码通过。实机取样覆盖首领试玩。[我方重击](../artifacts/formation-red-damage/player-final/04-player-large-damage-number.png) · [二技能受击](../artifacts/formation-red-damage/player-final/04-s2-incoming-no-damage-number.png) · [三技能受击](../artifacts/formation-red-damage/player-final/06-s3-incoming-no-damage-number.png) · [有声实机](../artifacts/formation-red-damage/red-damage-player.mp4) · [独立版报告](../artifacts/formation-red-damage/player-final/snow-boss-smoke.json)
+
+## 2026-11-20 圣聆初雪命中与积雪辨识
+
+- 默认皮肤二技能「霜涛覆岭」复用原作 `sbell2_skill_02_start_01`、直接命中 `sbell2_skill_01_hit`，周期伤害仍走独立的 `sbell2_buff_01_hit_02`。三技能「群山俯首」复用原作 `sbell2_skill_03_start_01`、`sbell2_skill_03_hit` 和持续 `sbell2_skill_03_flow`。直接命中以结算时的目标位置为准，按目标体型抬至身体中部并排在该目标体层上。施法、直接命中和持续风雪各按原图集输出到棋盘显示色域。对照原客户端录像二技能约 1:32.8–1:35.4，三技能约 2:04.6–2:06.8。原录像里的独立立体冰簇归属仍未确定，棋盘用三档原作平面雪纹叠加浅蓝格底，颜色随实际雪层加深。这是适配工业灰地板的表现层。原素材权利状态见来源记录。[原包绑定](art/source-records/formation-pramanix-boss-2026-11-20.json) · [二技能原作录像](https://www.bilibili.com/video/BV1f7sfzGEor/?t=92) · [三技能原作录像](https://www.bilibili.com/video/BV1f7sfzGEor/?t=124)
+- 源码 `b9cc82818d00a8712272197c10ab620d4eb8ae73`，Unity 6000.6.5f1 Windows x64 Development 构建通过，1001973390 bytes、0 错误、退出 0。表现功能提交 `49f27564` 的定向 EditMode **98/98**，退出 0。后两次提交调整独立版采集时的失焦和音乐暂停采样。[最终构建](../artifacts/formation-pramanix-hit-readability/build-reviewed.log) · [EditMode](../artifacts/formation-pramanix-hit-readability/editmode.xml)
+- 1280×720 D3D11 独立版 **53/53、零异常**，走正常首领试玩控制器，战斗倍率 1×，133.650 秒实际进入蓝门。二、三技能在 8.400 和 74.950 秒记录到与真实伤害对应、位于目标身体的原作图集。连续帧复看两技出手、多人命中以及两次出手之间保留的积雪，晚期三技能仍有 14 格雪，中心五层。同为倒计时 61.2 秒的可见雪格局部，显示 RGB 均值由约 159/162/160 变为 167/185/196。复看了正常视图及关键帧，拥挤处仍会有多名目标的命中交叠。录像按采集时点重采样到 24 fps，约 12.6 秒，保留游戏混音，完整解码通过。[二技能命中](../artifacts/formation-pramanix-hit-readability/reviewed/04-s2-native-direct-impact.png) · [三技能命中](../artifacts/formation-pramanix-hit-readability/reviewed/06-s3-native-direct-impact.png) · [晚期积雪](../artifacts/formation-pramanix-hit-readability/reviewed/06-late-s3-snowfall.png) · [有声实机短片](../artifacts/formation-pramanix-hit-readability/pramanix-contact-and-snow.mp4) · [独立版报告](../artifacts/formation-pramanix-hit-readability/reviewed/snow-boss-smoke.json)
+
+## 2026-11-20 圣聆初雪持续攻击、积雪与原声
+
+- 运行源码 `d9f024110c728c2ff9851dfed27c00d1a10890b7`。Unity 6000.6.5f1 Windows x64 Development 构建通过，1001968578 bytes、0 错误，退出 0。功能提交 `b5ad2d14` 的完整 EditMode **1213/1213**、零跳过，退出 0。后续版本补了初雪雪格的色彩输出，战斗参数相同。仓库检查覆盖 14312 个跟踪文件。[最终构建](../artifacts/formation-snow-boss-sustained/build-snow-decode.log) · [EditMode](../artifacts/formation-snow-boss-sustained/editmode-final.xml)
+- 高清图集的源动作逐帧与跨页检查显示，二技能收势与技能待机起点衔接，三技能 B/C 收势与技能待机起点有原姿态差。修订后从收势结束时起采样待机，使用模拟时钟余量连续取样，动作切换 0.075 秒过渡，保留真实命中时点。最终独立版测得二技能 1.500 秒、三技能 1.150／1.175 秒的相邻出手。抽样看到插值和连续换帧，冻结时保留本体姿势。三技能开场后超过 18 秒仍出手，并保持技能状态。[二技能连续帧](../artifacts/formation-snow-boss-sustained/player-snow-decode/s2-cast-and-contact) · [二阶段持续出手](../artifacts/formation-snow-boss-sustained/player-snow-decode/s3-late-permanent-snowfall)
+- 源数据的基础格形为菱形 13 格，三技能为 5×5 去四角的 21 格。按合法通行低地过滤后生成积雪，基础／三技能分别每 5.5／1.5 秒叠层，最多五层。二技能命中可在实际格点进一步堆雪、扩散。三技能雪地持续减速，开场保留 8 秒周期伤害。实机二技能初次取样时 10 格积雪，晚期三技能 14 格、中心五层。使用源雪纹在真实地面渲染，补齐 Gamma 转换后由暗灰变为浅灰蓝白，保持地形高度、遮挡和原图层级。[一阶段积雪](../artifacts/formation-snow-boss-sustained/player-snow-decode/04-s2-snow-tiles.png) · [二阶段晚期积雪](../artifacts/formation-snow-boss-sustained/player-snow-decode/06-late-s3-snowfall.png) · [原作技能与天赋](https://prts.wiki/w/Pramanix_the_Prerita)
+- 1280×720 D3D11 独立版 **50/50**、零异常。通过正常试玩入口，68.825 秒破首条血，70.825 秒开三技能，124.425 秒击倒，133.650 秒本体进蓝门。为补偿密集出手及持续三技能，首领攻击降至 155，两个阶段各 50 万生命。原终局九人、14 装备格的配装阵容在模型回归中 134.375 秒通过。最终实机两阶段分别抽中 CN_027 与 CN_028，背景音轨从开战持续至退场，暂停期间播放头停住。原作施法、攻击、接触、积雪和复苏声绑定实战触发，实机录音来自游戏自己的监听器。[独立版报告](../artifacts/formation-snow-boss-sustained/player-snow-decode/snow-boss-smoke.json) · [阵容回归](../artifacts/formation-snow-boss-sustained/editmode-atk-155-rerun.xml) · [原声音频](art/source-records/formation-pramanix-boss-audio-2026-11-20.json)
+- 在同一二阶段时点对比构建，实机露出雪格的同一取样区域平均亮度由 90.53 提升至 142.56（0–255）。用最终实机监听器录音匹配两段源语音波形，确认两句分别在各自开场进入混音。实机短片按采集时点导出为 309 帧、24 fps，12.875 秒，含 48 kHz 立体声音轨，完整解码通过。[有声实机短片](../artifacts/formation-snow-boss-sustained/pramanix-final-player-audio.mp4)
+
+## 2026-11-20 圣聆初雪高清、攻速与冰壳
+
+- 运行源码 `2f07570838ad2e25f65051d58fefa6517b9d2fb3`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994150382 bytes、0 错误，退出 0。完整 EditMode **1213/1213**，零跳过，退出 0。新高清动作 67 页和原包两种冻结特效全部进入运行资源。仓库检查覆盖 14274 个跟踪文件。[构建](../artifacts/formation-snow-boss-hd/build-final.log) · [EditMode](../artifacts/formation-snow-boss-hd/editmode-final.xml)
+- 默认皮肤正面原骨骼 13 段、1870 帧按原 60 fps 双倍密度重新采样，124.8 → 249.6 PPU。以相同姿态比较，待机可见本体高从 157 → 314 源像素，各段可见世界边界偏差不超过 0.0041 个单位。独立版侦察、二技能、三技能均实测加载 249.6 PPU。侦察名条移到策略栏下方，脚下地格可见。[源帧对照](../artifacts/formation-snow-boss-hd/source-density-comparison.png) · [实机侦察](../artifacts/formation-snow-boss-hd/player-final/02-giant-boss-scout.png) · [骨骼来源](art/source-records/formation-pramanix-boss-hd-2026-11-20.json)
+- 原作角色表基础攻击间隔 2.0 秒，三技能表攻速 +30。棋盘按原作数值计算间隔并对齐 30 Hz 时间刻度，实机连续出手间隔为二技能 2.000／2.000 秒、三技能 1.525／1.550 秒。原动作接触点为 60 fps 源第 42／40 帧，按基础动画 2×、三技能 2.6× 分别落在单次动作后 0.350／约 0.256 秒。核对正常速度下抬手、实际命中和雪格伤害。[原作角色数据](https://github.com/Kengxxiao/ArknightsGameData/blob/7e560050b03c34661db1d322d008733072352b2a/zh_CN/gamedata/excel/character_table.json) · [原作技能数据](https://github.com/Kengxxiao/ArknightsGameData/blob/7e560050b03c34661db1d322d008733072352b2a/zh_CN/gamedata/excel/skill_table.json)
+- 原包中初雪首次致命伤的自身冻结和敌方冻结使用不同状态。棋盘绑定 `buff_frozen` 蓝壳及 `buff_frozen_to_walk` 青绿壳，按可见体型适配挂点，随本作 2 秒转段时钟。实机记录到 8 个存活进攻单位和初雪共 **9 层冰壳**，各自贴合脚点，暂停保持姿势和帧，解冻清理。记录 70.425 秒破第一条血、72.425 秒转入二阶段、128.075 秒清场和 137.300 秒本体进蓝门。1280×720 D3D11 独立版 **32/32**、零异常，由正常试玩控制器入口驱动，覆盖重试及 3-7 入口一致性。[原包绑定](art/source-records/formation-pramanix-boss-freeze-2026-11-20.json) · [冻结实机](../artifacts/formation-snow-boss-hd/player-final/05-active-global-freeze.png) · [独立版报告](../artifacts/formation-snow-boss-hd/player-final/snow-boss-smoke.json)
+- 实机短片由二技能出手、转段冻结、三技能出手三个片段组成。按采集时间重采样为 138 帧、24 fps、5.75 秒，无音轨，完整解码通过。[实机短片](../artifacts/formation-snow-boss-hd/pramanix-hd-two-phase-player.mp4)
+
+## 2026-11-20 圣聆初雪双阶段终局
+
+- 运行源码 `64d9d0c60eba3259ce627d5d461b76978dfc0b77`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994144354 bytes、0 错误，退出 0。完整 EditMode **1212/1212**，零跳过，退出 0。FormationBattle 读取保存地形，初雪固定在可通行的中路低地 (17,4)。仓库检查覆盖 14130 个跟踪文件。[构建日志](../artifacts/formation-snow-boss/build-final.log) · [EditMode 报告](../artifacts/formation-snow-boss/editmode-final.xml)
+- 1280×720 D3D11 独立版 **23/23**、零异常。由实际试玩入口的控制器命令建立预设并开战，普通时钟推进，阵容、站位、原始面板与伤害均来自正常战斗。首个二技能动作在 4.525 秒，68.175 秒首条耗尽，7 个存活进攻方同时冻结。暂停时冻结剩余 0.45 秒及单位位置保持。70.175 秒二阶段以满额 50 万生命开始三技能，124.425 秒清空守军，129.475 秒本体进入蓝门。重试恢复第一阶段并保留原阵容与站位。难度选择的 3-7 读到同一首领定义。鼠标输入探针受当前桌面前台句柄限制，最终回放由同一入口命令驱动。验证范围为首领试玩及 3-7，完整三位面自然运营长局待试玩。[独立版报告](../artifacts/formation-snow-boss/player-final/snow-boss-smoke.json) · [通关画面](../artifacts/formation-snow-boss/player-final/08-trial-victory.png)
+- 对照原包 `26-10-29-15-36-11-33649006` 默认皮肤。二技能源接触第 42 帧（60 fps），基础 2× 时为出手动作起点后 0.350 秒。三技能三种出手的源接触均为第 40 帧，实机接触同时考虑技能攻速。二技能围身层、直接命中、周期地伤与三档雪格分别绑定实际施法、目标伤害和格子状态。看过实机二技能出手、落点雪格及首个周期伤害，深色地面上的积雪和直接命中偏轻。二段核对范围、多个实际命中与风雪层。转段逐帧核对生命条、持姿、脚边冰壳及解冻后动作接续。转段冻结范围和 2 秒时长按棋盘适配，冰壳绑定为本作用法。看稿只核实到原包材质与原素材，原客户端额外挂点辉光与全套粒子时序仍有差异。[原包与采样记录](art/source-records/formation-pramanix-boss-2026-11-20.json) · [二技能落地](../artifacts/formation-snow-boss/player-final/04-s2-snow-tiles.png) · [冻结](../artifacts/formation-snow-boss/player-final/phase-break-freeze/018.png) · [三技能命中](../artifacts/formation-snow-boss/player-final/s3-cast-and-contact/014.png)
+- 首领身体按原图集 3.65× 显示，保持比例与脚点，当前构图可容纳可见身体和蓝门。侦察时头顶小名条与策略条有轻微交叠，试玩标题与战斗首领条完整可见。当前放大沿用既有图集像素密度。实机短片合并二技能、阶段冻结和三技能三个连续片段，按实机采集时间编码为 149 帧、24 fps、6.208 秒，无音轨。[实机短片](../artifacts/formation-snow-boss/pramanix-two-phase-player.mp4) · [侦察画面](../artifacts/formation-snow-boss/player-final/02-giant-boss-scout.png)
+
+## 2026-11-20 奖励球散布与守军落地演出
+
+- 运行源码 `514a81d4363a2a16d5daea051c41dd2c5acc45e8`。Unity 6000.6.5f1 Windows x64 Development 构建通过，994109458 bytes、0 错误，退出 0。定向 EditMode **135/135**、仓库检查 **14079** 个跟踪文件。EditMode 覆盖奖励球数量、遭遇进度严格超过 25% 和重复结算保护。[构建日志](../artifacts/formation-reward-drops/build-final.log) · [EditMode](../artifacts/formation-reward-drops/editmode-final.xml)
+- 1280×720 D3D11 独立版前三战 **206/206**、零异常、退出 0。1-1 以正常速度录到首次倒地后小晶球下落、回弹、触地光圈和消散。核对了战中演出不入账、结束时清理、普通战斗无掉球提示、前两关四颗及五颗球的实际结算、跨关留存、两颗并行领取与旁球留位。1-1 和 1-2 分别查看四颗球和十一份奖励的散布。[落地实机](../artifacts/formation-reward-drops/guard-reward-drop.mp4) · [首关平台](../artifacts/formation-reward-drops/player-final/06-first-reward-platform-scatter.png) · [密集平台](../artifacts/formation-reward-drops/player-final/06-reward-platform-scatter.png) · [独立版报告](../artifacts/formation-reward-drops/player-final/campaign-smoke.json)
+- 对照留存《明日方舟》守军 `Die` 清单，保留原时序的 2× 播放，原死亡片结束后接本作掉落。短片为 54 帧、24 fps、2.25 秒无声，完整解码通过。实机短片覆盖首关地面守军，高台和遭遇关未单独录制。[来源与时序](art/source-records/formation-ground-rewards.md)
+
+## 2026-11-20 备战与战斗同倍率
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，994099357 bytes、0 错误，运行源码 `1b1fa16067c65b71e9f98f728728bdeefbf3e490`。D3D11 PlayMode **17/17**，核对前、中、后三排的同排地格宽度、布阵边缘、悬空拖放、两格占地角色和侦察往返。仓库检查覆盖 14077 个跟踪文件。[构建](../artifacts/formation-preparation-zoom/build.log) · [PlayMode](../artifacts/formation-preparation-zoom/playmode-final.xml)
+- 1280×720 D3D11 独立版前三场 **194/194**、零异常、退出 0。三场备战和战斗的中排地格宽均为 **59.44 px**。通过正式视角入口往返并核对中间帧。鼠标驱动测试受前台焦点限制，最终帧序列通过同一视角入口触发。真实结算核对了新平台两排球、并行拾取和飞行到账。[备战画面](../artifacts/formation-preparation-zoom/player-verified/03-left-preparation.png) · [守军横移中间帧](../artifacts/formation-preparation-zoom/player-verified/scout-pan-right/005.png) · [战斗画面](../artifacts/formation-preparation-zoom/player-verified/05-combat-0.png) · [奖励平台](../artifacts/formation-preparation-zoom/player-verified/06-concurrent-reward-flights/010.png) · [独立版报告](../artifacts/formation-preparation-zoom/player-verified/campaign-smoke.json)
+- 场景调整仅涉及现有奖励平台的尺寸和位置。继续沿用已核对的《明日方舟》LS-5 留存环境部件、60° 俯视角和 FOV 40。奖励台位置与备战构图按本作界面适配。[原素材记录](art/source-records/formation-ls5-native.json)
+
+## 2026-11-20 连通棋盘与守军侦察
+
+- Unity 6000.6.5f1 场景校验通过，确认保存了 176 个底格、60 个外围格、原红蓝门各八扇及两处高台、两处掩体。沿用《明日方舟》LS-5 版本 26-10-29 的留存环境原部件和正向 60°／FOV 40 构图。塔楼及相邻走道整体向右挪动，为棋盘前沿的奖励平台让出视线。横移的 0.48 秒为本作整备操作时长。 [原素材记录](art/source-records/formation-ls5-native.json) · [场景校验](../artifacts/formation-board-pan/editor-author.log)
+- Windows x64 Development 构建通过，994098622 bytes、0 错误，运行源码 `0ccf122a2a8094ba13ea3f105b2c27fbf21ffb9a`。同版完整 EditMode **1211/1211**、D3D11 PlayMode **14/14**。覆盖交界两侧地块同屏、平移中间位置、返回后原坐标拖放，以及合成表现对屏内角色与屏外落点的处理。仓库检查覆盖 14077 个跟踪文件。[构建](../artifacts/formation-board-pan/build.log) · [EditMode](../artifacts/formation-board-pan/editmode-full-final.xml) · [PlayMode](../artifacts/formation-board-pan/playmode-final.xml)
+- 独立版 1280×720 D3D11 前三场 **191/191**、零异常、退出 0。鼠标实际点击右侧箭头往返，两端与横移中间帧都能看到交界两侧。按正式领奖指针入口验证前沿平台两排奖励、跨关留存、并行飞行和各自落位结算。白蓝金彩同框来自固定掉落样本，前三场的掉落来自实际结算。首次鼠标验证因窗口失焦中断，激活游戏窗口后完成。[往返实机片段](../artifacts/formation-board-pan/scouting-pan.mp4) · [两排奖励与飞行](../artifacts/formation-board-pan/player-final/06-concurrent-reward-flights/010.png) · [四种奖励](../artifacts/formation-board-pan/player-final/08-four-rarities-ground.png) · [独立版报告](../artifacts/formation-board-pan/player-final/campaign-smoke.json)
+- 右侧收窄后，固定种子 20261119 的三名一星原样阵容在 1-3 由失败变为 81.35 秒胜利。种子 71 的对应样本仍失败。两组原样阵容在 1-4 和 1-6 均失败，升级配装样本均胜利。完整自然长局和第二台机器未测。[定向模拟明细](../artifacts/formation-board-pan/editmode-final.xml)
+
+## 2026-11-20 开局自动发放与预案翻牌
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，994107806 bytes、0 错误，退出 0。运行源码 `422cd611e84e1a274e64c7d6063341491ac51bea`。定向 EditMode **135/135**，D3D11 PlayMode **5/5**，两次均退出 0。验证首次刷新前占库、落位只结算一次、同种可复现，以及 1000 个固定种子的 3000 次费用抽样。羁绊测试使用固定成员验证遮挡与装备交互。仓库检查覆盖 14077 个跟踪文件。[构建日志](../artifacts/formation-opening-delivery/build.log) · [EditMode](../artifacts/formation-opening-delivery/editmode.xml) · [PlayMode](../artifacts/formation-opening-delivery/playmode-final.xml)
+- 正常速度独立版保存了补给出现、四项飞行、三格备战席和右栏落位、随后扫光翻牌的连续关键帧。普通启动与菜单重新开始均实点验证，先后用鼠标选牌配键盘确认、数字键选牌配鼠标确认。两局都是三人进备战席且零人上阵，右侧均到账一件装备，第二局选择「起步资金」后 8 金变为 26 金。专项脚本完成发放状态核对后因窗口失去焦点停在输入段，该段由普通启动实点补验。[连续实机片段](../artifacts/formation-opening-delivery/opening-delivery-and-strategy.mp4) · [普通运行日志](../artifacts/formation-opening-delivery/ordinary-player.log)
+- 1280×720 D3D11 独立版正式前三场 **150/150**，后续银金彩战备回归 **62/62**，均零异常、退出 0。前三场回归涵盖真实战后掉落领取。三档回归用三个种子各走两场实际战斗到达 1-3。完整自然长局未跑。[前三场](../artifacts/formation-opening-delivery/campaign/campaign-smoke.json) · [三档](../artifacts/formation-opening-delivery/tiers/campaign-smoke.json)
+
+## 2026-11-20 战略战备翻牌与本局策略
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，994095862 bytes、0 错误，退出 0。运行源码 `27dd3c5d90b8b732e6cef0a42c8bcfff173fbf2d`。定向 EditMode **122/122**，退出 0。仓库检查覆盖 14075 个跟踪文件。[构建日志](../artifacts/formation-strategy-history/build-final.log) · [EditMode](../artifacts/formation-strategy-history/editmode.xml)
+- 1280×720 D3D11 独立版专项 **97/97**、前三场回归 **156/156**、银金彩回归 **71/71**，均零异常、退出 0。专项前两场走实际战斗，之后使用固定胜局样本经正式结算和推进接口到达 2-2、3-2。通过鼠标与键盘核对三个节点自动展开、一次重抽、预选反馈、确认只应用一次、收起时拦截底层按钮、暂停时隐藏整备入口、跨关回看和新局清空。三档回归另用三个种子各走两场实际战斗到达 1-3。完整自然长局未跑。[专项](../artifacts/formation-strategy-history/player-verified/strategy-history-smoke.json) · [前三场](../artifacts/formation-strategy-history/campaign/campaign-smoke.json) · [三档](../artifacts/formation-strategy-history/tiers/campaign-smoke.json)
+- 独立版以实际经过时间采集 24 帧每秒的动效，核对扫光、牌叠、逐张翻面、选中亮边、未选牌退场及选中牌到达进度条下方的关键帧。3-2 同屏可读开局预案和三份战备的实际名称、档位与效果，个别中文标点随自动折行落到下一行行首。参照《货币战争》实录的入场、确认和徽记位置，翻牌轨迹和回看面板为本作适配。[实机动效](../artifacts/formation-strategy-history/strategy-reveal-and-history.mp4) · [3-2 回看](../artifacts/formation-strategy-history/player-verified/3-2-history.png) · [来源与时间点](art/source-records/formation-strategy-choice.md)
+
+## 2026-11-20 拖放布阵与备战溢出
+
+- Unity 6000.6.5f1 EditMode **270/270**，D3D11 PlayMode **15/15**。PlayMode 写出全部通过的结果后，编辑器退出阶段返回 Windows 状态 `0xC0000005`。Windows x64 Development 构建源码 `01960c7403f647dff2184b17dba8bb78c2cd37c7`，994068842 bytes，0 错误，退出 0。[EditMode](../artifacts/formation-reserve/editmode.xml) · [PlayMode](../artifacts/formation-reserve/playmode-final.xml) · [编辑器日志](../artifacts/formation-reserve/playmode-final.log) · [构建日志](../artifacts/formation-reserve/build.log)
+- 同版 1280×720 D3D11 独立 Player 专项 **59/59**，正式挑战前三战 **156/156**，两次均零异常、退出 0。通过正式指针处理核对点击空格保留站位、跨空档和备战席的悬空角色、松手下阵、满席标红和暂停购买。用固定赠卡触发两个溢出位，核对直接部署、自动补位、购买恢复和清出溢出后开战。开局使用真实奖励球，其余溢出用固定赠卡样本。完整三个位面长局未覆盖。[专项报告](../artifacts/formation-reserve/reserve-player/reserve-smoke.json) · [开局备战席](../artifacts/formation-reserve/reserve-player/02-opening-recruits-on-reserve.png) · [拖过空档](../artifacts/formation-reserve/reserve-player/03-held-above-reserve.png) · [拖至备战席](../artifacts/formation-reserve/reserve-player/04-held-over-reserve.png) · [满席与溢出](../artifacts/formation-reserve/reserve-player/06-two-overflow-recruits.png) · [前三战报告](../artifacts/formation-reserve/campaign-player/campaign-smoke.json)
+
+## 2026-11-20 随机开局补给与战备动画
+
+- Unity 6000.6.5f1 定向 EditMode **58/58**、D3D11 PlayMode **5/5**。覆盖同种子可复现、跨种子的装备和角色变化、初始店铺前预占库存、两种拾取顺序、到达后才到账、自动上阵和开局预案时点。Windows x64 Development 构建源码 `69c7d7409aebee3db4f5601225f0265d1bc52061`，994054498 bytes，0 错误，退出 0。[EditMode](../artifacts/formation-opening-rewards/editmode-final.xml) · [PlayMode](../artifacts/formation-opening-rewards/playmode.xml) · [构建日志](../artifacts/formation-opening-rewards/build.log)
+- 1280×720 D3D11 独立版前三场 **151/151、零异常、退出 0**。同版普通启动及菜单新开均用鼠标领取，看到两次开局阵容不同，装备分别为快装弹匣和生命核心。确认两球领完才出现战略预案。[开局实机](../artifacts/formation-opening-rewards/campaign-player/01-opening-reward-balls.png) · [正式入口回归](../artifacts/formation-opening-rewards/campaign-player/campaign-smoke.json)
+- 同版通过六场实际战斗到达银、金、彩三个战备测试节点，**61/61、零异常、退出 0**。银档由鼠标实际重抽、选中及确认，金、彩档通过正式选择接口验证应用。金档第 8 帧看到三张牌处于不同的展开阶段，第 17 帧已稳定并可操作。参考《货币战争》投资策略的三选一画面，使用本作牌面，入场和确认时长由本作调校。官方录像在本次环境无法播放，原作动态时序未逐帧核验。全三个位面的普通长局未跑。[投资策略参考画面](https://www.700g.com/zixun03/226029.html) · [官方特别节目](https://www.bilibili.com/video/BV1kc1uBkE4s/) · [金档实机片段](../artifacts/formation-opening-rewards/strategy-reveal.mp4) · [三档独立版回归](../artifacts/formation-opening-rewards/strategy-player/campaign-smoke.json)
+
+## 2026-11-20 商店点卡招募
+
+- Unity 6000.6.5f1 正式场景 PlayMode **1/1**。覆盖卡牌底部购买、拖动取消、空卡位重复点击、金币扣款、备战落位和后续布阵。Windows x64 Development 构建源码 `8e7a3930fefb328e5c99cc81ed989eeab9faf3f7`，994045522 bytes，0 错误，退出 0。[PlayMode](../artifacts/formation-card-purchase/playmode-visible.xml) · [构建日志](../artifacts/formation-card-purchase/build-final.log)
+- 同版本 1280×720 D3D11 独立版前三场回归 **143/143、零异常、退出 0**。通过正式指针入口验证 9 次点击购买和 1 次满仓无法合成时保留商品、金币。另从同版普通开局用鼠标打开商店并点击 W 的立绘，看到金币从 8 降到 7、商品位显示空缺、W 进入备战。再点击备战席 W，可打开角色详情。未跑完整三个位面。[商店画面](../artifacts/formation-card-purchase/player-final/03-recruitment-drawer-open.png) · [独立版回归](../artifacts/formation-card-purchase/player-final/campaign-smoke.json)
+
+## 2026-11-20 顶栏节点图标
+
+- Unity 6000.6.5f1 Windows x64 Development 构建源码 `740a8f1d444aa85bca7ea2460c09c1734ef2fc3b`，994046750 bytes、0 错误、退出 0。构建入口检验图集可加载及尺寸；修正了首次打包的图集导入问题。[最终构建日志](../artifacts/formation-node-icons/build-final.log)
+- 同版本 1280×720 D3D11 独立 Player 走正式挑战前三场，**134/134、零异常、退出 0**。对照[图标看稿与原作参考](art/source-records/formation-node-icons.md)，目视复核首位面九格：奖励是物资箱、补给是切面球，战斗、遭遇、战备和首领与各自看稿一致。实机截图像素比较仅在九个图标底框内有变化，框外零变化；遭遇详情仍正常打开。此为静态界面验证，未单独试玩至补给成为当前节点，也未跑完整三个位面。[实机顶栏](../artifacts/formation-node-icons/hud-final.png) · [遭遇详情](../artifacts/formation-node-icons/player-final/03-node-encounter-detail.png) · [回归结果](../artifacts/formation-node-icons/player-final/campaign-smoke.json)
+
+## 2026-11-20 羁绊试玩
+
+- Unity 6000.6.5f1 Windows x64 Development 构建通过，993949198 bytes、0 错误。唯一构建场景为 `FormationBattle`，运行源码 `6e3a9783eecf5e72198630cd3ea5652d3155c85f`。仓库结构与元数据检查覆盖 14069 个跟踪文件。[构建日志](../artifacts/formation-synergy-trials/build.log)
+- 定向 EditMode **147/147**，其中 21 项为本轮新增核验。覆盖 18 关在现役棋盘的守军、完整占地、徽章、真实档位和接敌，另核对希望与巨像经验单次结算、重试保留阵容与相同守军，以及巨像从 IV 阶升至 V 阶。[EditMode](../artifacts/formation-synergy-trials/editmode-final.xml)
+- 独立 Windows Player **98/98、零异常**。18 套预设均从正式棋盘控制器进入、开战、接敌并结算，15 胜 3 负。记录到接棒与同频事件，整合首战 +32 希望，泥岩 +6 XP 至 80。另核对从羁绊切到难度试玩时开启独立的新局。[Player 结果](../artifacts/formation-synergy-trials/player/synergy-smoke.json)
+- 同版本正常启动后，用鼠标打开菜单和 18 关选择页，进入泥岩，两次实战突破蓝门，分别结算至 80 和 86 XP，再通过结算按钮打开选关页。18 关的实际触发分支和长局平衡未逐项人工验收。
+
+## 2026-11-20 转职徽章与红蓝宝石
+
+- 逐张比对 17 张工程内 PNG 与批准稿，内容一致。15 张徽章的 Alpha 轮廓逐像素相同，红、蓝宝石的 Alpha 轮廓也逐像素相同。查验了 18 个新 Unity GUID 的唯一性。仓库结构与元数据检查覆盖 14065 个跟踪文件。[图标来源与权利状态](art/source-records/formation-supplies-ui.json)
+- Unity 6000.6.5f1 Windows x64 Development 运行源码 `af2d6e16a469e8b4f3eef3a8510f54c965eb30a1`，构建产物 993932689 bytes，0 错误，退出 0。Runtime DLL SHA-256 `2BA6D3350D58B1C828ECB91147CC59A50ACDABB7C0E78236732EEC417A44FAEA`。[构建日志](../artifacts/formation-badge-items/build-final.log)
+- 同版本 1280×720 D3D11 独立 Player 的专项 **34/34、零异常**。进入正式棋盘后走「外聘编制」的真实徽章匣，核对 17 张纹理加载、15 枚徽章分三屏的装备栏效果与两颗宝石实际尺寸。用固定发放的材料操作蓝宝石和钢刃，核对拖动预览、确认、连击徽章入栏及拖装后的血条旁显示。对照了确认稿的轮廓、配色、白色图案和既有装备描边。专项材料为验证用样本，随机宝石掉落的飞行未单独录制。[专项报告](../artifacts/formation-badge-items/item-art-visible/campaign-smoke.json) · [徽章匣](../artifacts/formation-badge-items/item-art-visible/01-badge-choice.png) · [红蓝宝石](../artifacts/formation-badge-items/item-art-visible/02-gems-and-badge-in-rail.png) · [15 枚徽章分屏](../artifacts/formation-badge-items/item-art-visible/rail-comparison.png) · [合成确认实机片段](../artifacts/formation-badge-items/item-art-visible/badge-recipe-confirmation.mp4) · [装备后](../artifacts/formation-badge-items/item-art-visible/05-badge-equipped.png)
+- 同版本正式挑战前三场回归 **134/134、零异常**。相关 EditMode **55/55**，D3D11 PlayMode **4/4**。回归覆盖范围为前三场和整备交互。[前三场](../artifacts/formation-badge-items/campaign-player/campaign-smoke.json) · [EditMode](../artifacts/formation-badge-items/editmode-final.xml) · [PlayMode](../artifacts/formation-badge-items/playmode.xml)
+
+## 2026-11-20 整备拖装与装备详情
+
+- Unity 6000.6.5f1 Windows x64 Development 构建源码 `27b011f74b0fb8ae8884b4a9f8fc96001a93f256`，989464833 bytes，0 错误，退出 0。Runtime DLL SHA-256 `B893356B3D202653A5CDBE47CA5FFD20A73BD93B59BC2899017B35E274F36DC6`。仓库结构与元数据检查覆盖 14030 个跟踪文件。[构建日志](../artifacts/formation-equipment-ui/build-delivery.log)
+- 相关 EditMode **55/55**，D3D11 PlayMode **4/4**。正式场景回归覆盖装备栏点击、棋盘和备战席拖装、空备战席与宝石拒绝、角色装备格查阅、金币和站位、开战关闭详情。1280×720 独立版走正式入口及前三战 **134/134，零异常**，包含拖动合成预览、确认与取消。完整长局仍待试玩。[EditMode](../artifacts/formation-equipment-ui/editmode-delivery.xml) · [PlayMode](../artifacts/formation-equipment-ui/playmode-delivery.xml) · [独立 Player](../artifacts/formation-equipment-ui/delivery-player/campaign-smoke.json)
+- 最终版普通启动用鼠标从右侧查看钢刃，再拖给宿主士兵，核对装备离开物品栏和角色血条旁的图标。初轮另从角色资料点开了已穿戴的钢刃，看到穿戴者及属性。复验版去掉了基础装备重复的属性行，并把棋盘图标从脚边移到血条旁。备战席直接穿戴由正式场景 PlayMode 验证。[最终版未装备详情](../artifacts/formation-equipment-ui/mouse-inventory-detail.jpg)
+- 复用本作装备图标和左侧羁绊详情框，穿戴交互参照《货币战争》的装备分配。核对实机迅攻触发帧和淡出帧，旋转徽记仍可见，矩形扫描框移除。角色表现沿用现有资源，本轮调整整备界面绘制。[项目来源记录](art/source-records/formation-supplies-ui.json) · [《货币战争》玩法概览](https://www.hoyolab.com/article/42168333) · [羁绊触发实机片段](../artifacts/formation-equipment-ui/trait-activation.mp4) · [关键帧](../artifacts/formation-equipment-ui/delivery-player/trait-activation/010.png)
+
+## 2026-11-19 守军难度与紧凑阵
+
+- 开工时在旧版重跑三组既有战斗夹具，1-3、2-4、3-7 分别 21.050、71.050、135.775 秒胜利。新版同一夹具分别为 30.800、44.850、113.925 秒。此结果比较既有阵容预算，不能代表自然买卡或全随机通关。[旧版](../artifacts/formation-defense-curve/baseline.xml) · [新版专项](../artifacts/formation-defense-curve/guards-final.xml)
+- 读取正式场景保存地形，两个种子分别生成全部 20 场防线，覆盖南北 40 套阵型、22 名守军、前后地形、预留格、档位与同阵重试。第一位面另运行下表战斗，时长含存活本体实际进门。两组原样三名一星均失利。1-6 的附加四人预算为二星泥岩小队践行者、二星 W、一星萨卡兹术师和一星泥岩小队掷能者组长，共三件成装，35.025 秒胜利而且没有阵亡。
+
+| 节点 | 守军总生命 | 正常运营预设进门时间 | 两个原样开局 |
+| --- | ---: | --- | --- |
+| 1-3 | 4,464 | 44.775／77.600 秒 | 90 秒失利，其中一组已清场，未及时进门 |
+| 1-4 | 6,666 | 48.150／65.100 秒 | 超时，守军剩 3／4 |
+| 1-6 | 12,715 | 43.175／49.350 秒 | 超时，守军剩 5／6 |
+| 1-9 | 31,470 | 50.125／87.075 秒 | 超时，守军均剩 6 |
+
+- 1-9 初稿一组正常阵容击杀星熊后卡芙蓉。把芙蓉放在首个后排格后，两组正常阵容均完成，全程零阵亡。2-4 两组正常阵容 48.500／52.050 秒。3-5 同一八人二星维维美核心队，一档 31.100 秒、四档 74.250 秒，正常入口战斗结算分别给蓝球及金、金、彩，重复结算无额外球。3-7 八人高费核心队在正式地形下 84.550 秒胜利；八人六连击五同频裂兽队只削减 34.74%，核心五次阵亡。另有九人极限裂兽预算在旧通用夹具通过 113.925 秒，两个测试有不同阵容与地图条件。三星五费裸卡单刷属于独立设计验收。
+- Unity 6000.6.5f1 全量 EditMode **1187/1187**，火墙扩展为首次 3.2 格接敌后复跑正式棋盘战斗 EditMode **96/96**；D3D11 PlayMode **2/2**。检查了 3-5 相同阵容的档位对照、一次性遇战发奖、玛恩纳三秒等待、望的棋子只触发一次与第一位面余不能重开火墙。[全量](../artifacts/formation-defense-curve/editmode-final.xml) · [末次专项](../artifacts/formation-defense-curve/guards-final.xml) · [D3D11](../artifacts/formation-defense-curve/playmode.xml)
+- Windows x64 Development 源码 `34c44137e443fbeabe6eca22f83da597cd6ef75f`，构建 989458533 bytes、0 错误、退出 0。Runtime DLL SHA-256 `E82B358ACA30A9A3CCD0F1E5E52AB7AD188A8517C45221E0A143F59FD08AD2B3`。[构建日志](../artifacts/formation-defense-curve/build-delivery.log)
+- 该版 1280×720 D3D11 独立 Player 正式挑战前三战 **134/134、零异常**，难度试玩 **10 场、125/125、零异常**。确认两侧紧凑阵与已有高低台、余的四格火墙持续段、斩业星熊开盾、塞雷娅有效治疗、荒芜拉普兰德追猎、新约能天使连射及玛恩纳预警后的真实命中。[正式报告](../artifacts/formation-defense-curve/delivery-campaign/campaign-smoke.json) · [难度试玩](../artifacts/formation-defense-curve/delivery-defense/defense-smoke.json) · [1-6 正常速度火墙](../artifacts/formation-defense-curve/delivery-defense/1-6-yu-firewall.webp) · [3-7 预警至斩击](../artifacts/formation-defense-curve/delivery-defense/3-7-mlynar-slash.webp)
+- 同版四项技能诊断 **40/40、零异常**。从正常难度试玩入口进入正式场景，将可存活的测试目标放在合法技能范围，实测 Mon3tr 六次有效治疗后的转形与命中、圣聆初雪真实雪区与周期伤害、凛御银灰直线命中、望的棋子接触触发。记录了正常速度片段和关键帧。该诊断设置了目标位置和生命，仅用于技能观察。余的墙由原起手片段 1.6 源秒按 2× 放映，覆盖按本作四格生效线适配。现役图集没有单独的六星接触标记，命中按棋盘约定时点结算，新约能天使的连续飞行层未单独核验。[诊断报告](../artifacts/formation-defense-curve/skill-probe/defense-skill-probe.json) · [Mon3tr 转形命中](../artifacts/formation-defense-curve/skill-probe/probe-2-4-D23-contact.png) · [圣聆初雪雪区](../artifacts/formation-defense-curve/skill-probe/probe-2-5-D27-normal-speed/015.png) · [望的棋子触发](../artifacts/formation-defense-curve/skill-probe/probe-3-4-D28-normal-speed/002.png) · [原作资源记录](art/source-records/original-defender-vfx-2026-11-06.json)
+
+## 2026-11-19 整备羁绊点选反馈
+
+- 版式对照用户给定截图与《货币战争》[官方演示 04:04](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=244)。按压、回弹和选中标记采用用户确认的交互预览。迅攻、复苏、搭个便车和连击复用本作徽记，底牌与人数圆点复用既有资源，来源和权利记录见[流派徽记](art/source-records/formation-supplies-ui.json)及[档位底牌](art/SYNERGY-BADGES.md)。本作棋盘内使用原侧栏的行距和徽记尺寸。
+- Windows x64 Development 源码 `ab37e7eaa816d4bba5f2cf78cc65fee4e36be53d`，Unity 6000.6.5f1，989407630 bytes、0 构建错误、退出 0。羁绊数据、图标和档位 EditMode **12/12**。D3D11 整备 PlayMode **2/2**，覆盖面板防穿透和点空白收起时保留角色站位。首轮后台编辑器写出通过结果后退出异常，可见窗口复跑正常退出 0。[构建日志](../artifacts/formation-trait-click-feedback/build.log) · [EditMode](../artifacts/formation-trait-click-feedback/editmode.xml) · [PlayMode](../artifacts/formation-trait-click-feedback/playmode-visible.xml)
+- 1280×720 D3D11 独立 Player 从正式入口跑前三场，**134/134、零异常**。铜色迅攻与灰蓝连击均显示独立的选中亮边，正常速度的详情滑入由同版本 Player 录制。此轮回归覆盖前三场。[Player 报告](../artifacts/formation-trait-click-feedback/player-visible/campaign-smoke.json) · [详情滑入](../artifacts/formation-trait-click-feedback/detail-panel-player.mp4)
+- 同版本常规启动后，使用系统鼠标实点迅攻及未激活羁绊。实机片段约 0.18–0.35 秒可见按压、松手后回弹闪边和详情滑出，随后保持选中亮边。对照了铜色 2 人和灰蓝 1 人；点空白、再点当前徽记及 Esc 均能收起。桌面录制偏亮，底牌颜色以窗口截图为准。[正常速度鼠标实录](../artifacts/formation-trait-click-feedback/mouse/badge-click-player.mp4) · [连续关键帧](../artifacts/formation-trait-click-feedback/mouse/dda-copper-contact.png) · [铜色实机](../artifacts/formation-trait-click-feedback/mouse/03-copper-selected.jpeg) · [灰蓝实机](../artifacts/formation-trait-click-feedback/mouse/05-gray-selected.jpeg)
+
+## 2026-11-19 透明羁绊与顶部大招募卡
+
+- 左栏对照 `e71af6b1` 的共享徽记与无背板样式；卡面对照 `ce3fc012` 的原 A 商店，复用现有立绘、费用底色和金币图，适配到当前顶部抽屉并保留独立购买键。棋盘和角色素材不变；原资源沿用[卡面规格](art/ART_STYLE_GUIDE.md)和[羁绊徽记来源](art/SYNERGY-BADGES.md)。
+- Windows x64 Development 构建源码 `9e8ebdc61016a6434554680b2e78c4814437f97a`，Unity 6000.6.5f1，989405705 bytes、0 错误、退出 0。D3D11 整备 PlayMode **2/2**，独立 Player 1280×720 正式入口前三战 **134/134、零异常**。检查了顶部商店开关、卡面查看与购买不重叠、商店与羁绊互斥、布阵防穿透和战斗隐藏。与上一版同状态截图逐像素核对，十格备战席和暖灰羁绊详情一致。未执行系统鼠标或完整长局。[开店实机](../artifacts/formation-top-large-cards/player/03-recruitment-drawer-open.png) · [卡面详情](../artifacts/formation-top-large-cards/player/03-shop-offer-detail.png) · [羁绊详情](../artifacts/formation-top-large-cards/player/04-trait-active-tier.png) · [Player 报告](../artifacts/formation-top-large-cards/player/campaign-smoke.json)
+
+## 2026-11-19 整备暖灰配色
+
+- 按用户同日确认的浏览器配色稿接入。资料分段参考《明日方舟》[官方模组陈列室](https://ak.hypergryph.com/news/3078)第九节；配色和棋盘侧栏位置按本作确认稿适配，不是原作界面复刻。复用[现有徽记与档位底牌](art/SYNERGY-BADGES.md)、节点图标和角色头像，不新增素材，不改角色形态或技能时序。
+- 运行源码 `2be2aadbc615a46624d1d16a7fe62183bdc61d19`，Unity 6000.6.5f1，Windows x64 Development 构建 989405734 bytes、0 错误、退出 0；默认入口仍为正式棋盘。[构建日志](../artifacts/formation-warm-palette/build-final.log)
+- D3D11 整备 PlayMode **2/2**；1280×720 独立 Player 走正式入口和前三场战斗，**134/134、零异常**。核对了暗底整备、按原速滑入的详情帧、已激活／未激活档位和暂停时隐藏运营层。开关、防穿透和商店互斥走正式界面方法及指针逻辑，未完成系统鼠标验证，也未跑完整长局。[空态](../artifacts/formation-warm-palette/final/03-left-preparation.png) · [迅攻](../artifacts/formation-warm-palette/final/04-trait-active-tier.png) · [连击](../artifacts/formation-warm-palette/final/04-trait-members-and-tiers.png) · [展开短片](../artifacts/formation-warm-palette/trait-detail-reveal.mp4) · [检查报告](../artifacts/formation-warm-palette/final/campaign-smoke.json)
+- 另跑的旧 Demo 棋盘检查在 `saved-guard-platforms-and-cover-match-combat-layout` 未通过；用上一版相同参数复测也在同一断言失败。本次不改旧 Demo 或地形，正式棋盘构建校验通过。
+
+## 2026-11-19 左侧羁绊与详情共用徽记
+
+- 以用户指明的详情标题旁徽记为原样。左右两处直接调用同一绘制方法，读取原档位底牌、徽记和人数圆点。切换左侧点选状态时，在底牌后面叠加外沿高亮。实机同屏的连击徽记与人数圆点各抽查不透明中心，选取的 249 和 25 个像素在两处完全相同。铜档迅攻同时显示为原铜色底牌。 [同屏截图](../artifacts/formation-shared-trait-badge/player/04-trait-members-and-tiers.png) · [素材来源](art/SYNERGY-BADGES.md)
+- Windows x64 源码 `e71af6b17045fe63fd30adbaf3d379790555420e`，Unity 6000.6.5f1 构建通过，退出 0。Runtime DLL SHA-256 `20FF8C9789CFEDAB25981152B6CB76FD071BD8B49DCBF317CDFBB86F857F70B4`。可见独立 Player 1280×720 D3D11 前三战 **132/132、零异常**，覆盖详情打开、关闭及棋盘防穿透。该轮经实机检查入口打开详情，未重新做实体鼠标和高档样本。常用 EXE 当时正在运行，更新版位于 `Builds/Windows-TraitOutline/YesterdayConvoy.exe`。 [构建日志](../artifacts/formation-shared-trait-badge/build.log) · [Player 结果](../artifacts/formation-shared-trait-badge/player/campaign-smoke.json)
+
+## 2026-11-19 整备羁绊实心菱形
+
+- 对照本作确认的 45° 羁绊布局及已确认档位色。采用每档一种实色填满菱形，统一实色也用于最高档的青绿。复用确认过的徽记和档位映射。选中、悬停和按下的亮线独立于填色。素材来源见[徽记和底牌记录](art/SYNERGY-BADGES.md)。
+- Windows x64 运行源码 `fae3b628619762513badac10f835e951ed21beed`，Unity 6000.6.5f1 棋盘及角色名册校验、正式单场景构建均通过，退出 0。Runtime DLL SHA-256 `EDF6B093D73FB8294163BDC0C3D8781BEC8420C3955B778541408ED2394ACBE9`。羁绊档位和数据的 EditMode **5/5**，独立 Player 1280×720 D3D11 前三场战斗检查 **132/132、零异常**。原常用 EXE 正在运行，新版构建在 `Builds/Windows-TraitOutline/YesterdayConvoy.exe`。 [构建日志](../artifacts/formation-trait-outline/build-final.log) · [EditMode](../artifacts/formation-trait-outline/editmode-final.xml) · [Player](../artifacts/formation-trait-outline/player-final/campaign-smoke.json)
+- 常规启动新版，实际点迅攻文字打开详情，再点同一菱形收起。比较鼠标移出该行后的常态和选中截图，铜底保持原色，边线高亮，文字与门槛区域 846 像素中无一处通道变化超过 10。实机画面核对了铜档和灰色未达档。银、金、青绿的档位映射由 EditMode 覆盖，未在独立窗口逐档截图。全量 PlayMode 的初次后台运行停在需要渲染帧的拍照路径，未取得结果。 [未选中](../artifacts/formation-trait-outline/solid-idle.jpg) · [选中](../artifacts/formation-trait-outline/solid-selected.jpg) · [1280×720 整备](../artifacts/formation-trait-outline/player-final/03-left-preparation.png)
+
+## 2026-11-19 正式棋盘整备界面与连续领取
+
+- 运行源码 `c2f17434a98b04b511007407c1e1a692a8fe21c5`。Unity 6000.6.5f1 Windows x64 Development 构建通过，989403577 bytes、0 错误、退出 0。Runtime DLL SHA-256 `B1DB0281E0C81D0B0D690D2F1FCBC3EA8FB0BD393294ECF1011C0C332E81FFF2`。EditMode **1167/1167**，D3D11 PlayMode **43/43**。把原 B10 长待机回归的采样时点调整到此前确认的整备 1×，保留对后段源动画帧的检查。 [构建日志](../artifacts/formation-operations-ui/build-release.log) · [EditMode](../artifacts/formation-operations-ui/editmode-release.xml) · [PlayMode](../artifacts/formation-operations-ui/playmode-release.xml)
+- 可见独立 Player 以 1280×720、D3D11 从正式入口完成前三场自动战斗，**163/163 项检查通过，零异常，退出 0**。确认两颗球在同一时段飞行，抵达前未发放，抵达后各发一次，未领取球跨关保留。四种球色包含为核验投放的样本。实际拖放钢刃和快装弹簧，能预览惯性飞轮，取消后仍持有两件散件，确认后只得到一个成品。战斗和暂停都拦截商店与羁绊操作。 [Player 结果](../artifacts/formation-operations-ui/player-release/campaign-smoke.json) · [两球同时飞行](../artifacts/formation-operations-ui/06-concurrent-reward-flights.mp4) · [装备预览](../artifacts/formation-operations-ui/player-release/08-equipment-drag-preview.png)
+- 另用常用 EXE 正常启动，以鼠标打开商店，查看一张卡后金币保持 8，点击独立购买按钮后降为 7、角色进入备战席。关店后点棋盘上的宿主士兵打开同类详情，再点 1-7 打开遭遇说明，最后用退出确认结束测试局。尚未验证完整 23 节点自然长局。 [上方商店](../artifacts/formation-operations-ui/player-release/03-recruitment-drawer-open.png) · [角色详情](../artifacts/formation-operations-ui/player-release/03-board-role-detail.png) · [遭遇节点](../artifacts/formation-operations-ui/player-release/03-node-encounter-detail.png)
+- 以《货币战争》约 4:04 的收拢进度、2:10 的节点详情及 8:26 的装备信息为层级参考，节点图标和工业配色依照本作确认稿。背景与《明日方舟》式正向斜俯视棋盘核对，使用自制工业平台底图并保留现役角色资源。回看了整备、守军侧及暂停截图。背景按画面投影，用于固定视角。 [界面参考](https://www.bilibili.com/video/BV1ShWx6nEp8/?t=244) · [背景来源](art/source-records/formation-industrial-service-deck.md) · [整备](../artifacts/formation-operations-ui/player-release/03-left-preparation.png) · [守军侧](../artifacts/formation-operations-ui/player-release/04-close-guard-area.png) · [战斗暂停](../artifacts/formation-operations-ui/player-release/05-combat-paused-no-operating-ui.png)
+
+## 2026-11-19 整备羁绊列表与详情
+
+- 逐帧参考用户视频 `bfd9d59805069defbdff46f6a95a62a5.mp4` 约 3.1–7.8 秒的贴边列表、侧边详情和短暂过渡。复用本作羁绊徽记、现役角色头像和 v0.7 效果文本。左列移除整块背板，行底为半透明。详情保留滚动、真实档位和四列成员。初次实机发现长名挤到状态文字，修订后复核了「安纳斯塔西奥赎罪者」的两行名字与独立状态行。[展开中](../artifacts/formation-trait-flyout/final-player/trait-detail-reveal/001.png) · [展开后](../artifacts/formation-trait-flyout/final-player/04-trait-members-and-tiers.png) · [同版本短片](../artifacts/formation-trait-flyout/羁绊详情展开实机.mp4)
+- 正式 EXE 运行源码 `ce3fc012d01db5a99d9b96ee49eb63d1df221860`，Unity 6000.6.5f1 Windows x64 Development **983065494 bytes、0 错误、退出 0**。Runtime DLL SHA-256 `CAA8B1647F3E9888FDFB17C9036F4B59C1C52B09B9F2B075893D869536754B06`。仓库结构检查覆盖 14016 个跟踪文件。[构建日志](../artifacts/formation-trait-flyout/build-final.log)
+- D3D11 PlayMode **2/2**，验证商店与详情互斥、真实档位与徽章成员，以及覆盖棋盘时拦截选中、拖放。1280×720 独立 Player 走正式入口，通过开局至前三战的 **125/125** 项检查，零异常。实机图片和短片通过正式界面动作采集，短片以正常速度播放展开帧并延长前后静止画面。未单独执行实体鼠标操作或完整长局。[PlayMode](../artifacts/formation-trait-flyout/playmode-final.xml) · [独立 Player](../artifacts/formation-trait-flyout/final-player/campaign-smoke.json)
+
+## 2026-11-19 整备待机 1×
+
+- 以[宿主士兵原素材记录](art/source-records/m21-m38-approved.json)中的 `enemy_1043_zomsabr` 为样本，项目留存的 [Idle 帧清单](../Assets/Data/ArtCatalogs/MonsterCombatArt/M21/manifest.json)是一秒 60 帧循环。D3D11 Play Mode **2/2**。棋盘、备战席和拖动预览命中当前 1× 源帧，样本选在 1× 和 2× 帧不同的时点。维维美战斗普攻仍取 2× 源帧，出手和命中时点分别验证。[测试结果](../artifacts/formation-preparation-idle/playmode.xml) · [拖动预览画面](../artifacts/formation-preparation-idle/playmode-airborne-drag.png)
+- 运行源码 `50f1e7cb18cf442590eb1d0980ed7e5571b1fed8`。Unity 6000.6.5f1 Windows x64 Development 构建 **983064882 bytes、0 错误、退出 0**，仓库结构及元数据检查覆盖 14016 个跟踪文件。打开新版 EXE 的正式 1-1，在整备实际将宿主士兵从棋盘拖回备战席，再放入空格，抽看落位后的待机帧，随后开战并暂停。倍率以 Unity 实景中的源帧断言为准，独立窗口核验范围为首关整备和开战切换。[构建日志](../artifacts/formation-preparation-idle/build.log)
+
+## 2026-11-19 战略预案与战备卡面
+
+- 运行源码 `8acddd424b0d8fa3f41995aea8b4d1f0974e73fd`，Unity 6000.6.5f1 构建 Windows x64 Development 成功，983064886 bytes、0 错误、退出 0。Runtime DLL SHA-256 为 `5EFD526C7CE304DD7EF998903FE22EC4485701082AE125BAFB0B7ED6EDF4BE1B`。Edit Mode **1167/1167**，仓库结构及元数据检查 **14016** 个跟踪文件通过。
+- 可见 Player 1280×720 **41/41，0 异常，退出 0**。在正式棋盘用三个种子完成各自前两场自动战斗，到达 1-3 后实际抽出银、金和彩三组战备，核对本轮同档、整组重抽及确认发放。回看了[开局白卡](../artifacts/formation-strategy-choices/final-1280/strategy-opening.png)、[银档](../artifacts/formation-strategy-choices/final-1280/strategy-银.png)、[金档](../artifacts/formation-strategy-choices/final-1280/strategy-金.png)、[彩档](../artifacts/formation-strategy-choices/final-1280/strategy-彩.png)的底色、插画、断行和按钮位置。该组战备确认走正式接口。
+- 可见 Player 1600×900 正式入口回归 **125/125，0 异常，退出 0**，覆盖开局装备、预案一次重抽、真实买卡与布阵、前三场战斗、战备确认和奖励跨关保留。独立窗口从普通启动点击装备、点卡高亮、[整组重抽](../artifacts/formation-strategy-choices/interactive/02-rerolled.jpg)，用数字 3 选中[分期军费](../artifacts/formation-strategy-choices/interactive/03-selected.jpg)，再鼠标确认返回棋盘，[金币由 8 变为 14](../artifacts/formation-strategy-choices/interactive/04-confirmed.jpg)。未跑完整自然长局。
+
+## 2026-11-19 奖励跨关保留与白蓝招募包
+
+- 内容源码 `e7705ffc73a7811d764422c0c1232970d7a05793`。Unity 6000.6.5f1 EditMode **1167/1167**，相关 D3D11 PlayMode **1/1**；核验同包不同名、二星扣三份、缺货保留并补发、两次保底不重复补、跨关原掉落与只发一次。v0.7 参数中的白蓝前段／常规权重各自合计 100%。Windows x64 Development **971887350 bytes、0 错误、退出 0**。
+- 1280×720／1600×900 独立 Player 从正式入口完成前三战，各 **156/156、零异常**。首关未领就进入 1-2，四颗球原样保留，继续买卡和开战；结算后按原来源开完两关九颗及额外散件。实际掉落中见三张不同名卡和二星包，满备战席进入待领。另用明示投放验证待选面板由玩家打开后可领取，不强制弹窗。
+- 已回看[跨关与招募包实机](../artifacts/formation-reward-packs/奖励球跨关与招募包实机.mp4)，1280×720、24fps、132 帧、5.5 秒无声，完整解码。复用确认过的棋盘奖励球与角色头像，未修改《明日方舟》角色动作、地形或镜头。未实测自然长局、物理鼠标或大批积压后的手工翻页，不据此判断平衡；未推送。
+
+## 2026-11-19 红门侧地面奖励球
+
+- 运行源码 `772ecac113c1a2a89fb95c6e3fbf0dc3939bd2e8`。Unity 6000.6.5f1 EditMode **1163/1163**，相关 D3D11 PlayMode **1/1**。覆盖未领不能跳关、点击不提前发奖、只结算一次、装备保底和旧奖池路径。Windows x64 Development 正式路径构建 **971875678 bytes、0 错误、退出 0**。
+- 独立 Player 从正式入口按正常流程通过前三战。1280×720 和 1600×900 各 **142/142、零异常**；首关从真实结算掉落 3 白 1 蓝，经同一棋盘点击处理与飞行结算领取。之后以明示验证夹具投放 6 颗球检查四种颜色与稀有动效，球内容仍走真实奖池；不是自然掉出金和彩，也未跑整局或物理鼠标全流程。
+- 已回看[地面奖励球实机](../artifacts/formation-ground-rewards/地面奖励球实机.mp4)：24fps、129 帧、5.375 秒无声，完整解码通过。首段可见地面白球开启及金币飞入余额；金球段可见金环和金色爆裂；彩球段可见虹彩环、金币和赤宝石分别飞向右下余额、右上空格，抵达帧增加 10 金币并亮起对应格。首轮据画面右移球区、按蓝球标准放大球体并移开结算面板；最终均已重跑。证据在 `artifacts/formation-ground-rewards/`，原作对照及限制见[素材记录](art/source-records/formation-ground-rewards.md)。未推送或操作 PR。
+
+## 2026-11-19 岁的落爪、三连踏与守军反击
+
+- Windows x64 Development 运行源码 `d363d9ef2a6af0aef0caf76dad1de9d8dec481b9`。Unity 6000.6.5f1 的棋盘、46 人资源和构建检查通过，构建 971847070 bytes、0 错误。Runtime DLL SHA256 `6ED743D230C6FDEFA680E4167C955829B2F1E523D75B72ADC74F17F66D8996A9`。新版先在 `Builds/SuiClaw` 验收，用户确认后同步到 `Builds/Windows/YesterdayConvoy.exe`。常用目录中 4712 个新版文件的 SHA256 与验收版逐一一致，旧试玩说明和许可文件保留。常用 EXE 的可见窗口以默认 D3D12 启动至正式棋盘就绪，证据为 `canonical-copy-check.json` 与 `canonical-player-visible.log`。
+- EditMode **1162/1162**，D3D11 PlayMode **15/15**。验证有岁和无岁时准备、侦察及战斗镜头位置一致，暂停冻结下落，首次接触时对齐动作和脚点，正常射程守军从落点真实扣除岁的生命。三次伤害间隔匹配源标记的 2× 播放，六秒后收爪，第二次落地可被守军击杀并打断剩余踩地。日志与结果在 `artifacts/formation-sui-grounded/`。
+- 独立 Player 经正式保存棋盘入口录制 1280×720、24fps、24.5 秒的 [岁落爪实机](../artifacts/formation-sui-grounded/verified-player/岁落爪实机.mp4)。一星岁使用正常技能结算，展示靶预置生命与反击射程。回看约 9.96 和 17.96 秒两次落爪、13.96 至 14.62 秒三次接触和每段 1240 的伤害字、守军造成的 85 点伤害、约 16 与 24 秒的收爪。蓝门可遮住部分爪身，镜头持续固定。音轨以游戏实际伤害事件和游戏音效合成。合成后完整解码通过。三星最后一次 9.25 秒尚无对应 Player 录像，未跑完整自然对局。
+
+## 2026-11-19 难度试玩
+
+- Unity 6000.6.5f1，运行内容源码 `79eb586f9e2def751711b5e69c0f0bcc039b2ea6`。仓库检查 13998 个跟踪文件通过，Edit Mode **1162/1162**，D3D11 Play Mode **43/43**。新增棋盘回归逐个向控制器发送 20 个战斗节点的选择命令，核对节点、守军与时限，确认三次补给被拒绝、招募/刷新/购买经验免金币、切关保留阵容与装备、3-7 战斗结束后能用同一防线重试，返回正式入口恢复 1-1 的 8 金。
+- 本机 Windows x64 试玩构建 **909559607 bytes、0 错误、退出 0**。常用路径的旧 Player 仍在运行，新版在 `Builds/Windows-Difficulty-Practice/YesterdayConvoy.exe`。独立 Player 启动到正式开局装备选择，日志无异常。桌面上的防火墙提示覆盖了游戏窗口，选关及重试的验证来自 Play Mode；鼠标操作未验收。日志和测试结果在 `artifacts/formation-difficulty-practice`。
+
+## 2026-11-19 棋盘羁绊、装备与奖励球
+
+- Unity 6000.6.5f1。构建内容源码 `36d347d5d56d281626b56244c9730ef951616535`，Windows x64 Development 971835537 bytes，零错误、退出 0。运行库 SHA256 `5685F8457A06B3630991EB8FCD2DB86D6997EA42583C3D21D7500230CC6165EC`。同源码 EditMode **1162/1162**、8.0299088 秒，D3D11 PlayMode **42/42**、34.3891888 秒。仓库元数据检查 13998 个跟踪文件通过，独立结果在 `artifacts/formation-supplies-ui`。
+- 可见独立 Player 1280×720 与 1600×900 各 **81/81、零异常**，通过默认入口、真实开局选择、商店、上阵、前三战和结算。运行时核对 18 枚羁绊、27 件装备、4 种球纹理均可读取。首关实际结算 3 白 1 蓝，四个奖品各播放一次；补领、自选和真实发放仍走 v0.7 原结算路径。金球和彩球分别有图标加载核对，首关样本未掉落这两类球。
+- 对照[《货币战争》特别节目 4:20](https://www.bilibili.com/video/BV1kc1uBkE4s/?t=260.2)与[旧版确认稿](art/SYNERGY-ACTIVATION.md)，沿用原 1.78 秒旋入、扫描、淡出与档位提示音。将真实成员拖回棋盘，迅攻恢复铜档，两名匹配成员有亮框与徽记，宿主士兵无亮框。首版片段发现矩阵和裁剪叠加使扫描线偏移，改用棋盘逻辑坐标后逐帧回看通过，最终关键帧 `verified-player/trait-activation/010.png`。
+- 右侧装备和晶矿分区对照[参考整备实录](https://www.qieyou.com/content/147683)，保留本作暖灰棋盘、原暗色面板和标题布局。装备插画来自已审多色 V3，奖励球来自 V1，伊比利亚及岁影用已核实原作阵营形象，详细来源及权利状态见[素材记录](art/source-records/formation-supplies-ui.json)。棋盘开球是本作 UI 表现，非原游戏粒子重制。
+- 实机短片 `羁绊点亮与奖励球.mp4` 共 118 帧，1280×720、24fps，完整解码通过。短片录的是界面显示，未收音，奖品属于实际结算。未测自然长局及人工鼠标全流程，未推送。
+
+## 2026-11-18 宿主士兵被动回血反馈
+
+- 旧版正式第一战画面可见宿主士兵的三道绿色治疗光和粗青色拖痕。被动回血每 0.025 秒产生一组显示反馈，小于 1 点的治疗数字反复出现并随移动叠加。持续自回现在跳过反馈事件，真实生命、治疗统计和过量治疗处理保留。新增回归验证每模拟秒恢复最大生命 2%，以及主动强化攻击仅产生一条回复实际伤害 25% 的治疗反馈。
+- 运行源码 `f99c41ffb1d0635bad2dfc8c3b0d6b6a7ad1d350`，Unity 6000.6.5f1 Windows x64 构建 952145218 bytes、0 错误。完整 EditMode **1160/1160**、6.6596684 秒，D3D11 PlayMode **42/42**、31.5639684 秒。独立版前三战 **71/71、0 异常**。同一开局的 `05-combat-0.png` 已目视对照，旧图在 `artifacts/formation-vfx-pass/player/`，新图及本轮日志在 `artifacts/formation-host-soldier/player/` 和上一级目录。仅本地构建与提交。
+
+## 2026-11-18 维维美用户实录与 46 名角色战斗特效复核
+
+- Windows x64 Development 运行源码 `c354a6dcd326ebae5c0f6cc47e03369c642f566d`，Unity 6000.6.5f1，同源构建 952145218 bytes、0 错误，运行库 SHA256 `CDAABD4436872243A6E6B9C0C317F4A4F6E179EEFCEF08D536859EBFC01C6522`。美术导出 4463 文件、126 份清单。与 `5a26ccd9` 对比无守军资源及场景差异。
+- 同源完整 EditMode **1159/1159**、8.0242089 秒，D3D11 PlayMode **41/41**、33.8733236 秒。新增验证覆盖维维美出弹、命中后头像和唯一受击挂点、万火归一真实灼伤余焰、最后的圣愚实际七格和区域暂停/退出。旧准备场景测试的不同闲置帧会有几像素差，实时身高比对使用 5% 余量，棋盘模型及相机没有为测试改变。独立 Player 首三战和结算 **71/71、0 异常**。之后只新增的囊海爬行者专项 D3D11 用例 **1/1**，以正常守军攻击触发真实反击，验证原蓝色脉冲出现。该用例不改 Player 源码。
+- 独立 Player 导出并验证 **60/60** 段、24216 帧，1280×720、24 fps。包括正式 46 名、12 段技能/形态变体及 2 段羁绊。正式角色中 44 名触发实际主动技能，源石虫与囊海爬行者为被动角色，囊海爬行者单人录像没有触发反击，以独立专项补证。全体按片段抽帧复看，重点修改加密抽查；全角色合集完整解码成功。录像使用摆好的训练靶，部分片段略过自然等待；没有用录像证明完整长局平衡。
+- 维维美约在单片 13.3 秒首次实际命中，击中后切入的大头只显示一次，紧随已有星芒和爆炸。另导出约 5.5 秒放大实机短片，音轨以游戏内声音按实际命中时刻合成。万火归一约 10.5、11.5 秒可见守军脚边紫焰，最后的圣愚约 9.5 秒在真实地面区域发起持续层。首言者、萨卡兹术师、钵海收割者和深池逐火战士各自的动作在 Player 复核，逐火战士约 8.5–10 秒从余烬接回完整身体，重生尾层位于该阶段。
+- 不死的黑蛇仍缺对应本作三排火沟的专属地面素材，现有录像可见施法和命中。完整自然长局、全套原客户端逐帧复验与第二台电脑未测。本地构建和提交，录像及测试记录见 `artifacts/formation-vfx-pass/`。
+
+## 2026-11-18 唯一棋盘、守军资源保留与两项技能修订
+
+- Windows x64 Development 运行源码 `c29719b3100fc11ddcf0e168c363876bc7d033fd`，Unity 6000.6.5f1 构建 952138622 bytes、0 错误。运行库 SHA256 `970AD5F64D40D2DADD1F93650221C01024BEA22EC2A04987CD81E2C5CB39603E`。构建确认 46 个正式角色身份和动作来源，运行美术共 4463 文件、126 清单、886324188 字节。
+- 与 `612e5e32` 对比，24 张旧场景及淘汰的进攻方模型移除，地图、美术和相关清单减少 952310110 字节。构建场景仅剩 `FormationBattle`。守军资源库、技能特效、守军配置和复用的树冠纹理与清理前逐文件一致。Player 包内 45 份守军动画清单逐字节相同，553 张清单引用图集全部在包内。全部 23 个节点的守军所用身体清单可解析，三个位面关底重新指向 D25、D29、D30。两类守军旧专项资料仍留存，但旧专项的场景与入口已退役，部分旧测试输入原本指定的进攻方卡已退役。
+- 最终源码完整 EditMode **1156/1156**、7.8048014 秒，D3D11 PlayMode **39/39**、32.0836484 秒，均退出 0。旧场景专属测试随场景退役，仍生效的棋盘场景、角色动作、资源与规则测试继续运行。独立 Player 正式挑战通过前三战和结算 **71/71、0 异常**。仓库检查通过，13901 个跟踪文件。
+- 以留存的横向火浪、原施法动作和前一版棋盘录像为对照，最终 Player 可见三次发起的贴地火浪持续推过八排，施法时抬手和披风仍动。原始火焰图集保留像素，以无损的 32 位纹理入包，材质增强火焰轮廓。维维美三技能在实际命中的首个敌人身上保留同一张飞行表情，技能录像约 13.3–13.7 秒可见第一次接触。画面回归覆盖命中定位、伤害次数、火雨期间止普攻和收势续攻。
+- 最终 Player 录制塔露拉、维维美及便车、泥岩、岁影三组羁绊，共 5 段。录像无旧版泥岩备用模型缺包日志。两项技效合辑 `火雨与三技能实机.mp4` 为约 15.38 秒的 1280×720 H.264/AAC，完整解码通过。画面来自实机靶场，略去部分技力等待，音轨以相同游戏声音按实际命中时点合成。记录见 `artifacts/formation-cleanup/`。本轮没有逐一播放全部守军的技能，也未验证完整自然长局与第二台机器。仅本地提交与构建。
+
+## 2026-11-18 火雨、维维美普攻与岁拍地
+
+- Unity 6000.6.5f1 独立 Windows x64 构建源码 `925560134c8f8cda5119d0208d7186aecd0fbb2a`，1097960709 bytes、0 错误。运行库 SHA256 `51F0968726B3FEF752841618A260A338C03C044AA9BEFC28AB75F6FBD70E69C2`。同源码完整 EditMode **1213/1213**、13.1645001 秒，相关 D3D11 PlayMode **36/36**、59.2081534 秒。独立 Player 前三战 **71/71、0 异常**。仓库 17779 文件检查通过，运行素材没有新增。日志与 XML 在 `artifacts/formation-combat-fidelity/`。
+- 塔露拉：对照已确认的 2026-10-21 火雨试玩与 `ab93b001` 棋盘录像。新 Player 的两波火浪各用 3.5 秒通过右侧八排，命中结合已有地面与体表冲击。约 9.9–11 秒能看见 1456 直伤亮点，雨中只剩灼烧余焰和小额数字。约 18 秒开始重新挥剑、约 18.5 秒出现普通 560 命中。专项测试覆盖雨前取消待命中的普攻、雨中暂停/自然充能、六段直伤、八跳灼烧和雨停续攻。
+- 维维美：对照用户已有 GIF3、`game#9` 保留动作与旧 M01 普攻呈现。新 Player 普攻在 8.458–8.583 秒显示细暖黄弹道，8.625 秒实际命中并出现黑边黄白爆点；第二次同样在约 10.875 秒见爆点。录像延长真实普攻段，排除后续三技能。
+- 岁：原 Actor 的 Bombard 组对应「不寐」、`Skill_Begin_A/B` 与 `skill_01_hit_01`，接着显示 `Skill_Idle_A/B`，起飞为 `Skill_End_A/B`。新录像 9.958 和 13.958 秒落地及伤害同帧；每次贴地约 1.20 秒后抬起。落爪最初几帧的深色轮廓接近棋盘外暗背景，着地以后可以明确辨认。
+- 三段独立 Player 录像共 1368 帧，三项合辑 `三处修正实机.mp4` 约 21.5 秒，1280×720、24fps，H264/AAC 完整解码通过。合辑为棋盘实机靶场，省略部分自然回转等待并放大维维美普攻；音轨按游戏内同音色在真实命中时点合成。按项目保留的源动作、原特效片段和旧确认版对照。原客户端整段逐帧、完整运营长局和第二台机器未验证。仅本地提交与构建。
+
+## 2026-11-18 五项棋盘战斗表现修订
+
+- Windows x64 Development Player 内容源码 `ab93b0010ddbc71fe230707136e7fbdc24f495e0`，Unity 6000.6.5f1 构建 1097955845 bytes、0 错误，运行库 SHA256 `44DDE4EAEF382AA976564E2B5E4A1C9CC61D431A99AC46044B6B1CE96929D054`。独立 Player 的正式挑战前三战检查 **71/71、0 异常**。证据在 `artifacts/formation-board-followup/` 的 `build-accepted.log`、`player-accepted/campaign-smoke.json`。
+- 同一源码的完整 EditMode **1212/1212**，16.3247997 秒；相关 D3D11 PlayMode **36/36**，53.8468901 秒。见 `editmode-accepted.xml` 和 `playmode-accepted.xml`。
+- 本次最终 Player 录制六段、2064 帧。27 秒合辑 `五项修正实机.mp4` 完整解码通过，1280×720、24fps。画面来自实机靶场，略过部分技力等待；音轨按同批真实命中事件用游戏内同源声音合成。
+- 同构图逐帧对照深池焚毁者 9.45–10.75 秒。早期版本枪口与目标之间基本空缺，前两次修订仍偏暗。最终版校准原喷口短焰位置，并以已有 CC0 火帧提供连续焰体。44×56 中段区域的 32 帧对比中，暖色可见像素中位数从旧版的 0 增至 500.5，覆盖列中位数从 0 增至 44，已实看枪口、主目标及段间连续火流。
+- 塔露拉在约 10–11.1 秒可见旧版 `original-energy-stream` 从左向右沿高低台扫过八排。维维美三技能约 9.6–10.2 秒可逐帧看到大头从角色至目标，步幅以已有 19 帧素材和 `.75` 单位/秒的参考步长驱动。卡德霍在开战约 0.10 秒瞬移至主目标邻格。岁在 9.958、13.958 秒依次拍地，两次地面亮点与实际伤害同帧。镜头遮挡仍以地形深度渲染，蓝门会局部遮住爪身。
+- 本轮核对项目已有原素材、确认版录像和最终棋盘表现。原客户端整套逐帧一致性、完整长局平衡与第二台机器未验证。未新增外部素材。仓库检查 17777 个跟踪文件通过。仅本地提交和构建。
+
+## 2026-11-18 棋盘战斗打击反馈与四个角色专项修复
+
+- 运行内容源码 `0ed405c0444344229582d142ea143672f7a0dd87`。Unity 6000.6.5f1 Windows x64 Development 构建 1097953717 bytes、0 错误，运行库 SHA256 `FB26898497B05BC8610C2C42ED5EC10B8F5E20AAC623717B19CFDD8B55933BDC`。本地 `Builds/Windows/YesterdayConvoy.exe` 和 `SOURCE.txt` 已更新。
+- 同源码完整 EditMode **1211/1211**，12.4111895 秒。D3D11 棋盘、旧商店交互、地图安全视口与现有呈现 PlayMode **35/35**，52.2531381 秒。两套均退出 0，记录在 `artifacts/formation-impact-upgrade/*mode-final.xml`。
+- 独立 1280×720 D3D11 Player **71/71、0 异常**，实际走过正式挑战的随机开局、招募与装备、前三场战斗和结算。证据见 `artifacts/formation-impact-upgrade/player/campaign-smoke.json`。
+- 画面回归涵盖维维美三个技能的实际施放与命中、卡德霍瞬移的落点与取消、岁的部署形态与落爪命中、五费塔露拉在空格上的火雨和暂停。运行时沿用项目内已有专属资源。缺少素材的位置使用本轮新增的类型反馈和合成音效。
+- 使用本次独立 Player 录制 46 名角色、18 组羁绊、13 段变体，共 **77/77、30864 帧**，1280×720、24fps。索引和三份章节合集在 `artifacts/formation-impact-upgrade/replay/`，文件校验通过，三份合集完整解码退出 0。逐帧复看四个专项及裂兽、弩箭、喷火。录像使用高生命靶并略过部分回转等待，其他角色逐片审美验收、完整自然长局与第二台机器未验证。
+- 同目录上一级的 `打击反馈前后对照.mp4`（19.25 秒）和 `关键角色实机演示.mp4`（28.25 秒）均有声音且完整解码通过。音轨使用真实战斗事件与游戏内相同的声音合成，旧画面对照与原始合集保留静音。岁的首击下落较快，重点短片选了预兆和下落更可见的第二次落击。
+- 仓库检查 **17777** 个跟踪文件通过。仅本地运行构建和提交，记录提交未修改运行输入。
+
+## 2026-11-18 最终交付：原作表现修复
+
+- 最终内容源码 **db3ab1f1b7f9f8d6a130e40722ac4b8fb23f389d**。Unity6000.6.5f1实际`BaselineTools.BuildWindows`，Windows x64 Development **1097919645 bytes、0错误、退出0**（`artifacts/formation-native-restoration/build-delivery.log`）。Runtime DLL SHA256 **DE0779840A04B09BF547995F6D0E7192D6EB8468D60082B779FD4B9225BB0EC3**；正式路径EXE及SOURCE.txt更新。运行源导出5398文件/5233 prepared/164清单，1067346717美术字节，包含TAL新增4页与正确WG9，不拿旧播放器冒充更新。
+- 最终独立1280×720 D3D11 Player **71/71、0异常、退出0**（`player-final/campaign-smoke.json`）：实际随机有限开局、选择、招募/装备、前三场战斗与结算，无HP/胜负注入；真实GPU截图保存并目视。调用生产接口，不冒称OS鼠标、人类通关或完整长局平衡。
+- 最后完整EditMode **1209/1209、24.9291183秒、退出0**（`editmode-delivery.xml`）。D3D11 Formation/旧商店/原有720与1440深度像素检查共33项，`playmode-delivery.xml`首轮32通过；仅复用夹具未重禁自动Update造成source sprite比较前移，修复夹具并保留严格断言后，9项呈现 **9/9、9.684277秒、退出0**（`playmode-fixture-verified.xml`）。33个不同用例均有通过证据，不写成一次33/33。真实前景仍遮挡，没有关闭全局深度。
+- 最终同一db3 Player导出 **122片/37344帧**，46角色、12变体、18羁绊与46步态，44主动均真实SkillCasts>0（另SLUG/M33被动）。`artifacts/formation-showcase-final/package-report.json`为 **122/122、3合集PASS**；16:08/5:12/4:36，1280×720/24fps/H264/yuv420p/无音轨，三合集逐帧解码均退出0。manifest按已有文件编号排序，未改画面/计时。hits字段为结尾3秒滚动数，不作为整片总命中；M33须实际看蓝色原反击层。
+- 原始演示夹具仍明确：一星10级预置阵容、右侧起点与高生命靶、真实受击触发条件、不注我方HP/SP/假施法；段间省略回转等待，步态为单列程序位移。不把该录像当自然运营、完整原客户端或最终艺术认可。新离线页未作浏览器交互测试，先前本地file策略拒绝后没有规避；视频/文件校验及实际提帧审片均完成。
+- 已实看最终B22墙不切腰、B08二形态头翼尾与标签、B09/B25/B26无初始复生底片、B21云冠与标签（`final-review/REVIEW-db3.md`）；最后TAL三/五费9–10.375秒连续局部帧及M14单范围层亦复验通过（`formation-showcase-final/fx-review/FINAL-3-CLIP-REVIEW.md`），c610旧整套及最终关键复验都保留，旧片不作最终证明。代码/素材/meta和额外报告在本地功能分支提交，仓库 **17767文件检查通过**。后续仅补文档，不改变本次运行输入；无推送/PR、ZIP/Releases、CMD/BAT或工程副本。
+- 已知界限：原无Move的4人仍Idle移动；B21明示保比例限高6；B08原贴图局部软细节、动作包络标签余量及拥挤遮挡未冒称完美。原客户端管理脚本/未设计机制、原世界或像素精确标尺、已发射源死后继续命中、长局平衡和第二机未测。原媒体来源/权利不因接入变化。
+
+## 2026-11-18 最新：46人原作表现恢复
+
+末轮更正与实际复验：
+
+- `c6105833`曾实际构建1097919445 bytes／0错误，独立1280Player71/71、0异常、前三战/结算通过，原122片完整录制退出0（`artifacts/formation-showcase-restored`）。它是末轮问题对照，不冒称最终修复版。
+- 对照录像逐片提帧查出并修正：Sprites/Default导致身后矮墙横切大体型，改本模式私有material使用已有TacticalActor深度；M14多受击者重复完整range；初始phase时间0误触发复生FX（B09/B25/B26彩虹底片）；TAL身体/caster配反，现按直接原Actor字段为Skill_1/ignite与Skill_2/explode。只加两组现存explode caster的4页实际运行导出，Talulah白名单由47→51页，不导入其余未绑定库。
+- B08/B21共36动作的血条顶部从原图全部帧alpha>8可见包络生成，保留原报告字节/页SHA；不用含大量空白的几何quad顶。B08二形态、B21按真实大身体使用固定巨物包络，站位/开店不动态重构镜头；身体、原PNG、技能数值与人工地形不改。
+- 末轮完整EditMode **1209/1209、24.9291183秒、退出0**（`editmode-delivery.xml/log`）。D3D11 Formation+原商店+既有720/1440真实前后遮挡共33项，首轮32通过，唯一失败为复用NUnit实例后未重新禁自动Update；已修夹具驱动生命周期并保留严格source sprite断言，9项呈现定向复验 **9/9、9.684277秒、退出0**（`playmode-fixture-verified.xml/log`）。33个不同用例均有通过证据，并非一次33/33运行。新增深度检查证明真实前景实体仍遮挡，未关闭全局深度。
+- 三名只读审片Agent与主导者实际查看角色/变体/羁绊和全部46步态联系图，关键片加密抽帧；抽帧并非完整逐帧艺术验收。原texture细节、拥挤阵容遮挡与少数无源Move仍按真实范围说明，不能写成已完全复刻原客户端。
+
+- 来源：B08原Spine重采17动作/2065帧/352高密度页，182201076字节；旧原输入哈希/动作时长/事件不变，新PNG哈希明确变化。愚人节WG9原骨骼与本地官方skinpack逐字节一致，25动作/3207帧/210页无损编码350678634字节；正确原FX31段/32页3406207字节、独立原生Vulkan采样31/31，零裁边/零HDR截断。来源/权利见各包SOURCE-RECORD及美术记录，不登记为开放授权。新/旧身体包静态验证35模型通过；WG9独立校验通过。原攻击弹道30路由/21角色，未用旧猜测.25秒。
+- 关键连接：Controller读取源时长、接触点、阶段和选技→纯AnimationProfile注入Model；真实PresentationActions的起手/发射/接触、Hits及buff/zone状态→Boss/Legacy/羁绊只读呈现。实际普通攻击/技能事务在对应接触点结算，完整段上下文独立，不增加施法、SP或伤害。未知接触明确回退，原作未有动作不生成假动作；逻辑锁、间隔、移动与战斗Speed不整体加速。
+- 完整EditMode **1209/1209、14.6969173秒、退出0**：`artifacts/formation-native-restoration/editmode-verified.xml/log`。新增24项时序边界，含真实发射/飞行、源死取消、重生、独立多段/反射/返还上下文、WIS6/12炮顺序/精确伤害/单次施法和弱靶死亡后不虚造后续炮弹。
+- D3D11相关GPU首轮29项26通过；两处Windows路径格式和旧1×商店时间断言修正后定向 **3/3、4.3889123秒、退出0**（`playmode-fixed.xml`）。追加3个源片/缓存边界后9项7通过；异步Warm前冻结展示Clock，保持真实source sprite严格等同断言，末两项定向 **2/2、5.3306467秒、退出0**（`playmode-ending-fixed.xml`）。因此32项相关用例均有通过证据；不写成一次整套32/32运行。新增回归曾误用internal字段导致测试程序集编译失败，改成既有反射读取；没有为通过测试放宽实机断言。
+- 已目视本轮近全屏战斗/暂停GPU图；特效实图和全角色连续视频将在构建后复核。此前旧现状122片视频不作为修复版证据。独立Player、修复版录像、最终构建大小/源码绑定将在下方补记；此时不冒称完成。
+- 仓库17758跟踪文件检查通过，meta/GUID/源依赖均入本地索引；仅本地提交与EXE，不推送/PR、ZIP/Releases、CMD/BAT或工程副本。仅使用已有工程外采样器，不升级Unity/依赖，不改变人工地形。
+- 保留范围：原无Move的B11/B14/WG9/B21使用Idle；支持角色不靠特效额外投矛/喷火/召唤。原客户端三向挂点管理、未设计S2过载/S3召唤、精确原世界/像素比例、已发射源死后继续命中、全自然长局平衡、最终人类观感和第二机均未宣称完成。
+
+## 2026-11-18 当前：全角色与羁绊现状录像
+
+- 当前保存的24×8棋盘与生产v0.7绑定；显式`-formationShowcase`才创建录制器。正常入口继续完整挑战。未修改正式角色数据/动作/FX/地图；录制夹具预置一星10级编队、右侧起点及3个高生命靶，必要时首靶真实攻击触发受击/返场，不直接设我方HP/SP或伪造施法。源步态使用单独标注的程序往返+呈现时钟，不冒称自然AI。
+- 作者校验入口编译/Validate退出0，GPU默认模式回归 **23/23、57.4100744秒、退出0**（`artifacts/formation-showcase/playmode.xml`）；其后改动只涉及录制夹具/工具。最终独立Player默认完整挑战 **71/71、0异常、退出0**，实际完成前三战和结算（`default-player/campaign-smoke.json`）。本轮未重复完整EditMode；上轮1185/1185不冒称本轮结果。
+- 初次探针发现录制夹具重复初始化相机时继承已过滤的mask、两侧地形同时被隐藏，已修为保留原初始化和固定构图。失败探针未纳入交付。随后6条代表片段文件/时长/帧数核对通过，已目视棋盘、塔露拉、爱国者阶段和海嗣格；正文保留当前表现问题，不为录像补假FX。
+- 主录制76/76退出0，75条保留自`d9ba5a0dd76e574537ad2ba88c21e23d73a57a8c`；补录47/47退出0，替换囊海并新增46步态，源码`0db04821e41686b1163eb16d8d5f5d8397977113`。最终122唯一ID：46怪物、12技能/阶段变体、18羁绊、46源步态。44名主动技均有真实SkillCasts，另两名为被动；已目视囊海反击约9.8秒及梅菲斯特/维维美步态。计数hits仅最近3秒，不能用片尾0判断从未命中。
+- `package-report.json` **122/122、3合集通过**：1280×720、24fps、H264/yuv420p、无音轨、37344帧。战斗58章968秒、羁绊18章312秒、步态46章276秒；三个合集分别完整ffmpeg解码到null均退出0。逐片manifest记实际来源、激活档位和分段时点。局外经济、所有徽章最高档及每种条件未逐一覆盖，录像不是自然整局通关或最终美术验收。
+- 包装器独立小样验证中文/特殊路径、float分段、缺文件失败、路径边界、三合集分组与章节；生成页内嵌JSON，无网络依赖。浏览器工具拒绝file协议打开，未使用替代浏览器/代理绕过，页面真实交互未运行。此限制不影响本地视频文件的解码核对。
+- 仓库 **16462文件检查通过**。最终Windows x64 Development：`build-walk.log` **BASELINE_BUILD_PASS: 1097817740 bytes、0错误、退出0**，Runtime DLL SHA256 **5C10E0711470DFA9D40EF180B3F4014BA7C653A91F0C0553C6B6859F54082691**。常用EXE/SOURCE已更新；仅本地提交，无推送/PR、ZIP/Releases或CMD/BAT。原两项本地配置保留。录像和离线页位于忽略的artifacts，未作为运行素材混入源码。
+
+## 2026-11-18 当前：近景棋盘与战斗专用界面
+
+- 用户澄清目标是棋盘更大而非降低角度。场景作者保存24×8（左10×8、右12×8、红10/蓝23），192底格/64外围格、8+8门和四处地形；`artifacts/formation-combat-view/author.log`记录作者/场景/完整模式验证通过、退出0。保持60°/40FOV，准备左右与战斗三套固定构图；开商店和拖角色不重构镜头。
+- `editmode.xml`完整 **1185/1185、18.2508663秒、退出0**，包含3-7成型预算见证，未更改角色/守军数值、时限或胜利断言。右侧格子数量、守军候选顺序与抽取过程保持，原地形相对位置左移两列。
+- D3D11可见Editor运行`Formation;ShopSeatInteractionTests;ShopMapSafeViewportTests`，`playmode.xml` **23/23、48.0321201秒、退出0**。覆盖真实购卡/经验/拖放、模型合成、成员详情、源动画和大体型真实alpha边界、两侧固定视图、战斗格宽至少较预览放大8%、战斗与暂停隐藏备战模型及运营入口、真实终局与下关恢复、旧商店回归。源图集透明动作边距不当作可见身体，GPU只读alpha扫描不修改美术资源。
+- 已目视`playmode/playmode-large-preparation.png`、`playmode/playmode-battle-only-paused.png`：大体型准备画面完整，近全屏战斗隐藏两侧/底部运营内容，只留目标、守军、时间和控制按钮。准备M20/M28像素边界已检查；B21至蓝门最外沿未作专项实测。
+- 仓库 **16456 tracked files / REPOSITORY_CHECK_PASS**；暂存仅本轮文件及必要meta，无原两项配置。Windows x64 Development内容源码 **e7da0874044ead586bdcefe71bf884afd43a2543**，`build.log`记录 **BASELINE_BUILD_PASS: 1097785425 bytes、0错误、退出0**；Runtime DLL SHA256 **0EA279AA027DE364A2635DE45834BA2B2E1ACECBF357EF1C9012CC3B5101FD44**。常用EXE及SOURCE.txt已更新，其后仅补验证文档；没有推送、PR、启动脚本、ZIP或Releases。
+- 可见D3D11独立Player在1600×900及1280×720各 **71/71、0异常、退出0**（`player-1600/campaign-smoke.json`及`player-1280/campaign-smoke.json`）。生产路径选择/有限购物/直接布阵、真实前三战及结算均通过；每战检查暂停专用布局、全部备战/入场渲染隐藏、商店/羁绊入口锁定、近全屏镜头放大，以及自然结算与下关恢复。已目视1600准备/战斗和1280暂停图；未注入胜负/角色数值，不是自然整局胜率证明。
+- 普通EXE真实OS鼠标/键盘通过开局装备/预案选择→首战全屏构图→自然胜利/运营恢复→下一关准备→开战/空格暂停→Tab/Escape不显示运营窗口。`player-os.log`无异常/错误，测试窗口已正常关闭。首次点击暂停前已自然胜利，不把该次点击记为暂停成功；第二关通过空格实际暂停并检查。完整长局、所有搭配、长期性能及第二机仍未验证。
+
+## 2026-11-18 最新：正常棋盘、货币式运营入口与直接上阵
+
+- 用户明确撤销紧凑常驻布局，要求恢复正常地图、左经验/右金币/上方小字利息、点击展开商店，底部只留备战席。沿用`codex/formation-battle-demo`；只读fetch确认`origin/main`仍在当前分支祖先中，无遗漏主线提交。原`.vscode/`及`ProjectSettings/PackageManagerSettings.asset`保留不暂存。本轮不推送或操作PR；AGENTS仅本地保存。
+- 实际执行`FormationCampaignTools.Author()`，`artifacts/formation-currency-layout/author.log`退出0：保存26×8/208格、68外围格、8+8原门，四地形恢复21,1/22,5/16,1/19,4。保留此前作者的越界旧格清理和幂等逻辑，没有回滚整份场景或运行时重建地形。
+- 运行连接：FormationShopMarket将正式店作为底部抽屉，右金币/利息切换；FormationPreparationHud读真实Shop的Gold、XP、NextLevelXP、InterestDivisor/Cap。ApprovedShopPresentation通过可选ReserveOnly/MarketRect/OfferRect/FlowPieceRect复用原购买与动画，旧Manual默认仍保留原布局；内部Seats仍约束人口，上阵只显示棋盘本体。合成目的地为本体实际脚点，右侧侦察时上阵目标/入场模型禁用。商店与羁绊互斥，展开时隐藏下层冲突按钮/滚动详情，遮盖区域不响应布阵。
+- 完整EditMode **1185/1185、13.3158113秒、退出0**，`editmode.xml/.log`。恢复26×8和原通用战斗夹具后，3-7仍用相同卡/星、14件装备及150秒，真实1215000初始HP、145.075秒胜、8次阵亡；上轮因缩图改变敌阵而失败的见证已恢复，未更改伤害、敌阵或时限。其后只有固定镜头边距与UI/场景夹具变更，不冒称完整纯模型套件再次执行。
+- 初轮相关PlayMode22项21过：大地图的宽原生Sprite完整外框在边缘越出旧安全约束。先缩小到单个大单位用例，并核实M20源Idle为480px/80ppu、height2.55、脚pivotY约0.265，以1.9/2.55缩放后源Sprite含动作留白，脚下延伸1.19/脚上3.29单位。固定构图一次预留源框边距后，单用例 **1/1、2.304秒、退出0**，`large-focused.xml/.log`；没有改剪影尺寸、动作、测试阈值或按角色动态缩放镜头。
+- 最终非batch D3D11 PlayMode相关场景及旧商店 **23/23、41.1309873秒、退出0**，`playmode-release.xml/.log`。覆盖正常26×8全格与本体安全区、抽屉开关不重构镜头、覆盖区域零布阵、只有备战席/无重复stage本体；真实8金买新卡→付4金4XP→腾人口→reserve拖入棋盘→本体拖回→真实首战结算到4级→下一节点直接填第四人口。羁绊计数/徽章状态和详情遮挡继续通过。
+- 新增场上合成夹具（明确非自然获取）：左/右视图均用合法两张一星及第三张在售，真实BuyOffer合成二星；原实例、锚点和人口继承，常驻stage复制禁用。左视图实际入场轨迹接近本体脚点，右侦察target为zero且整个arrival生命周期renderer禁用。对应两张GPU截图与新准备/抽屉/四人口/羁绊图在本证据目录，已目视大棋盘、单备战栏及运营HUD。
+- 布局参考：[货币战争入门界面与金币入口说明](https://www.miyoushe.com/zzz/article/70549693)与[准备界面截图](https://www.miyoushe.com/planet/article/70431005)。只参考布局，游戏中仍使用本项目字体、原角色与工业地图资源，无新增外部美术/依赖。
+- 仓库检查 **16454 tracked files / REPOSITORY_CHECK_PASS**，新HUD/合成回归及必要meta与本轮源码本地提交；没有混入原两项配置或Test Runner临时场景。最终Windows x64 Development内容源码 **3e358fe84b6d9f50715afeb3b199cfcc4c65bc19**，`artifacts/formation-currency-layout/build.log`记录 **BASELINE_BUILD_PASS: 1097793241 bytes、0错误、退出0**。Runtime DLL SHA256 **86D10A9E2FEB52F4FAAC6CB24B719A4F40204C39393DEE6925467E6DE04030BF**，常用EXE及SOURCE.txt已更新；之后只补文档，不改构建内容。本轮无推送、PR、启动脚本、ZIP或Releases。
+- 可见D3D11独立Player **1600×900与1280×720各49/49、0异常、退出0**，`player-1600`/`player-1280`中的`campaign-smoke.json`、对应日志和实帧。完成真实开局选择、金币/经验/装备和抽屉状态、reserve直接pointer入图、前三场战斗与结算，并进入1-4准备。全程走生产时钟与交易，没有注入角色、库存、面板或胜负；不等于自然完整三位面通关。已目视1600收店大棋盘/展开抽屉以及1280对应画面，图片非黑帧。
+- 普通EXE真实OS核验：完成钢刃和首个预案选择后，默认3级/8金币/三人且商店收拢。点右金币展开抽屉，购W使金币8→7、进入备战；Escape收店。拖场上宿主到空备战，2/3人口；W从备战直接拖入棋盘后3/3，再拖回备战并拖到左侧出售，金币7→8。宿主重新直接上阵后左侧买经验，4金币、4/6XP；点金币上方的利息小字实际展开，Tab收起。原生角色、人数、费用和成员状态随操作更新，无独立出战栏。`interactive.log`无异常/错误，本次窗口正常关闭；这是实际鼠标/按键短路径，没有冒称OS完整战斗。
+- 未验证：自然整局通关分布、全部构筑、人类最终观感、长期性能与第二机。原上轮3-7预置失败已随恢复地图解消，仍不能据一个预算见证推论最终平衡。
+
+## 2026-11-18 最新：固定招募、紧凑棋盘与羁绊详情
+
+- 用户要求战前商店不收拢、完全避让棋盘，适当缩图，并参照金铲铲/货币战争完善羁绊成员与激活档位。延续`codex/formation-battle-demo`，只读fetch确认`origin/main`已在当前分支祖先中、无待接主线提交；两项既有未跟踪本地配置保持。本轮不推送或操作PR。运行与后续规则已同步GDD/FORMATION_FULL_GAME及本地AGENTS。
+- Unity6000.6.5f1执行`FormationCampaignTools.Author()`，最终`artifacts/formation-layout/author-final.log`退出0。场景实际保存22×7/154底格、58外围格、7+7透明门，四地形为高台(17,1)/(18,4)、掩体(13,1)/(16,4)。缩图作者仅移除超出新尺寸的旧格再补齐；中路row3仍开放，角色/守军面板与时限未改。
+- 运行连接：FormationShopMarket在Preparation强制显示，ApprovedShopPresentation新增可选CanCollapse，旧调用默认仍可收店；FormationBattleCamera使用商店下方固定安全区。FormationTraitView直接读取真实Run/Shop/装备，按角色种类去重；FormationTraitPresentation在末层绘制头像、档位和效果，指针入口优先拦截详情所盖的棋盘与席位，开战关闭且结算不允许覆盖领奖。
+- 新Editor成员测试曾因33位GUID未被Unity导入，已修正为32位并确认3项被发现；未将被忽略脚本算作通过。新增规则还检查10×7容纳11名不同本体（含5名2×2）、全部23节点守军数量与合法唯一落点。
+- 完整EditMode的已知未通过项为`FormationCampaignCombatTests.PresetBudgetedLineupsFightUnmodifiedNodeDefenders("3-7")`。该夹具不带地形；缩图改变格子洗牌次数后，后续随机敌阵由1215000初始HP变为1200000。原预算/站位首跑150秒、87.45%进度、剩3人、7次阵亡、1049397伤害；同预算集中站位重放仍未通关，已恢复原合法站位并保留胜利断言及剩血诊断。没有修改敌阵、卡/装备预算、伤害或时限来追通过。它是明确的终局平衡限制，不属于本次新增UI场景断言通过的证据。
+- 首轮PlayMode17项中16过，中路测试发现第二掩体放row3挡住原中路，已恢复row4并同步实际场景与坐标断言。只读review补出详情盖住上阵席位时的指针优先级及结算层级漏洞，修正后最终D3D11非batch相关场景加旧商店回归 **22/22、39.4357149秒、退出0**，`artifacts/formation-layout/playmode-release.xml/.log`。两项新场景用例实际验证买卡扣金→腾人口→备战指针入图、双方每格四角/本体上缘都在商店下方；真实徽章装备/卸下与上下阵改变成员状态/档位；详情底部覆盖席位时按下不选、拖出不产生预览、备战拖入被盖席位零提交；正常战斗开始关闭详情，沿生产时钟到真实终态后禁止重开。徽章为明确夹具，不作为自然获取概率证据。源截图`playmode-compact-pinned-preparation.png`和`playmode-trait-members-badge-and-reserve.png`已实际目视。
+- 最终完整EditMode **1184/1185、12.7284219秒、退出2**，`artifacts/formation-layout/editmode-release.xml/.log`；只有上方3-7预置通关断言失败，最终恢复原站位后复现87.45%、剩3人。新增5项（3项成员视图、2项紧凑地图）均被识别并通过。不能把这一结果简写成完整规则全绿。实际仓库检查 **16450 tracked files / REPOSITORY_CHECK_PASS**，新增4份C#与必要meta随源码纳入本地任务，忽略的AGENTS/缓存/日志/构建及原两项配置不纳入。
+- 布局检索参考：[货币战争羁绊教程原界面](https://hsr.gachabase.net/tutorials/currency-wars/100028/bond/release?lang=chs)及[玩法界面截图](https://www.hoyolab.com/article/42168333)，仅参考信息层次，不导入其图片。样式复用本项目字体、角色头像和费用色，无新外部美术或依赖。
+- 最终Windows x64 Development内容源码 **e6902c4a7fc98a90d941df31020fcf457fd144ec**。Unity实际执行`BaselineTools.BuildWindows`，`artifacts/formation-layout/build.log`记录 **BASELINE_BUILD_PASS: 1097740389 bytes、0错误、退出0**。Runtime DLL SHA256 **26BD048ECF6452C6CBCD511B599C4152D66EF839BDC651EA3DA142A5311E366A**，常用EXE和SOURCE.txt已更新。之后只补验证文档，不改变构建内容；本轮没有推送、PR、启动脚本、ZIP或Releases。
+- 可见D3D11独立Player **1600×900与1280×720各36/36、0异常、退出0**，`artifacts/formation-layout/player-1600`与`player-1280`、对应日志和`campaign-smoke.json`。通过有限开局、真实选择/交易/装备、战前尝试隐藏商店仍固定、真实羁绊打开/关闭及地图点击不穿透、前三场战斗和结算，继续进入1-4准备。沿生产时钟加速，没有注入角色、库存、面板或胜负；不等于自然整局通关。已目视两尺寸准备与成员图、1600守军图，完整棋盘在店下方，激活/未激活档位和未拥有成员均可读，图片并非隐藏窗口黑帧。
+- 普通EXE真实OS核验：看到开局投资环境后选择首个预案，进入8金币/3级/三人准备；分别按Tab、Escape，商店均保持完整展开。点左侧迅攻，看到2人档已激活/下一档4人、两名上阵与其余未拥有成员；在详情内真实滚轮下滚后看到后段完整效果，再按Escape只关详情、商店仍在。最初窗口被其他应用遮挡，通过目标窗口已公开的Raise置前后完成操作，未操作其他应用。`artifacts/formation-layout/interactive.log`无异常/错误，测试窗口正常关闭。本项是按键/点击/滚动短路径，不冒称OS手动完整战斗。
+- 未验证：上方已知终局预置通关失败尚未平衡解决；完整自然长局、全部构筑、人类最终观感、长期性能与第二机。场景/界面通过、可执行构建成功和整体平衡是三种不同证据。
+
+## 2026-11-18 最新：v0.7 棋盘完整挑战集成
+
+- 用户确认v0.7作为后续依据、棋盘完整挑战设默认入口、扩大右侧并直接补原作角色。设计原件/43章Markdown/参数快照与本地AGENTS已更新。继续`codex/formation-battle-demo`，开工fetch核实`origin/main=0b17920d`为当前棋盘分支祖先；没有整体合并Boss旧模式分支。既有`.vscode/`、`ProjectSettings/PackageManagerSettings.asset`保留、不暂存。本轮无推送/PR。
+- Unity6000.6.5f1实际执行`FormationRosterTools.Install()`和`FormationCampaignTools.Author()`，退出0，`artifacts/formation-full/roster-install.log`、`author.log`。46正式角色有真实动作元数据，62兼容卡保存引用；26×8/208底格、68外围格、8+8原门、四组新右侧地形均持久保存。已目视编辑地图与实际左侧GPU准备图，未以截图替代地形。
+- 完整EditMode **1180/1180、11.71145秒、退出0**，`artifacts/formation-full/editmode-complete.xml/.log`。覆盖Shop/Run/Model的库存与补给预占/待领、塔露拉抉择/改价/容量、结算幂等、全部角色技能入口、连击/同频/接棒、阶段、溟痕、装备、七守军与三首领SP/动作对照。早期失败XML保留，不计入通过数。
+- D3D11非batch相关PlayMode **15/15、29.7970205秒、退出0**，`playmode-complete.xml/.log`。含原A购买舞台、有限开局选择、源石虫真实别名、原生B10未上阵购买与12秒长待机冷分段、2×2拖放/取消、固定视图、保存地形/门、暂停和交易锁。旧帧名前缀测试改为严格核验实际来源名与纹理页，未重命名原资源迎合旧断言。
+- 实测发现并修复：守军跨关状态残留、正式一费四星误用旧费用、合同塔露拉抉择后自动刷新遗漏、补给未真预占、三张点燃页漏打包、备战原生idle冷窗口未暖，以及旧固定地图/来源前缀。未把真实失败改为期望结果。
+- 预设组对生产守军、未改其HP/ATK：1-3二星三低费 **32.375秒胜**；2-4六人二星 **71.25秒胜**；3-7九人8连击/5同频、14装备含3徽章 **145.075秒胜**，总HP1215000、8次模式阵亡、100%削减且本体实际进门。前置节点明确跳过、人口和卡牌预置，日志列`PRESET_RULES`，不证明自然运营可达率。`RIPPER_RUNTIME`记录45秒后32次施法、成熟间隔 **0.925–0.950秒**，保留真实动作时间。
+- 原作源核验：35身体包/433动作/58583帧/2722图集的源哈希、事件、pivot通过；21 FX包/389段/25908帧/390页与原HDR逐帧像素对照通过，证据`Library/FormationCampaignEvidence`。来源、真实缺失walk与接入范围见`docs/art/FORMATION_ROSTER_V07.md`。素材/meta纳入本轮本地任务，运行不依赖项目外加工区。
+- 实际`tools/check_repository.py`：**16442 tracked files / REPOSITORY_CHECK_PASS**，仅代表仓库/meta检查。新增运行素材与必要meta已纳入本地功能提交，没有被忽略的运行依赖；原两项本地配置不提交。
+- 最终构建内容源码 **b7d609f05902a18aa52438e69e830f97fcbcbacb**。Unity6000.6.5f1实际执行`BaselineTools.BuildWindows`，Windows x64 Development **1097768905 bytes、0错误、退出0**，`artifacts/formation-full/build.log`有`BASELINE_BUILD_PASS`。Runtime DLL SHA256 **F82DE397C5BF6B12A5500AFA820D005E3BB90F1BFC3AF65EFEEC20F544249477**；`Builds/Windows/YesterdayConvoy.exe`与SOURCE.txt已更新。其后仅补验证文档，不改变构建内容；没有推送、PR、启动脚本、ZIP或Releases。
+- 独立Player打包检查 **passed=true、162清单、4768 prepared页、0 PNG回退、errors为空**，`artifacts/formation-full/payload/result.json`。其中Boss身体35清单/2792运行页、BossFX22清单/391运行页；这是构建运行清单口径，和上方原始源包/源图集核验口径不同，不能相互替代。
+- 最终可见D3D11独立Player **1600×900、1280×720各31/31、0异常、退出0**，证据`artifacts/formation-full/visible-1600`与`visible-1280`中的`campaign-smoke.json`、Player日志和实际截图。每次都通过正式有限经济开局、独立随机三名一费、基础装备/预案/首个战备选择、真实购卡/买经验/装备及前三场战斗与结算；1-3后HP100、40金币、4级，继续进入1-4准备。全程沿生产接口加速正常模拟，未注入角色、面板、胜负或库存。已目视两尺寸开局选项、投资环境、扩展右侧、1-3结算与跨关画面；这是前三场的确定种子路径，不是整局自然运营或人类胜率。早先`player-1600`与`player-1280`隐藏窗口虽然断言通过，GPU截图为黑色，明确不计作视觉证据，已用上述可见窗口重验。
+- Agent真实OS点击核验：无专项参数普通启动EXE，实际默认进入1-1完整挑战，依次点击首个基础装备和首个投资环境；准备界面显示8金币、3级、随机三人。点击“装备”后看到钢刃1件与实际三人装备槽，关闭后按V切到扩大的守军区，蓝门/高台/掩体和守军可见。再点击系统菜单→返回旧玩法，等待实际载入旧十二关采购界面。`artifacts/formation-full/interactive.log`有`FORMATION_CAMPAIGN_READY`及旧入口资源准备，未检出异常/错误；关闭本次测试窗口后日志正常清理。此项验证普通入口和按钮链路，没有把程序战斗重放计作OS手动战斗。
+- 未验证：完整自然长局的通关分布与经济平衡、全部战备/徽章组合、长期性能、人类最终观感与第二台电脑离线运行。
+
+## 2026-11-17 最新：悬空拖动、固定分区与无限测试金币
+
+- 用户要求恢复抓起悬空感、去落点文字／突兀蓝框、固定镜头、扩大我方区且仅看当前侧、备战无伤害排行、无限测试金币，并撤销默认推送／PR授权。继续原功能分支；fetch核实origin/main仍为0b17920d，已是祖先。预存.vscode／PackageManagerSettings不改、不暂存；本地AGENTS顶部写入新最高优先级规则，覆盖历史自动推送授权。该文件仍忽略、不提交。
+- 运行连接：`FormationDeploymentPresentation`把完整落点Cells交给原事务，角色用连续射线地面点及原抓取偏移悬空.62、独立影子留地，只有落点吸附；放下前不提交。选中用米白地面短角，去掉地图／槽位落点文字和备战提示条；排行仅战斗／结算显示。新`FormationAirborneDragTests`核对同一落点内2像素移动仍连续跟随、角色离地／影子留地、松手提交。
+- 保存场景扩大为20×8、左12×8、红12／蓝19，守军与四地形整体+6，原相对布局和材质保留。`RebuildExpandedBoard`明确在编辑器重建保存，运行不搭图。左右各自固定构图、直接切换，不动态fit；29／30层隔离静态棋盘，当前侧筛选角色／标签／击中特效，原商店31层RT相机与资源保持。切换当帧同步角色，避免空一帧。
+- 角色从原锚点按统一模拟时钟行军，进入BattleAreaStart=12.5后才接敌，守军攻击／溅射和治疗也排除另一侧本体；死亡仍回原锚点复活。入口用明确的定点路径，不读取攻击射程。新增单弩手无地形／空地形／实际四地形三例模型检查，入右前双方零伤害，入右后自然输出。此规则用于使独立右视图包含实际接敌过程，不是完整原作能力迁移。
+- `EnableJourneyEconomy(bool unlimited=false)`保持旧调用默认有限，只有本Demo传true；UI复用∞，消费／出售／结算不改账面余额，真实库存、人口、概率、等级和阶段锁保留。新增零余额购卡／刷新／升10级／出售库存守恒与旧Journey零金拒绝消费隔离回归。无限金币试玩不作为自然获取／经济／平衡证据。
+- 编辑器作者与Validate成功退出0。完整EditMode **1083/1083，12.920秒，退出0**，证据`artifacts/formation-refinement/editmode-final.xml`。PlayMode首跑7/9：一项仍要求两侧同时显示角色，另一项发现大单位位于前边界时sprite下缘超安全区；修正为按当前侧断言，并为固定构图一次预留脚下空间。最终相关D3D11 **PlayMode9/9，9.558秒，退出0**（`playmode-final.xml`），包含悬空拖动、固定视图不随换位漂移、当前侧地块剔除、2×2完整落地与越界零提交、原A商店和蓝门规则。实看最终左右视图、悬空与大单位截图；底座／横向围合同时按接缝拆成独立保存对象，避免左视图仍露出右侧空灰底座。最终作者`author-final.log`退出0。Windows x64 Development构建 **1097357209 bytes、0错误、退出0**（`build.log`），内容源码 **5b95b69220cf085954bc137bb44df2a112f21546**，Runtime DLL SHA256 **86039248A7F5A246CA3DF35692FEFBF543CE3FC236F31840687C2167BDBF48FF**。
+- 独立可见D3D11 Player **1600×900与1280×720各63/63，0异常，退出0**，见`artifacts/formation-refinement/player-1600`／`player-1280`及`formation-smoke.json`。共761个保存MeshFilter，重试不重建；实际购买原商品后余额不变、库存／offer正常变化，∞与原A动态舞台显示正常；检查独立左右视图、悬空预览／交换、开战／暂停、战斗自然输出与全清后进门、奖励／下一关、人口升级、超时与复活。第一关三人自然17.625模拟秒胜，单士兵10.575秒阵亡／18.575秒复活。程序通过生产交易／指针／模型接口加速重放，没有注入HP、伤害、技能充能或胜负；不冒称OS鼠标或人类试玩。已目视两尺寸准备画面及1600悬空／右侧交战等实际截图。
+- 仓库检查 **9047 tracked files／REPOSITORY_CHECK_PASS**，暂存差异与必要meta检查通过。构建与SOURCE.txt已更新；本轮源码仅在本地功能分支提交，没有push或任何PR操作，已有远端分支保持780c9c2e。
+- 未引入新外部美术、包或ProjectSettings修改。完整原作技能／羁绊、42角色自然五关平衡、逐一人类角色试玩、OS鼠标链路、第二机和长期性能未验；当前风格沿用户“暂用”。本轮无推送、PR操作、启动脚本、ZIP或Releases。
+
+## 2026-11-17 历史：动态多格部署、全角色目录与左右镜头
+
+- 用户授权当前风格暂用，完善拖动地块落点提示、动态站场、所有现有角色的尺寸与大体型多格，以及左侧整备／右侧侦察／开战转右。岁界园版 B21定位到项目外设计稿但无Assets资源，用户明确“没有就先不做了”，本轮跳过。继续 `codex/formation-battle-demo`／PR115，fetch核实 `origin/main=0b17920d7a3a2be2275d95987893512451647151` 已在本分支祖先中；两项预存本地未跟踪设置保持。
+- 运行连接：`FormationUnitCatalog`覆盖43个真实卡ID／动作源／显示高度／占地，42种沿 `ShopEligible` 进入原有限商店，银狼未解锁；巨像仅支援metadata。`FormationDeployment`对完整矩形建立无副作用计划，`Session.PreviewDeploy/TryDeploy`共用它并原子提交席位与军阵，`Model`保存锚点、按 `SpawnCenter`显示／复活。`FormationUnitArt`适配40个Monster包、源石虫、塔露拉和维维美原Sprite数组，角色按需预热及缓存就绪检查；不全量warm43套、不制造缺失动作。`FormationDeploymentPresentation`绘制完整格与动态ghost；`FormationBattleCamera`关注左右半区并维持相同反投影输入，原A独立RT舞台不移动。
+- `FormationDeploymentTools.Configure/Validate`保存43张现有CardDefinition引用，原独立场景、112底格、四地形及完整门和材质保留。实际大单位截图发现前景遮挡后将六个高构件沿外侧移动1.8单位，保存到命名分组；重复Configure不累计位移。最终作者日志 `artifacts/formation-deployment/author-clearance.log` 退出0、两层Validate通过，628个保存Mesh不变。场景唯一writer为root，其他代理各自认领Catalog／Art、Model／Session／部署测试、Camera／场景测试及文档；无包、引擎、旧地图或共享原A UI改动。
+- 完整 **EditMode1078/1078／10.820秒／退出0**（`editmode-final.xml`）。其中新增18个部署病例：边界、不同锚点面积冲突、不同角色同模板、异形双向交换失败回退、第三方冲突、2×2中心复活、备战非法落地零提交、过期预览重验、碎片空间拒绝、跨关重绑、未来3×3纯几何夹具及全部43定义导入；6个Catalog病例核对真实卡名／成本／资源映射、ShopEligible、大小与缺失动作、不提前解码动画。纯3×3夹具不是已接入岁影的证据。初次测试编译的容器断言API错误已修正，作者配置与最终测试均退出0。
+- 最终非batch D3D11 **PlayMode8/8／13.898秒／退出0**（`playmode-clearance.xml`）：6个原场景case更新为分别核对左右半区、真实购买及库存／人口、准备锁定、暂停、跨关、native门／材质与保存地形；新增Camera case验证平滑左右、无模拟／金币／站位变化、原A RT相机不动、实际指针投影、开战自动右及暂停中完成镜头、重试回左；新增Large case使用明确的合法库存Preset夹具（M07/M20/M28、level6）上阵两大单位，验证2×2中心、Clock0动态原生idle、真实body拖动的ghost和Cells、松手前不提交、松手后Cells一致、col5越界整笔不变、切侦察取消及迟到MouseUp不提交。夹具不是自然获得五费卡或平衡证据。
+- 大单位GPU截图：`playmode-large-idle-a/b.png`、`playmode-large-drag-valid.png`、`playmode-large-preparation.png`、`playmode-large-drag-invalid.png`、`playmode-large-scouting.png`，已实际目视。前景移动后四格绿色底纹与角色脚底不再被旧建筑盖住。点击空格也改为MouseUp才提交，场景case实际核对按下时不改站位、松开后才变更；多格半格中心用一致边界选择，避免银行家舍入在相邻列间改变抓取偏移。
+- 构建内容源码 **a76930987bf0b9dcf982b406a0e605eded0b59d2**。`BaselineTools.BuildWindows`真实Windows x64 Development **1097295472 bytes、0错误、退出0**（`build.log`）；Runtime DLL SHA256 **67FAD767AD4C13AB8321F02522BCA606C38EA397A9E1BAE3EEA12C51D833D350**。本机EXE与SOURCE.txt更新，之后仅补文档，不改构建内容。
+- 可见独立D3D11 Player **1600×900与1280×720各63/63、0异常、退出0**（`player-1600`／`player-1280`和各 `formation-smoke.json`）。真实商店商品／金币／库存／RT动态舞台与指针处理加速重放，覆盖动态落点预览与无提前提交、实际交换、左右侦察不改状态、开战自动右、下一关回左、买经验后上阵、完整占地无重叠、交易锁定、暂停、技能、自然复活、限时失败和全清后实际进门。初始三人17.8模拟秒胜，单士兵10.575秒阵亡／18.575秒复活，无HP、伤害、技力、守军位置或结果注入。新增 `player-deployment-preview.png` 与 `player-defender-scouting.png`，已目视最终Player落点／侦察／战斗等帧。
+- 另以正常交互模式启动当前EXE（`interactive.log`记录准备完成，未开启smoke参数）。实际Windows窗口核对被其他前台应用覆盖，目标窗口置前失败后停止点按，**未执行任何跨应用误点击，不将本轮OS鼠标链路写为通过**。上面的证据来自生产指针处理、模型加速重放与真实渲染；这与人类试玩不同。
+- 实际Python3.13执行仓库检查 **9045 tracked files／REPOSITORY_CHECK_PASS**，暂存差异检查通过；新增22个脚本／meta文件随源码，全部角色运行媒体沿用既有跟踪资源。本轮无新外部图片、占位素材、启动脚本、ZIP／Releases或自动合并，预存.vscode和PackageManagerSettings保持未跟踪。
+- 限制：2×2占地当前用于战前布阵，战斗仍为原中心点移动／碰撞间距／射程；四个大体型尺寸为试玩配置。新角色采用既有面板的本模式试验变换及六类自动技，未完成原作复杂技能／天赋／召唤／羁绊。全卡池自然五关经济、长期平衡、全部43个体逐一人类试玩、原生鼠标链路、第二机与长期性能未验。地图风格是用户“暂用”，不记录成最终美术冻结。
+
+## 2026-11-17 历史：暖灰工业棋盘、高台与掩体
+
+- 用户在查看新参考图及生成地图预览后明确“按这个做做看”，授权本轮接入。沿用 `codex/formation-battle-demo`／PR115；fetch核实并验证本分支已包含 `origin/main=0b17920d7a3a2be2275d95987893512451647151`。原有未跟踪 `.vscode/` 与 `ProjectSettings/PackageManagerSettings.asset` 保留。root唯一写场景与新作者工具，代理按专用材质、运行地形／新测试、已有场景测试／烟测、说明文档分工；无包／引擎／全局画质修改或项目副本。
+- 新 `FormationReferenceMapTools.Apply` 先复用源环境导入，再保存专用混凝土、两个2×2高台（11,1／11,5，高.48）、两个2×1掩体（8,1／9,4，高.36）及工业服务地台／侧墙／栏杆。112底格顶面仍y=.12，44外围部件、95原工业部件、原BG与16个完整透明门保留；本场共有 **628个保存MeshFilter**。地形另组且无运行时整图搭建。scene、持久Mesh／mat／meta与来源记录随源码；既有city-concrete纹理是此前AI生成运行素材，不称原作或CC0。
+- Unity6000.6.5f1真实执行作者工具及Validate均退出0：`artifacts/formation-concrete/author-final.log`。实际虚拟棋盘投影 `(205.03,123.71,781.94,333.59)`，高台表面与人物落脚y=.60、低掩体占地和蓝门空列一致；初次画面发现模糊远景与地缝偏细后补工业地台／侧墙、细化纹理采样及格缝，并降低门叠层Alpha。最终实际相机图为 `editor-map.png`，不是生成概念图。
+- 完整 **EditMode1054/1054／14.996秒／退出0**（`editmode.xml`）。新增14个地形病例覆盖全部8个台面格的0.8射程近战可击杀、4人拥挤接敌仍造成伤害且不穿障碍、清场后绕行实际进门、3种子五轮合法唯一出生／重试稳定，以及布局快照不被作者数据修改。受控单靶与人工清空用于隔离这些单元边界，不冒称自然通关证据。
+- 非batch D3D11相关 **PlayMode6/6／8.728秒／退出0**（`playmode.xml`）。原6case更新材质契约为哑光ConcreteMode与真实运行纹理，检查四个保存地形的表面高度／Controller绑定、实际sprite台面落脚和可视区，同时保留原门几何、场景重试不重建、布阵指针、真实原A商店／idle舞台与交易。病例中的临时守军位置夹具恢复后不参与战斗，不将其当作自然生成证明。
+- 构建内容源码 **ebf323d05fd06ca6d492e86ac80c9dfa52621223**。`BaselineTools.BuildWindows`真实Windows x64 Development **1097240285 bytes、0错误、退出0**（`build.log`）；Runtime DLL SHA256 **84254CB6F65B500214C21412402A22DB487FB283438A10B32D3E59C2B2E682C1**。常用EXE与SOURCE.txt更新，之后仅补文档／验证记录，不改构建内容。
+- 可见独立D3D11 Player **1600×900和1280×720各56/56、0异常、退出0**（`player-1600`／`player-1280`及各 `formation-smoke.json`）。生产模型、真实金币／库存交易和指针处理加速重放；新增保存地形、真实脚高和每.025模拟步无跨障碍移动检查，保留买卡／扩人口／上阵、暂停、技能、跨关与重试、超时、自然阵亡与原格复活、清场后实际进门。初始三人 **17.8模拟秒胜**，单士兵 **10.575秒阵亡／18.575秒复活**；未注入HP、伤害、技力、守军位置或胜负结果。此处是确定种子专项重放，不能据此得出自然整局胜率或成长平衡。
+- 已目视最终两尺寸整备及关键帧；1600图核对暖灰地坪、细缝、完整门、两台两掩体与原A商店。胜利／复活帧检查显示与结算一致。本轮没有执行完整OS鼠标链，程序输入重放不写成人类鼠标验证；默认显眼入口未改，其旧版实点记录不外推为本轮新执行。
+- 用实际Python3.13执行 `tools/check_repository.py`，**9023 tracked files／REPOSITORY_CHECK_PASS**；运行依赖 `git check-ignore` 无命中、`git ls-files` 确认跟踪，暂存差异检查通过。无启动脚本、ZIP／Releases或自动合并。
+- 未验：用户最终实机观感、生成预览的细节完全匹配、自然五关经济／长期平衡、六种样板外角色与完整羁绊／复杂原作能力、第二机、长期性能。本次固定地形不新增高地免疫、视线或掩体破坏规则；下方记录只代表历史版本。
+
+## 2026-11-17 历史：原模型材质的棋盘接入
+
+- 用户最新明确“整体还是要棋盘风格，做进游戏试试”，授权当前 112 格棋盘场景、独立材质／外围与验证改动。继续 `codex/formation-battle-demo`／PR115；真实 fetch 核实 `origin/main=0b17920d`。既存 `.vscode/`、`ProjectSettings/PackageManagerSettings.asset` 原样保留。root 唯一写入场景／地图工具，代理分别认领新材质、既有场景检查和三份设计文档；没有升级包／引擎或创建项目副本。
+- 原布局预览仅作为材质／镜头参考，本轮仍保持开放 14×8、1×1 格距及全清后进门胜利。材质副本与原反射资源随源码提交；没有把项目外参考截图或 AI 临摹图贴到棋盘。28 白高台＋16 灰侧台位于部署棋盘外，中央保持同高无碰撞。
+- Unity6000.6.5f1真实执行 `FormationNativeMapTools.Apply`，`artifacts/formation-board/author.log` 退出0：112个棋盘格、44格外围高台、95份原工业部件、原背景与16个完整门；顶面y=.12、外围不侵入部署面，棋盘虚拟投影仍 `(205.03,123.71,781.94,333.59)`。原网格与UV保留，最终材质、Cubemap及场景引用全部持久保存。已目视场景实际渲染与原 A 界面组合，棋盘色差和边缘白台可辨。
+- 本轮非batch D3D11 PlayMode **6/6、退出0**（`playmode.xml`），验证保存地形、原动作／镜头、原门几何与独立Tint材质、112平地／44外围高台、新环境／反射依赖、原商店模型舞台和真实交易、布阵／暂停／跨关。保留6个原有case，未把新增断言冒称为额外case。
+- 本轮完整 EditMode **1040/1040、退出0**（`editmode.xml`）。模型／经济与游戏交互代码未改；烟测驱动只增加两项场景资源检查。
+- 构建内容源码 **18d2481ea7975182c94ee1dd15a35827e135118a**，`BaselineTools.BuildWindows` 真实 Windows x64 Development **1097061293 bytes、0错误、退出0**（`build.log`）。Runtime DLL SHA256 **D29CFE9F989CBA331BFAC7BC7EE8D043E116BDA79AD273260BDC64F955565DFF**；常用EXE和SOURCE.txt已更新，随后仅修改验证文档。
+- 可见独立D3D11 Player **1600×900和1280×720各53/53、0异常、退出0**（`artifacts/formation-board/player-1600`／`player-1280`）。生产模型／真实交易和指针处理加速重放，覆盖新增棋盘材质依赖、44高台边界、原门透明几何与Tint、购买入场／idle平台、买经验扩人口后拖动上阵、战中锁交易、暂停、伤害／技能、全清后实际进门、跨关／重试、超时和自然阵亡原格复活。首关三人13.175模拟秒胜，单士兵14.475秒阵亡／22.475秒复活，未注入生命、伤害、技力或结果。已目视新版整备、商店、交战、技能、胜利和复活截图。
+- Agent实际OS核对：启动普通EXE，看到默认十二关采购界面的黄色“战前布阵 · 新玩法试玩”并点击，日志记录 `FORMATION_VISIBLE_ENTRY_SELECTED`，随后实际看到新版棋盘和原商店。后续尝试购卡时游戏被其他应用遮挡，停止进一步点击，**没有将本轮购卡／扩人口／通关鼠标链路写为通过**。该链路的本轮证据来自上述生产模型与指针自动重放；此前版本OS通过记录不外推。游戏已打开在第1关整备，`interactive.log`无异常。
+- 本轮48份原反射mip、持久Cubemap、专用Surface／Gate Shader、材质、场景和必要meta与源码纳入Git；实际跟踪与忽略核对及仓库检查 **9000 tracked files／REPOSITORY_CHECK_PASS**。Unity生成Cubemap三个空值行尾空格规范化后暂存差异检查通过。原两个本地未跟踪项保持，无启动脚本、ZIP／Releases或全局画质／包改动。
+- 未完成：用户最终棋盘观感、原旧门顶标识完整匹配、原运行时反射解码参数（5仍是兼容值）、本轮完整OS鼠标链路、自然五关经济／长期平衡、六样板以外角色及完整羁绊／复杂能力、第二机与长期性能。下方数字属于其对应历史版本。
+
+## 2026-11-17 历史：LS-5 原资源、共用原 A 商店与显眼入口
+
+- 用户确认真实 LS-5 关卡图后授权接入；继续原功能分支与 PR115，既存本地 `.vscode/`、`ProjectSettings/PackageManagerSettings.asset` 保留。场景由 root 唯一写入，代理仅按独立资源工具、共用界面、验证和文档划分文件；没有新增工程副本、包依赖或启动脚本。
+- `FormationNativeAssetTools` 导入 143 份源网格、12 张源贴图和 5 份兼容材质，保留顶点／法线／UV／索引、子网格及对象来源；原门复用已有原作四层 Mesh／透明材质，根缩放 1。每格门框约 1×1×1，原背部透明特效延伸使全部层深度约 1.6925，测试按真实源资源比较，不把特效错误压缩成一格深。
+- 最终 `FormationNativeMapTools.Apply`／`Validate` 真实执行，`author-neutral.log` 退出 0：112 个保存格、110 个源外围部件、原背景与 8 红／8 蓝全高透明门；保存相机 60°／FOV40／零偏航翻滚，虚拟棋盘投影 `(205.03,123.71,781.94,333.59)`。已目视实际渲染图。旧布局三个 ShadowsOnly 遮光体和脱离支撑的小零件不复制到新棋盘，原主光方向与旋转后的环境 SH 保留，中性主光仅本场景适配；未修改全局画质。
+- 环境 SH 初次校验把系数平方和误当归一化基函数能量而失败，未放宽阈值：改为对 Unity 实际基函数积分。真实最终最大基函数拟合误差 4.7937e-7、独立 619 方向色值误差 5.9605e-8、分带能量误差 1.7582e-10、应用系数误差 0。原 Shader、烘焙补光和后处理未整体迁入，不宣称逐像素复刻。
+- 共用界面首次编译暴露旧羁绊提示仍访问原私有 flow 列表，改为查询共享呈现的真实未揭示 flow 后通过。首轮新场景 PlayMode 4/6：购卡测试未先展开商店使入场坐标相差 169 像素、原门背部特效超过一格深。分别修正真实展开前置／公开调用的坐标回退，并改用源四层等价及独立一格门框检查；最终 **6/6、退出 0**，`playmode-final.xml`。覆盖原模型平台 1920×1080、实际购买与买经验上阵、自动战斗与交易锁、保存网格及原门引用、点击／拖动和跨关保留。
+- 本轮完整 EditMode **1040/1040、退出 0**，`editmode.xml`；旧原 A 商店相关 D3D11 非 batch PlayMode **7/7、退出 0**，`legacy-shop-playmode.xml`，覆盖展开收起／反向滑动、库存与地图稳定、真实购卡／满备战合成／快速购买出售、模型清理及原席位拖动。其后只调整本场景灯光和外围遮光体，已重跑地图编译／保存校验；不重复宣称整套规则测试重新执行。
+- 构建内容源码 **8bf1adda61270b605f4d1398b9dfbec6dbd626af**，`BaselineTools.BuildWindows` 真实 Windows x64 Development **1090984461 bytes、0 错误、退出 0**，`build.log`。Runtime DLL SHA256 **6CF22E5D402F39264479C85F87ECF775AC5F178ECA38F8737C12E59E213CEBE8**；常用 EXE／SOURCE.txt 已更新。随后仅补文档，不改变构建内容。
+- 可见独立 D3D11 Player **1600×900 与 1280×720 各 51/51、0 异常、退出 0**，`artifacts/formation-ls5/player-1600`／`player-1280`。在生产模型与真实交易／指针处理上加速重放，检查保存的 LS-5 网格、原门四层／一格门框、原 A 模型平台与实际 idle、购买入场／扣金、真实经验解锁第四席位与拖动、战中锁交易、暂停、自动伤害／技能、全清后进门、跨关保留与重试、限时失败及自然阵亡原格复活；未注入生命、伤害、技力或结果。初始三人首关 13.175 模拟秒获胜，单士兵 14.475 秒阵亡／22.475 秒原格复活。已目视整备、开店、交战／技能、胜利及复活帧；不是完整自然五关经济或人类胜率证据。
+- Agent 真实 OS 鼠标验证：直接启动普通 EXE，看到默认十二关集结采购界面中的黄色 **“战前布阵 · 新玩法试玩 ▶”**，点击后进入 LS-5 新战场，日志有 `FORMATION_VISIBLE_ENTRY_SELECTED`。购买首格术师金币 12→11；两次买经验 11→7→3、等级 4；快速拖到原第四上阵平台后 4/4，本体出现；Tab 收店、拖角色头部换位、点击进攻，剩余 77.8 秒自然胜利；领奖进入第二关，金币 3→8，四人和手调术师站位保留。再从菜单重开挑战，恢复第 1 关／12 金币／三人／新守军，收店留完整地图。`interactive.log` 无异常；它是一条真实短路径，不代表长期平衡。
+- 运行图片、源数据、143 份持久 Mesh、材质和必要 meta 已与源码提交／推送；仓库检查 **8849 tracked files／REPOSITORY_CHECK_PASS**，没有被忽略的本轮运行依赖或超限文件。仅两个既存本地未跟踪项保留。未新增启动脚本、ZIP 或 Releases，也未自动合并。此前 `f5aef7a5` 绘制庭院记录仅为历史。
+- 未完成：用户最终美术观感、自然五关经济／长期平衡、六种样板以外角色及完整羁绊／复杂技能迁移、第二机和长期性能。
+
+## 2026-11-17历史：绘制工业庭院与真实购买编队（画面已被替换）
+
+- 用户明确否定上一版方块地图，要求恢复此前看稿风格、背景和正常门标，并接原角色购买界面。继续`codex/formation-battle-demo`与PR115，fetch确认`origin/main=0b17920d`；预存`.vscode/`、`ProjectSettings/PackageManagerSettings.asset`保留。场景由root唯一写入，代理分别负责绘制工具、商店界面、模型／说明，未升级依赖或创建项目副本。
+- Unity6000.6.5f1真实执行`FormationPaintedMapTools.Apply`，退出0；112个地面格与四外角对参考图最大投影误差 **0.34124虚拟像素**，305个活动保存网格、16个低矮分离门标，无门碰撞；背景、逐格网格、投影Shader及材质均持久保存。PNG与批准原图SHA256一致，来源和2.5D边界见地图说明。运行时仅创建角色／反馈。
+- 完整EditMode最终 **1040/1040、退出0**，`artifacts/formation-shop/editmode-final.xml`，包括新增9项真实库存、交易拒绝、四星连锁合成保留实例／原格、出售返库、重试随机状态、幂等奖励、跨关与原子阵容导入。首跑1031项并未识别新增测试：新测试meta的GUID误写33位，已修为32位再完整重跑；未把首跑计入新9项通过。
+- 首版相关非batch D3D11 PlayMode **5/5、退出0**，覆盖保存场景／图形、门标、布阵、暂停、真实购卡扣金及战中交易锁。其后真实OS操作发现旧Update输入轮询漏掉快速备战拖放，补充购卡→买经验→拖入第四席位的集成检查，并改为读取逐个OnGUI鼠标事件；最终结果在下方补记。
+- 第一轮1600×900 Player前35项与截图通过、0异常，但“单弩手自然阵亡”断言失败，整体退出2：该一星弩手能远距离清掉该首关，不能用它证明复活。没有修改战斗数值；换用合法单士兵阵容（另两张移备战）重新构建并验证。中间源码`604f183a`的1600×900、1280×720可见Player各 **42/42、0异常、退出0**。初始三人真实首关13.175模拟秒获胜；全程未注入生命、伤害、技力或结果。它们是程序加速重放，不是人类胜率或自然五关经济证明。
+- 最终D3D11非batch相关PlayMode **6/6、退出0**，`artifacts/formation-shop/playmode-final.xml`，新增检查使用真实购买与经验事务，再经指针处理把备战实例拖进解锁的第四席位，并核对实际战斗本体。完整1040项EditMode覆盖当前模型／交易规则；其后只改鼠标接入和验证驱动，没有冒称再次重跑整套。
+- 最终构建内容源码 **f5aef7a5c57d404430de6e3b0d7a7ed785675a4b**，Windows x64 Development **1073220177 bytes、0错误、退出0**；`build-pointer.log`。最终Runtime DLL SHA256 **791699BF95A6CE9B35B00CED45BE37AA84C0B4A09C962B69376FB4F4AB0A3A49**，常用EXE及`Builds/Windows/SOURCE.txt`已更新。之后只补验证文档，不改变构建内容；无启动脚本、ZIP或Releases。
+- 最终可见独立Player **1600×900和1280×720各42/42、0异常、退出0**，证据分别为`artifacts/formation-shop/player-pointer-1600`与`player-pointer-1280`。检查真实购卡扣金、战中禁止交易、布阵／跨关／重试、暂停、自动伤害与技能、先清场再进蓝门、短时限失败、合法单士兵14.475秒自然阵亡与22.475秒原格复活。已目视商店展开／收起、交战、胜利和复活帧，未注入伤害或结果。
+- Agent真实OS鼠标复验：首格术师购入金币12→11；两次买经验11→7→3并升至4级；快速拖备战术师到第四上阵席位后4/4、本体出现；Tab收店后拖动角色头部换格成功；点击进攻后全清进蓝门自然获胜；领奖进入第2关，金币3→8，四人和手调站位保留。再点新挑战恢复首关12金币／3人，Tab收店，窗口留新地图整备。日志`interactive-final.log`无异常。它是一次短路径OS验证，未据此宣称五关经济已平衡。
+- 运行PNG、投影Shader、五份材质、113份保存网格及所有必要meta已与源码纳入Git，素材未落在作者机外部默认目录。仓库检查 **8504 tracked files / REPOSITORY_CHECK_PASS**；两个既存本地未跟踪项保留。旧方块生成菜单已退役，public旧Apply在任何写入前返回明确退役异常，避免误覆盖新场景。
+- 未完成：用户最终美术观感、自然整局经济／长期平衡、全部角色与羁绊迁移、第二机和长期性能。原图完整映射到宽战斗区域会纵向压缩，场景是固定镜头2.5D环境；不宣称可自由运镜的全3D还原。
+
+## 2026-11-17历史：工业庭院地图与红蓝门（观感已被用户否定）
+
+- 用户批准上一轮AI概念并明确“虚线处一排红门，右侧蓝门”，授权接入游戏。开工延续`codex/formation-battle-demo`及已有PR115；实时fetch核实main仍为`0b17920d`，预存`.vscode/`、`ProjectSettings/PackageManagerSettings.asset`保留，不提交。root独占场景、工业工具与材质，代理仅分别编辑场景测试和来源文档。
+- `FormationIndustrialTools.Apply`在Unity6000.6.5f1真实执行，将工业几何和材质保存于FormationBattle场景，保持112格坐标。`FORMATION_INDUSTRIAL_VALIDATE_PASS`确认8红门/8蓝门位置与无碰撞，全部静态材质可持久引用；首次与最终Apply均退出0。没有运行时搭图、图片背景板、外部新包或角色改绘。
+- 首轮非batch D3D11 PlayMode4/4；目视发现门框偏细/战场偏小，调整门宽、镜头、地面色调与沥青重复尺度后，最终相关 **4/4**、退出0，`artifacts/formation-industrial/playmode-final.xml`。覆盖保存几何重试不重建、实际原动作/镜头安全区、头部单击/拖动、暂停超时、两排各8个开放3D门位与颜色。已实际查看最终整备截图，112格和左右边界清楚。纯战斗模型和运行脚本未改，本轮不把之前1031项记录写成重新执行。
+- 构建内容源码`1bd3e438f873448570ce47247175b45e21b8f9ef`；`BaselineTools.BuildWindows`真实Windows x64 Development **1068633173 bytes、0错误、退出0**，`artifacts/formation-industrial/build.log`。运行脚本与上一版未变，DLL SHA256仍为`0F0F1D00927296DD88F2ED4EEFD8F35E18155BB0DAC62220E3D62D3E6CBEAABA`；新场景与材质进入构建，SOURCE.txt绑定本次内容提交，后续仅补文档。
+- 可见D3D11独立Player **1600×900、1280×720各37/37、0异常、退出0**，`artifacts/formation-industrial/player-1600`与`player-1280`。加载新保存场景706个MeshFilter，真实伤害、技能、原位复活、暂停、同关/跨关继承、限时失败与先全清再进门胜利重放通过；默认首关仍9.675模拟秒获胜，与原逻辑一致。为生产模型加速程序重放，不是自然运营或人类胜率。已目视最终工业整备、交战/技能、蓝门胜利与复活帧，两排门清楚，中央保持可通行。
+- Agent用Windows真实鼠标核对新镜头下角色上半身单击不误移、拖头布阵成功、新挑战换种子并恢复首关整备；窗口留在新版工业地图。无新启动脚本、ZIP或Releases。新12份材质及meta、Editor工具和保存场景已纳入Git；复用的工业纹理、法线、模型此前已跟踪，无需另传本地依赖。仓库 **8254 tracked files / REPOSITORY_CHECK_PASS**；原两个未跟踪项不提交。
+- 未测：用户最终美术观感、第二机、长期性能与完整自然运营。素材来源与AI概念身份见`docs/art/FORMATION_INDUSTRIAL_MAP.md`，不把概念看稿批准等同最终实机验收。
+
+## 2026-11-17：固定战场布阵 Demo
+
+- 基于实时fetch的`origin/main=0b17920d`新建`codex/formation-battle-demo`，原六星特效分支及其未合PR114保持独立；不把其验证外推到本分支。预存`.vscode/`和`ProjectSettings/PackageManagerSettings.asset`原样保留，不纳入提交。root唯一写入新场景/材质/入口，代理分别负责纯模型、文档和场景验证。
+- `FormationBattleTools.Author`真实运行Unity6000.6.5f1，编译成功，`FORMATION_SCENE_VALIDATE_PASS`确认112个已保存可编辑地块及持久材质，日志退出0。构建配置只增加本场景，不改包清单/锁文件/其他项目设置。
+- 完整EditMode **1031/1031**，退出0，`artifacts/formation-demo/editmode.xml`。新增11例覆盖交换/越界/上下阵、星级/容量、暂停/倍速、原位复活和技能进度、动作窗口、真实伤害/治疗、清场后进门、时限精确边界、重试与跨关继承、确定种子及预置通关。固定预置不是自然运营见证。
+- 首次新增烟测编译因Unity6000.6已移除`GetInstanceID`失败，改为直接比较地形对象引用后通过。首次batch PlayMode为2/3，失败原因为`WaitForEndOfFrame`在batch不执行；改用实际D3D11非batch模式后相关 **3/3**，退出0，`playmode-graphics.xml`。覆盖保存地形重试不重建、真实原动作Sprite/镜头投影、指针交换和非法落点、战中锁阵及暂停/超时；`playmode-preparation.png`已实际查看。随后界面修整清除视口外残帧、按钮灰底，并按统一动作窗口完整采样已有动作，最终Player还需验证。
+- 实机鼠标发现上半身点击会被地面投影解释为后方格，已修正为先命中可见角色、同点单击只选中、移动超过阈值才放置；新增该回归后，最终非batch D3D11 PlayMode **3/3**、退出0，`playmode-final.xml`。另修正程序快进采集时身体上一帧、标签新状态的错位：截图前仅刷新可见层，不改生命、伤害或模拟时钟。
+- 最终运行源码`341a6c9d38258759fa81e7b9140790cc2e003789`；`BaselineTools.BuildWindows`真实Windows x64 Development构建 **1068332685 bytes、0错误、退出0**，日志`build-final.log`，常用EXE已更新。运行DLL SHA256为`0F0F1D00927296DD88F2ED4EEFD8F35E18155BB0DAC62220E3D62D3E6CBEAABA`，绑定于`Builds/Windows/SOURCE.txt`。后续提交仅补文档，不改变运行输入。
+- 最终可见D3D11独立Player **1600×900、1280×720各37/37、0异常、退出0**，证据`artifacts/formation-demo/final-1600`及`final-1280`。生产模型与真实指针接口加速重放首关9.675模拟秒胜利、跨关/同关保持、暂停、战中锁阵；配置0.1秒限时验证真实超时；合法仅猎狗阵容自然阵亡，暂停冻结复活，随后在原格复活。未注入HP/伤害/技能/胜负；不是人类自然运营。关键整备、技能、清场进门后胜利、超时与复活PNG已实际查看。首次隐藏窗口Player因无可见图形输出而在截图检查失败，未计作通过；改用真实可见窗口完成上述两尺寸检查。
+- Agent通过Windows真实鼠标验证：普通启动旧行动→右上菜单新模式入口；头部单击不移动、拖头换位；开始自动交战；暂停时剩余78.7秒与位置连续观察保持；守军清零时仍为Exiting，恢复后实际进门才胜；下一关军阵位置保留、守军增至6人；新挑战换种子回第一关。窗口留在首关整备。不是用户主观体验验收，未宣称自然鼠标完整五关通关。
+- 仓库检查 **8226 tracked files / REPOSITORY_CHECK_PASS**，本机.git/info/exclude未排除任务资源、无额外core.excludesfile；新场景、8份材质、源脚本、测试和必要meta均纳入Git。`AGENTS.md`仅本地补充新规则，未提交；原本地两个未跟踪项保留。无新启动脚本、ZIP、Releases或自动合并。
+- 未测：用户试玩观感、完整商店/羁绊/原作复杂技能迁移、自然运营通关、第二机与长期平衡；免费升星/扩编只用于基础体验。原作动作沿用各既有来源/权利记录，不把本次代码接线视为权利人授权；新地图仅基础测试地形，不冒充最终美术验收。
+
 ## 2026-11-10：再次提高中期守军强度
 
 - 用户要求“中期关卡强度再加强一些”。开工延续`codex/thirteen-stage-campaign-v2`、基线`7ee8202`，初次fetch的main为7862d09、PR108仍open。工作期间用户已合并PR108；交付前再次fetch确认main为a5db337，且其完整文件树与7ee8202相同。已同步本地main，从最新main建立`codex/midgame-difficulty-pass`，只拣入本次调整；拣入后完整树与已验证构建输入一致，无需为相同输入重复测试/构建。原`.vscode/`三文件和`ProjectSettings/PackageManagerSettings.asset`四份SHA256不变。root唯一写入正式数值源，另一只读Agent复核范围与生成结果。

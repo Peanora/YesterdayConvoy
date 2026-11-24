@@ -22,8 +22,16 @@ namespace YesterdayConvoy.Tests
         {var b=New(DefenderSkillKind.HoshigumaInferno,damage:300,hp:100);b.Advance(.5f);Assert.That(b.Defender.Alive,Is.True);Assert.That(b.Defender.DebtLife,Is.True);b.Advance(1);Assert.That(b.Defender.Alive,Is.False);}
         [Test]public void HoshigumaUsesTwoTargetsAndTwoArtsHitsThenEntersTimedLastStand()
         {var b=New(DefenderSkillKind.HoshigumaInferno,damage:1,hp:10000);b.Advance(2);Assert.That(b.CombatShots.Count(x=>x.FromDefender&&x.Empowered&&x.DamageType==CombatDamageType.Arts),Is.GreaterThanOrEqualTo(2));b.Advance(15);Assert.That(b.Defender.ProtectionUntil,Is.GreaterThan(b.Clock));b.Advance(12);Assert.That(b.Defender.Departed,Is.True);}
-        [Test]public void FifthProfilesAndNativeActionsExist()
-        {foreach(var id in ManualBattleController.DefenderBatch5Ids){var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);Assert.That(data,Is.Not.Null);Assert.That(data.Snapshot()[0].Skill.Enabled,Is.True);Assert.That(DefenderArt.Load(id)["skill_attack"].Frames.Length,Is.GreaterThan(1));}}
+        [Test]public void FifthProfilesAndCurrentHoshigumaModelExist()
+        {
+            foreach(var id in ManualBattleController.DefenderBatch5Ids)
+            {
+                var data=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);
+                Assert.That(data,Is.Not.Null,id);
+                Assert.That(data.Snapshot()[0].Skill.Enabled,Is.True,id);
+            }
+            Assert.That(DefenderArt.Load("D25")["skill_attack"].Frames.Length,Is.GreaterThan(1));
+        }
         [Test]public void DeliveryActivatesOnlyAnUnusedReserveAndAddsSixSP()
         {
             var s=new DefenderSkillSettings(DefenderSkillKind.ExusiaiDelivery,1,1,1,100,effectRadius:5);

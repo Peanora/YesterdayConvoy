@@ -1,0 +1,21 @@
+{
+  "task": "B04",
+  "view": "main",
+  "timedClips": 16,
+  "frames": 1791,
+  "pages": 78,
+  "zeroDurationMetadataStates": 2,
+  "runtimeSources": [
+    "A_Idle",
+    "A_Move",
+    "A_Attack",
+    "A_Skill2",
+    "B_Die"
+  ],
+  "ppu": 84.88195911317054,
+  "pngBytes": 57832636,
+  "cacheSegments": 16,
+  "originalBytesAndHashesPreserved": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "unityTests": "NOT_RUN"
+}

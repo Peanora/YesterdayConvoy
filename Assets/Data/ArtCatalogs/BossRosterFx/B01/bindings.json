@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "task": "B01",
+  "bindings": [
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_cqbw_attack_01_trail",
+      "attach": "projectile",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": true,
+      "finishOnEnd": true,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "enemy_cqbw_attack_01_hit",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "",
+      "nativeSkill": "c4",
+      "key": "enemy_cqbw_skill_02_hit",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": true
+    },
+    {
+      "kind": "ProjectileSpawn",
+      "skill": "",
+      "nativeSkill": "c4",
+      "key": "enemy_cqbw_skill_01_buff",
+      "attach": "target",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": true,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": true,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Death",
+      "skill": "death",
+      "nativeSkill": "",
+      "key": "enemy_cqbw_die_01_start",
+      "attach": "owner",
+      "phase": -1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "binding": 0,
+      "source": "Projectile projectile_enemy_cqbw._mainEffect"
+    },
+    {
+      "binding": 1,
+      "source": "Projectile projectile_enemy_cqbw.onHit"
+    },
+    {
+      "binding": 2,
+      "source": "Projectile projectile_enemy_cqbw_s1.onReached"
+    },
+    {
+      "binding": 3,
+      "source": "Projectile projectile_enemy_cqbw_s1.toTargetOnStart"
+    },
+    {
+      "binding": 4,
+      "source": "Actor._deadEffect"
+    }
+  ],
+  "note": "Only exact original native references. Actual event NativeSkillKey/Phase/Animation/HitIndex select bindings; no damage is caused by this data."
+}

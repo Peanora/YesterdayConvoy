@@ -26,7 +26,6 @@ namespace YesterdayConvoy.Editor
         private string Root => ArtSourcePaths.ImageDirectory("ApprovedMonsterArt/" + Tasks[monster]);
         private string Manifest => ArtSourcePaths.Resolve("ApprovedMonsterArt/" + Tasks[monster] + "/manifest.json");
 
-        [MenuItem("Yesterday Convoy/Art/Approved Monster Previews")]
         public static void Open()
         {
             var window = GetWindow<ApprovedMonsterArtPreview>("已确认怪物美术");

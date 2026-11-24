@@ -1,0 +1,24 @@
+{
+  "task": "B23",
+  "view": "main",
+  "timedClips": 23,
+  "frames": 2034,
+  "pages": 161,
+  "zeroDurationMetadataStates": 2,
+  "runtimeSources": [
+    "A_Idle",
+    "A_Move",
+    "A_Attack_1",
+    "A_Skill_1",
+    "B_Die"
+  ],
+  "ppu": 41.648073183731775,
+  "pngBytes": 219961698,
+  "cacheSegments": 37,
+  "originalBytesAndHashesPreserved": false,
+  "originalInputHashesPreserved": true,
+  "sourceRecapturedAtHigherDensity": true,
+  "originalTimingEventsAndPivotPreserved": true,
+  "pivotPolicy": "World root preserved via matching per-motion pixel pivots and PPU; normalized image pivots intentionally differ.",
+  "unityTests": "NOT_RUN"
+}

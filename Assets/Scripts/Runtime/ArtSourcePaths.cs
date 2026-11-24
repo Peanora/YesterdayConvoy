@@ -8,6 +8,8 @@ namespace YesterdayConvoy
     public static class ArtSourcePaths
     {
         static readonly string[,] ImageRoots = {
+            {"BossRoster", "Art/Characters/Monsters/BossRoster"},
+            {"BossRosterFx", "Art/VFX/BossRoster"},
             {"DefenderArt", "Art/Characters/Defenders/Flipbooks"},
             {"MonsterCombatArt", "Art/Characters/Monsters/Flipbooks"},
             {"TalulahOriginal", "Art/Characters/Monsters/Boss/TalulahOriginal"},
@@ -55,6 +57,11 @@ namespace YesterdayConvoy
             string relative=Normalize(logicalRoot);
             return Path.Combine(Application.isEditor?Path.Combine(Application.dataPath,"Data/ArtCatalogs"):Application.streamingAssetsPath,relative);
         }
+
+        public static bool PreserveNativeEffectPixels(string logicalRelative) =>
+            logicalRelative.StartsWith("BossRosterFx/B20/wisdel_skill_02_", StringComparison.Ordinal) ||
+            logicalRelative.StartsWith("BossRosterFx/B20/wisdel_skill_03_", StringComparison.Ordinal) ||
+            logicalRelative.StartsWith("BossRosterFx/" + BossRosterFxArt.MakotoTask + "/", StringComparison.Ordinal);
 
         public static bool IsSourceTexture(string assetPath)
         {

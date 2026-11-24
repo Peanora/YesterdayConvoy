@@ -55,7 +55,7 @@ def inspect(root, paths):
 
     required = ['Packages/manifest.json', 'Packages/packages-lock.json',
                 'ProjectSettings/ProjectVersion.txt', 'ProjectSettings/EditorSettings.asset',
-                'ProjectSettings/VersionControlSettings.asset', 'Assets/Scenes/MonsterTrial.unity', 'Assets/Scenes/BattleShop.unity']
+                'ProjectSettings/VersionControlSettings.asset', 'Assets/Scenes/FormationBattle.unity']
     for name in required:
         if name not in tracked:
             errors.append(f'Missing project file: {name}')

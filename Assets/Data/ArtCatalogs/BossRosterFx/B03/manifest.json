@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "task": "B03",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "crowns_attack_01_hit",
+      "count": 15,
+      "width": 32,
+      "height": 32,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5302605628967285,
+      "duration": 0.5,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "crowns_attack_01_hit/00.png",
+          "count": 15,
+          "width": 384,
+          "height": 64
+        }
+      ]
+    },
+    {
+      "key": "crowns_attack_01_start_left",
+      "count": 31,
+      "width": 80,
+      "height": 80,
+      "columns": 12,
+      "ppu": 38.400001525878906,
+      "pivotX": 0.4875,
+      "pivotY": 0.5265501976013184,
+      "duration": 1.0333333333333334,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "crowns_attack_01_start_left/00.png",
+          "count": 31,
+          "width": 960,
+          "height": 240
+        }
+      ]
+    },
+    {
+      "key": "crowns_attack_01_start_right",
+      "count": 29,
+      "width": 40,
+      "height": 40,
+      "columns": 12,
+      "ppu": 16.0,
+      "pivotX": 0.375,
+      "pivotY": 0.5492084503173829,
+      "duration": 0.9666666666666667,
+      "hdrRange": 256.0,
+      "loop": false,
+      "sourceStart": 0,
+      "pages": [
+        {
+          "file": "crowns_attack_01_start_right/00.png",
+          "count": 29,
+          "width": 480,
+          "height": 120
+        }
+      ]
+    }
+  ],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "crowns_attack_01_hit",
+        "crowns_attack_01_start_left",
+        "crowns_attack_01_start_right"
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "crowns_attack_01_start_right",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "right",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "AttackStart",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "crowns_attack_01_start_left",
+      "attach": "owner",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "left",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    },
+    {
+      "kind": "Impact",
+      "skill": "attack",
+      "nativeSkill": "",
+      "key": "crowns_attack_01_hit",
+      "attach": "target",
+      "phase": 1,
+      "hitIndex": -1,
+      "loop": false,
+      "finishOnEnd": false,
+      "animation": "Attack",
+      "region": 0,
+      "direction": "",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0,
+      "projectileLife": false,
+      "allowUnapplied": false
+    }
+  ]
+}

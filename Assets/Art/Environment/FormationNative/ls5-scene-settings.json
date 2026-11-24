@@ -1,0 +1,955 @@
+[
+  {
+    "type": "Camera",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "542"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 271
+      },
+      "m_Enabled": 1,
+      "m_ClearFlags": 2,
+      "m_BackGroundColor": {
+        "r": 0.250980406999588,
+        "g": 0.250980406999588,
+        "b": 0.250980406999588,
+        "a": 0.0
+      },
+      "m_projectionMatrixMode": 1,
+      "m_GateFitMode": 2,
+      "m_SensorSize": {
+        "x": 36.0,
+        "y": 24.0
+      },
+      "m_LensShift": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "m_FocalLength": 50.0,
+      "m_NormalizedViewPortRect": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 1.0,
+        "height": 1.0
+      },
+      "near clip plane": 0.30000001192092896,
+      "far clip plane": 1000.0,
+      "field of view": 40.0,
+      "orthographic": false,
+      "orthographic size": 5.0,
+      "m_Depth": -1.0,
+      "m_CullingMask": {
+        "m_Bits": 4294901727
+      },
+      "m_RenderingPath": -1,
+      "m_TargetTexture": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_TargetDisplay": 0,
+      "m_TargetEye": 3,
+      "m_HDR": false,
+      "m_AllowMSAA": true,
+      "m_AllowDynamicResolution": false,
+      "m_ForceIntoRT": false,
+      "m_OcclusionCulling": true,
+      "m_StereoConvergence": 10.0,
+      "m_StereoSeparation": 0.02199999988079071,
+      "m_ScalableRT": false,
+      "m_TargetResolusion": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "m_DepthCopy": false
+    },
+    "name": "Camera",
+    "worldMatrix": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.8660254361559918,
+      0.4999999634242691,
+      -5.079999923706055,
+      0.0,
+      -0.4999999634242691,
+      0.8660254361559918,
+      -8.039999961853027,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      0.0,
+      -5.079999923706055,
+      -8.039999961853027
+    ],
+    "localRotation": [
+      -0.25881901383399963,
+      -0.0,
+      -0.0,
+      0.9659258723258972
+    ]
+  },
+  {
+    "type": "Camera",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "543"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 273
+      },
+      "m_Enabled": 0,
+      "m_ClearFlags": 4,
+      "m_BackGroundColor": {
+        "r": 0.250980406999588,
+        "g": 0.250980406999588,
+        "b": 0.250980406999588,
+        "a": 0.0
+      },
+      "m_projectionMatrixMode": 1,
+      "m_GateFitMode": 2,
+      "m_SensorSize": {
+        "x": 36.0,
+        "y": 24.0
+      },
+      "m_LensShift": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "m_FocalLength": 50.0,
+      "m_NormalizedViewPortRect": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 1.0,
+        "height": 1.0
+      },
+      "near clip plane": 0.30000001192092896,
+      "far clip plane": 1000.0,
+      "field of view": 40.0,
+      "orthographic": false,
+      "orthographic size": 5.0,
+      "m_Depth": -1.0,
+      "m_CullingMask": {
+        "m_Bits": 0
+      },
+      "m_RenderingPath": -1,
+      "m_TargetTexture": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_TargetDisplay": 0,
+      "m_TargetEye": 3,
+      "m_HDR": false,
+      "m_AllowMSAA": false,
+      "m_AllowDynamicResolution": false,
+      "m_ForceIntoRT": false,
+      "m_OcclusionCulling": false,
+      "m_StereoConvergence": 10.0,
+      "m_StereoSeparation": 0.02199999988079071,
+      "m_ScalableRT": false,
+      "m_TargetResolusion": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "m_DepthCopy": false
+    },
+    "name": "FakeCamera",
+    "worldMatrix": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.8660254361559918,
+      0.4999999634242691,
+      -5.079999923706055,
+      0.0,
+      -0.4999999634242691,
+      0.8660254361559918,
+      -8.039999961853027,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      0.0,
+      -5.079999923706055,
+      -8.039999961853027
+    ],
+    "localRotation": [
+      -0.25881901383399963,
+      -0.0,
+      -0.0,
+      0.9659258723258972
+    ]
+  },
+  {
+    "type": "Camera",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "544"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 269
+      },
+      "m_Enabled": 1,
+      "m_ClearFlags": 3,
+      "m_BackGroundColor": {
+        "r": 0.250980406999588,
+        "g": 0.250980406999588,
+        "b": 0.250980406999588,
+        "a": 0.0
+      },
+      "m_projectionMatrixMode": 1,
+      "m_GateFitMode": 2,
+      "m_SensorSize": {
+        "x": 36.0,
+        "y": 24.0
+      },
+      "m_LensShift": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "m_FocalLength": 50.0,
+      "m_NormalizedViewPortRect": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 1.0,
+        "height": 1.0
+      },
+      "near clip plane": 0.30000001192092896,
+      "far clip plane": 1000.0,
+      "field of view": 40.0,
+      "orthographic": false,
+      "orthographic size": 5.0,
+      "m_Depth": 1.0,
+      "m_CullingMask": {
+        "m_Bits": 32
+      },
+      "m_RenderingPath": -1,
+      "m_TargetTexture": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_TargetDisplay": 0,
+      "m_TargetEye": 3,
+      "m_HDR": false,
+      "m_AllowMSAA": true,
+      "m_AllowDynamicResolution": false,
+      "m_ForceIntoRT": false,
+      "m_OcclusionCulling": true,
+      "m_StereoConvergence": 10.0,
+      "m_StereoSeparation": 0.02199999988079071,
+      "m_ScalableRT": false,
+      "m_TargetResolusion": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "m_DepthCopy": false
+    },
+    "name": "PerspectiveUICamera",
+    "worldMatrix": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.8660254361559918,
+      0.4999999634242691,
+      -5.079999923706055,
+      0.0,
+      -0.4999999634242691,
+      0.8660254361559918,
+      -8.039999961853027,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "localRotation": [
+      -0.0,
+      -0.0,
+      -0.0,
+      1.0
+    ]
+  },
+  {
+    "type": "RenderSettings",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "893"
+    },
+    "data": {
+      "m_Fog": false,
+      "m_FogColor": {
+        "r": 0.5,
+        "g": 0.5,
+        "b": 0.5,
+        "a": 1.0
+      },
+      "m_FogMode": 3,
+      "m_FogDensity": 0.009999999776482582,
+      "m_LinearFogStart": 0.0,
+      "m_LinearFogEnd": 300.0,
+      "m_AmbientSkyColor": {
+        "r": 0.21199999749660492,
+        "g": 0.22699999809265137,
+        "b": 0.2590000033378601,
+        "a": 1.0
+      },
+      "m_AmbientEquatorColor": {
+        "r": 0.11400000005960464,
+        "g": 0.125,
+        "b": 0.13300000131130219,
+        "a": 1.0
+      },
+      "m_AmbientGroundColor": {
+        "r": 0.04699999839067459,
+        "g": 0.0430000014603138,
+        "b": 0.03500000014901161,
+        "a": 1.0
+      },
+      "m_AmbientIntensity": 2.0,
+      "m_AmbientMode": 0,
+      "m_SubtractiveShadowColor": {
+        "r": 0.41999998688697815,
+        "g": 0.4779999852180481,
+        "b": 0.6269999742507935,
+        "a": 1.0
+      },
+      "m_SkyboxMaterial": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_HaloStrength": 0.5,
+      "m_FlareStrength": 1.0,
+      "m_FlareFadeSpeed": 3.0,
+      "m_HaloTexture": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_SpotCookie": {
+        "m_FileID": 5,
+        "m_PathID": 10001
+      },
+      "m_DefaultReflectionMode": 0,
+      "m_DefaultReflectionResolution": 128,
+      "m_ReflectionBounces": 1,
+      "m_ReflectionIntensity": 1.0,
+      "m_CustomReflection": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_AmbientProbe": {
+        "sh[ 0]": 0.06665532290935516,
+        "sh[ 1]": -0.011052500456571579,
+        "sh[ 2]": -0.01789960265159607,
+        "sh[ 3]": -0.0063608428463339806,
+        "sh[ 4]": 0.006604005582630634,
+        "sh[ 5]": -0.009553849697113037,
+        "sh[ 6]": -0.012496290728449821,
+        "sh[ 7]": 0.004038423765450716,
+        "sh[ 8]": -0.03571208566427231,
+        "sh[ 9]": 0.08122524619102478,
+        "sh[10]": 0.02937282621860504,
+        "sh[11]": -0.011170701123774052,
+        "sh[12]": -0.005400065332651138,
+        "sh[13]": 0.007213900797069073,
+        "sh[14]": 0.007804505527019501,
+        "sh[15]": -0.015687119215726852,
+        "sh[16]": 0.0052871741354465485,
+        "sh[17]": -0.04306255653500557,
+        "sh[18]": 0.12546946108341217,
+        "sh[19]": 0.11359870433807373,
+        "sh[20]": 0.005354991182684898,
+        "sh[21]": -0.0036222150083631277,
+        "sh[22]": 0.008322118781507015,
+        "sh[23]": 0.04709428921341896,
+        "sh[24]": -0.02476060576736927,
+        "sh[25]": 0.008112163282930851,
+        "sh[26]": -0.06615646183490753
+      },
+      "m_GeneratedSkyboxReflection": {
+        "m_FileID": 6,
+        "m_PathID": -1033323227109170948
+      },
+      "m_Sun": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_IndirectSpecularColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 1.0
+      },
+      "m_UseRadianceAmbientProbe": false
+    }
+  },
+  {
+    "type": "Light",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "894"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 47
+      },
+      "m_Enabled": 1,
+      "m_Type": 0,
+      "m_Shape": 0,
+      "m_Color": {
+        "r": 0.8077278137207031,
+        "g": 0.746107280254364,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "m_Intensity": 5.0,
+      "m_Range": 12.15999984741211,
+      "m_SpotAngle": 72.97575378417969,
+      "m_InnerSpotAngle": 55.991268157958984,
+      "m_CookieSize": 10.0,
+      "m_Shadows": {
+        "m_Type": 0,
+        "m_Resolution": -1,
+        "m_CustomResolution": -1,
+        "m_Strength": 1.0,
+        "m_Bias": 0.05000000074505806,
+        "m_NormalBias": 0.4000000059604645,
+        "m_NearPlane": 0.20000000298023224,
+        "m_CullingMatrixOverride": {
+          "e00": 1.0,
+          "e01": 0.0,
+          "e02": 0.0,
+          "e03": 0.0,
+          "e10": 0.0,
+          "e11": 1.0,
+          "e12": 0.0,
+          "e13": 0.0,
+          "e20": 0.0,
+          "e21": 0.0,
+          "e22": 1.0,
+          "e23": 0.0,
+          "e30": 0.0,
+          "e31": 0.0,
+          "e32": 0.0,
+          "e33": 1.0
+        },
+        "m_UseCullingMatrixOverride": false
+      },
+      "m_Cookie": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_DrawHalo": false,
+      "m_BakingOutput": {
+        "probeOcclusionLightIndex": 1,
+        "occlusionMaskChannel": -1,
+        "lightmapBakeMode": {
+          "lightmapBakeType": 2,
+          "mixedLightingMode": 0
+        },
+        "isBaked": true
+      },
+      "m_Flare": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_RenderMode": 0,
+      "m_CullingMask": {
+        "m_Bits": 4294967295
+      },
+      "m_RenderingLayerMask": 1,
+      "m_Lightmapping": 2,
+      "m_LightShadowCasterMode": 0,
+      "m_AreaSize": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "m_BounceIntensity": 1.0,
+      "m_ColorTemperature": 6570.0,
+      "m_UseColorTemperature": false,
+      "m_BoundingSphereOverride": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+      },
+      "m_UseBoundingSphereOverride": false,
+      "m_UseViewFrustumForShadowCasterCull": true
+    },
+    "name": "signlight_top (58)",
+    "worldMatrix": [
+      -0.9476740631042948,
+      0.21080389459913074,
+      0.23975047157045606,
+      0.29013646837678997,
+      -0.19224320919375712,
+      -0.976382851500616,
+      0.09860828141835873,
+      -2.0390761204401247,
+      0.254874921602879,
+      0.04735804412705815,
+      0.9658150714802576,
+      -6.086060566080847,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      -1.3551303148269653,
+      -3.8890771865844727,
+      4.746060848236084
+    ],
+    "localRotation": [
+      0.9861372113227844,
+      -0.10217796266078949,
+      -0.12539450824260712,
+      -0.0370045080780983
+    ]
+  },
+  {
+    "type": "Light",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "895"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 80
+      },
+      "m_Enabled": 1,
+      "m_Type": 1,
+      "m_Shape": 0,
+      "m_Color": {
+        "r": 1.0,
+        "g": 0.6927508115768433,
+        "b": 0.22794115543365479,
+        "a": 1.0
+      },
+      "m_Intensity": 3.0,
+      "m_Range": 10.0,
+      "m_SpotAngle": 30.0,
+      "m_InnerSpotAngle": 21.802080154418945,
+      "m_CookieSize": 10.0,
+      "m_Shadows": {
+        "m_Type": 2,
+        "m_Resolution": -1,
+        "m_CustomResolution": -1,
+        "m_Strength": 1.0,
+        "m_Bias": 0.05000000074505806,
+        "m_NormalBias": 0.4000000059604645,
+        "m_NearPlane": 0.20000000298023224,
+        "m_CullingMatrixOverride": {
+          "e00": 1.0,
+          "e01": 0.0,
+          "e02": 0.0,
+          "e03": 0.0,
+          "e10": 0.0,
+          "e11": 1.0,
+          "e12": 0.0,
+          "e13": 0.0,
+          "e20": 0.0,
+          "e21": 0.0,
+          "e22": 1.0,
+          "e23": 0.0,
+          "e30": 0.0,
+          "e31": 0.0,
+          "e32": 0.0,
+          "e33": 1.0
+        },
+        "m_UseCullingMatrixOverride": false
+      },
+      "m_Cookie": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_DrawHalo": false,
+      "m_BakingOutput": {
+        "probeOcclusionLightIndex": 3,
+        "occlusionMaskChannel": 0,
+        "lightmapBakeMode": {
+          "lightmapBakeType": 1,
+          "mixedLightingMode": 2
+        },
+        "isBaked": true
+      },
+      "m_Flare": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_RenderMode": 0,
+      "m_CullingMask": {
+        "m_Bits": 4294967295
+      },
+      "m_RenderingLayerMask": 1,
+      "m_Lightmapping": 1,
+      "m_LightShadowCasterMode": 0,
+      "m_AreaSize": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "m_BounceIntensity": 3.0,
+      "m_ColorTemperature": 6570.0,
+      "m_UseColorTemperature": false,
+      "m_BoundingSphereOverride": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+      },
+      "m_UseBoundingSphereOverride": false,
+      "m_UseViewFrustumForShadowCasterCull": true
+    },
+    "name": "MainLight",
+    "worldMatrix": [
+      0.6211994578812133,
+      0.01742958892004618,
+      -0.7834603482411586,
+      0.44500506786298644,
+      -0.03806830832841088,
+      0.9992461059649095,
+      -0.007953857804353022,
+      -1.1599986515681433,
+      0.7827309782890034,
+      0.034765931801409175,
+      0.6213914680588756,
+      -3.0279992313943827,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      -3.009999990463257,
+      1.5099999904632568,
+      1.687999963760376
+    ],
+    "localRotation": [
+      0.6256783604621887,
+      0.6474737524986267,
+      -0.3159300982952118,
+      0.2991529703140259
+    ]
+  },
+  {
+    "type": "Light",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "896"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 201
+      },
+      "m_Enabled": 1,
+      "m_Type": 3,
+      "m_Shape": 0,
+      "m_Color": {
+        "r": 0.9921569228172302,
+        "g": 0.6470588445663452,
+        "b": 0.09019608050584793,
+        "a": 1.0
+      },
+      "m_Intensity": 3.0,
+      "m_Range": 51.619422912597656,
+      "m_SpotAngle": 30.0,
+      "m_InnerSpotAngle": 21.802080154418945,
+      "m_CookieSize": 10.0,
+      "m_Shadows": {
+        "m_Type": 0,
+        "m_Resolution": -1,
+        "m_CustomResolution": -1,
+        "m_Strength": 1.0,
+        "m_Bias": 0.05000000074505806,
+        "m_NormalBias": 0.4000000059604645,
+        "m_NearPlane": 0.20000000298023224,
+        "m_CullingMatrixOverride": {
+          "e00": 1.0,
+          "e01": 0.0,
+          "e02": 0.0,
+          "e03": 0.0,
+          "e10": 0.0,
+          "e11": 1.0,
+          "e12": 0.0,
+          "e13": 0.0,
+          "e20": 0.0,
+          "e21": 0.0,
+          "e22": 1.0,
+          "e23": 0.0,
+          "e30": 0.0,
+          "e31": 0.0,
+          "e32": 0.0,
+          "e33": 1.0
+        },
+        "m_UseCullingMatrixOverride": false
+      },
+      "m_Cookie": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_DrawHalo": false,
+      "m_BakingOutput": {
+        "probeOcclusionLightIndex": 0,
+        "occlusionMaskChannel": -1,
+        "lightmapBakeMode": {
+          "lightmapBakeType": 2,
+          "mixedLightingMode": 0
+        },
+        "isBaked": true
+      },
+      "m_Flare": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_RenderMode": 0,
+      "m_CullingMask": {
+        "m_Bits": 4294967295
+      },
+      "m_RenderingLayerMask": 1,
+      "m_Lightmapping": 2,
+      "m_LightShadowCasterMode": 0,
+      "m_AreaSize": {
+        "x": 1.2388536930084229,
+        "y": 4.218225002288818
+      },
+      "m_BounceIntensity": 1.0,
+      "m_ColorTemperature": 6570.0,
+      "m_UseColorTemperature": false,
+      "m_BoundingSphereOverride": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+      },
+      "m_UseBoundingSphereOverride": false,
+      "m_UseViewFrustumForShadowCasterCull": true
+    },
+    "name": "Area Light",
+    "worldMatrix": [
+      0.4425239599915709,
+      0.526484080655549,
+      0.7259393753446489,
+      0.4480589692190955,
+      -0.18706722237468648,
+      0.8459032738121305,
+      -0.49945351650367087,
+      -0.15998540752575874,
+      -0.8770285640028137,
+      0.08522058516465447,
+      0.4728202704091903,
+      -1.1029993565811667,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      -1.5130536556243896,
+      -2.009986639022827,
+      -0.23699963092803955
+    ],
+    "localRotation": [
+      -0.2147052139043808,
+      0.8308500051498413,
+      -0.17592646181583405,
+      -0.4823276400566101
+    ]
+  },
+  {
+    "type": "Light",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "897"
+    },
+    "data": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 228
+      },
+      "m_Enabled": 1,
+      "m_Type": 0,
+      "m_Shape": 0,
+      "m_Color": {
+        "r": 0.8970588445663452,
+        "g": 1.0,
+        "b": 0.9787018299102783,
+        "a": 1.0
+      },
+      "m_Intensity": 1.9600000381469727,
+      "m_Range": 12.15999984741211,
+      "m_SpotAngle": 89.62615203857422,
+      "m_InnerSpotAngle": 71.05941009521484,
+      "m_CookieSize": 10.0,
+      "m_Shadows": {
+        "m_Type": 0,
+        "m_Resolution": -1,
+        "m_CustomResolution": -1,
+        "m_Strength": 1.0,
+        "m_Bias": 0.05000000074505806,
+        "m_NormalBias": 0.4000000059604645,
+        "m_NearPlane": 0.20000000298023224,
+        "m_CullingMatrixOverride": {
+          "e00": 1.0,
+          "e01": 0.0,
+          "e02": 0.0,
+          "e03": 0.0,
+          "e10": 0.0,
+          "e11": 1.0,
+          "e12": 0.0,
+          "e13": 0.0,
+          "e20": 0.0,
+          "e21": 0.0,
+          "e22": 1.0,
+          "e23": 0.0,
+          "e30": 0.0,
+          "e31": 0.0,
+          "e32": 0.0,
+          "e33": 1.0
+        },
+        "m_UseCullingMatrixOverride": false
+      },
+      "m_Cookie": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_DrawHalo": false,
+      "m_BakingOutput": {
+        "probeOcclusionLightIndex": 2,
+        "occlusionMaskChannel": -1,
+        "lightmapBakeMode": {
+          "lightmapBakeType": 2,
+          "mixedLightingMode": 0
+        },
+        "isBaked": true
+      },
+      "m_Flare": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_RenderMode": 0,
+      "m_CullingMask": {
+        "m_Bits": 4294967295
+      },
+      "m_RenderingLayerMask": 1,
+      "m_Lightmapping": 2,
+      "m_LightShadowCasterMode": 0,
+      "m_AreaSize": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "m_BounceIntensity": 1.0,
+      "m_ColorTemperature": 6570.0,
+      "m_UseColorTemperature": false,
+      "m_BoundingSphereOverride": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+      },
+      "m_UseBoundingSphereOverride": false,
+      "m_UseViewFrustumForShadowCasterCull": true
+    },
+    "name": "signlight_top (57)",
+    "worldMatrix": [
+      -0.9983680914832992,
+      0.026070963319415406,
+      0.05083441694942314,
+      0.21500639802376442,
+      0.0286672504191932,
+      -0.5410562371591802,
+      0.8404985613476599,
+      -2.1799991276151642,
+      0.04941685202527144,
+      0.8405838012499809,
+      0.5394247264934073,
+      -8.149999950996957,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "localPosition": [
+      -1.2799999713897705,
+      -4.03000020980835,
+      6.809999942779541
+    ],
+    "localRotation": [
+      0.8773321509361267,
+      0.0007398423622362316,
+      -0.02856714092195034,
+      -0.47903209924697876
+    ]
+  },
+  {
+    "type": "LightmapSettings",
+    "source": {
+      "file": "CAB-c44a069efd851e6b43cadf481aedd31b",
+      "pathId": "898"
+    },
+    "data": {
+      "m_EnlightenSceneMapping": {
+        "m_Renderers": [],
+        "m_Systems": [],
+        "m_Probesets": [],
+        "m_SystemAtlases": [],
+        "m_TerrainChunks": []
+      },
+      "m_LightProbes": {
+        "m_FileID": 6,
+        "m_PathID": -1774884674194623951
+      },
+      "m_Lightmaps": [
+        {
+          "m_Lightmap": {
+            "m_FileID": 6,
+            "m_PathID": -9083236939139964921
+          },
+          "m_DirLightmap": {
+            "m_FileID": 0,
+            "m_PathID": 0
+          },
+          "m_ShadowMask": {
+            "m_FileID": 6,
+            "m_PathID": -3154550792623425402
+          }
+        }
+      ],
+      "m_LightmapsMode": 0,
+      "m_GISettings": {
+        "m_BounceScale": 1.0,
+        "m_IndirectOutputScale": 4.0,
+        "m_AlbedoBoost": 1.0,
+        "m_EnvironmentLightingMode": 0,
+        "m_EnableBakedLightmaps": true,
+        "m_EnableRealtimeLightmaps": false
+      },
+      "m_LightingSettings": {
+        "m_FileID": 0,
+        "m_PathID": 901
+      }
+    }
+  }
+]

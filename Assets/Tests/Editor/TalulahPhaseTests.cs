@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -11,6 +10,9 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class TalulahPhaseTests
     {
+        [Serializable] sealed class PhaseManifest {public PhaseClip[] clips;}
+        [Serializable] sealed class PhaseClip {public string key;public PhasePage[] pages;}
+        [Serializable] sealed class PhasePage {public string file;}
         const string Card="CARD_TALULAH_TRIAL";
         static ManualBattle Battle(bool second=true,bool blast=false)
         {
@@ -169,27 +171,29 @@ namespace YesterdayConvoy.Tests
             finally{UnityEngine.Object.DestroyImmediate(go);}
         }
 
-        [Test] public void SecondPhasePreparationAddsOnlyTheNineteenUsedClipsWithoutDecodingTextures()
+        [Test] public void BoardExportsOnlyBoundTalulahPhasePagesWithoutDecodingTextures()
         {
-            var data=AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>("Assets/Data/Battles/TalulahTrial.asset");
-            var plan=typeof(ManualBattleController).GetMethod("Plan",BindingFlags.Static|BindingFlags.NonPublic);
-            string[] Keys(bool second)
-            {
-                var result=(IEnumerable)plan.Invoke(null,new object[]{Array.Empty<DefenderPlacement>(),new[]{data.Card},false,second});
-                return result.Cast<object>().Select(clip=>(string)clip.GetType().GetProperty("CacheKey").GetValue(clip)).ToArray();
-            }
             int before=ArtMemoryCache.TextureLoads;
-            var baseline=Keys(false);var phase=Keys(true);
-            Assert.That(baseline.Count(key=>key.StartsWith("TalulahOriginal/",StringComparison.Ordinal)),Is.EqualTo(5));
-            Assert.That(phase.Except(baseline).Count(),Is.EqualTo(19),"Shared combat effects must not inflate the second-phase increment.");
-            Assert.That(phase,Does.Contain("TalulahOriginal/ExtraClips/extra_move_b"));
-            Assert.That(phase,Does.Contain("TalulahUnboundVfx/ambient-B-wing"));
-            Assert.That(phase.Any(key=>key.Contains("original-target-burn")||key.Contains("orb-")),Is.False);
-            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before),"Planning and pinning must not synchronously decode B atlases.");
             var pages=YesterdayConvoy.Editor.PreparedArtTools.RuntimeOutputFiles()
                 .Where(file=>file.StartsWith("TalulahUnboundVfx/",StringComparison.Ordinal)&&file.EndsWith(".png.ycart",StringComparison.Ordinal))
                 .Select(file=>file.Substring("TalulahUnboundVfx/".Length,file.Length-"TalulahUnboundVfx/".Length-".ycart".Length)).ToArray();
-            Assert.That(pages.Length,Is.EqualTo(41));Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
+            Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(before));
+            string[] boundKeys={"attack-B-caster","attack-B-hit","ambient-B-foot","movement-B-foot",
+                "ambient-B-head","ambient-B-wing","first_transition_start","first_transition_end",
+                "final_transition_start","final_transition_end","ignite-A-caster","ignite-A-target",
+                "ignite-B-caster","ignite-B-target","target-burn-loop","original-fire-stream","original-fire-impact","original-fire-screen-left",
+                "explode-A-caster","explode-A-target","explode-B-caster","explode-B-target"};
+            var manifest=JsonUtility.FromJson<PhaseManifest>(File.ReadAllText(ArtSourcePaths.Resolve("TalulahUnboundVfx/manifest.json")));
+            CollectionAssert.IsSubsetOf(boundKeys,manifest.clips.Select(clip=>clip.key).ToArray());
+            var expectedPages=manifest.clips.Where(clip=>boundKeys.Contains(clip.key))
+                .SelectMany(clip=>clip.pages.Select(page=>page.file)).ToArray();
+            CollectionAssert.AreEquivalent(expectedPages,pages,"Include all and only the actually bound source/HDR pages.");
+            foreach(var unused in manifest.clips.Where(clip=>!boundKeys.Contains(clip.key)).SelectMany(clip=>clip.pages.Select(page=>page.file)))
+                CollectionAssert.DoesNotContain(pages,unused,"Unbound source page leaked into the Player: "+unused);
+            foreach(string page in new[]{"ignite-A-caster-00.png","ignite-A-target-00.png","ignite-B-target-00.png",
+                "explode-A-target-00.png","explode-B-target-00.png","original-fire-stream-00.png","original-fire-impact-00.png","original-fire-screen-left-00.png"})
+                Assert.That(pages,Does.Contain(page),"New formation mode's actual point-of-hit/caster dependency.");
+            Assert.That(pages,Does.Contain("attack-B-caster-00.png"));
             Assert.That(pages.Any(page=>page.StartsWith("original-target-burn")||page.StartsWith("orb-")),Is.False);
         }
     }

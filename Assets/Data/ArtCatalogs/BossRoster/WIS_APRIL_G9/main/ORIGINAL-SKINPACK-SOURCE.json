@@ -1,0 +1,21 @@
+{
+  "name": "skinpack/char_1035_wisdel.ab",
+  "file": "E:\\珍贵资料\\昨日圆车_美术预览\\2026-11-11_26位Boss原作整备-v1\\native-fx\\source-bundles\\skinpack\\char_1035_wisdel.ab",
+  "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/skinpack_char_1035_wisdel.dat",
+  "version": "26-10-29-15-36-11-33649006",
+  "manifestDigest": "968e0892865e95823b75cdef7356cad3",
+  "md5": "968e0892865e95823b75cdef7356cad3",
+  "sha256": "943a0b9fd845c6215767055d55b0b3065a7adbdac54aec8f830904be5d31a047",
+  "bytes": 5476428,
+  "validation": "full MD5",
+  "reused": false,
+  "containers": [
+    "dyn/arts/characters/char_1035_wisdel/illust_char_1035_wisdel_game#9.prefab",
+    "dyn/arts/characters/char_1035_wisdel/illust_char_1035_wisdel_sale#14.prefab",
+    "dyn/arts/characters/char_1035_wisdel/illust_char_1035_wisdel_sale#14b.prefab",
+    "dyn/battle/prefabs/skins/character/char_1035_wisdel/char_1035_wisdel_game#9.prefab",
+    "dyn/battle/prefabs/skins/character/char_1035_wisdel/char_1035_wisdel_sale#14.prefab",
+    "dyn/building/vault/characters/build_char_1035_wisdel_game#9.prefab",
+    "dyn/building/vault/characters/build_char_1035_wisdel_sale#14.prefab"
+  ]
+}

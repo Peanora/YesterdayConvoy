@@ -1,0 +1,442 @@
+{
+  "date": "2026-11-20",
+  "characterId": "char_1046_sbell2",
+  "skin": "default",
+  "artId": "D27",
+  "references": {
+    "mechanics": "https://prts.wiki/w/Pramanix_the_Prerita",
+    "publishedSourceDataVersion": "26-10-29-15-36-11-33649006",
+    "actorPackage": {
+      "artId": "D27",
+      "name": "圣聆初雪",
+      "characterId": "char_1046_sbell2",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/charpack_char_1046_sbell2.dat",
+      "sha256": "c31f90f6ae0833db54d6da7ff51996e3c731d726657d6137a6a11a168a1855d6"
+    },
+    "effectPackage": {
+      "name": "battle/prefabs/effects/sbell2.ab",
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_effects_sbell2.dat",
+      "sourceSHA256": "96d67b5675e1419ed7d87f68e13464c5724816b6ee82c11faf9af25da360c4c7",
+      "bytes": 1769609
+    },
+    "bodySourceDirectory": "https://torappu.prts.wiki/assets/char_spine/char_1046_sbell2/defaultskin/",
+    "notes": "Original actor and buff fields, inspected local spine animation exports and native prefab sampling form the reference. The public mechanics text confirms first lethal instant recovery, self freeze 4s, and in-range enemy freeze 8s. No frame-by-frame comparison to the original client is recorded here.",
+    "skillPackage": {
+      "url": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/battle_prefabs_[uc]skills.dat",
+      "version": "26-10-29-15-36-11-33649006",
+      "sourceSHA256": "79d02364b562f2bf8ba93d95e0a55a6cb0a2dd8f8534ce9c15c1d9d25f04f38a"
+    }
+  },
+  "rights": "Original Arknights media, original rights holders. Individual artists and open redistribution permission unconfirmed.",
+  "body": {
+    "D27": {
+      "facing": "front",
+      "pixelsPerWorldUnit": 124.8,
+      "originalFiles": {
+        "char_1046_sbell2.atlas": "e5c0e887d90eb481c39e4209dc26f4ffbfa6645a02c83eec1b0629c8c9873a27",
+        "char_1046_sbell2.png": "332e4a02d1bb1e1a62cf15a6dd2450341b53d53c8599361b48967363f9d6cb87",
+        "char_1046_sbell2.skel": "5956bcbd4b31aae3376c79d4e5a11d0b132fdc5e86702009cc9841026808bbde"
+      },
+      "outcomes": {
+        "skill_2_attack": {
+          "pageHashes": {
+            "skill_2_attack-00.png": "eb2ea184641662a7b11c5d4be523af12579e251cfa83444d567f6137ee4c419b",
+            "skill_2_attack-01.png": "2e54287f217c61680987c38870fff8b973bee8a0bc09f739cff462f36ce27419"
+          },
+          "verifiedNonemptyUnclippedFrames": 121,
+          "alphaBoundsPixels": [
+            18,
+            30,
+            199,
+            190
+          ]
+        },
+        "skill_2_begin": {
+          "pageHashes": {
+            "skill_2_begin-00.png": "86745ca4a5eab974019684e96c2dc9ac1c2b992f586d9b651c4cd7ee687215d7"
+          },
+          "verifiedNonemptyUnclippedFrames": 51,
+          "alphaBoundsPixels": [
+            36,
+            32,
+            198,
+            190
+          ]
+        },
+        "skill_2_end": {
+          "pageHashes": {
+            "skill_2_end-00.png": "3dc34b67baadd4825a23b94ef804e989f5833e18f8877623156e6eeedbe0d8f5"
+          },
+          "verifiedNonemptyUnclippedFrames": 31,
+          "alphaBoundsPixels": [
+            37,
+            32,
+            199,
+            190
+          ]
+        },
+        "skill_2_idle": {
+          "pageHashes": {
+            "skill_2_idle-00.png": "0d13066e1ca5d7167b2199d3aab4769c5e4ffbae287bea3b8e3d7c60bbcb855d",
+            "skill_2_idle-01.png": "96f9a727714a23f51990c62073c2317b4b126be1587f18a0e1ee711c51de1071"
+          },
+          "verifiedNonemptyUnclippedFrames": 160,
+          "alphaBoundsPixels": [
+            36,
+            31,
+            193,
+            190
+          ]
+        }
+      }
+    },
+    "D27B": {
+      "facing": "back",
+      "pixelsPerWorldUnit": 124.8,
+      "originalFiles": {
+        "char_1046_sbell2.atlas": "3d6be63e4d8edc57bb1ec690859ce89097a374934d5def4e5a28c9ee6cad4783",
+        "char_1046_sbell2.png": "cfcae965338f53cc2db4d6434f6f46edc97cc16c98a21c03a69bde2b17daf047",
+        "char_1046_sbell2.skel": "2f3c109bf475f180656a4c6028cd9192ea50e84d33614556caadf9f6c11d6397"
+      },
+      "outcomes": {
+        "skill_2_attack": {
+          "pageHashes": {
+            "skill_2_attack-00.png": "f82c066e83b4ecdd4d77010a91836e5cf7faa3e4958306993afb8a186cce35be",
+            "skill_2_attack-01.png": "b6207e8027dc49000d5bfbc08f3099b1da53dfd52fde40b37affdfa0b026d08d"
+          },
+          "verifiedNonemptyUnclippedFrames": 121,
+          "alphaBoundsPixels": [
+            19,
+            30,
+            205,
+            194
+          ]
+        },
+        "skill_2_begin": {
+          "pageHashes": {
+            "skill_2_begin-00.png": "9986ded5db03e13555ac30fd29730fb1b350cc01e28593fe2130c278c83fb132"
+          },
+          "verifiedNonemptyUnclippedFrames": 51,
+          "alphaBoundsPixels": [
+            36,
+            32,
+            203,
+            190
+          ]
+        },
+        "skill_2_end": {
+          "pageHashes": {
+            "skill_2_end-00.png": "7922c9e81028352bb180f269382788bf7c79543d4e521daf077c0d08efd371b5"
+          },
+          "verifiedNonemptyUnclippedFrames": 31,
+          "alphaBoundsPixels": [
+            37,
+            32,
+            205,
+            190
+          ]
+        },
+        "skill_2_idle": {
+          "pageHashes": {
+            "skill_2_idle-00.png": "2fde90113febb7c6a796339e62c9a4db8110603a7f902622a720592068ffd492",
+            "skill_2_idle-01.png": "66d8ffaf6d5c69532a8c1fe199ad7aed0879bb878d9f7fe7d9d35dffedc1ff4d"
+          },
+          "verifiedNonemptyUnclippedFrames": 160,
+          "alphaBoundsPixels": [
+            37,
+            31,
+            202,
+            190
+          ]
+        }
+      }
+    }
+  },
+  "timings": {
+    "skill_2_begin": {
+      "durationSourceSeconds": 0.8333333333,
+      "event": null
+    },
+    "skill_2_idle": {
+      "durationSourceSeconds": 2.6666666667,
+      "loop": true
+    },
+    "skill_2_attack": {
+      "durationSourceSeconds": 2,
+      "event": "OnAttack",
+      "eventSourceSeconds": 0.7,
+      "event60FpsFrameZeroBased": 42,
+      "eventBoardSecondsBeforeHaste": 0.35
+    },
+    "skill_2_end": {
+      "durationSourceSeconds": 0.5,
+      "event": null
+    },
+    "skill_attack_A_B_C": {
+      "durationSourceSeconds": 2,
+      "event": "OnAttack",
+      "eventSourceSeconds": 0.6666666667,
+      "event60FpsFrameZeroBased": 40,
+      "eventBoardSecondsBeforeHaste": 0.3333333333
+    }
+  },
+  "sourceBindings": {
+    "s2Direct": {
+      "actor": "Modes/S2/Body/Attack",
+      "action": "Skill_2_Attack",
+      "castEffect": "sbell2_skill_02_start_01",
+      "sourceEmitterStartEvent": 4,
+      "sourceEmitterEndEvent": 3,
+      "directTargetEffect": "sbell2_skill_01_hit",
+      "notes": "Numeric emitter event 4 lacks a confirmed exported enum definition. The body OnAttack event is the verified direct hit clock. No projectile emitter is specified."
+    },
+    "s2DamageOverTime": {
+      "buff": "sbell2_t1[s2_dot]",
+      "event": "ON_BUFF_TRIGGER",
+      "targetEffect": "sbell2_buff_01_hit_02"
+    },
+    "snowTile": {
+      "actor": "Others/Direction/Talents/1/SnowAccumulation",
+      "binding": "Sbell2AttachListenerToTileAbility._effectSettings",
+      "effectByLayers": [
+        "sbell2_ground_01",
+        "sbell2_ground_02",
+        "sbell2_ground_02",
+        "sbell2_ground_02",
+        "sbell2_ground_03"
+      ]
+    },
+    "heal": {
+      "buff": "sbell2_t2[heal]",
+      "event": "ON_BUFF_FINISH",
+      "effect": "sbell2_revive",
+      "notes": "Effect belongs to the first-lethal recovery. No separate revive/frozen body clip exists in the default front/rear skeleton. The exact timing between this buff finish and first-lethal recovery is not independently established."
+    },
+    "iceShell": {
+      "effect": "sbell2_frozen",
+      "notes": "Native local ice shell for board freeze feedback. The exported Actor and known talent buff nodes do not identify its original status trigger."
+    },
+    "s3Flow": {
+      "buff": "sbell2_s3[switch_mode]",
+      "effect": "sbell2_skill_03_flow",
+      "notes": "Persistent owner layer. A stable-window repeat avoids replaying the initial fade. Exact native loop closure and UV rotation are not reproduced."
+    },
+    "s3Direct": {
+      "actor": "Modes/S3/Body/Attack",
+      "castEffect": "sbell2_skill_03_start_01",
+      "directTargetEffect": "sbell2_skill_03_hit",
+      "notes": "The prepared source catalog previously contained both layers."
+    },
+    "s2Owner": {
+      "skillPrefab": "skchr_sbell2_2",
+      "beginPose": "Skill_2_Begin",
+      "buff": "sbell2_s2[effect_1]",
+      "sourceField": "BuffDuringSkill.overrideEffectKey",
+      "effect": "sbell2_skill_02_buff_01",
+      "notes": "Persistent owner layer. The original also has three mount glows and a separate range layer. The boss uses the primary owner layer and actual snow footprints."
+    }
+  },
+  "nativeSampling": {
+    "tool": "Existing NativeCompositeJobs sampler, Unity 6000.6.5f1 Vulkan",
+    "fps": 30,
+    "cameraPitchDegrees": 60,
+    "notes": "The capture preserves rendered source textures, particles and material output. Native game orchestration, UV rotation scripts and exact FX lifecycle are incomplete in the standalone sampler. Zero clipped/edge pixels describes sampling, independently of live board checks.",
+    "clips": {
+      "sbell2_skill_02_start_01": {
+        "duration": 2.533333333333333,
+        "visibleFrames": 74,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 2.466666666666667,
+        "boundsWorld": [
+          5.979,
+          3.664
+        ],
+        "sourceDescription": "Caster attack effect from S2 Body/Attack UberEffectEmitter.",
+        "sampler": "Vulkan",
+        "sampledFrames": 78,
+        "unavailableScripts": 3,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_skill_02_start_01-00.png": "69f9672c6ad8dd7fb8f159c832c0f5aa612b099019ac91f01df972ed0e269b7b",
+          "D27/sbell2_skill_02_start_01-01.png": "c034e986dd35e61c60e80fd4fcbfd05d57094360530dba7eb273c1ed17855d46"
+        }
+      },
+      "sbell2_skill_01_hit": {
+        "duration": 1.5,
+        "visibleFrames": 43,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 1.4333333333333333,
+        "boundsWorld": [
+          1.9,
+          1.65
+        ],
+        "sourceDescription": "Direct target impact from S2 Body/Attack UberEffectEmitter.",
+        "sampler": "Vulkan",
+        "sampledFrames": 54,
+        "unavailableScripts": 2,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_skill_01_hit-00.png": "0dde091247ecd78cc81a749a89f4d0f5731d5d06b9c89b85eb3d73a106ab5ffc"
+        }
+      },
+      "sbell2_buff_01_hit_02": {
+        "duration": 0.36666666666666664,
+        "visibleFrames": 9,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 0.3,
+        "boundsWorld": [
+          0.9,
+          0.9
+        ],
+        "sourceDescription": "Periodic target impact from sbell2_t1[s2_dot].",
+        "sampler": "Vulkan",
+        "sampledFrames": 39,
+        "unavailableScripts": 1,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_buff_01_hit_02-00.png": "1e64a75280dc679512965ba8cdc3f1a4daeaec86549daa1061f2f41cb6ae148a"
+        }
+      },
+      "sbell2_revive": {
+        "duration": 1.9666666666666666,
+        "visibleFrames": 57,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 1.9,
+        "boundsWorld": [
+          2.57,
+          1.78
+        ],
+        "sourceDescription": "First-lethal recovery effect from sbell2_t2[heal].",
+        "sampler": "Vulkan",
+        "sampledFrames": 90,
+        "unavailableScripts": 3,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_revive-00.png": "c75c6941489465a535a2c854c65436b0890c6137f4a937fabf13e73501972228"
+        }
+      },
+      "sbell2_frozen": {
+        "duration": 3.4,
+        "visibleFrames": 101,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 3.3666666666666667,
+        "boundsWorld": [
+          1.575,
+          1.181
+        ],
+        "sourceDescription": "Native D27 ice shell. Used at frozen unit anchors as a board adaptation.",
+        "sampler": "Vulkan",
+        "sampledFrames": 102,
+        "unavailableScripts": 1,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_frozen-00.png": "78c0c375b6af53ef7131f54480b1a6ad5d2162f54df7107a29259804bba38ad0"
+        }
+      },
+      "sbell2_ground_01": {
+        "duration": 2.4,
+        "visibleFrames": 71,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 2.3666666666666667,
+        "boundsWorld": [
+          1.104,
+          0.598
+        ],
+        "sourceDescription": "Original ground snow layer sampled for each effective board snow tile.",
+        "sampler": "Vulkan",
+        "sampledFrames": 72,
+        "unavailableScripts": 2,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_ground_01-00.png": "5818b6267b82c74e7759b4c9ae2e82df8452322e2a206f48e75530a791789100"
+        }
+      },
+      "sbell2_ground_02": {
+        "duration": 2.4,
+        "visibleFrames": 72,
+        "firstVisible": 0.0,
+        "lastVisible": 2.3666666666666667,
+        "boundsWorld": [
+          1.196,
+          0.828
+        ],
+        "sourceDescription": "Original ground snow layer sampled for each effective board snow tile.",
+        "sampler": "Vulkan",
+        "sampledFrames": 72,
+        "unavailableScripts": 2,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_ground_02-00.png": "0f2c762bebcc3cc1da0c6e709c244164f83f29c19a29f2edf9269c54a5a43f8d"
+        }
+      },
+      "sbell2_ground_03": {
+        "duration": 2.4,
+        "visibleFrames": 72,
+        "firstVisible": 0.0,
+        "lastVisible": 2.3666666666666667,
+        "boundsWorld": [
+          1.196,
+          0.828
+        ],
+        "sourceDescription": "Original ground snow layer sampled for each effective board snow tile.",
+        "sampler": "Vulkan",
+        "sampledFrames": 72,
+        "unavailableScripts": 2,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_ground_03-00.png": "300a55193a7b3bf6ffa71a27383b6b239533dec54ac09803cf9a32c51758b2ea"
+        }
+      },
+      "sbell2_skill_03_flow": {
+        "duration": 3.5,
+        "visibleFrames": 104,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 3.466666666666667,
+        "boundsWorld": [
+          5.882,
+          2.893
+        ],
+        "sourceDescription": "S3 persistent flow from sbell2_s3[switch_mode]. Loop the steady window after its initial fade-in.",
+        "sampler": "Vulkan",
+        "sampledFrames": 105,
+        "unavailableScripts": 2,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_skill_03_flow-00.png": "72edbd267d78bd075a431681c4b32a84876b663d46c4e36c3262a75ca268e9e6"
+        }
+      },
+      "sbell2_skill_02_buff_01": {
+        "duration": 3.5,
+        "visibleFrames": 104,
+        "firstVisible": 0.03333333333333333,
+        "lastVisible": 3.466666666666667,
+        "boundsWorld": [
+          1.886,
+          0.943
+        ],
+        "sourceDescription": "S2 persistent owner layer from skchr_sbell2_2 BuffDuringSkill sbell2_s2[effect_1].",
+        "sampler": "Vulkan",
+        "steadyWindowSourceSeconds": [
+          1.0,
+          3.5
+        ],
+        "sampledFrames": 105,
+        "unavailableScripts": 4,
+        "clippedPixels": 0,
+        "edgePixels": 0,
+        "frameHashes": {
+          "D27/sbell2_skill_02_buff_01-00.png": "67c05044085d2850f417ffe6229d1aedf36af58669c93701b1434b715445fb60"
+        }
+      }
+    }
+  }
+}

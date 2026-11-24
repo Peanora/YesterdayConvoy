@@ -9,7 +9,6 @@ namespace YesterdayConvoy.Editor
     public static class ComicArtTools
     {
         private const string Root="Assets/Art/Characters/Monsters/Boss/WisadelComic/";
-        [MenuItem("Yesterday Convoy/Initial Demo/Apply Supplied Comic Frames")]
         public static void Apply()
         {
             AssetDatabase.Refresh();

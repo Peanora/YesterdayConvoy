@@ -8,7 +8,6 @@ namespace YesterdayConvoy.Editor
     public static class MonsterCombatTools
     {
         public const string ArcherPath="Assets/Data/Resources/MonsterTests/M08.asset";
-        [MenuItem("Yesterday Convoy/Configuration/Prepare M08 Archer Combat")]
         public static void PrepareArcher()
         {
             if(AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(ArcherPath)!=null) { ValidateArcher(); return; }
@@ -48,14 +47,12 @@ namespace YesterdayConvoy.Editor
             if(index<0 || index+1>=args.Length) throw new ArgumentException("-monsterTask required.");
             Prepare(args[index+1]);
         }
-        [MenuItem("Yesterday Convoy/Configuration/Prepare Approved M11-M20 Art Tests")]
         public static void PrepareNextBatch()
         {
             for(int i=11;i<=20;i++) Prepare("M"+i);
             InitialDemoTools.Validate();
             Debug.Log("M11_M20_CONFIGURATION_PASS: ten approved basic-art tests; no boss mechanics added.");
         }
-        [MenuItem("Yesterday Convoy/Configuration/Prepare Approved M21-M38 Art Tests")]
         public static void PrepareRemainingBatch()
         {
             for(int i=21;i<=38;i++) Prepare("M"+i);

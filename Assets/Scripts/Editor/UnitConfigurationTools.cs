@@ -11,7 +11,6 @@ namespace YesterdayConvoy.Editor
     {
         public const string SampleFolder = "Assets/Data/Units";
 
-        [MenuItem("Yesterday Convoy/Configuration/Ensure Current Unit")]
         public static void CreatePrototypeUnits()
         {
             EnsureFolder("Assets/Data");
@@ -21,7 +20,6 @@ namespace YesterdayConvoy.Editor
             ValidateProject();
         }
 
-        [MenuItem("Yesterday Convoy/Configuration/Validate Units")]
         public static void ValidateProject()
         {
             UnitDefinition[] definitions = UnitConfigurationValidator.FindProjectDefinitions();

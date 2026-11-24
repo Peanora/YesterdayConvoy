@@ -18,6 +18,14 @@ namespace YesterdayConvoy
 
         public static void DrawCard(Rect bounds, string cardId, SynergyActivationFeedback.Batch batch)
         {
+            if (batch == null || batch.Activations.Count == 0) return;
+            var pulse = batch.Activations[0];
+            DrawCard(bounds, cardId, batch, SynergyBadgePresentation.GradeFor(pulse.Name, pulse.Tier));
+        }
+
+        public static void DrawCard(Rect bounds, string cardId, SynergyActivationFeedback.Batch batch,
+            SynergyVisualGrade grade, bool showBorder = true)
+        {
             if (Event.current == null || Event.current.type != EventType.Repaint || batch == null ||
                 bounds.width <= 0 || bounds.height <= 0 || string.IsNullOrEmpty(cardId) ||
                 batch.Age < 0 || batch.Age >= Lifetime || batch.Age >= batch.Duration ||
@@ -26,7 +34,7 @@ namespace YesterdayConvoy
             // The feedback queue presents one bond at a time. Its members share one full-size badge.
             var pulse = batch.Activations[0];
             if (!pulse.ContainsMember(cardId)) return;
-            var frame = SynergyBadgePresentation.FrameFor(SynergyBadgePresentation.GradeFor(pulse.Name, pulse.Tier));
+            var frame = SynergyBadgePresentation.FrameFor(grade);
             var glyph = SynergyBadgePresentation.IconFor(pulse.Name);
             if (frame == null || glyph == null) return;
 
@@ -35,10 +43,9 @@ namespace YesterdayConvoy
             try
             {
                 EnsureSoftTextures();
-                var grade = SynergyBadgePresentation.GradeFor(pulse.Name, pulse.Tier);
                 float unit = bounds.width / ReferenceCardWidth;
                 var motion = Evaluate(batch.Age);
-                DrawBorder(bounds, grade, batch.Age, motion.Border, unit, previousColor);
+                if (showBorder) DrawBorder(bounds, grade, batch.Age, motion.Border, unit, previousColor);
                 DrawBadge(bounds, frame, glyph, grade, batch.Age, motion, unit, previousColor);
             }
             finally

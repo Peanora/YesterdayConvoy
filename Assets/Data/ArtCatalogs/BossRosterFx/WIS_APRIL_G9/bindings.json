@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "task": "WIS_APRIL_G9",
+  "bindings": [],
+  "note": "FormationLegacyEffects owns real action/impact/state routing. This package must never enter B20 sale#14 native owner routing."
+}

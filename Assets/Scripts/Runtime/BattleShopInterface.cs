@@ -23,19 +23,8 @@ namespace YesterdayConvoy
             var piece=shop.Bench[bench];int index=shopLineup.IndexOf(piece.Id);
             return index<0||!IsLineupPiece(piece)?Rect.zero:LoopRosterRect(index);
         }
-        GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)
-            =>ApprovedUi.Text(scene.InterfaceFont,size,alignment,color??ApprovedUi.Ink,weight);
-        bool LoopButton(Rect rect,string text,bool primary=false)
-        {
-            var style=LoopText(14,TextAnchor.MiddleCenter,primary?new Color(.26f,.23f,.16f):ApprovedUi.Ink,600);
-            style.padding=new RectOffset(5,5,0,0);style.border=new RectOffset();
-            foreach(var state in new[]{style.normal,style.hover,style.active,style.focused})
-            {state.textColor=primary?new Color(.26f,.23f,.16f):ApprovedUi.Ink;state.background=Texture2D.whiteTexture;}
-            Color old=GUI.backgroundColor;GUI.backgroundColor=primary?ApprovedUi.Gold:new Color(.82f,.87f,.90f);
-            bool clicked=GUI.Button(rect,text,style);GUI.backgroundColor=old;
-            ApprovedUi.Border(rect,new Color(.51f,.61f,.69f,GUI.enabled?.55f:.2f));
-            return clicked;
-        }
+        GUIStyle LoopText(int size=15,TextAnchor alignment=TextAnchor.MiddleLeft,Color? color=null,int weight=400)=>OriginalShopPresentation.LoopText(size,alignment,color,weight);
+        bool LoopButton(Rect rect,string text,bool primary=false)=>OriginalShopPresentation.LoopButton(rect,text,primary);
         void DrawLoopHeader()
         {
             bool preparing=Loop==null?Battle.Phase==BattlePhase.Ready:Loop.CanShop;
@@ -62,14 +51,17 @@ namespace YesterdayConvoy
             if(LoopButton(new Rect(1222,8,42,42),"菜单"))
             {loopMenuOpen=!loopMenuOpen;loopTestSettlementOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}
             DrawWaveHeader(preparing);
+            if(JourneyActive&&preparing)
+            {
+                var entry=Battle.WavesEnabled?new Rect(1012,495,250,38):new Rect(226,12,322,36);
+                if(LoopButton(entry,"战前布阵 · 新玩法试玩 ▶",true))
+                {
+                    Debug.Log("FORMATION_VISIBLE_ENTRY_SELECTED");
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);
+                }
+            }
         }
-        static void DrawLoopShield(Vector2 origin,Color color)
-        {
-            Vector2[] vertices={new Vector2(0,0),new Vector2(15,0),new Vector2(15,12),new Vector2(7.5f,19),new Vector2(0,12),new Vector2(0,0)};
-            for(int i=0;i<vertices.Length-1;i++)ShopLine(origin+vertices[i],origin+vertices[i+1],color,1.5f);
-            ShopLine(origin+new Vector2(5,4),origin+new Vector2(10,4),color,1.5f);
-            ShopLine(origin+new Vector2(7.5f,4),origin+new Vector2(7.5f,12),color,1.5f);
-        }
+        static void DrawLoopShield(Vector2 origin,Color color)=>ApprovedShopPresentation.DrawLoopShield(origin,color);
         void DrawLoopInterface()
         {
             EnsureStyles();var e=Event.current;
@@ -175,13 +167,7 @@ namespace YesterdayConvoy
                 GUI.Label(new Rect(522,312,236,18),Battle.WavesEnabled?(Battle.DeploymentWindowOpen?"可点击部署 · 空格继续":"出兵已结束 · 空格继续"):"可拖动部署 · 空格继续",LoopText(11,TextAnchor.MiddleCenter,ApprovedUi.Muted));
             }
         }
-        void DrawLoopCostBackground(Rect rect,int recruitCost)
-        {
-            Color tier=ApprovedUi.Tier(recruitCost),top=Color.Lerp(tier,Color.white,.30f);
-            for(int row=0;row<16;row++)Fill(new Rect(rect.x,rect.y+row*rect.height/16,rect.width,rect.height/16+1),Color.Lerp(top,tier,row/15f));
-            Fill(new Rect(rect.x,rect.yMax-5,rect.width,5),Color.Lerp(tier,Color.black,.28f));
-            ShopBorder(rect,Color.Lerp(tier,Color.white,.45f),1);
-        }
+        void DrawLoopCostBackground(Rect rect,int recruitCost)=>OriginalShopPresentation.DrawLoopCostBackground(rect,recruitCost);
         void DrawLoopShop()
         {
             DrawShopMarket(Loop.CanShop);
@@ -252,7 +238,7 @@ namespace YesterdayConvoy
                 if(LoopButton(new Rect(x,y,width,30),"验证工具 · 直接结算"))
                 {loopTestSettlementOpen=true;loopMenuOpen=false;CancelShopDrag();CloseDefenderInspector();CloseSkillMenu();}y+=37;
             }
-            if(LoopButton(new Rect(x,y,width,30),"关闭菜单"))loopMenuOpen=false;
+            if(LoopButton(new Rect(x,y,width,30),"矩形攻坚 · 新玩法 Demo"))UnityEngine.SceneManagement.SceneManager.LoadScene(FormationBattleController.SceneName);
         }
         void ReturnToTrialScene()
         {

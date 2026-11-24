@@ -9,7 +9,6 @@ namespace YesterdayConvoy.Editor
     public static class OriginiumSlugTools
     {
         public const string LevelPath="Assets/Data/Resources/MonsterTests/OriginiumSlug.asset";
-        [MenuItem("Yesterday Convoy/Configuration/Prepare Originium Slug Test")]
         public static void Prepare()
         {
             if(AssetDatabase.LoadAssetAtPath<ManualBattleDefinition>(LevelPath)!=null) { Validate();return; }

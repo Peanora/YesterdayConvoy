@@ -42,7 +42,6 @@ namespace YesterdayConvoy.Editor
             public Vector3 World(int x, int y, float elevation = 0) => new Vector3(x - (width - 1) * .5f, elevation, (height - 1) * .5f - y);
         }
 
-        [MenuItem("Yesterday Convoy/Approved Maps/Create Missing Saved Maps")]
         public static void Apply() => Author(false);
 
         // Explicit iteration entry for the eight scenes owned by this task. Normal Apply preserves edited scenes.
@@ -686,7 +685,6 @@ namespace YesterdayConvoy.Editor
             var mesh = new Mesh { name = "TaperedFreightHopper" }; mesh.SetVertices(vertices); mesh.SetUVs(0, uv); mesh.SetTriangles(triangles, 0); mesh.RecalculateNormals(); mesh.RecalculateBounds(); AssetDatabase.CreateAsset(mesh, path); return mesh;
         }
 
-        [MenuItem("Yesterday Convoy/Approved Maps/Validate Saved Maps")]
         public static void Validate()
         {
             CheckEditor(); var source = ReadSource(); var setup = EditorSceneManager.GetSceneManagerSetup(); int totalRoutes = 0;
@@ -749,7 +747,6 @@ namespace YesterdayConvoy.Editor
             finally { RestoreSetup(setup); }
         }
 
-        [MenuItem("Yesterday Convoy/Approved Maps/Render Saved Map Previews")]
         public static void RenderPreviews()
         {
             CheckEditor(); var source = ReadSource(); var setup = EditorSceneManager.GetSceneManagerSetup(); Directory.CreateDirectory(Evidence); EnsureFolder(Art + "/Thumbnails");

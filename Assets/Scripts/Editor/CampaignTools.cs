@@ -7,9 +7,7 @@ namespace YesterdayConvoy.Editor
     public static class CampaignTools
     {
         public const string CampaignScene="Assets/Scenes/Campaign.unity",SandboxScene="Assets/Scenes/SynergyTrial.unity";
-        [MenuItem("Yesterday Convoy/Scenes/Open Synergy Trial")]
         public static void OpenSandbox()=>EditorSceneManager.OpenScene(SandboxScene);
-        [MenuItem("Yesterday Convoy/Scenes/Open Three Act Campaign")]
         public static void OpenCampaign()=>EditorSceneManager.OpenScene(CampaignScene);
         // Explicit authoring step. Both scenes retain serialized terrain/portals and materials.
         public static void CreateScenes()

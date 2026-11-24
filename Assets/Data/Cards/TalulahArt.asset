@@ -12,20 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aaec0469a8b5c342a5941cef9322243, type: 3}
   m_Name: TalulahArt
   m_EditorClassIdentifier: YesterdayConvoy.Runtime::YesterdayConvoy.TalulahArtDefinition
-  parts:
-  - {fileID: 21300000, guid: de06fa6bf0c30bc4ea0a05ddfa36cb84, type: 3}
-  - {fileID: 21300000, guid: 91dacf9558ee9324784e0c506ec3f945, type: 3}
-  - {fileID: 21300000, guid: 75a5b56f8cdb1a341b67159e645a133d, type: 3}
-  - {fileID: 21300000, guid: 0317f08804eb4f34bbb14619880c7456, type: 3}
-  - {fileID: 21300000, guid: 28aed75e80771334c991d53e411ed56d, type: 3}
-  - {fileID: 21300000, guid: 8a7169aa02a63964e89b7b2679a568b4, type: 3}
-  - {fileID: 21300000, guid: 794662fe91bb1c847b97c7c19775d64c, type: 3}
-  - {fileID: 21300000, guid: 729423cf08115644081f509367ead896, type: 3}
-  - {fileID: 21300000, guid: 6d594166c5841434f801b92314590884, type: 3}
-  - {fileID: 21300000, guid: 063e6ab5b7f89a14490361aecd188e0a, type: 3}
-  - {fileID: 21300000, guid: 30557212aed756b469542c56a0ad538a, type: 3}
-  - {fileID: 21300000, guid: eee339f198889b24bb5d420b6d5fa97e, type: 3}
-  - {fileID: 21300000, guid: e0aa8173628ab004bb92c62d54d14716, type: 3}
+  parts: []
   fireFrames:
   - {fileID: -3536638686808424545, guid: 5164a95fa973d0d448dffa4669505ee8, type: 3}
   - {fileID: -6628888011442976922, guid: 5164a95fa973d0d448dffa4669505ee8, type: 3}

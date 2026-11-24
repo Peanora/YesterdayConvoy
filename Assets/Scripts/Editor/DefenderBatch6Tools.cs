@@ -7,7 +7,6 @@ namespace YesterdayConvoy.Editor
     public static class DefenderBatch6Tools
     {
         const string Root="Assets/Data/Resources/DefenderTrials/";
-        [MenuItem("Yesterday Convoy/Defenders/Create Six Star Batch Six")]
         public static void Apply()
         {
             var template=AssetDatabase.LoadAssetAtPath<DefenderTrialDefinition>(Root+"D06.asset");

@@ -29,7 +29,16 @@ namespace YesterdayConvoy.Tests
         {var b=New(DefenderSkillKind.SilverAshReign,interval:1.2f);Begin(b);for(int i=0;i<100;i++)b.Advance(.1f);Assert.That(b.Defender.SkillCasts,Is.GreaterThan(0));}
         [Test]public void IgnoringResistanceCannotCreateNegativeResistanceBonusDamage()
         {var b=New(DefenderSkillKind.PramanixSnow);Begin(b);var u=b.Units[0];float hp=u.Health;Assert.That(b.TryDamageUnit(u.EntityId,100,CombatDamageType.Arts,10),Is.True);Assert.That(hp-u.Health,Is.EqualTo(100));}
-        [Test]public void SixthAssetsContainRealS3AndPramanixHasNoFabricatedOrdinaryAttack()
-        {foreach(var id in ManualBattleController.DefenderBatch6Ids){var d=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);Assert.That(d,Is.Not.Null);Assert.That(d.Snapshot()[0].Skill.Enabled,Is.True);Assert.That(DefenderArt.Load(id)["skill_attack"].Frames.Length,Is.GreaterThan(1));}Assert.That(DefenderArt.Load("D27").ActionDuration,Is.Zero);}
+        [Test]public void SixthProfilesKeepTheirConfiguredSkillsAndPramanixDoesNotAttack()
+        {
+            foreach(var id in ManualBattleController.DefenderBatch6Ids)
+            {
+                var profile=Resources.Load<DefenderTrialDefinition>("DefenderTrials/"+id);
+                Assert.That(profile,Is.Not.Null,id);
+                var guard=profile.Snapshot()[0];
+                Assert.That(guard.Skill.Enabled,Is.True,id);
+                if(id=="D27")Assert.That(guard.CanAttack,Is.False);
+            }
+        }
     }
 }

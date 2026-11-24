@@ -1,0 +1,360 @@
+{
+  "character": "Wiš’adel",
+  "skin": "Supernova / sale#14",
+  "view": "back",
+  "spineVersion": "3.8.99",
+  "source": {
+    "task": "D31B",
+    "name": "维什戴尔 · 超新星",
+    "variant": "背面",
+    "model": "char_1035_wisdel_sale_14",
+    "files": [
+      {
+        "file": "char_1035_wisdel_sale_14.skel",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/back/char_1035_wisdel_sale_14.skel",
+        "bytes": 1136897,
+        "sha256": "8c68d8741f6d846ea56e565f804f218792520d82a8664396a726f5500656f116"
+      },
+      {
+        "file": "char_1035_wisdel_sale_14.atlas",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/back/char_1035_wisdel_sale_14.atlas",
+        "bytes": 12695,
+        "sha256": "4d9055c14897ef2dda8bd19eae7004c2fd011221961f3d4c0871b219adf8c574"
+      },
+      {
+        "file": "char_1035_wisdel_sale_14.png",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1035_wisdel/char_1035_wisdel_sale_14/back/char_1035_wisdel_sale_14.png",
+        "bytes": 201112,
+        "sha256": "96ff38f483061ed6f3091e152fc7bebdc0174ce6dbbc2b97880dd400254634e2"
+      }
+    ],
+    "rights": "Original proprietary Hypergryph game art. Open redistribution license unconfirmed. User requested integration and source upload; this is not rights-holder permission."
+  },
+  "method": "Spine source re-render at 0.78 pixels per source skeleton unit. Constant per-clip orthographic camera, preserved numerical root pivot and fixed 320 source units per body unit. No enlargement of prior PNG output.",
+  "fps": 30,
+  "clipSampling": {
+    "skill_supernova_s2_begin": {
+      "cameraCenter": [
+        41.02564102564102,
+        169.23076923076923
+      ],
+      "originalBounds": [
+        -318.300048828125,
+        -84.77633666992188,
+        399.85662841796875,
+        419.9713134765625
+      ],
+      "sha256": {
+        "skill_supernova_s2_begin-00.png": "32374c1a8bf508fb788c104924dc15f18c714065fbdc1a5635705e37b947a563"
+      }
+    },
+    "skill_supernova_s2_idle": {
+      "cameraCenter": [
+        51.28205128205128,
+        164.1025641025641
+      ],
+      "originalBounds": [
+        -297.2626647949219,
+        -84.27887725830078,
+        399.85662841796875,
+        413.6189880371094
+      ],
+      "sha256": {
+        "skill_supernova_s2_idle-00.png": "24369f1e27f60b98da903bc37ba316b4ac7277289cc8520a83c275970cfaea68",
+        "skill_supernova_s2_idle-01.png": "bcd765ac6ae9e2118a0c0e00948683eb8df93f70da89218138ac5f4b2dffbb07",
+        "skill_supernova_s2_idle-02.png": "f32971aee6b3bb37b40af9a9c3cb230257d405a690c40b92fd4d6200dc7bfda8",
+        "skill_supernova_s2_idle-03.png": "bed735c93e6f68a6a021da6651d7739de2dc44f631b817858fcec1d4420be620"
+      }
+    },
+    "skill_supernova_s2_volley": {
+      "cameraCenter": [
+        37.179487179487175,
+        173.07692307692307
+      ],
+      "originalBounds": [
+        -327.6138610839844,
+        -88.43511199951172,
+        399.85662841796875,
+        430.8725891113281
+      ],
+      "sha256": {
+        "skill_supernova_s2_volley-00.png": "68ccc104892c29b2ae41e7fbca9dc8fd0bf171c2e408255934b59539586d4c61",
+        "skill_supernova_s2_volley-01.png": "a98ebecb65db2e05d8c0392cb3a1f9090dd9b5cb3c8cb048b5ba0d2ee98163ba",
+        "skill_supernova_s2_volley-02.png": "207ea2adb2f08164f6b8b207f9d38652a92c19dca5535629a6d12b8a7b9e3989",
+        "skill_supernova_s2_volley-03.png": "93fc22b36218707e18c2e9fd56e8483264151892e9f616c78c86d0f2a1b0a84f"
+      }
+    },
+    "skill_supernova_s2_overload_begin": {
+      "cameraCenter": [
+        51.28205128205128,
+        266.6666666666667
+      ],
+      "originalBounds": [
+        -297.25384521484375,
+        -87.4832534790039,
+        399.85662841796875,
+        617.5448608398438
+      ],
+      "sha256": {
+        "skill_supernova_s2_overload_begin-00.png": "b9aa652329ad63a75ec745937ba6ac4d1a4f9277187588cb0f6ee6eb6406901a"
+      }
+    },
+    "skill_supernova_s2_overload_idle": {
+      "cameraCenter": [
+        -10.256410256410255,
+        271.79487179487177
+      ],
+      "originalBounds": [
+        -297.2626647949219,
+        -93.08929443359375,
+        276.2050476074219,
+        631.87255859375
+      ],
+      "sha256": {
+        "skill_supernova_s2_overload_idle-00.png": "5b72441f9c245a56e572bb948b6393e5a5a5fc1fca7f906aff9c1c86a6539e90",
+        "skill_supernova_s2_overload_idle-01.png": "cb58dba3f9c98c0e1709636ec08a711be97e494250eeaeb68cc33d43d2990649",
+        "skill_supernova_s2_overload_idle-02.png": "8c64101907ca0dc1e1fe1b9cd084ece453307b98169747f38b802b700c5ef7e7",
+        "skill_supernova_s2_overload_idle-03.png": "7f6171b42acae05c0e3552cfb8de7dd6739023df918adb476f891185294baaab",
+        "skill_supernova_s2_overload_idle-04.png": "dc165c1c570b330b4596e08c0bc3724a734c86c20ca7d48e96e08e3817cd498c"
+      }
+    },
+    "skill_supernova_s2_overload": {
+      "cameraCenter": [
+        1.282051282051282,
+        274.35897435897436
+      ],
+      "originalBounds": [
+        -365.74383544921875,
+        -108.23001861572266,
+        366.0704345703125,
+        656.8811645507812
+      ],
+      "sha256": {
+        "skill_supernova_s2_overload-00.png": "04e2b03a7d74c1188202491d4a975cc838e31602483c14c7fe526980120e3b68",
+        "skill_supernova_s2_overload-01.png": "f86f2b61bc7693c8a332a8483ab815cd6bd66c1d9c84382556412f9be5ba0d1a",
+        "skill_supernova_s2_overload-02.png": "6fa6d15bf982b1c2049c2d8b78199813a98a99a3621a20ec2b691ce05d9b41aa",
+        "skill_supernova_s2_overload-03.png": "af7ce4a35acb6805e24bd947955ce067a38bf624b27a5b32614d8909ca3bcd18",
+        "skill_supernova_s2_overload-04.png": "f06e3e264834a282125c8fa9b314aeb194ba0de4f549f2a035cdc028f23ceabf"
+      }
+    },
+    "skill_supernova_transition": {
+      "cameraCenter": [
+        14.102564102564102,
+        269.2307692307692
+      ],
+      "originalBounds": [
+        -319.8369445800781,
+        -79.47660827636719,
+        343.3117370605469,
+        617.5448608398438
+      ],
+      "sha256": {
+        "skill_supernova_transition-00.png": "c9f419a2c4c205906a2477a0b364a80248deb2bdfa57d176b9379a024dcb7ace",
+        "skill_supernova_transition-01.png": "4e9edc4885ed973960800af25656e27a7f90e9e37074c3a7f282c21a1d176254"
+      }
+    },
+    "skill_supernova_s3_begin": {
+      "cameraCenter": [
+        11.538461538461538,
+        252.56410256410257
+      ],
+      "originalBounds": [
+        -347.60797119140625,
+        -81.02572631835938,
+        368.92010498046875,
+        583.8153686523438
+      ],
+      "sha256": {
+        "skill_supernova_s3_begin-00.png": "6573035cb4fd93a667bf6f930cf504f67ab133da3b95cb999336293dbe7037ce",
+        "skill_supernova_s3_begin-01.png": "b4b642acc2ad97d653e8a93b8cce8f240e7c1f8a52825d79d8ddea5c5fb01828",
+        "skill_supernova_s3_begin-02.png": "1ed0849eb3984e3b21961d48c77ac5db59d23f9747f5e5b452183e6c54969600"
+      }
+    },
+    "skill_supernova_s3_end": {
+      "cameraCenter": [
+        8.974358974358974,
+        250
+      ],
+      "originalBounds": [
+        -347.0795593261719,
+        -83.5227279663086,
+        362.2324523925781,
+        582.9237060546875
+      ],
+      "sha256": {
+        "skill_supernova_s3_end-00.png": "e26f2880b79aac7a817f9b2f2e097616ddd86ad0880eef50346615b05b7518f2",
+        "skill_supernova_s3_end-01.png": "d4e54ff04feea30d9f321008c8788e31a1727c41cbdf278fd7429e7624b19f96"
+      }
+    },
+    "skill_supernova_s3_idle": {
+      "cameraCenter": [
+        93.58974358974359,
+        252.56410256410257
+      ],
+      "originalBounds": [
+        -153.29876708984375,
+        -81.24618530273438,
+        335.5263671875,
+        582.9237060546875
+      ],
+      "sha256": {
+        "skill_supernova_s3_idle-00.png": "d4330023851cabbbfdda494f2b4cd568222c7d4766dfe7b6c283cd9f176e203a",
+        "skill_supernova_s3_idle-01.png": "1326fc254144937d06395a66a562b90c02eb70eedd7e620b1b367eaabedeba54",
+        "skill_supernova_s3_idle-02.png": "95195da7e95900ca51d6d9ce39471255ac93b59d1d774cf37a718623bf338c1b",
+        "skill_supernova_s3_idle-03.png": "669b94d582144be62f7b535c5ec73825a1a007fa82dfa7728a52fde67136dbbc",
+        "skill_supernova_s3_idle-04.png": "7dd96c85bc13c34a020e81353ed394f342793c0efdc9b4e6abcfd55a423963e9",
+        "skill_supernova_s3_idle-05.png": "c513a95e8e28cd9a677ae8badf0803a5069d6d12ee7584f1bbfbb6ba772a6c56",
+        "skill_supernova_s3_idle-06.png": "164fe5fd2c9a1919a3d4c6e363d00d749a1f38acce01d19cab09f2acc5202355",
+        "skill_supernova_s3_idle-07.png": "388b23fdcea3fc6105ba83e47d4b56b54c0e53437a78100483de0cd1943eb9ae",
+        "skill_supernova_s3_idle-08.png": "68e61697fafe8f04736d966d79b49ddb056820447de9ed63e2b93cad28859434",
+        "skill_supernova_s3_idle-09.png": "da45d317af3483a25fb2390042bafb41fabd74ae1ea8ce4cd471ddae0ee151ae",
+        "skill_supernova_s3_idle-10.png": "f610980024f549161370e018b1522894e0664178a256dc6450fd856c2cc27040",
+        "skill_supernova_s3_idle-11.png": "e6f9fa2fad6b5bef09024eca762c01b52e85cd616ba600eee7f2b3f992a56c5a",
+        "skill_supernova_s3_idle-12.png": "66844413ca1498ec9ff15e902aba421c1da8e08ce910c8b435c1ee6e39f8de3b",
+        "skill_supernova_s3_idle-13.png": "238106c93e504923ca4778c6bb254e5b327e63cef5b31c4993c3f4fc52f1c4c7",
+        "skill_supernova_s3_idle-14.png": "94a35dbe28d4429c5bab92ae4ad3176a0c2608005463f6addb13209497397010",
+        "skill_supernova_s3_idle-15.png": "f48ccf4393218b132d449723147159836b6435ae5625cc2a6adadb8943c71be1"
+      }
+    },
+    "skill_supernova_s3_shell": {
+      "cameraCenter": [
+        112.82051282051282,
+        258.97435897435895
+      ],
+      "originalBounds": [
+        -184.58897399902344,
+        -80.14881134033203,
+        411.0013732910156,
+        598.1312255859375
+      ],
+      "sha256": {
+        "skill_supernova_s3_shell-00.png": "ee5493276c1ac12493b7551566cd4bb370891058922d649713cec0bb3f91a667",
+        "skill_supernova_s3_shell-01.png": "9601a56420893fc986454011d85ef1296903644c3c3bfb0a3d29bdf43f744399",
+        "skill_supernova_s3_shell-02.png": "e2b8496d7af5b4d0f5922c3f13aa9d1ea14e00e029d2d4c5b3f1b9e9e2790b5a",
+        "skill_supernova_s3_shell-03.png": "8941b99d31bb32bc1ecadf373e3e8e83133c3afeea39e7de9a8f9fba4605ddd8",
+        "skill_supernova_s3_shell-04.png": "aa8dd3ca84cf02996e7c21e5e505d205d24550f252b4309c6d0e2d1aedc9f0c6",
+        "skill_supernova_s3_shell-05.png": "629b433f7300ba60f74bc628672f6666296777a50f22b1b0b95a9b4469801f98",
+        "skill_supernova_s3_shell-06.png": "591863410890eeb668c3569af256e1f6a197caddde2087910aab973205e0c084",
+        "skill_supernova_s3_shell-07.png": "a683b777bc5dd258241f0f321d6efc45790827feeb21a73c71f305c240f98009",
+        "skill_supernova_s3_shell-08.png": "f7bfea993f7b2c8ed92f5ceee15f5e2ca99adaa50beda57301b9241b5a6e7abe",
+        "skill_supernova_s3_shell-09.png": "8c992efefd567716f488619d8c0bdaa56026767ad5d0db5e03e439490c2b161f",
+        "skill_supernova_s3_shell-10.png": "0c17123f2858529b38f50bbb5dd767e2b3ee1ad49276f532fa19901300addf67",
+        "skill_supernova_s3_shell-11.png": "3da928e998452e54395e3e6d876f9c06a8fa7ee7d4afbcaed93a1dacb88eef90",
+        "skill_supernova_s3_shell-12.png": "612bc7f3340e11a17aa304b0a7a9f9b36c5773a6059fd3c2f7ff82aaa28a8f66"
+      }
+    }
+  },
+  "runtimeQa": {
+    "skill_supernova_s2_begin": {
+      "frames": 11,
+      "pages": 1,
+      "visibleFrames": 11,
+      "maxAlphaHeightPixels": 373,
+      "minAlphaHeightPixels": 337,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.004635385158734365
+    },
+    "skill_supernova_s2_idle": {
+      "frames": 60,
+      "pages": 4,
+      "visibleFrames": 60,
+      "maxAlphaHeightPixels": 373,
+      "minAlphaHeightPixels": 337,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.004974769874642737
+    },
+    "skill_supernova_s2_volley": {
+      "frames": 42,
+      "pages": 4,
+      "visibleFrames": 42,
+      "maxAlphaHeightPixels": 384,
+      "minAlphaHeightPixels": 337,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.00739630397313662
+    },
+    "skill_supernova_s2_overload_begin": {
+      "frames": 6,
+      "pages": 1,
+      "visibleFrames": 6,
+      "maxAlphaHeightPixels": 505,
+      "minAlphaHeightPixels": 337,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.005066026726212591
+    },
+    "skill_supernova_s2_overload_idle": {
+      "frames": 50,
+      "pages": 5,
+      "visibleFrames": 50,
+      "maxAlphaHeightPixels": 553,
+      "minAlphaHeightPixels": 504,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.004113155427269505
+    },
+    "skill_supernova_s2_overload": {
+      "frames": 42,
+      "pages": 5,
+      "visibleFrames": 42,
+      "maxAlphaHeightPixels": 562,
+      "minAlphaHeightPixels": 490,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.005406294979346193
+    },
+    "skill_supernova_transition": {
+      "frames": 16,
+      "pages": 2,
+      "visibleFrames": 16,
+      "maxAlphaHeightPixels": 505,
+      "minAlphaHeightPixels": 362,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.0037996977090068995
+    },
+    "skill_supernova_s3_begin": {
+      "frames": 26,
+      "pages": 3,
+      "visibleFrames": 26,
+      "maxAlphaHeightPixels": 505,
+      "minAlphaHeightPixels": 357,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.008820096009434675
+    },
+    "skill_supernova_s3_end": {
+      "frames": 16,
+      "pages": 2,
+      "visibleFrames": 16,
+      "maxAlphaHeightPixels": 504,
+      "minAlphaHeightPixels": 362,
+      "priorPpu": 97.37550944515698,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.008820096009434675
+    },
+    "skill_supernova_s3_idle": {
+      "frames": 240,
+      "pages": 16,
+      "visibleFrames": 240,
+      "maxAlphaHeightPixels": 507,
+      "minAlphaHeightPixels": 464,
+      "priorPpu": 160,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.002800946357922718
+    },
+    "skill_supernova_s3_shell": {
+      "frames": 151,
+      "pages": 13,
+      "visibleFrames": 151,
+      "maxAlphaHeightPixels": 519,
+      "minAlphaHeightPixels": 407,
+      "priorPpu": 160,
+      "newPpu": 249.60000000000002,
+      "maxSampledWorldEnvelopeDelta": 0.002800946357922718
+    }
+  },
+  "decodedBC3SizeBytes": 171044272
+}
