@@ -1,0 +1,58 @@
+{
+  "officialModelBundleURL": "https://ak.hycdn.cn/assetbundle/official/Android/assets/26-10-29-15-36-11-33649006/chararts_char_4064_mlynar.dat",
+  "officialModelBundleMD5": "ba59a1ed47f5ac0d81203552ff9bca58",
+  "officialModelBundleSHA256": "93226916a703aba295830bf2f6debc7b289f885bc5eeaa4309f7996623c28828",
+  "sourceModelVersion": "26-10-29-15-36-11-33649006",
+  "enumEvidence": {
+    "status": "ORIGINAL_IL2CPP_ENUM_CONSTANTS_CONFIRMED_PUBLIC_METADATA_SNAPSHOT",
+    "type": "Torappu.Battle.Entity/MountPointType",
+    "field": "Torappu.Battle.Effects.FollowMountPoint._mountPointType",
+    "fieldType": "Torappu.Battle.Entity/MountPointType",
+    "source": "https://github.com/Tim23333/Arknights_timer/blob/5734c30bf54780056ff758505380322c0cf519fe/Ark_data/Cpp2IL_DummyDll/Assembly-CSharp.dll",
+    "repositoryCommit": "5734c30bf54780056ff758505380322c0cf519fe",
+    "sha256": "adc1ceff7c662c0c52fcc5b8e854e55617f20a9f6f80d40858525db4611c0674",
+    "bytes": 18309632,
+    "method": "Read-only Mono.Cecil metadata extraction. Dummy assembly was not executed.",
+    "constants": {
+      "FOOT": 0,
+      "HIT": 1,
+      "MUZZLE": 2,
+      "HEAD": 3,
+      "UI": 4,
+      "SPECIAL_0": 5,
+      "SPECIAL_1": 6,
+      "GROUND": 7,
+      "SPECIAL_2": 8,
+      "SPECIAL_3": 9,
+      "SPECIAL_4": 10,
+      "SPECIAL_5": 11,
+      "SPECIAL_6": 12,
+      "SPECIAL_7": 13,
+      "SPECIAL_8": 14,
+      "SPECIAL_9": 15,
+      "SPECIAL_10": 16,
+      "SPECIAL_11": 17,
+      "SPECIAL_12": 18,
+      "SPECIAL_13": 19,
+      "SPECIAL_14": 20,
+      "SPECIAL_15": 21
+    },
+    "versionLimit": "Public dump snapshot has not been byte-matched to the26-10-29 asset build; local source field types and chararts mount references are consistent. No enum value is inferred from filenames or slot counts."
+  },
+  "bindingScope": [
+    {
+      "effect": "mlynar_skill_03_buff_01",
+      "point": "SpecialPoint0",
+      "sourceMountPointType": 5,
+      "keepOriginRotation": false,
+      "followScale": false,
+      "followScaleSign": false,
+      "scaleMultiplier": 1.0,
+      "sourceFollowMountPointPath": "/mlynar_skill_03_buff_01"
+    }
+  ],
+  "trackStatus": "SOURCE_TRACK_CANDIDATE_NOT_IMPORTED",
+  "trackSource": "Original cached default Spine 3.8.99 selected source frames sampled at body FPS; existing alpha-foot pivot correction preserved.",
+  "rights": "Original proprietary media; user integration/upload authorization is not an open redistribution license.",
+  "scope": "Only explicitly serialized FollowMountPoint effects, no generic flashes or fabricated missing trail."
+}

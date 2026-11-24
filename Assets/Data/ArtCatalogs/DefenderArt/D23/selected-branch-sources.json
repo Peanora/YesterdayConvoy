@@ -1,0 +1,99 @@
+{
+  "source": {
+    "task": "D23F",
+    "unitId": "D23",
+    "name": "Mon3tr",
+    "variant": "战斗正面",
+    "characterId": "char_4179_monstr",
+    "reference": "https://prts.wiki/w/Mon3tr",
+    "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/meta.json",
+    "model": "char_4179_monstr",
+    "prefix": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/",
+    "files": [
+      {
+        "file": "char_4179_monstr.skel",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/char_4179_monstr.skel",
+        "bytes": 805793,
+        "sha256": "39371927a29e4d83353d070c640eca535185a25c2beb0621ebc5bbdb2f6b1aac"
+      },
+      {
+        "file": "char_4179_monstr.atlas",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/char_4179_monstr.atlas",
+        "bytes": 13380,
+        "sha256": "f736dd4ba2e1fcb4ba4fc5f1f600b258189de11624c2a8448efbcc8d93941b36"
+      },
+      {
+        "file": "char_4179_monstr.png",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_4179_monstr/defaultskin/front/char_4179_monstr.png",
+        "bytes": 164716,
+        "sha256": "6ea5366f675cd85b4daf117e85b0bdae3fabaf43eeeadf8517a2e51327c3f6d7"
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+    "unityImported": false,
+    "humanApproved": false
+  },
+  "selectedBranches": [
+    {
+      "key": "skill_rebirth_end",
+      "source": "Skill_3_End",
+      "duration": 0.3333333432674408,
+      "events": [],
+      "frames": 21,
+      "emptyFrames": [
+        20
+      ],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_skill_3_end-00.png",
+          "sha256": "ca1f9ccdcb6bb172998104c3016471d5d480f96dec01665fecd55015422f1c1b"
+        },
+        {
+          "file": "extra_skill_3_end-01.png",
+          "sha256": "910ec26bd3b665be391710e152ff9a0838ac0f9e02200c20373a9b7efc17afde"
+        }
+      ],
+      "pixelsPerUnit": 131.2
+    },
+    {
+      "key": "skill_restart",
+      "source": "Skill_3_ReStart",
+      "duration": 1,
+      "events": [
+        {
+          "time": 0.1666666716337204,
+          "name": "OnStart",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "frames": 61,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_skill_3_restart-00.png",
+          "sha256": "6fac5d9b301570a909623ff259183d4ddd0cbe2e772dbe1415813989b9054e81"
+        },
+        {
+          "file": "extra_skill_3_restart-01.png",
+          "sha256": "c96470b57d9eb85c544681b4b031a2a50aa2b4b0f69b6da34805fb0ba84254c9"
+        },
+        {
+          "file": "extra_skill_3_restart-02.png",
+          "sha256": "8226d07402291544e346bca0e0de4c7868dbc4219549110ab428c6b589a9ef9a"
+        },
+        {
+          "file": "extra_skill_3_restart-03.png",
+          "sha256": "513a9f44faf21f58faaedcbdde513336ab168b939de2bc8632cdcb90c65efb5c"
+        }
+      ],
+      "pixelsPerUnit": 131.2
+    }
+  ],
+  "rights": "Original proprietary source; rights remain with rightsholders. User requested original art and direct import 2026-11-12; no open redistribution license implied.",
+  "authorization": "Root coordinated selected missing animation branches 2026-11-13; original existing GUIDs/PPU/clips retained."
+}

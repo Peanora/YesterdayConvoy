@@ -1,5 +1,11 @@
 # 验证证据与回归
 
+## 2026-11-24 守军资源库补齐
+
+- 以 #115 合入后的 c4e39490 为基线。现役的原生目录、43 个特效包及其 .meta 与 #114 原提交逐字节一致。本轮补回 423 个守军库文件，含备用资源、来源、Shader 和 .meta。历史资料记载的玩法入口、测试与画面验收对应各自的旧版本。
+- 合并结果通过仓库静态检查，覆盖路径、Unity .meta 和 GUID、项目设置与冲突标记。另核对了唯一构建入口仍为 FormationBattle。本轮验证范围为仓库静态检查。
+
+
 ## 2026-11-23 顶部抉择抽屉
 
 - 运行源码 `ef6a5d803a4d9fb7e55145379ac60265c2b8e579`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,429,710 字节、0 错误、退出 0。Runtime DLL SHA-256 `7F58487C853CFDFFFCF1944FF9814BE615FF0DF3AE40FD9384484E2C37D33FA6`。同源码完整 EditMode **1236/1236**、正式挑战场景定向 PlayMode **1/1**。最初包含截图用例的无图形 PlayMode 运行卡在场景加载后的用例阶段，已停止。 [构建日志](../artifacts/formation-decision-drawer/build-verified.log) · [EditMode](../artifacts/formation-decision-drawer/edit-verified.xml) · [PlayMode](../artifacts/formation-decision-drawer/play-verified.xml)

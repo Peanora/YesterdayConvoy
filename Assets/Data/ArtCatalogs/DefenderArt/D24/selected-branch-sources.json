@@ -1,0 +1,233 @@
+{
+  "source": {
+    "task": "D24F",
+    "unitId": "D24",
+    "name": "新约能天使",
+    "variant": "战斗正面",
+    "characterId": "char_1041_angel2",
+    "reference": "https://prts.wiki/w/%E6%96%B0%E7%BA%A6%E8%83%BD%E5%A4%A9%E4%BD%BF",
+    "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/meta.json",
+    "model": "char_1041_angel2",
+    "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/",
+    "files": [
+      {
+        "file": "char_1041_angel2.skel",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/char_1041_angel2.skel",
+        "bytes": 1132701,
+        "sha256": "2b53b10e6518af9a2f870e08f0024bae0bfd9022f3e98bfe51eb967299cd9751"
+      },
+      {
+        "file": "char_1041_angel2.atlas",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/char_1041_angel2.atlas",
+        "bytes": 13950,
+        "sha256": "a16547b88bb0ed7189d8ac75e12d5fa2dfe34d8e21b0bbaa6a7b3f635ff16023"
+      },
+      {
+        "file": "char_1041_angel2.png",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1041_angel2/defaultskin/front/char_1041_angel2.png",
+        "bytes": 105816,
+        "sha256": "ffcaba985b13cf77b0c5879bf4c88c45f2d7b24722855f73cc115f5f2b38d76f"
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+    "unityImported": false,
+    "humanApproved": false
+  },
+  "selectedBranches": [
+    {
+      "key": "attack_begin",
+      "source": "Attack_Begin",
+      "duration": 0.13333334028720856,
+      "events": [],
+      "frames": 9,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_attack_begin-00.png",
+          "sha256": "46c0abeac077bfad1fe9b71cad571834b0d754664024683c5e6dcd7a04c6f3fd"
+        }
+      ],
+      "pixelsPerUnit": 130.4
+    },
+    {
+      "key": "attack_down_begin",
+      "source": "Attack_Down_Begin",
+      "duration": 0.13333334028720856,
+      "events": [],
+      "frames": 9,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_attack_down_begin-00.png",
+          "sha256": "72068318ed1f2fc253abcdd565763889931baa3e216bd325005d0a536794b40a"
+        }
+      ],
+      "pixelsPerUnit": 130.4
+    },
+    {
+      "key": "attack_down",
+      "source": "Attack_Down_Loop",
+      "duration": 1.3333333730697632,
+      "events": [
+        {
+          "time": 0.2666666805744171,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "frames": 80,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_attack_down_loop-00.png",
+          "sha256": "88a82dbcaf955d0bae1ebfc89a68c52702bf80358c1d9d654d0ba2a27765502d"
+        },
+        {
+          "file": "extra_attack_down_loop-01.png",
+          "sha256": "1486460a7f3b99a3a2efd9f2072938a3115796b5c82d6fcfc1143e2a3662d475"
+        }
+      ],
+      "pixelsPerUnit": 130.4
+    },
+    {
+      "key": "skill_idle_down",
+      "source": "Skill_Down_3_Idle",
+      "duration": 2,
+      "events": [],
+      "frames": 120,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_skill_down_3_idle-00.png",
+          "sha256": "7fde2e0d919e9231a4fee13b370777b316d0f1b8bafdc0e3c06dc0f3f29bac9b"
+        },
+        {
+          "file": "extra_skill_down_3_idle-01.png",
+          "sha256": "43401caefb0bf43c8be935b1b795adb91a8a67c11677612b263b80cdea6bcddf"
+        },
+        {
+          "file": "extra_skill_down_3_idle-02.png",
+          "sha256": "1bb783052bf1a5d9056fc8ad1003db9d27f5875929a923387a7f8a87a94c5604"
+        },
+        {
+          "file": "extra_skill_down_3_idle-03.png",
+          "sha256": "92ee4526ed629e21926c2d3f9d10da275a585ef7b43d18a2929fae1bb3128f0f"
+        },
+        {
+          "file": "extra_skill_down_3_idle-04.png",
+          "sha256": "c441a2b7fc6abc48ac8155f3fd53145c254ebd20ab43d8ee90089bbeaaaecc5c"
+        }
+      ],
+      "pixelsPerUnit": 130.4
+    },
+    {
+      "key": "skill_attack_down",
+      "source": "Skill_Down_3_Loop",
+      "duration": 1.3333333730697632,
+      "events": [
+        {
+          "time": 0.1666666716337204,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.20000000298023224,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.23333333432674408,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.2666666805744171,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        },
+        {
+          "time": 0.30000001192092896,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "frames": 80,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_skill_down_3_loop-00.png",
+          "sha256": "a66cadc276cf4ede228effc17f274459be48808af487b1c1f590066e7e6431bc"
+        },
+        {
+          "file": "extra_skill_down_3_loop-01.png",
+          "sha256": "859c0ff25ce1cee7ec1b950b471eec8119dbcdc737a23df76a5b156a88e1c97a"
+        },
+        {
+          "file": "extra_skill_down_3_loop-02.png",
+          "sha256": "db20c184b8383ac29e66cdf8a5817ca6e94073e55a53fa322c229f2781fc3dbf"
+        },
+        {
+          "file": "extra_skill_down_3_loop-03.png",
+          "sha256": "1eb3b8809453fcb487df69d08eea0d43379203672915462e746bbc9185619845"
+        }
+      ],
+      "pixelsPerUnit": 130.4
+    },
+    {
+      "key": "skill_cast",
+      "source": "Skill_3_Skill",
+      "duration": 1.600000023841858,
+      "events": [
+        {
+          "time": 0.06666667014360428,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "frames": 97,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_skill_3_skill-00.png",
+          "sha256": "379e84b7480c471c4323a1ffa8909e3537b3dbbe42874a60d925bc0d7911af5d"
+        },
+        {
+          "file": "extra_skill_3_skill-01.png",
+          "sha256": "7ff627763b78d83d7a97f77d1ec8976a35e226392667e9f3aca5ab1655845c6d"
+        },
+        {
+          "file": "extra_skill_3_skill-02.png",
+          "sha256": "3f42935ee4860d94610985525e3327b59a32a258bc7d022dee62b3643aaafa6c"
+        },
+        {
+          "file": "extra_skill_3_skill-03.png",
+          "sha256": "04112d5cb1becee8641ba30e69cba6d584b83fde710b2baf74c6f7345b91cc47"
+        }
+      ],
+      "pixelsPerUnit": 130.4
+    }
+  ],
+  "rights": "Original proprietary source; rights remain with rightsholders. User requested original art and direct import 2026-11-12; no open redistribution license implied.",
+  "authorization": "Root coordinated selected missing animation branches 2026-11-13; original existing GUIDs/PPU/clips retained."
+}

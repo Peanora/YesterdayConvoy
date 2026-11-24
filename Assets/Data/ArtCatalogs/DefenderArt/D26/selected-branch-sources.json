@@ -1,0 +1,113 @@
+{
+  "source": {
+    "task": "D26F",
+    "unitId": "D26",
+    "name": "凛御银灰",
+    "variant": "战斗正面",
+    "characterId": "char_1045_svash2",
+    "reference": "https://prts.wiki/w/%E5%87%9B%E5%BE%A1%E9%93%B6%E7%81%B0",
+    "metaURL": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/meta.json",
+    "model": "char_1045_svash2",
+    "prefix": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/",
+    "files": [
+      {
+        "file": "char_1045_svash2.skel",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/char_1045_svash2.skel",
+        "bytes": 908200,
+        "sha256": "a761cc6d23673799fa2ba93fe8e9ed53ff847ebc5a75efb20134f40886b89cfd"
+      },
+      {
+        "file": "char_1045_svash2.atlas",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/char_1045_svash2.atlas",
+        "bytes": 14337,
+        "sha256": "574589b8e5dab46e97aeeeca1f113d01069d8a905b3972b43f8a265638b41871"
+      },
+      {
+        "file": "char_1045_svash2.png",
+        "url": "https://torappu.prts.wiki/assets/char_spine/char_1045_svash2/defaultskin/front/char_1045_svash2.png",
+        "bytes": 175808,
+        "sha256": "f390ff87e1ecc1b71f52f0eb419e100e51e1c322fadd9dd1cf4397fb60b25fd6"
+      }
+    ],
+    "author": "明日方舟原权利人；具体原画/动画师未确认",
+    "rights": "Original proprietary character/texture/animation; not CC0; open redistribution permission unconfirmed. External art preview only.",
+    "unityImported": false,
+    "humanApproved": false
+  },
+  "selectedBranches": [
+    {
+      "key": "attack_begin",
+      "source": "Attack_Begin",
+      "duration": 0.13333334028720856,
+      "events": [],
+      "frames": 9,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_attack_begin-00.png",
+          "sha256": "38099d62de3a61a2e4b246eaaf7d04c5d4f508485fec57e6bbedfaea7de51fc1"
+        }
+      ],
+      "pixelsPerUnit": 125.60000000000001
+    },
+    {
+      "key": "attack_b",
+      "source": "Attack_B",
+      "duration": 1.2000000476837158,
+      "events": [
+        {
+          "time": 0.5666666626930237,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "frames": 73,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_attack_b-00.png",
+          "sha256": "b9df5e3d52b6b55423522018c7c2e6d95579f791ececb4b62376ead0d560c060"
+        },
+        {
+          "file": "extra_attack_b-01.png",
+          "sha256": "86650d89104c5448ab71590d6c6345b8156eb77341949b1c6c77d360b1ecea9b"
+        }
+      ],
+      "pixelsPerUnit": 125.60000000000001
+    },
+    {
+      "key": "attack_c",
+      "source": "Attack_C",
+      "duration": 1.2000000476837158,
+      "events": [
+        {
+          "time": 0.5333333611488342,
+          "name": "OnAttack",
+          "int": 0,
+          "float": 0,
+          "string": ""
+        }
+      ],
+      "frames": 73,
+      "emptyFrames": [],
+      "edgeFrames": [],
+      "files": [
+        {
+          "file": "extra_attack_c-00.png",
+          "sha256": "8c13a15a9a7827cc096f647d2c8592deab72ef254ffa7fbc9afdf1caaba06f48"
+        },
+        {
+          "file": "extra_attack_c-01.png",
+          "sha256": "b145485e03babca2596d76a65839787d99fbccdb6d39102e8d3e10b16458c635"
+        }
+      ],
+      "pixelsPerUnit": 125.60000000000001
+    }
+  ],
+  "rights": "Original proprietary source; rights remain with rightsholders. User requested original art and direct import 2026-11-12; no open redistribution license implied.",
+  "authorization": "Root coordinated selected missing animation branches 2026-11-13; original existing GUIDs/PPU/clips retained."
+}
