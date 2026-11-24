@@ -1,5 +1,14 @@
 # 验证证据与回归
 
+## 2026-11-24 Windows 战斗崩溃兼容修复
+
+- 基于 main `c4e394909118ca9d255915e08e95767fac674765`，分支 `codex/fix-player-battle-crash-20261124`。保留既存未跟踪 `.vscode/`，仅调整标准 Windows 构建入口的图形 API 选择；构建后恢复原设置值，构建生成的等价自动 API 序列化条目不纳入提交。
+- Windows 事件确认 14:38 战斗崩溃为 `UnityPlayer.dll` 内 `0xc0000005`，偏移 `0x1a39822`。同版本 Unity 6000.6.5f1 Development x64 PDB 解析为 `GfxDeviceD3D12Base::SetTextures + 0x112`，后续为 `GpuProgram::ApplyTextureParameters`、`D3D12CommonShader::ApplyGpuProgram`、`D3D12ImmediateContext::BindShaders`、图形工作线程。已证实故障位于 D3D12 纹理绑定；尚未证明是哪张纹理、哪名角色或驱动内部原因。移植资源缺脚本／旧着色器警告不能独立证明崩溃原因。 [原 Player 日志备份](../artifacts/crash-investigation/Player.log)
+- 同一份未修改的旧构建加 `-force-d3d11` 对照：正式前三场 **142/142**，零异常。随后标准构建显式选择 Direct3D 11，恢复编辑器设置。Windows x64 Development 构建 **1,399,177,731 字节，0 错误**。包含 142 份运行清单、5,373 张预处理纹理；不依赖额外启动脚本。 [构建日志](../artifacts/crash-investigation/build-d3d11.log)
+- **以下修复版测试均未传 `-force-d3d11` 或其他强制渲染后端参数**，Player 日志确认默认 `Direct3D 11.0`，NVIDIA RTX 4090 Laptop GPU。1280×720，正式前三战 **142/142**、3 场；守军测试 **112/112**、7 场（1-6、2-4、2-5、3-2、3-4、3-5、3-7）。两个进程均零异常、退出码 0，复查 Windows 事件无本轮新崩溃。守军预设 3-4／3-7 正常超时失败，属于有效战斗结算，不算通关；其余五关胜利。 [前三战报告](../artifacts/crash-investigation/default-campaign/campaign-smoke.json) · [守军报告](../artifacts/crash-investigation/default-defenses/defense-smoke.json)
+- 守军运行包含 D22 火墙、D27 技能、D35 技能、3-5 D31／D36 技能与首领阶段。测试使用现有自动驱动和加速模拟，不能等同人类长局试玩或所有角色技能逐一验收。运行 DLL SHA-256：`F008FB2ECF9FC0C5B0281629D3C55362182068005CEC649920CD2D1F6099DFF3`。 [3-5 第三阶段实机帧](../artifacts/crash-investigation/default-defenses/3-5-D36-phase-3.png)
+- 仓库检查通过 **17,723** 个跟踪文件；未重跑完整 EditMode／PlayMode。本次验证为本机 Windows 构建及上述战斗样本，其他电脑、全流程长局和 D3D12 仍未通过验收。原素材全部保留，本修复通过默认 D3D11 绕开已捕获的 D3D12 故障。
+
 ## 2026-11-23 顶部抉择抽屉
 
 - 运行源码 `ef6a5d803a4d9fb7e55145379ac60265c2b8e579`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,429,710 字节、0 错误、退出 0。Runtime DLL SHA-256 `7F58487C853CFDFFFCF1944FF9814BE615FF0DF3AE40FD9384484E2C37D33FA6`。同源码完整 EditMode **1236/1236**、正式挑战场景定向 PlayMode **1/1**。最初包含截图用例的无图形 PlayMode 运行卡在场景加载后的用例阶段，已停止。 [构建日志](../artifacts/formation-decision-drawer/build-verified.log) · [EditMode](../artifacts/formation-decision-drawer/edit-verified.xml) · [PlayMode](../artifacts/formation-decision-drawer/play-verified.xml)
