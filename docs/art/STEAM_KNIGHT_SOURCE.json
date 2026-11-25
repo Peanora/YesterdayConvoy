@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "model": "enemy_1533_stmkgt",
+  "baseIndexVersion": "26-10-20-11-10-38-04170990",
+  "rights": "Original proprietary game media; no verified open redistribution license supplied. User approved local integration and project asset delivery.",
+  "dependencies": [
+    {
+      "name": "[uc]shaders.ab",
+      "sha256": "587e956b5015fa42d7ece706c3ea1eaf43e052dd9ddca5fde718b03f06290eb2",
+      "bytes": 453967,
+      "source": "patch"
+    },
+    {
+      "name": "battle/prefabs/effects/stmkgt.ab",
+      "sha256": "1279302a056d7917f2fd666272d22b18977a3e52b142a12abd901dd3cda9faac",
+      "bytes": 349903,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/object.ab",
+      "sha256": "9df4defb9c281ffe3179d7116281a9c520e9b159f433bb73a2085e723f4d50a4",
+      "bytes": 9657365,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/material.ab",
+      "sha256": "53e01422e18f06641dd8e893d61aa9914fb65f7058767f7ea7c47b85ccfd7eff",
+      "bytes": 63148,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/star.ab",
+      "sha256": "6fa4ddc1ea682a35c97163d16e4dfd4b21a0fd2854ad1fdedce113c479138287",
+      "bytes": 6788166,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/mask.ab",
+      "sha256": "aa9546ea1ff54ff4b094aa9a11b446690d6a0bbcea90cc9a387807875b93f9c3",
+      "bytes": 4140424,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/ray.ab",
+      "sha256": "abf838bd0a0581db20276db52fa53540ec525eb628dd3ea22e3135cd4b3b8059",
+      "bytes": 4478052,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/flow.ab",
+      "sha256": "7c47498bacd58a76b2f58acf768a2fa9de5fb3f57f248498e79e86ef7048a859",
+      "bytes": 14648220,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/color.ab",
+      "sha256": "3bee4c36cb2a34e82eba4f514b8b78c6c036157f3f7fd79ca1a48185db6313a9",
+      "bytes": 1517665,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/sharedbattle.ab",
+      "sha256": "ddc5a6cceea2a54a25a8b07a5dd19dcebf3b26dbd8adc2719a0ed903125bde62",
+      "bytes": 4402610,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/water.ab",
+      "sha256": "64b6a7c06e27d0d66128bcf251466bd13df08ae84f6c0d4c3bcf8de34b3a9c9f",
+      "bytes": 2784868,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/smoke.ab",
+      "sha256": "3a12e1947eaa79c539a2b04759bdad8697d01dda5b655db2da9fca91254df36b",
+      "bytes": 3453973,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/trail.ab",
+      "sha256": "8e4c8c2858a58a7250ea7a5880ec19d2858718330df65f0f154b8309f4fbb2bd",
+      "bytes": 11258790,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/flipbook.ab",
+      "sha256": "bd13620e069d4077f333c9d2e2513ac62837e5892862771ecb1fdf7df8ad439e",
+      "bytes": 3336818,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/fire.ab",
+      "sha256": "5b3828a9de88a5b051ef01d229b025c2a1c8ffaedf8ff66f2e309fdd383f0554",
+      "bytes": 2030443,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/lighting.ab",
+      "sha256": "798dfdfe6986d101d4d4ffdac97a7fe96d7b3a2f72e36b344c3e0ca5b2922cdf",
+      "bytes": 1165941,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/overseas/char_010_chen_sale#10.ab",
+      "sha256": "78fe71a5f5b1fcd8f897b30e8114dac3e28e8264af985e8172470b638dcedbab",
+      "bytes": 1168651,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/overseas/char_1037_amiya3_sale#13.ab",
+      "sha256": "a4e7653f000141cbac9e2295fb40521ee61339341dc07790f62a325254b5df05",
+      "bytes": 28991,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/pattern.ab",
+      "sha256": "f2d6a93cf06c50d78f6b58263fab28a51206a4dcf2ff24da469b1d87eec158af",
+      "bytes": 576443,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/overseas/live2d/dyn_char_1037_amiya3_sale#13.ab",
+      "sha256": "b8dfb192f4924a4866c6964520ef47781d483aa30da530c00d988c3661ea5c70",
+      "bytes": 176836,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/overseas/char_003_kalts_sale#14.ab",
+      "sha256": "522ba7f71c04ef37efe116cddde852d4e183f2595c763cd652a6f8712cbf194d",
+      "bytes": 1039485,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/overseas/char_103_angel_sale#8.ab",
+      "sha256": "604990a59852369932fec8181b5b30a407a400270aae5205a1c418c3d8625e2a",
+      "bytes": 349722,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/vein.ab",
+      "sha256": "437ba10e90c3547b3750278dba8fd22255caf225c5b107a2d9520c0ede726889",
+      "bytes": 1890756,
+      "source": "patch"
+    },
+    {
+      "name": "refs/fx/texture/blood.ab",
+      "sha256": "0c9553c6e0dde37531a1d8640bdc739bda307b77f0bfef50d61fa8423adc19e0",
+      "bytes": 235179,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture/ui.ab",
+      "sha256": "6846f15aedf7686c087ace929de9a034e924cb9a6eb31dff50cef72c2bbf5cc2",
+      "bytes": 66255,
+      "source": "base"
+    },
+    {
+      "name": "refs/fx/texture.ab",
+      "sha256": "74876b92133333b0966936a2c1bbf7f48d803740d93a6afd39e1f66bedb783b6",
+      "bytes": 58100,
+      "source": "base"
+    },
+    {
+      "name": "anon/e553a7736ee5daa079938ed261d3d1ca.bin",
+      "sha256": "cf29e8dc73c1c1595da296781ffe7c1d3dbe16a0d339f87242e966244a3b7bc9",
+      "bytes": 606459,
+      "source": "base"
+    },
+    {
+      "name": "anon/bac85f8fe65f27a2b7ea13fff6de62e8.bin",
+      "sha256": "10fca9cc0cc0fde445e5133c004ef08f776640fb99440e3cb8949fa7d9541c99",
+      "bytes": 477255,
+      "source": "base"
+    }
+  ]
+}

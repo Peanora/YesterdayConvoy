@@ -20,7 +20,7 @@ namespace YesterdayConvoy
             PrepareShowcaseRoleFixture(unitIds, talulahCost, wisadelSkill, null, false, false);
 
         internal IEnumerator PrepareShowcaseRoleFixture(string[] unitIds, int talulahCost, int wisadelSkill,
-            string guardArt, bool snowBoss, bool useCurrentBoard)
+            string guardArt, bool snowBoss, bool useCurrentBoard, int steamTier=1)
         {
             if (!Ready) throw new InvalidOperationException("The saved formation scene is not ready.");
             if (unitIds == null || unitIds.Length < 1 || unitIds.Length > 10)
@@ -66,6 +66,14 @@ namespace YesterdayConvoy
                 }
             Shop.Preset(definitions.Select(spec => new ShopTrialModel.Piece { Id = spec.CardId, Star = 1 }),
                 Array.Empty<string>(), level: 10, xp: 0, gold: 0);
+            if(steamTier>1)
+            {
+                if(steamTier>3||definitions[0].Id!="STEAM"||definitions.Length<steamTier)
+                    throw new ArgumentException("Steam showcase tiers require one native driver and enough distinct badge carriers.");
+                foreach(var piece in Shop.Bench.Where(piece=>piece.Id!="CARD_STEAM").Take(steamTier-1))
+                    if(!Session.Run.Equip(Session.Run.AddItem("徽章:蒸汽").Instance,piece.Instance).Success)
+                        throw new InvalidOperationException("Could not equip a real Steam badge for the opt-in showcase.");
+            }
             Model = new FormationBattleModel(seed, SelectFormationTerrain(Session.Run));
             Session.ApplyTo(Model);
             // Clear any default placement selected by shared opening card identities,

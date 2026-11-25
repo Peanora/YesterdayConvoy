@@ -42,7 +42,7 @@ namespace YesterdayConvoy
         {
             internal string Id,Kind,Name;
             internal string[] Units;
-            internal int Cost=3,Skill=3;
+            internal int Cost=3,Skill=3,SteamTier=1;
             internal bool Phase,WalkOnly;
             internal string GuardArt,SummonArt;
             internal bool SnowBoss;
@@ -119,6 +119,7 @@ namespace YesterdayConvoy
                 yield return new Plan{Id="GOLEM",SummonArt="GOLEM",Kind="summon",Name="泥岩巨像",Units=new[]{"M27","M42"}};
                 yield break;
             }
+            yield return new Plan{Id="STEAM3",Kind="variant",Name="蒸汽骑士 · 三档肩炮",Units=new[]{"STEAM","B01","M03"},SteamTier=3};
             foreach(int cost in new[]{4,5})yield return new Plan{Id="TAL"+cost,Kind="variant",Name="塔露拉 · "+cost+"费",Units=new[]{"TAL"},Cost=cost};
             foreach(int skill in new[]{1,2})yield return new Plan{Id="WIS"+skill,Kind="variant",Name="维维美 · 技能"+skill,Units=new[]{"WIS"},Skill=skill};
             foreach(string id in new[]{"M20","M32","M14","M30","B04","B08","B13","B24"})
@@ -310,7 +311,8 @@ namespace YesterdayConvoy
 
         IEnumerator Prepare(Plan plan)
         {
-            yield return controller.PrepareShowcaseRoleFixture(plan.Units,plan.Cost,plan.Skill,plan.GuardArt,plan.SnowBoss,RoleVideos);
+            yield return controller.PrepareShowcaseRoleFixture(plan.Units,plan.Cost,plan.Skill,plan.GuardArt,plan.SnowBoss,RoleVideos,plan.SteamTier);
+            if(plan.SteamTier>1)clip.notes+=" 三档展示夹具：另两位真实角色装备蒸汽徽章，按生产合体规则隐藏为驾驶员。";
             controller.BeginShowcaseFixture();
             controller.Model.Paused=false;
             clip.activeSynergies=controller.Model.ActiveSynergies.Where(p=>p.Value>0).Select(p=>p.Key+" "+p.Value).ToArray();

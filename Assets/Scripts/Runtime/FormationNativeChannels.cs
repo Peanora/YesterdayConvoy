@@ -38,6 +38,7 @@ namespace YesterdayConvoy
         }
         float FormationSourceDuration(FormationUnitArt source,FormationActor actor,bool skill,string key)
         {
+            if(skill&&source.NativeTask=="STEAM")return Model.SteamSourceDuration;
             if(!skill&&FormationAttackChannel(source,actor,out var attackBegin,out var attackCycle,out var attackEnd))
                 return source.Duration(attackBegin)+source.Duration(attackCycle)+source.Duration(attackEnd);
             if(skill&&FormationChannel(source,actor,out var begin,out var cycle,out var end))
@@ -51,6 +52,7 @@ namespace YesterdayConvoy
         }
         float FormationSourceContact(FormationUnitArt source,FormationActor actor,bool skill,string key)
         {
+            if(skill&&source.NativeTask=="STEAM")return FormationBattleModel.SteamSourceContact;
             if(actor.ArtId=="B21"&&skill)return source.ContactTime(SuiClawMotion);
             string begin,cycle,end;
             bool channel=skill?FormationChannel(source,actor,out begin,out cycle,out end):FormationAttackChannel(source,actor,out begin,out cycle,out end);

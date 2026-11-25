@@ -205,7 +205,7 @@ namespace YesterdayConvoy
             battleCamera.usePhysicalProperties = false;
             battleCamera.fieldOfView = FormationCameraFov;
             battleCamera.lensShift = Vector2.zero;
-            battleCamera.transform.SetPositionAndRotation(position, FormationCameraRotation);
+            battleCamera.transform.SetPositionAndRotation(position+SteamImpactCameraOffset(), FormationCameraRotation);
         }
     }
 }

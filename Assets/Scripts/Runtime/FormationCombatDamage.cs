@@ -291,6 +291,7 @@ namespace YesterdayConvoy
                 }
                 if(z.Kind=="trench")victims=Defenders.Where(d=>d.Alive&&new[]{-.8f,0,.8f}.Any(offset=>Mathf.Abs(d.Position.y-z.Center.y-offset)<=.6f)).ToArray();
                 bool rainBurn = z.Kind == "burn" && z.Source.ArtId == "TALULAH_TRIAL" && Campaign.TalulahCost == 5;
+                if(rainBurn)victims=TalulahRainVictims(z.Cap);
                 foreach(var d in victims)
                 {
                     float mult=z.Multiplier*(z.Kind=="trench"?Math.Min(2,new[]{-.8f,0,.8f}.Count(offset=>Mathf.Abs(d.Position.y-z.Center.y-offset)<=.6f)):1);

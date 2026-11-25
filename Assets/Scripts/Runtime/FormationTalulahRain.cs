@@ -1,8 +1,29 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace YesterdayConvoy
 {
+    public sealed partial class FormationBattleModel
+    {
+        // The screen fire enters from the left of each board row. A living
+        // defender intercepts that row before a unit farther to the right.
+        internal FormationDefender[] TalulahRainVictims(int cap) => Defenders
+            .Where(defender => defender.Alive)
+            .GroupBy(defender => Mathf.Clamp(Mathf.RoundToInt(defender.Position.y), 0, Height - 1))
+            .Select(row => row.OrderBy(defender => defender.Position.x).ThenBy(defender => defender.Id).First())
+            .OrderBy(defender => defender.Position.y).ThenBy(defender => defender.Id)
+            .Take(cap).ToArray();
+
+        internal float TalulahRainStopColumn(int row)
+        {
+            var blocker = Defenders.Where(defender => defender.Alive &&
+                Mathf.Clamp(Mathf.RoundToInt(defender.Position.y), 0, Height - 1) == row)
+                .OrderBy(defender => defender.Position.x).ThenBy(defender => defender.Id).FirstOrDefault();
+            return blocker?.Position.x ?? Width - .5f;
+        }
+    }
+
     public sealed partial class FormationBattleController
     {
         // BsnakeScreenAttack uses projectile_enemy_bsnake. Its source moves at
@@ -61,7 +82,8 @@ namespace YesterdayConvoy
                     double sourceAge = (zoneAge - startsAt) * LegacyVisualRate - laneDelay;
                     if (sourceAge < 0) continue;
                     float column = firstColumn + (float)sourceAge * worldSpeed;
-                    if (column >= lastColumn) continue;
+                    float stopColumn = Mathf.Min(lastColumn, Model.TalulahRainStopColumn(row));
+                    if (column >= stopColumn) continue;
                     var cell = new Vector2(column, row);
                     var point = ActorWorldPoint(cell) + Vector3.up * .025f;
                     LegacyDraw(stream.At(sourceAge), legacyHdrMaterial, point, cell, scale, -5, hdr: stream.HdrRange);

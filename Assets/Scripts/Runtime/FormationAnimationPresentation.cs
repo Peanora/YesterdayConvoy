@@ -18,7 +18,7 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Cast<FormationActor>().Concat(Model.Defenders).Concat(Model.Summons))
             {
                 var unit=actor as FormationFighter;
-                string signature=(unit?.NativePhase??0)+"/"+(unit?.Star??1)+"/"+(Campaign?.TalulahCost??3)+"/"+(Campaign?.WisadelSkill??3)+"/"+(actor.ArtId=="WISADEL_APRIL"&&Model.PresentationBuff(actor,"wisadel")>0);
+                string signature=(unit?.NativePhase??0)+"/"+(unit?.Star??1)+"/"+(Campaign?.TalulahCost??3)+"/"+(Campaign?.WisadelSkill??3)+"/"+(actor.ArtId=="WISADEL_APRIL"&&Model.PresentationBuff(actor,"wisadel")>0)+"/"+(actor.ArtId=="STEAM"?Model.SteamTier:0);
                 if(formationAnimationProfileKeys.TryGetValue(actor.ArtId,out var old)&&old==signature)continue;
                 FormationAnimationProfile profile;
                 if(actor.ArtId.StartsWith("D",StringComparison.Ordinal))
@@ -63,6 +63,7 @@ namespace YesterdayConvoy
         }
         string FormationSourceAction(FormationUnitArt source,FormationActor actor,bool skill)
         {
+            if(source.NativeTask=="STEAM")return skill?"Skill_1_Begin_A":"Attack_A";
             if(actor.ArtId=="B21"&&skill)return SuiClawMotion;
             if(source.NativeTask=="WIS_APRIL_G9")
                 return skill?(Campaign?.WisadelSkill==1?"Skill_1":Campaign?.WisadelSkill==2?"Skill_2_Begin":"Skill_3_Begin"):
@@ -82,6 +83,7 @@ namespace YesterdayConvoy
         Vector3 FormationDisplayPoint(FormationActor actor)
         {
             var point=ActorWorldPoint(actor);
+            if(actor.ArtId=="STEAM"&&battleCamera!=null)point+=battleCamera.transform.up*SteamFlightHeight(actor,Model.Clock);
             if(actor is FormationFighter passenger&&Campaign!=null)
             {
                 var carrier=Model.PresentationCarrier(passenger);

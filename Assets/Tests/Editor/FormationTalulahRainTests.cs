@@ -104,7 +104,7 @@ namespace YesterdayConvoy.Tests
         }
 
         [Test]
-        public void GlobalRainStrikesAcrossAnObstacleAfterItsInitialTargetDies()
+        public void RainRetargetsAfterItsInitialTargetDiesAcrossAnObstacle()
         {
             var terrain = new FormationBattleTerrainLayout(new[]
             {
@@ -128,7 +128,56 @@ namespace YesterdayConvoy.Tests
 
             Assert.That(initial.Alive, Is.False);
             Assert.That(model.Hits.Count(hit => hit.FromId == talulah.Id && hit.ToId == acrossWall.Id &&
-                hit.Action?.Skill == true && !hit.Secondary && hit.Amount > 0), Is.EqualTo(6));
+                hit.Action?.Skill == true && !hit.Secondary && hit.Amount > 0), Is.EqualTo(5));
+        }
+
+        [TestCase(1)]
+        [TestCase(3)]
+        public void FiveCostRainAndBurnStopAtTheFirstLivingGuardInEachRow(int star)
+        {
+            var model = RainBattle();
+            model.Defenders.RemoveRange(2, model.Defenders.Count - 2);
+            var front = model.Defenders[0];
+            var back = model.Defenders[1];
+            front.Position = new Vector2(15, 3);
+            back.Position = new Vector2(18, 3);
+            foreach(var defender in model.Defenders)
+            { defender.MaxHealth = 100000000; defender.Attack = defender.Armor = defender.MagicResistance = 0; defender.Range = .01f; defender.Healer = false; }
+            model.Units.Single().Star = star;
+            Assert.That(model.StartBattle(), Is.True);
+            var talulah = model.Units.Single();
+            talulah.Position = new Vector2(14.5f, 3);
+            talulah.SkillCharge = talulah.SkillRequired;
+            var hits = new HashSet<FormationHit>();
+            for(int i = 0; i < 400; i++)
+            { model.Advance(.025f); hits.UnionWith(model.Hits.Where(hit => hit.FromId == talulah.Id)); }
+            Assert.That(front.Alive, Is.True);
+            Assert.That(hits.Count(hit => hit.ToId == front.Id && hit.Skill && !hit.Secondary), Is.EqualTo(6));
+            Assert.That(hits.Count(hit => hit.ToId == front.Id && hit.Skill && hit.Secondary), Is.EqualTo(8));
+            Assert.That(hits.Any(hit => hit.ToId == back.Id && hit.Skill), Is.False);
+            Assert.That(back.Health, Is.EqualTo(back.MaxHealth));
+        }
+
+        [Test]
+        public void RainInterceptionIsPerRowAndKeepsALivingLowHealthBodyAsABlocker()
+        {
+            var model = RainBattle();
+            model.Defenders.RemoveRange(2, model.Defenders.Count - 2);
+            var front = model.Defenders[0];
+            var back = model.Defenders[1];
+            front.Position = new Vector2(15, 3);
+            back.Position = new Vector2(18, 3);
+            Assert.That(model.StartBattle(), Is.True);
+            var method = typeof(FormationBattleModel).GetMethod("TalulahRainVictims", BindingFlags.Instance | BindingFlags.NonPublic);
+            FormationDefender[] Victims() => (FormationDefender[])method.Invoke(model, new object[] { 8 });
+            CollectionAssert.AreEquivalent(new[] { front }, Victims());
+            back.Position = new Vector2(18, 4);
+            CollectionAssert.AreEquivalent(new[] { front, back }, Victims());
+            back.Position = new Vector2(18, 3);
+            front.Health = 1; // A living low-health body still intercepts the next segment.
+            CollectionAssert.AreEquivalent(new[] { front }, Victims());
+            front.Alive = false;
+            CollectionAssert.AreEquivalent(new[] { back }, Victims());
         }
 
         [Test]

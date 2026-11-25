@@ -29,6 +29,42 @@ namespace YesterdayConvoy.Tests
         }
         static void Badge(FormationCampaignRun run,string trait,int instance) => Assert.That(run.Equip(run.AddItem("徽章:"+trait).Instance,instance).Success,Is.True);
 
+        [TestCase(1)][TestCase(3)]
+        public void SteamNativeContactDelaysDamageAndLocksTheWholeApprovedSequence(int tier)
+        {
+            var model=Fixture(out var run,tier==3?new[]{"STEAM","B01","M03"}:new[]{"STEAM"});
+            if(tier==3){Badge(run,"蒸汽",run.Shop.Bench[1].Instance);Badge(run,"蒸汽",run.Shop.Bench[2].Instance);model.BindCampaign(run);}
+            var guard=Dummy(model);Assert.That(model.StartBattle(),Is.True);
+            var machine=model.Units.First();machine.Position=new Vector2(14.5f,3);machine.SkillCharge=machine.SkillRequired;
+            var hits=new System.Collections.Generic.HashSet<FormationHit>();
+            void Tick(){model.Advance(.025f);hits.UnionWith(model.Hits.Where(hit=>hit.FromId==machine.Id&&hit.Skill&&!hit.Secondary));}
+            Tick();var action=model.PresentationActions.Single(a=>a.ActorId==machine.Id&&a.Skill);
+            Assert.That(action.ContactAt-action.At,Is.EqualTo(2.85).Within(.001));
+            while(model.Clock<action.ContactAt-.03)Tick();Assert.That(hits,Is.Empty,"Charging must not deal premature damage.");
+            double frozen=model.Clock;model.Paused=true;Step(model,4);Assert.That(model.Clock,Is.EqualTo(frozen));Assert.That(hits,Is.Empty);model.Paused=false;
+            while(model.Clock<action.EndAt-.01)Tick();
+            int Type(FormationHit hit)=>(int)typeof(FormationHit).GetProperty("DamageType",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(hit);
+            var physical=hits.Where(hit=>Type(hit)==0).OrderBy(hit=>hit.At).ToArray();
+            var arts=hits.Where(hit=>Type(hit)==1).OrderBy(hit=>hit.At).ToArray();
+            Assert.That(physical.Length,Is.EqualTo(3));Assert.That(arts.Length,Is.EqualTo(tier==3?3:0));
+            for(int index=0;index<3;index++)Assert.That(physical[index].At-action.ContactAt,Is.EqualTo(index*.1).Within(.026));
+            Assert.That(model.PresentationActions.Any(a=>a.ActorId==machine.Id&&!a.Skill&&a.At>action.At&&a.At<action.EndAt),Is.False);
+            Assert.That(action.EndAt-action.At,Is.EqualTo(tier==3?6.6:3.75).Within(.001));
+            Assert.That((double)typeof(FormationActor).GetField("ActionUntil",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(machine),Is.GreaterThanOrEqualTo(action.EndAt-.001));
+            if(tier==3)for(int index=0;index<3;index++)Assert.That(arts[index].At-action.At,Is.EqualTo(4.6+index*.4).Within(.026));
+        }
+
+        [Test]
+        public void SteamDeathCancelsChargedStrikeAndRetryRestoresItsDriverArt()
+        {
+            var model=Fixture(out _,new[]{"STEAM"});var guard=Dummy(model);model.StartBattle();var machine=model.Units.Single();
+            machine.Position=new Vector2(14.5f,3);machine.SkillCharge=machine.SkillRequired;Step(model,.1f);
+            Assert.That(model.PresentationActions.Any(a=>a.Skill),Is.True);
+            Call(model,"CombatDamage",guard,machine,100000000f,2,false,false,false);Step(model,7);
+            Assert.That(model.Hits.Any(hit=>hit.FromId==machine.Id&&hit.Skill),Is.False);
+            Assert.That(model.Retry(),Is.True);Assert.That(model.Units.Single().ArtId,Is.EqualTo("STEAM"));
+        }
+
         [TestCase("M20")][TestCase("WIS")][TestCase("B08")][TestCase("B10")][TestCase("B11")][TestCase("B12")][TestCase("B13")][TestCase("B21")]
         public void ThreeStarFiveCostReplacesGenericStatsAndStartsFull(string id)
         {

@@ -1,0 +1,4924 @@
+{
+  "version": 1,
+  "task": "STEAM",
+  "cardId": "CARD_STEAM",
+  "name": "蒸汽骑士",
+  "view": "main",
+  "model": "enemy_1533_stmkgt",
+  "skin": "default",
+  "ppu": 166.42809964160634,
+  "height": 2.95,
+  "referenceSpeed": 0.6,
+  "aliases": [
+    {
+      "key": "idle",
+      "source": "Idle_A"
+    },
+    {
+      "key": "walk",
+      "source": "Move_A"
+    },
+    {
+      "key": "attack",
+      "source": "Attack_A"
+    },
+    {
+      "key": "cast",
+      "source": "Skill_1_Begin_A"
+    },
+    {
+      "key": "death",
+      "source": "Die_B"
+    }
+  ],
+  "runtimeSources": [
+    "Idle_A",
+    "Move_A",
+    "Attack_A",
+    "Skill_1_Begin_A",
+    "Die_B"
+  ],
+  "clips": [
+    {
+      "key": "Attack_A",
+      "source": "Attack_A",
+      "count": 60,
+      "duration": 2.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.41664836102549446,
+      "pivotY": 0.12352630393172752,
+      "pixelsPerUnit": 166.42809964160634,
+      "events": [
+        {
+          "name": "OnAttack",
+          "time": 1.1333333253860474,
+          "string": "",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Attack_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_A-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Attack_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Attack_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Attack_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 12,
+          "pages": [
+            {
+              "file": "Attack_A-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_A-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Attack_B",
+      "source": "Attack_B",
+      "count": 60,
+      "duration": 2.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4180101659712346,
+      "pivotY": 0.12422916421673691,
+      "pixelsPerUnit": 166.10462149936893,
+      "events": [
+        {
+          "name": "OnAttack",
+          "time": 1.1333333253860474,
+          "string": "",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Attack_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Attack_B-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Attack_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Attack_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Attack_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 12,
+          "pages": [
+            {
+              "file": "Attack_B-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Attack_B-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Boost_A",
+      "source": "Boost_A",
+      "count": 30,
+      "duration": 1.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.512238744777722,
+      "pivotY": 0.0922290960850746,
+      "pixelsPerUnit": 216.32490376591272,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Boost_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Boost_A-007.png",
+          "count": 2,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Boost_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Boost_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Boost_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Boost_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 14,
+          "pages": [
+            {
+              "file": "Boost_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Boost_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Boost_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Boost_A-007.png",
+              "count": 2,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Die_A",
+      "source": "Die_A",
+      "count": 240,
+      "duration": 8.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.5222764561375209,
+      "pivotY": 0.0991202178506253,
+      "pixelsPerUnit": 206.37746801931914,
+      "events": [
+        {
+          "name": "OnPlayAudio",
+          "time": 0,
+          "string": "first_die",
+          "int": 0,
+          "float": 0
+        },
+        {
+          "name": "OnPlayAudio",
+          "time": 6.866666793823242,
+          "string": "second_boost",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Die_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-022.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-023.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-024.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-025.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-026.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-027.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-028.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-029.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-030.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-031.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-032.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-033.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-034.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-035.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-036.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-037.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-038.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-039.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-040.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-041.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-042.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-043.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-044.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-045.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-046.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-047.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-048.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-049.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-050.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-051.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-052.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-053.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-054.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-055.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-056.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-057.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-058.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_A-059.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 64,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-018.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-019.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 80,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-020.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-021.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-022.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-023.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-024.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-025.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-026.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-027.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 112,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-028.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-029.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-030.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-031.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 128,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-032.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-033.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-034.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-035.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 144,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-036.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-037.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-038.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-039.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 160,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-040.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-041.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-042.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-043.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 176,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-044.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-045.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-046.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-047.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 192,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-048.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-049.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-050.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-051.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 208,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-052.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-053.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-054.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-055.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 224,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_A-056.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-057.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-058.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_A-059.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Die_B",
+      "source": "Die_B",
+      "count": 90,
+      "duration": 3.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.41464176232414357,
+      "pivotY": 0.21950080670408564,
+      "pixelsPerUnit": 161.10549664666266,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Die_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Die_B-022.png",
+          "count": 2,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_B-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 64,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Die_B-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-018.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-019.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 80,
+          "count": 10,
+          "pages": [
+            {
+              "file": "Die_B-020.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-021.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Die_B-022.png",
+              "count": 2,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Idle_A",
+      "source": "Idle_A",
+      "count": 60,
+      "duration": 2.0,
+      "fps": 30,
+      "loop": true,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4910632017571278,
+      "pivotY": 0.08407648631259142,
+      "pixelsPerUnit": 222.6335046942562,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Idle_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_A-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Idle_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Idle_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Idle_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 12,
+          "pages": [
+            {
+              "file": "Idle_A-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_A-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Idle_B",
+      "source": "Idle_B",
+      "count": 45,
+      "duration": 1.5,
+      "fps": 30,
+      "loop": true,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4856786427584088,
+      "pivotY": 0.06355635958146479,
+      "pixelsPerUnit": 220.9543538103996,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Idle_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Idle_B-011.png",
+          "count": 1,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Idle_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Idle_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 13,
+          "pages": [
+            {
+              "file": "Idle_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Idle_B-011.png",
+              "count": 1,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Move_A",
+      "source": "Move_A",
+      "count": 60,
+      "duration": 2.0,
+      "fps": 30,
+      "loop": true,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4771959332631232,
+      "pivotY": 0.0833439122037709,
+      "pixelsPerUnit": 218.02871622229347,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Move_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_A-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Move_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Move_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Move_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 12,
+          "pages": [
+            {
+              "file": "Move_A-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_A-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Move_B",
+      "source": "Move_B",
+      "count": 45,
+      "duration": 1.5,
+      "fps": 30,
+      "loop": true,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4890353454544655,
+      "pivotY": 0.07725153896477721,
+      "pixelsPerUnit": 217.22879988340574,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Move_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Move_B-011.png",
+          "count": 1,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Move_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Move_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 13,
+          "pages": [
+            {
+              "file": "Move_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Move_B-011.png",
+              "count": 1,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_1_Attack_A",
+      "source": "Skill_1_Attack_A",
+      "count": 75,
+      "duration": 2.5,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4159035983831307,
+      "pivotY": 0.22997202164324726,
+      "pixelsPerUnit": 145.12207306385554,
+      "events": [
+        {
+          "name": "OnAttack",
+          "time": 0.699999988079071,
+          "string": "",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_1_Attack_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_A-018.png",
+          "count": 3,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_A-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 64,
+          "count": 11,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_A-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_A-018.png",
+              "count": 3,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_1_Attack_B",
+      "source": "Skill_1_Attack_B",
+      "count": 75,
+      "duration": 2.5,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4148856340059687,
+      "pivotY": 0.23200289119797773,
+      "pixelsPerUnit": 144.46967231033761,
+      "events": [
+        {
+          "name": "OnAttack",
+          "time": 0.699999988079071,
+          "string": "",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_1_Attack_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Attack_B-018.png",
+          "count": 3,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_B-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 64,
+          "count": 11,
+          "pages": [
+            {
+              "file": "Skill_1_Attack_B-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Attack_B-018.png",
+              "count": 3,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_1_Begin_A",
+      "source": "Skill_1_Begin_A",
+      "count": 150,
+      "duration": 5.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.5144957328528099,
+      "pivotY": 0.14959715077575142,
+      "pixelsPerUnit": 191.65267995820346,
+      "events": [
+        {
+          "name": "OnPlayAudio",
+          "time": 2.5,
+          "string": "zan_hold",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_1_Begin_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-022.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-023.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-024.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-025.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-026.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-027.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-028.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-029.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-030.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-031.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-032.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-033.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-034.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-035.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-036.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_A-037.png",
+          "count": 2,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 64,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-018.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-019.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 80,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-020.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-021.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-022.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-023.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-024.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-025.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-026.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-027.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 112,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-028.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-029.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-030.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-031.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 128,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-032.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-033.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-034.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-035.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 144,
+          "count": 6,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_A-036.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_A-037.png",
+              "count": 2,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_1_Begin_B",
+      "source": "Skill_1_Begin_B",
+      "count": 150,
+      "duration": 5.0,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.5146832114585218,
+      "pivotY": 0.13806776242719013,
+      "pixelsPerUnit": 191.56795769230334,
+      "events": [
+        {
+          "name": "OnPlayAudio",
+          "time": 2.5,
+          "string": "zan_hold",
+          "int": 0,
+          "float": 0
+        }
+      ],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_1_Begin_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-011.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-012.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-013.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-014.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-015.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-016.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-017.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-018.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-019.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-020.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-021.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-022.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-023.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-024.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-025.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-026.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-027.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-028.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-029.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-030.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-031.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-032.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-033.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-034.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-035.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-036.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_1_Begin_B-037.png",
+          "count": 2,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-011.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 48,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-012.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-013.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-014.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-015.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 64,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-016.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-017.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-018.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-019.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 80,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-020.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-021.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-022.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-023.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 96,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-024.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-025.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-026.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-027.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 112,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-028.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-029.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-030.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-031.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 128,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-032.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-033.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-034.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-035.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 144,
+          "count": 6,
+          "pages": [
+            {
+              "file": "Skill_1_Begin_B-036.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_1_Begin_B-037.png",
+              "count": 2,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_2_Begin_A",
+      "source": "Skill_2_Begin_A",
+      "count": 36,
+      "duration": 1.2,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.16666666666666663,
+      "pixelsPerUnit": 142.22222222222223,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_2_Begin_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_Begin_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_Begin_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 4,
+          "pages": [
+            {
+              "file": "Skill_2_Begin_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_2_Begin_B",
+      "source": "Skill_2_Begin_B",
+      "count": 36,
+      "duration": 1.2,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.16666666666666663,
+      "pixelsPerUnit": 142.22222222222223,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_2_Begin_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_Begin_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_Begin_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_Begin_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_Begin_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 4,
+          "pages": [
+            {
+              "file": "Skill_2_Begin_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_2_End_A",
+      "source": "Skill_2_End_A",
+      "count": 45,
+      "duration": 1.5,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.16666666666666663,
+      "pixelsPerUnit": 142.22222222222223,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_2_End_A-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_A-011.png",
+          "count": 1,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_End_A-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_End_A-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 13,
+          "pages": [
+            {
+              "file": "Skill_2_End_A-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_A-011.png",
+              "count": 1,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "Skill_2_End_B",
+      "source": "Skill_2_End_B",
+      "count": 45,
+      "duration": 1.5,
+      "fps": 30,
+      "loop": false,
+      "cell": 768,
+      "columns": 2,
+      "pivotX": 0.4583333333333333,
+      "pivotY": 0.16666666666666663,
+      "pixelsPerUnit": 142.22222222222223,
+      "events": [],
+      "presentationTop": 2.95,
+      "pages": [
+        {
+          "file": "Skill_2_End_B-000.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-001.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-002.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-003.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-004.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-005.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-006.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-007.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-008.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-009.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-010.png",
+          "count": 4,
+          "width": 1536,
+          "height": 1536
+        },
+        {
+          "file": "Skill_2_End_B-011.png",
+          "count": 1,
+          "width": 1536,
+          "height": 768
+        }
+      ],
+      "segments": [
+        {
+          "firstFrame": 0,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_End_B-000.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-001.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-002.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-003.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 16,
+          "count": 16,
+          "pages": [
+            {
+              "file": "Skill_2_End_B-004.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-005.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-006.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-007.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            }
+          ]
+        },
+        {
+          "firstFrame": 32,
+          "count": 13,
+          "pages": [
+            {
+              "file": "Skill_2_End_B-008.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-009.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-010.png",
+              "count": 4,
+              "width": 1536,
+              "height": 1536
+            },
+            {
+              "file": "Skill_2_End_B-011.png",
+              "count": 1,
+              "width": 1536,
+              "height": 768
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "zeroDurationStates": []
+}

@@ -31,6 +31,7 @@ namespace YesterdayConvoy
             action=Mathf.Max(.35f,action);
             if(k=="TAL")action=Campaign.TalulahCost==5?2:Campaign.TalulahCost==4?1.5f:1.2f;
             if(k=="WIS"&&Campaign.WisadelSkill==2)action=.6f;
+            if(IsMech(u))action=SteamSourceDuration/2*(Buff(u,"haste")>0?Buff(u,"haste"):1);
             var presentation=BeginAction(u,action,true,k=="B23"?target:null);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
             if(k=="TAL"&&FiveStar(u)&&s.Casts==1)GiveBuff(u,"v08_invulnerable",1,action);
             if(k=="TAL"&&Campaign.TalulahCost==5)
@@ -209,7 +210,9 @@ namespace YesterdayConvoy
                     if(!u.Alive)return;
                     var t=target.Alive?target:allBoard?null:FighterTarget(u);
                     if(t==null&&!allBoard)return;
-                    var victims=Nearby(radius>0?center:t.Position,radius>0?AreaRadius(u,radius):0,cap,t);
+                    var victims=Key(u)=="TAL"&&Campaign.TalulahCost==5&&allBoard
+                        ?TalulahRainVictims(cap)
+                        :Nearby(radius>0?center:t.Position,radius>0?AreaRadius(u,radius):0,cap,t);
                     var parent=activePresentationContext?.SkillCompletion?.Presentation;
                     if(Key(u)=="WIS"&&Campaign.WisadelSkill==1&&parent!=null)
                         QueueSkillProjectile(u,parent,t,segment,"Skill_1",at,()=>NativeSegment(u,victims,u.Attack*mult,type,true,element,radius>0,fire),true);

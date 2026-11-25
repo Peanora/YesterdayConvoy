@@ -102,8 +102,7 @@ namespace YesterdayConvoy
         {
             if(IsMech(unit))
             {
-                SkillSequence(unit,target,3,1.2f,0,1.1f,1.8f,3);
-                if(Level("蒸汽")>=3)SkillSequence(unit,target,3,1.8f,1,1.1f,100,int.MaxValue,allBoard:true);
+                ResolveSteamSkill(unit,target,presentation);
                 return true;
             }
             if(!FiveStar(unit))return false;
@@ -209,12 +208,14 @@ namespace YesterdayConvoy
                 if(driver!=main){State(driver).Stacks["steam_hidden"]=1;driver.Alive=false;driver.RespawnRemaining=0;driver.IsMoving=false;}
             }
             var state=State(main);foreach(var driver in drivers)state.Tags.UnionWith(State(driver).Tags);state.Stacks["steam_mech"]=1;state.Spec=FormationCampaignRules.Find("STEAM");
-            main.Name="蒸汽骑士 · 原型机";main.ArtId="STEAM";main.MaxHealth=hp*(Level("蒸汽")>=3?2:1);main.Health=main.MaxHealth;
+            main.Name="蒸汽骑士";main.ArtId="STEAM";main.MaxHealth=hp*(Level("蒸汽")>=3?2:1);main.Health=main.MaxHealth;
             state.BaseAttack=atk*(Level("蒸汽")>=3?2:1);state.AttackPct=0;
             state.BaseArmor=armor+(Level("蒸汽")>=2?30:0);state.BaseMR=mr+(Level("蒸汽")>=2?20:0);state.BaseSP=24;
             state.BaseInterval=2.2f;state.BaseRange=1.2f;state.BaseSpeed=.6f;main.SkillCharge=8;
             state.Stacks["patriot_hp_amount"]=drivers.Sum(driver=>Stack(driver,"patriot_hp_amount"))*1.6f*(Level("蒸汽")>=3?2:1);
             RefreshCampaignStats(main);
+            SetAnimationProfile("STEAM",new FormationAnimationProfile{AttackDuration=2,AttackContact=1.1333333f,
+                SkillDuration=SteamSourceDuration,SkillContact=SteamSourceContact,BaseRate=2});
         }
     }
 }

@@ -681,7 +681,7 @@
         "required": 22.0,
         "action": 1.2,
         "recovery": "自然",
-        "effect": "三费既有技能与锁费强化保留；四费焚城保留。五费：生命2800、攻击560，16/28SP，2秒动作，火雨6段200%法伤，8秒40%法伤灼烧。三星五费覆盖全敌，6段2500%攻击真伤，首次施法免伤，首次三星整合奖励整局一次。"
+        "effect": "三费既有技能与锁费强化保留；四费焚城保留。五费：生命2800、攻击560，16/28SP，2秒动作，火雨6段200%法伤，8秒40%法伤灼烧；每行仅命中最前方存活守军，前排倒下后后续波次才命中后排，取消穿透。三星五费同样逐行受前排拦截，6段2500%攻击真伤，首次施法免伤，首次三星整合奖励整局一次。"
       },
       "role": "成长主C"
     },
@@ -1294,7 +1294,7 @@
         "required": 24.0,
         "action": 1.1,
         "recovery": "自然",
-        "effect": "原型驾驶员：开战进入单台蒸汽骑士。重拳3段120%攻击力物伤；2档高压护甲+30护甲/20法抗；3档机甲生命/攻击+100%，过载肩炮全场3段180%法伤。此为v0.8可调初版，使用自制原型图。"
+        "effect": "开战进入单台蒸汽骑士，使用已确认的原版移植V2造型与动作。蓄力后重拳3段120%攻击力物伤；2档高压护甲+30护甲/20法抗；3档机甲生命/攻击+100%，追加过载肩炮全场3段180%法伤。默认重拳起手2.85秒命中，动作锁3.75秒；3档含起降锁6.6秒。数值为v0.8可调初版。"
       }
     }
   ],
@@ -2846,7 +2846,7 @@
         "initial": 16,
         "required": 28,
         "action": 2.0,
-        "effect": "火雨：最多8人6段各200%攻击法伤；8秒每秒40%攻击法伤灼烧。三星五费：全敌6段各2500%攻击真伤，保留灼烧，首次施法免伤。",
+        "effect": "火雨：每行最前方存活守军承受6段各200%攻击法伤和8秒每秒40%攻击法伤灼烧，不穿透后排，最多8人。三星五费同样逐行拦截，6段各2500%攻击真伤，保留灼烧，首次施法免伤。",
         "direct_segments": 6,
         "direct_multiplier": 2,
         "burn_multiplier": 0.4
@@ -3782,7 +3782,7 @@
     "talulah_5_base_hp": 2800
   },
   "v08_notes": {
-    "steam": "User approved a tunable first implementation: 4 cost, steam/blast, existing GOLEM prototype art. See V08_IMPLEMENTATION.md.",
+    "steam": "User approved the original Steam Knight V2 integration: 4 cost, steam/blast, enemy_1533_stmkgt body and isolated native FX, contact at 5.7 source seconds; see V08_IMPLEMENTATION.md and art/STEAM_KNIGHT_V2.md.",
     "crown_income": "Permanent run eligibility after first activation; unique new-node rewards.",
     "saint_cap": "12 native skill segments per recipient main cast; native autos not limited by skill cap; area target count does not consume extra."
   },
