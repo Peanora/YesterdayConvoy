@@ -71,6 +71,16 @@ namespace YesterdayConvoy
             return bottom > top ? Rect.MinMaxRect(local.xMin, top, local.xMax, bottom) : Rect.zero;
         }
 
+        internal void RevealFormationDecisionOption(int index)
+        {
+            var request=shownFormationDecision;
+            if(!FormationDecisionVisible||request==null||(uint)index>=(uint)request.Options.Count)return;
+            int columns=DecisionColumns(request);float height=request.Navigation?34:151;
+            float gap=request.Navigation?DecisionNavigationGap:DecisionCardGap;
+            float content=DecisionContentHeight(request.Options.Count,columns,height,gap);
+            formationDecisionScroll.y=Mathf.Clamp(index/columns*(height+gap),0,Mathf.Max(0,content-DecisionOptions.height));
+        }
+
         static float DecisionContentHeight(int count, int columns, float cardHeight, float gap) =>
             Mathf.Ceil(count / (float)columns) * (cardHeight + gap) - gap;
 
@@ -289,6 +299,7 @@ namespace YesterdayConvoy
             if (confirm && canConfirm) ApplyDecisionCard(request);
         }
 
+        internal string FormationDecisionInputState => $"key={FormationDecisionKey}; request={BuildFormationDecision()?.Key}; menu={formationMenuOpen}; blockedFrame={shopInputBlockedFrame==Time.frameCount}; openAge={Time.unscaledTimeAsDouble-formationDecisionOpenedAt:0.000}";
         internal bool ActivateFormationDecisionCard(int index) => SelectDecisionCard(InteractiveFormationDecision(), index);
         internal bool ConfirmFormationDecisionCard() => ApplyDecisionCard(InteractiveFormationDecision());
 

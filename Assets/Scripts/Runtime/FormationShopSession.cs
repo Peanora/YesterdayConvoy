@@ -91,7 +91,7 @@ namespace YesterdayConvoy
                     ? BossTrialPieces()
                     : starting.Select(id => new ShopTrialModel.Piece { Id = id,
                         Star = trial?.Trait.Id == "泥岩" && FormationCampaignRun.HasNativeTrait(id, "泥岩") ? 3 : 1 }).ToArray();
-                Shop.Preset(pieces, Array.Empty<string>(), level: Math.Max(3, pieces.Length), xp: 0, gold: 8);
+                Shop.Preset(pieces, Array.Empty<string>(), level: trial?.Trait.Id=="泥岩"?9:Math.Max(3, pieces.Length), xp: 0, gold: 8);
                 Run=new FormationCampaignRun(Shop,seed,practiceNode,trial,
                     practiceNode.HasValue ? null : DrawOpeningRoster(Shop, random), bossTrial);
                 if (Run.IsBossTrial) EquipBossTrialRoster();

@@ -22,12 +22,12 @@ namespace YesterdayConvoy.Tests
                 var definition=FormationUnitCatalog.Find(card.CardId);
                 Assert.That(definition,Is.Not.Null,card.CardId);
                 var rules=FormationCampaignRules.Find(card.CardId);
-                if(rules!=null&&card.CardId.StartsWith("CARD_B",StringComparison.Ordinal))
+                if(rules!=null&&(card.CardId.StartsWith("CARD_B",StringComparison.Ordinal)||card.CardId=="CARD_STEAM"))
                 {
                     Assert.That(definition.Cost,Is.EqualTo(rules.Cost),card.CardId);
                     Assert.That(definition.Stats.HP,Is.EqualTo(rules.Health),card.CardId);
                     Assert.That(definition.Stats.Attack,Is.EqualTo(rules.Attack),card.CardId);
-                    if(card.CardId.StartsWith("CARD_B",StringComparison.Ordinal))
+                    if((card.CardId.StartsWith("CARD_B",StringComparison.Ordinal)||card.CardId=="CARD_STEAM"))
                     {Assert.That(card.RecruitCost,Is.EqualTo(rules.Cost));Assert.That(card.DisplayName,Is.EqualTo(rules.Name));}
                 }
                 else
@@ -173,9 +173,9 @@ namespace YesterdayConvoy.Tests
             Assert.That(ArtMemoryCache.TextureLoads,Is.EqualTo(loads));
         }
 
-        [Test] public void ApprovedFortySixUseDistinctCatalogEntriesAndExcludeRemovedCards()
+        [Test] public void ApprovedFortySevenUseDistinctCatalogEntriesAndExcludeRemovedCards()
         {
-            Assert.That(FormationCampaignRules.AllUnits.Length,Is.EqualTo(46));
+            Assert.That(FormationCampaignRules.AllUnits.Length,Is.EqualTo(47));
             CollectionAssert.AllItemsAreUnique(FormationCampaignRules.AllUnits.Select(u=>u.CardId));
             foreach(var unit in FormationCampaignRules.AllUnits)
                 Assert.That(FormationUnitCatalog.Find(unit.CardId),Is.Not.Null,unit.CardId);

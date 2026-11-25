@@ -304,10 +304,10 @@ namespace YesterdayConvoy.Tests
             Assert.That(ordered.Length,Is.EqualTo(shells));
             CollectionAssert.AreEqual(Enumerable.Range(0,shells),ordered.Select(action=>action.ProjectileIndex));
             Assert.That(ordered.Select(action=>action.ParentSequence).Distinct().Count(),Is.EqualTo(1));
-            foreach(var gap in ordered.Skip(1).Zip(ordered,(later,earlier)=>later.LaunchedAt-earlier.LaunchedAt))Assert.That(gap,Is.EqualTo(1.1).Within(.00001));
+            foreach(var gap in ordered.Skip(1).Zip(ordered,(later,earlier)=>later.LaunchedAt-earlier.LaunchedAt))Assert.That(gap,Is.EqualTo(star>=3?.7:1.1).Within(.00001));
             Assert.That(ordered.All(action=>!action.Cancelled&&action.Skill),Is.True);
             Assert.That(model.SkillCasts.Count,Is.EqualTo(1),"Projectile metadata must never create additional casts or consume more SP.");
-            Assert.That(actor.DamageDone,Is.EqualTo(actor.Attack*4.5f*shells).Within(.1));
+            Assert.That(actor.DamageDone,Is.EqualTo(actor.Attack*(star>=3?20:4.5f)*shells).Within(.1));
             var cast=model.PresentationActions.Single(action=>action.ActorId==actor.Id&&action.Skill&&!action.ProjectileOnly);
             Assert.That(actor.PresentationStartedAt,Is.EqualTo(cast.At));
         }

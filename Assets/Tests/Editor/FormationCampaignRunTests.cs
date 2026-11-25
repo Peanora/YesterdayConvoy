@@ -413,7 +413,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(run.Choose(0).Success,Is.True);Assert.That(shop.Offers.Count(x=>x!=null),Is.EqualTo(5));shop.Validate();
         }
         [Test]
-        public void FourMudrockMembersCannotFarmCultivationAboveNinetyNineExperience()
+        public void FourMudrockMembersCannotFarmCultivationAboveSeventyNineExperience()
         {
             var shop=Shop(33);var run=new FormationCampaignRun(shop,33);ResolveChoices(run);
             shop.Preset(new[]{"M27","M42","M28","B01"}.Select(id=>new ShopTrialModel.Piece{Id=FormationCampaignRules.Find(id).CardId,Star=id=="B01"?1:3}),Array.Empty<string>(),4,0,80);
@@ -421,7 +421,7 @@ namespace YesterdayConvoy.Tests
             var badge=run.AddItem("徽章:泥岩");var fourth=shop.Bench.Single(p=>FormationCampaignRules.Find(p.Id).Id=="B01");Assert.That(run.Equip(badge.Instance,fourth.Instance).Success,Is.True);
             while(!run.Finished)
             {ResolveChoices(run);if(run.CurrentNode.Kind!="补给")run.SettleBattle(true,1,5,0,false);CollectDrops(run);if(!run.Finished)Assert.That(run.AdvanceNode(),Is.True);}
-            Assert.That(run.MudrockXP,Is.EqualTo(99));
+            Assert.That(run.MudrockXP,Is.EqualTo(79));
         }
         static void FixtureNode(FormationCampaignRun run,int index)=>typeof(FormationCampaignRun).GetProperty("NodeIndex").GetSetMethod(true).Invoke(run,new object[]{index});
         static void FixtureAugment(FormationCampaignRun run,string id)=>typeof(FormationCampaignRun).GetMethod("ApplyAugment",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(run,new object[]{id});

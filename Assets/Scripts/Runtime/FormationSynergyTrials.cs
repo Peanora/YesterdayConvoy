@@ -54,6 +54,10 @@ namespace YesterdayConvoy
                 first: new[] { "M20", "M30", "B24" }),
             Create("剧场", "2-4", "让主角弑君者先接敌。血量低于四成后再次受击时，观察最近的幕后分担伤害。",
                 first: new[] { "B03" }, badges: new[] { "M30" }),
+            Create("行商","2-1","军需交易与三星产金。"),
+            Create("军械库","2-1","整备切换维维美模式。"),
+            Create("画中天地","2-1","选择画境中心并观察附近减伤。"),
+            Create("蒸汽","2-1","三名驾驶员仅合为一台原型机，主驾驶装备触发、返场与进门。"),
             Create("同频", "2-1", "观察巫王和蔓德拉完成四次普攻后，领奏巫王获得技力与护盾，下一次主技动作加快。",
                 first: new[] { "B11", "M32" }),
         });
@@ -70,18 +74,22 @@ namespace YesterdayConvoy
             string[] natural = FormationCampaignRules.AllUnits
                 .Where(unit => unit.Factions.Contains(traitId) || unit.Styles.Contains(traitId))
                 .Select(unit => unit.CardId).ToArray();
-            var badgeWearers = ResolveCards(badges);
+            var badgeWearers = ResolveCards(badges).ToList();
+            int deficit=trait.Levels.Max()-natural.Length;
+            foreach(var candidate in FormationCampaignRules.AllUnits.Where(unit=>!natural.Contains(unit.CardId)).Select(unit=>unit.CardId))
+                if(badgeWearers.Count<deficit&&!badgeWearers.Contains(candidate))badgeWearers.Add(candidate);
+            var badgeArray=badgeWearers.ToArray();
             var firstMembers = ResolveCards(first);
             int count = trait.Levels.Max();
-            var roster = firstMembers.Concat(natural).Distinct().Take(count - badgeWearers.Length)
-                .Concat(badgeWearers).ToArray();
+            var roster = firstMembers.Concat(natural).Distinct().Take(count - badgeArray.Length)
+                .Concat(badgeWearers).Concat(traitId=="行商"?new[]{"CARD_B01"}:Array.Empty<string>()).ToArray();
 
             if (nodeIndex < 0 || FormationCampaignRules.Nodes[nodeIndex].DefenderCount == 0 ||
                 firstMembers.Any(card => !natural.Contains(card)) || badgeWearers.Any(natural.Contains) ||
-                badgeWearers.Length > 2 || badgeWearers.Length > 0 && !FormationCampaignRun.BadgeTraits.Contains(traitId) ||
-                roster.Length != count || roster.Distinct().Count() != count)
+                badgeArray.Length > 2 || badgeArray.Length > 0 && !FormationCampaignRun.BadgeTraits.Contains(traitId) ||
+                roster.Length != count+(traitId=="行商"?1:0) || roster.Distinct().Count() != roster.Length)
                 throw new InvalidOperationException("Invalid formation synergy trial: " + traitId);
-            return new FormationSynergyTrial(trait, nodeIndex, roster, badgeWearers, hint);
+            return new FormationSynergyTrial(trait, nodeIndex, roster, badgeArray, hint);
         }
 
         static string[] ResolveCards(string[] ids) => (ids ?? Array.Empty<string>()).Select(id =>

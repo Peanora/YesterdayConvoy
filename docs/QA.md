@@ -1,5 +1,15 @@
 # 验证证据与回归
 
+## 2026-11-25 v0.8 数值、彩档与单机甲
+
+- 用户确认按评审稿实施，并确认由程序补齐蒸汽驾驶员和模块初版。基于 main `c4e39490`，分支 `codex/v08-balance-synergies-20261125`，保留已验证的 D3D11 崩溃修复；既存 `.vscode/` 保留、不提交。 [范围与口径](design/V08_IMPLEMENTATION.md) · [原评审稿](design/V08_REVIEW.md)
+- 完整 EditMode **1280/1280**，零失败／零跳过。覆盖三星五费独立面板与真实伤害、三四费塔露拉隔离、免控、免死优先、两徽章缺口、DOT锁定与增援、寒风暂停、严格处决、12段防递归、冠冕去重、一次交易、驾驶员隐藏／复活／主C重定向，以及图标依赖。GPU正式场景 PlayMode **4/4**。 [EditMode XML](../artifacts/v08/edit-icons.xml) · [PlayMode XML](../artifacts/v08/play-final.xml)
+- Unity **6000.6.5f1** Windows x64 Development 构建 **1,401,055,446字节，0错误**。默认 Direct3D11，无需传强制后端参数。完整装入142份清单与5,373张处理纹理；新增7枚原创图标与meta随源码，不依赖额外本地图片。Runtime DLL SHA-256：`967448E60D8AD43793A40CD8B9C2F20AA1D9613B12BB7041511CEF9149735421`。 [构建日志](../artifacts/v08/build-icons-delivery.log)
+- 最终EXE正式前三战 **142/142**，全22个羁绊样板 **152/152**；共 **25场**，两个进程均零异常、退出0，实测22种羁绊、30种装备图标加载。预设胜负均按真实战斗与进门／时限结算，不表示22套阵容全都通关。 [正式前三战](../artifacts/v08/campaign-complete/campaign-smoke.json) · [羁绊报告](../artifacts/v08/synergies-complete/synergy-smoke.json)
+- 前一轮同菜单构建的Windows交互驱动 **180/180**，零异常、退出0。确认新伊比利亚双选、军需交易次数、画境行列选格、主驾驶实例和原有升费／奖励／搭档菜单。最终构建仅随后补图标与说明，保留同一交互逻辑。 [菜单报告](../artifacts/v08/decisions-verified/decision-drawer-smoke.json)
+- 生成器输出一致性通过；原v0.7模型明确标记历史，未充当v0.8胜率结论。普通二星五费全部终局路线与自然获取率、长局强度和第二台电脑验收**未完成**，参数仍供队友实战评审。蒸汽专用人物美术未制作，当前明确复用仓库已有GOLEM原型；新增UI图标为原创几何图案，无第三方素材输入。 [图标来源和生成方式](art/V08_ICONS.md)
+- 本节链接的 `artifacts/v08` 是本机生成证据，不随Git提交；接收者可用本轮提交的测试与生成器重新验证。源码、卡牌、单位、图标、SVG与必要meta一起交付；不提交Library、日志、构建或本地AGENTS，不自动发布ZIP／Releases。
+
 ## 2026-11-24 Windows 战斗崩溃兼容修复
 
 - 基于 main `c4e394909118ca9d255915e08e95767fac674765`，分支 `codex/fix-player-battle-crash-20261124`。保留既存未跟踪 `.vscode/`，仅调整标准 Windows 构建入口的图形 API 选择；构建后恢复原设置值，构建生成的等价自动 API 序列化条目不纳入提交。

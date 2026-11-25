@@ -32,6 +32,7 @@ namespace YesterdayConvoy
             if(k=="TAL")action=Campaign.TalulahCost==5?2:Campaign.TalulahCost==4?1.5f:1.2f;
             if(k=="WIS"&&Campaign.WisadelSkill==2)action=.6f;
             var presentation=BeginAction(u,action,true,k=="B23"?target:null);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
+            if(k=="TAL"&&FiveStar(u)&&s.Casts==1)GiveBuff(u,"v08_invulnerable",1,action);
             if(k=="TAL"&&Campaign.TalulahCost==5)
                 foreach(var pending in presentationActions)
                     if(pending.ActorId==u.Id&&!pending.Skill&&pending.ContactAt>Clock+1e-8)pending.Cancelled=true;
@@ -41,10 +42,11 @@ namespace YesterdayConvoy
             s.Stacks["cast_multiplier"]=skillBonus;s.Buffs.Remove("skill_bonus");s.Buffs.Remove("revival_skill");s.Buffs.Remove("ember");
             if(HasItem(u,"CF")&&!AttackRecovery(u))AddStack(u,"manual",1,5);
             if(HasItem(u,"CC")&&!AttackRecovery(u))AddStack(u,"reactor",1,10);
-            if(Tagged(u,"伊比利亚")&&Level("伊比利亚")>=2&&Stack(u,"evidence")>=12){s.Stacks["evidence"]-=12;s.Stacks["cast_multiplier"]+=.35f;}
+            if((k=="B23"||k=="B25")&&Tagged(u,"伊比利亚")&&Level("伊比利亚")>=2&&Stack(u,"evidence")>=12){s.Stacks["evidence"]-=12;s.Stacks["cast_multiplier"]+=.35f;}
             var firstSuiStrike = k=="B21" ? PrepareSuiClawStrike(u,presentation,0,target,presentation.ContactAt) : null;
             QueueSkillAction(u,presentation,()=>
             {
+            if(TryV08Skill(u,target,presentation,firstSuiStrike))return;
             switch(k)
             {
                 case "M03": SkillSingle(u,target,target.Health<target.MaxHealth*.5f?3.4f:2.6f,0);break;
@@ -105,9 +107,9 @@ namespace YesterdayConvoy
                     else
                     {
                         int n=cost==5?6:Campaign.TalulahEnhanced?4:3;
-                        SkillSequence(u,target,n,cost==5?2.6f:2.8f,1,action,cost==5?100:2.5f,cost==5?8:6,allBoard:cost==5);
-                        AddZone(u,target.Position,cost==5?100:AreaRadius(u,2.5f),cost==5?.5f:.35f,cost==5?TalulahRainDuration:6,cost==5?8:6,"burn");
-                        if(cost==5&&u.Star>=3)for(int sec=2;sec<=TalulahRainDuration;sec+=2)ScheduleOwned(u,Clock+sec,()=>{if(u.Alive)foreach(var d in Defenders.Where(d=>d.Alive).Take(8).ToArray())CombatDamage(u,d,u.Attack*.5f*Power(u),2,true,false);});
+                        SkillSequence(u,target,n,cost==5?2f:2.8f,1,action,cost==5?100:2.5f,cost==5?8:6,allBoard:cost==5);
+                        AddZone(u,target.Position,cost==5?100:AreaRadius(u,2.5f),cost==5?.4f:.35f,cost==5?TalulahRainDuration:6,cost==5?8:6,"burn");
+
                         if(cost==4&&Campaign.TalulahEnhanced)Shield(u,u,u.MaxHealth*.2f,8,"talulah");
                     }break;
                 case "B09":

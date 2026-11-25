@@ -92,7 +92,7 @@ namespace YesterdayConvoy.Tests
             for (int i = 0; i < burns.Length; i++)
             {
                 Assert.That(burns[i].At, Is.EqualTo(rainEnd - 7 + i).Within(.0001));
-                Assert.That(burns[i].Amount, Is.EqualTo(talulah.Attack * .5f).Within(.1f));
+                Assert.That(burns[i].Amount, Is.EqualTo(talulah.Attack * .4f).Within(.1f));
                 Assert.That(ShowsDamageNumber(burns[i]), Is.True, "The burn is real damage even below the high-hit cutoff.");
             }
             Assert.That(hits.Any(hit => !hit.Skill), Is.False);

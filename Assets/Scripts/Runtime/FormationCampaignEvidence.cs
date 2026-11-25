@@ -268,7 +268,7 @@ namespace YesterdayConvoy
                 yield break;
             }
             Assert(controller.Shop.Gold==8&&controller.Shop.Level==3,"Independent random starter has 8 gold and level 3");
-            Assert(FormationCampaignRules.AllUnits.Length==46&&controller.Shop.Roles.Count==46,"Formal shop contains exactly the 46 approved identities");
+            Assert(FormationCampaignRules.AllUnits.Length==47&&controller.Shop.Roles.Count==47,"Formal shop contains exactly the 47 approved identities");
             Assert(FormationBattleModel.Width==22&&FormationBattleModel.Height==8&&FormationBattleModel.DeploymentColumns==10,
                 "The joined board has a 10 by 8 deployment area and a 10 by 8 guard area");
             yield return WaitForOpeningDelivery("01-opening-delivery-and-preplan");
@@ -291,9 +291,9 @@ namespace YesterdayConvoy
             Assert(Enumerable.Range(0,11).All(i=>FormationBattleController.FormationLineupRect(i)==Rect.zero),"No second screen lineup rail remains");
             Assert(controller.FormationDisplayedInterest==Math.Min(controller.Shop.InterestCap,controller.Shop.Gold/controller.Shop.InterestDivisor),"Coin HUD shows the production interest forecast");
             Assert(FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles)
-                .All(rule => SynergyBadgePresentation.IconFor(rule.Name)!=null), "All 18 production trait emblem textures load in Player");
-            Assert(FormationCampaignRules.AllComponents.Concat(FormationCampaignRules.AllItems)
-                .All(item => FormationBattleController.SupplyItemArt(item.Id)!=null), "All 27 approved equipment textures load in Player");
+                .All(rule => SynergyBadgePresentation.IconFor(rule.Name)!=null), "All 22 production trait emblem textures load in Player");
+            Assert(FormationCampaignRules.AllComponents.Concat(FormationCampaignRules.AllItems).Concat(FormationCampaignRules.AllPopulationItems)
+                .All(item => FormationBattleController.SupplyItemArt(item.Id)!=null), "All 30 approved equipment textures load in Player");
             Assert(new[]{"白","蓝","金","彩"}.All(color=>FormationBattleController.SupplyOrbArt(color)!=null),
                 "All four reward orb textures load in Player");
             yield return Frame("03-left-preparation");
