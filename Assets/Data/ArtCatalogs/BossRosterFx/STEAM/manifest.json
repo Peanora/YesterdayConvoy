@@ -682,7 +682,11 @@
         "skill_02_range_01",
         "skill_02_hit_01",
         "presure_buff_01",
-        "shield_01"
+        "shield_01",
+        "reborn_01",
+        "reborn_02",
+        "reborn_head_01",
+        "reborn_presure_buff_01"
       ]
     }
   ]

@@ -56,6 +56,33 @@ namespace YesterdayConvoy.Tests
                     UnityEngine.Object.Destroy(on);UnityEngine.Object.Destroy(off);
                     double frozen=board.Model.Clock;yield return null;yield return null;Assert.That(board.Model.Clock,Is.EqualTo(frozen));
                 }
+                if(tier==3)
+                {
+                    var damage=typeof(FormationBattleModel).GetMethods(BindingFlags.Instance|BindingFlags.NonPublic)
+                        .Single(method=>method.Name=="CombatDamage"&&method.GetParameters().Length==7);
+                    damage.Invoke(board.Model,new object[]{board.Model.Defenders.First(),machine,100000000f,2,false,false,false});
+                    Assert.That(machine.Alive,Is.False);double deathAt=machine.LastDeathAt;
+                    while(board.Model.Clock<deathAt+6.9){Advance();yield return null;}
+                    Assert.That(machine.Alive,Is.False,"The source rebirth must not shorten the real eight-second return.");
+                    Invoke(board,"SyncActors");yield return new WaitForEndOfFrame();
+                    var body=UnityEngine.Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None)
+                        .Single(renderer=>renderer.name==machine.Name);
+                    Assert.That(body.enabled,Is.True);Assert.That(body.sprite.name,Does.Contain("Die_A"));
+                    var effects=UnityEngine.Object.FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None)
+                        .Where(renderer=>renderer.enabled&&renderer.name.StartsWith("Boss FX / boss/STEAM/reborn_",StringComparison.Ordinal)).ToArray();
+                    Assert.That(effects,Is.Not.Empty);
+                    var on=Capture(board.battleCamera);File.WriteAllBytes(Path.Combine(output,"rebirth-on.png"),on.EncodeToPNG());
+                    foreach(var effect in effects)effect.enabled=false;
+                    var off=Capture(board.battleCamera);File.WriteAllBytes(Path.Combine(output,"rebirth-off.png"),off.EncodeToPNG());
+                    foreach(var effect in effects)effect.enabled=true;
+                    var a=on.GetPixels32();var b=off.GetPixels32();int changed=0;
+                    for(int pixel=0;pixel<a.Length;pixel++)if(Math.Abs(a[pixel].r-b[pixel].r)+Math.Abs(a[pixel].g-b[pixel].g)+Math.Abs(a[pixel].b-b[pixel].b)>20)changed++;
+                    Assert.That(changed,Is.GreaterThan(100));Debug.Log("STEAM_PIXEL_EVIDENCE rebirth changed="+changed);
+                    UnityEngine.Object.Destroy(on);UnityEngine.Object.Destroy(off);
+                    double paused=board.Model.Clock;board.Model.Advance(1);Assert.That(board.Model.Clock,Is.EqualTo(paused));
+                    while(board.Model.Clock<deathAt+8.05){Advance();yield return null;}
+                    Assert.That(machine.Alive,Is.True);Assert.That(machine.Health,Is.EqualTo(machine.MaxHealth));
+                }
             }
         }
         static Texture2D Capture(Camera camera)

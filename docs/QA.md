@@ -3,13 +3,15 @@
 ## 2026-11-25 蒸汽骑士 V2 与火雨阻挡
 
 - 用户确认“按 V2 接入”，沿用 `codex/v08-balance-synergies-20261125` 和 PR #116。仅本轮角色与战斗规则接入；未更改保存场景、Prefab、Packages或项目设置。既存 `.vscode/` 保留；Unity测试临时场景不提交。
-- 完整 EditMode **1286/1286**，零失败、零跳过。新增蒸汽一／三档原出手点2.85秒、3段物伤／3段法伤、施法期间不插普攻、暂停、死亡取消和重试检查；五费塔露拉覆盖六段直伤及八次灼烧的前排阻挡、倒下后重新索敌与行间独立。 [XML](../artifacts/steam-v2-integration/edit-verified.xml)
+- 完整 EditMode **1286/1286**，零失败、零跳过。新增蒸汽一／三档原出手点2.85秒、3段物伤／3段法伤、施法期间不插普攻、暂停、死亡取消和重试检查；五费塔露拉覆盖六段直伤及八次灼烧的前排阻挡、倒下后重新索敌与行间独立。补全复生后再次全量通过。 [最终XML](../artifacts/steam-v2-integration/edit-rebirth.xml)
 - GPU正式场景4项与蒸汽画面专项共 **5/5**。透明留白裁切后，蒸汽专项再测 **1/1**，最终补明确站位和朝向断言 **1/1**。在同一模拟时刻实际相机拍FX开／关：一档重拳26,322像素、三档重拳27,558像素、肩炮16,589像素超过RGB总差20；已目视检查亮部、朝向、爆点和地面层。测试暂停时模拟钟冻结。 [最终XML](../artifacts/steam-v2-integration/play-contact.xml) · [图片](../artifacts/steam-v2-integration/pixels/)
-- **2127帧**全部RGBA逐通道对照证明裁切可无损还原512源画幅，包括alpha为0的加色RGB；共同裁切边界和新pivot保持挂点及世界尺度。现役17个FX片段29页原始GPU纹理约196.3MiB。运行依赖382个图片／JSON文件无忽略、无缺meta；运行只用仓库内清单、资源、Shader和构建自动装入的处理纹理。 [素材报告](../artifacts/steam-v2-integration/package-verification.json)
-- Unity **6000.6.5f1** / Windows x64 Development / 默认 **D3D11**，构建 **1,404,865,175字节，0错误**。自动装入144份清单、5,753张处理纹理，工程外原客户端、AB、提取器和预览文件均不参与运行。 [构建日志](../artifacts/steam-v2-integration/build.log)
-- 最终独立Player：正式前三战 **142/142**、22羁绊样板 **152/152**，共25场，报告零异常并正常结束。样板按真实进门／时限结算，不代表22阵容全部获胜；未额外运行前一版的菜单交互180项。 [正式报告](../artifacts/steam-v2-integration/campaign/campaign-smoke.json) · [羁绊报告](../artifacts/steam-v2-integration/synergies/synergy-smoke.json)
-- 同一EXE完成 **3段1280×720 / 60fps无声实录**：STEAM16秒、STEAM3含真实双徽章合体16秒、TAL5共22秒。展示靶高生命不反击、右侧起点、段间可跳过自然SP等待；不是自然对局或平衡证据。重拳及肩炮已在Player实际相机核对。 [录像清单](../artifacts/steam-v2-integration/player-showcase/manifest.json)
-- 原作全部AI、音效、历史轨迹网格、完整炮弹飞行和Die_A复生演出未接入；当前8秒返场不变。平衡长局、所有地图与第二台电脑未测。素材来源、逐依赖哈希及真实权利状态见 [移植记录](art/STEAM_KNIGHT_V2.md) 和 [源文件索引](art/STEAM_KNIGHT_SOURCE.json)。本机证据、构建、缓存、原包不随Git提交，无ZIP／Releases。
+- 原版Die_A及四层复生特效补全后，GPU蒸汽专项 **1/1**：真实致死后6.9秒仍未复活，身体保持可见且选中Die_A；FX开／关差异 **2,361像素**，暂停冻结，满8秒后真实满血返回。 [复生XML](../artifacts/steam-v2-integration/play-rebirth.xml)
+- **2127帧**全部RGBA逐通道对照证明裁切可无损还原512源画幅，包括alpha为0的加色RGB；共同裁切边界和新pivot保持挂点及世界尺度。现役21个FX片段45页原始GPU纹理约346.2MiB。运行依赖382个图片／JSON文件无忽略、无缺meta；运行只用仓库内清单、资源、Shader和构建自动装入的处理纹理。 [素材报告](../artifacts/steam-v2-integration/package-verification.json)
+- Unity **6000.6.5f1** / Windows x64 Development / 默认 **D3D11**，最终构建 **1,404,866,387字节，0错误**。自动装入144份清单、5,753张处理纹理，工程外原客户端、AB、提取器和预览文件均不参与运行。Runtime DLL SHA-256：`9F55DA6292839F9844C88C8B46B6E4AA3017D1078732B1C6F4D096B2E4A2DB6A`。 [构建日志](../artifacts/steam-v2-integration/build-final.log)
+- 最终独立Player：正式前三战 **142/142**、22羁绊样板 **152/152**，共25场，零异常，两个进程退出码均 **0**。样板按真实进门／时限结算，不代表22阵容全部获胜；未额外运行前一版的菜单交互180项。 [正式报告](../artifacts/steam-v2-integration/campaign-final/campaign-smoke.json) · [羁绊报告](../artifacts/steam-v2-integration/synergies-final/synergy-smoke.json)
+- 补全复生前的EXE完成 **3段1280×720 / 60fps无声实录**：STEAM16秒、STEAM3含真实双徽章合体16秒、TAL5共22秒。展示靶高生命不反击、右侧起点、段间可跳过自然SP等待；不是自然对局或平衡证据。重拳及肩炮已在Player实际相机核对。 [该版录像](../artifacts/steam-v2-integration/player-showcase/manifest.json)
+- 最终EXE补录三档肩炮16秒与真实复生21.47秒（先前版本一档／塔露拉录像保留）。复生夹具等待真实满8秒返回后才重置演示站位，不会提前拉动未复活身体。两段1280×720 / 60fps无声录像均正常完成，Player退出0。 [最终录像](../artifacts/steam-v2-integration/player-final/manifest.json)
+- 原作全部AI、音效、历史轨迹网格、完整炮弹飞行未接入。平衡长局、所有地图与第二台电脑未测。素材来源、逐依赖哈希及真实权利状态见 [移植记录](art/STEAM_KNIGHT_V2.md) 和 [源文件索引](art/STEAM_KNIGHT_SOURCE.json)。本机证据、构建、缓存、原包不随Git提交，无ZIP／Releases。
 
 ## 2026-11-25 v0.8 数值、彩档与单机甲
 

@@ -86,7 +86,7 @@ else:
   for p in ps:p['file']=c['key']+'/'+p['file']
   clips.append({'key':c['key'],'count':c['frames'],'width':cell,'height':cell,'columns':columns,'duration':c['duration'],'ppu':c['ppu'],'pivotX':pivotX,'pivotY':pivotY,'hdrRange':c['hdrRange'],'sourceStart':0,'loopPeriod':c['duration'] if c['loop'] else 0,'loop':c['loop'],'pages':ps})
   print('FX',c['key'],c['frames'],len(ps),flush=True)
- active=[c['key'] for c in clips if not c['key'].startswith('reborn_') and c['key']!='skill_02_hit_02']
+ active=[c['key'] for c in clips if c['key']!='skill_02_hit_02']
  write_json(data/'manifest.json',{'version':1,'task':'STEAM','fps':30,'encoding':capture['encoding'],'clips':clips,'bindings':[],'preload':[{'phase':0,'keys':active}]})
  tree_meta(images);tree_meta(data)
 print('STEAM_NATIVE_INSTALL_PASS')

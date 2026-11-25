@@ -281,6 +281,7 @@ namespace YesterdayConvoy
             float deathDuration=defender?GuardDeathDuration(actor):
                 (formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f)/FormationVisualRate;
             string bodyArtId=FormationBodyArtId(actor);
+            if(actor.ArtId=="STEAM"&&!actor.Alive&&actor is FormationFighter{RespawnRemaining:>0})deathDuration=(float)Model.ReviveSeconds;
             body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(bodyArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
             if(!body.enabled)return;
             bool pramanix = actor is FormationDefender { IsSnowBoss: true };
@@ -551,7 +552,7 @@ namespace YesterdayConvoy
             if(source.NativeTask==null)yield break;
             if(source.NativeTask=="STEAM")
             {
-                foreach(var motion in new[]{"Attack_A","Skill_1_Begin_A","Skill_1_Attack_A","Skill_2_Begin_A","Skill_2_End_A","Boost_A","Idle_B"})yield return motion;
+                foreach(var motion in new[]{"Attack_A","Skill_1_Begin_A","Skill_1_Attack_A","Skill_2_Begin_A","Skill_2_End_A","Boost_A","Idle_B","Die_A"})yield return motion;
                 yield break;
             }
             var actor=Model.Units.FirstOrDefault(u=>u.ArtId==id);

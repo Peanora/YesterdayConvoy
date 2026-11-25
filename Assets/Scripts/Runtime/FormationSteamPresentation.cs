@@ -11,6 +11,7 @@ namespace YesterdayConvoy
         [Serializable]sealed class SteamMountFrame{public SteamBone[] bones;}
         [Serializable]sealed class SteamBone{public string name;public float x,y,angle;}
         SteamMounts steamMounts;
+        double SteamRebirthAge(FormationActor actor,double now)=>(now-actor.LastDeathAt)*8/Math.Max(.01,Model.ReviveSeconds);
         SteamBone SteamBoneAt(string clip,string bone,double sourceTime)
         {
             if(steamMounts==null)
@@ -25,7 +26,11 @@ namespace YesterdayConvoy
         void SteamPose(FormationActor actor,double now,out string clip,out double age,out bool loop)
         {
             loop=false;age=0;
-            if(!actor.Alive){clip="Die_B";age=(now-actor.LastDeathAt)*FormationVisualRate;return;}
+            if(!actor.Alive)
+            {
+                bool reviving=actor is FormationFighter{RespawnRemaining:>0}&&Model.Phase==FormationPhase.Fighting;
+                clip=reviving?"Die_A":"Die_B";age=reviving?SteamRebirthAge(actor,now):(now-actor.LastDeathAt)*FormationVisualRate;return;
+            }
             double elapsed=(now-actor.PresentationStartedAt)*Math.Max(.01,actor.PresentationRate);
             bool casting=actor.LastSkillAt>=actor.LastActionAt-.0001&&now<actor.PresentationStartedAt+actor.PresentationDuration;
             if(casting)
@@ -39,10 +44,11 @@ namespace YesterdayConvoy
             }
             if(actor.LastActionAt>=0&&now<actor.PresentationStartedAt+actor.PresentationDuration)
             {clip="Attack_A";age=elapsed;return;}
-            double born=actor.LastDeathAt>=0?actor.LastDeathAt+8:0;
+            double born=actor.LastDeathAt>=0?actor.LastDeathAt+Model.ReviveSeconds:0;
             if(Model.Phase==FormationPhase.Fighting&&now>=born&&now-born<.5&&Model.SteamTier>=2)
             {clip="Boost_A";age=(now-born)*2;return;}
-            clip=actor.IsMoving?(Model.SteamTier>=2?"Move_B":"Move_A"):(Model.SteamTier>=2?"Idle_B":"Idle_A");
+            bool boosted=Model.SteamTier>=2||actor is FormationFighter{Deaths:>0};
+            clip=actor.IsMoving?(boosted?"Move_B":"Move_A"):(boosted?"Idle_B":"Idle_A");
             loop=true;age=Model.Phase==FormationPhase.Preparation?Time.unscaledTimeAsDouble:now*FormationVisualRate;
         }
         void SelectFormationSteamMotion(FormationActor actor,double now,ref string key,ref double age,ref bool loop)
@@ -67,8 +73,18 @@ namespace YesterdayConvoy
         }
         void PresentFormationSteamEffects(FormationFighter actor)
         {
-            if(!actor.Alive||Model.Phase==FormationPhase.Preparation)return;
+            if(Model.Phase==FormationPhase.Preparation)return;
             double now=Model.Clock;var foot=ActorWorldPoint(actor);
+            if(!actor.Alive)
+            {
+                if(actor.RespawnRemaining<=0||Model.Phase!=FormationPhase.Fighting)return;
+                double age=SteamRebirthAge(actor,now);
+                SteamFx("reborn_01",age,actor,actor.Position,foot);
+                SteamFx("reborn_02",age,actor,actor.Position,foot);
+                SteamFx("reborn_head_01",age,actor,actor.Position,SteamMount(actor,"Head",now));
+                SteamFx("reborn_presure_buff_01",age,actor,actor.Position,SteamMount(actor,"Common2",now),true,-3);
+                return;
+            }
             if(Model.SteamTier>=2)
             {
                 var point=SteamMount(actor,"Common2",now);
