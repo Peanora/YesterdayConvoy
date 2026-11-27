@@ -295,6 +295,7 @@ namespace YesterdayConvoy
             this.bossTrial = bossTrial;
             IsPractice=practiceNode.HasValue;
             if(IsPractice&&!SelectPracticeNode(practiceNode.Value))throw new ArgumentOutOfRangeException(nameof(practiceNode));
+            Economy.BeginNode(CurrentNode.Id);
             if (trial != null)
             {
                 foreach (string id in trial.BadgeWearers)
@@ -567,6 +568,7 @@ namespace YesterdayConvoy
         }
         void EnterNode()
         {
+            Economy.BeginNode(CurrentNode.Id);
             EnterV08Node();
             if(CurrentNode.Kind=="补给"){if(shop.TransactionBlocked)deferredSupply=true;else RequestSupply();}
             else if(CurrentNode.Kind=="战斗战备")RequestAugment();

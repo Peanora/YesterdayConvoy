@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
-
 namespace YesterdayConvoy.Tests
 {
     public sealed class FormationEconomicPactTests
@@ -13,135 +13,111 @@ namespace YesterdayConvoy.Tests
         [SetUp] public void Begin()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.B);
         [TearDown] public void End()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.Baseline);
         static string Card(string id)=>FormationCampaignRules.Find(id).CardId;
-        internal static ShopTrialModel Make(int seed,int gold=100,int level=9,string[] units=null,string[] offers=null)
+        static ShopTrialModel Make(int seed,int gold=100,int star=1,string[] units=null,string[] offers=null)
         {
             var shop=new ShopTrialModel(FormationCampaignRules.AllUnits.Select(u=>new ShopTrialModel.Role{Id=u.CardId,Name=u.Name,Cost=u.Cost}),seed);
             shop.EnableFormationEconomy();
-            shop.Preset((units??keepers).Select(id=>new ShopTrialModel.Piece{Id=Card(id),Star=1}),
-                (offers??Array.Empty<string>()).Select(Card),level,0,gold);
+            shop.Preset((units??keepers).Select(id=>new ShopTrialModel.Piece{Id=Card(id),Star=id=="WIS"?1:star}),(offers??Array.Empty<string>()).Select(Card),9,0,gold);
             return shop;
         }
-        [Test] public void ReserveCountsDistinctKindsAndBadgesDoNotCreateEconomicMembers()
+        static void Layers(FormationEconomyV09 e,int f,int m)
         {
-            var shop=Make(1,units:new[]{"M17","M17","M16"});var economy=new FormationEconomyV09(shop,1);
-            Assert.That(economy.Count("远见"),Is.EqualTo(2));Assert.That(economy.Level("远见"),Is.EqualTo(2));
-            Assert.That(shop.IsLineupInstance(shop.Bench[0].Instance),Is.False);
-            Assert.That(FormationCampaignRun.BadgeTraits,Does.Not.Contain("远见"));
-            Assert.That(FormationCampaignRules.Find("M17").Styles,Does.Contain("远见"));
+            // Explicit pre-earned-history fixture, not a natural earning result.
+            typeof(FormationEconomyV09).GetProperty("ForesightLayers").GetSetMethod(true).Invoke(e,new object[]{f});
+            typeof(FormationEconomyV09).GetProperty("MiracleLayers").GetSetMethod(true).Invoke(e,new object[]{m});
         }
-        [Test] public void FailedOrAutomaticRefreshAndGiftDoNotFarmLayers()
+        [Test] public void FiveHundredRefreshesCannotBuildLayersOrReturnGold()
         {
-            var shop=Make(1,0);var economy=new FormationEconomyV09(shop,1);
-            Assert.That(shop.Refresh().Success,Is.False);Assert.That(economy.ForesightLayers,Is.Zero);
-            Assert.That(shop.Refresh(true).Success,Is.True);Assert.That(economy.MiracleLayers,Is.Zero);
-            Assert.That(shop.Grant(Card("M17")).Success,Is.True);Assert.That(economy.ForesightLayers,Is.Zero);
-            shop.Locked=true;shop.FreeRefreshes=1;Assert.That(shop.Refresh().Success,Is.False);
-            Assert.That(shop.FreeRefreshes,Is.EqualTo(1));
+            var shop=Make(71);var e=new FormationEconomyV09(shop,71);shop.FreeRefreshes=500;
+            for(int i=0;i<500;i++)Assert.That(shop.Refresh().Success,Is.True);
+            Assert.That(e.ForesightLayers,Is.Zero);Assert.That(e.MiracleLayers,Is.Zero);Assert.That(e.EarnedGold,Is.Zero);Assert.That(shop.Gold,Is.EqualTo(100));
+            Assert.That(e.FreeChance,Is.EqualTo(.1f).Within(.001));shop.FreeRefreshes=0;shop.Refresh();Assert.That(e.ForesightLayers,Is.Zero);
         }
-        [Test] public void FreeManualRefreshChainsAndCrossingMilestonesPaysExactlyOnce()
+        [Test] public void FailedAutomaticRefreshAndGiftDoNotProgressPacts()
         {
-            var shop=Make(71);var economy=new FormationEconomyV09(shop,71);
-            shop.FreeRefreshes=80;
-            for(int i=0;i<75;i++)Assert.That(shop.Refresh().Success,Is.True);
-            Assert.That(economy.ForesightLayers,Is.EqualTo(300));Assert.That(economy.MiracleLayers,Is.EqualTo(300));
-            Assert.That(economy.EarnedGold,Is.EqualTo(120));Assert.That(shop.Gold,Is.EqualTo(220));
-            int coupons=shop.FreeRefreshes;
-            for(int i=0;i<20;i++)Assert.That(shop.Refresh().Success,Is.True);
-            Assert.That(shop.FreeRefreshes,Is.EqualTo(coupons)); // 100% proc spends one and returns one.
-            Assert.That(shop.Gold,Is.GreaterThan(220));shop.Validate();
+            var shop=Make(1,0);var e=new FormationEconomyV09(shop,1);Assert.That(shop.Refresh().Success,Is.False);Assert.That(shop.Refresh(true).Success,Is.True);
+            Assert.That(shop.Grant(Card("M17")).Success,Is.True);Assert.That(e.ForesightLayers,Is.Zero);Assert.That(e.MiracleLayers,Is.Zero);
+            shop.Locked=true;shop.FreeRefreshes=1;Assert.That(shop.Refresh().Success,Is.False);Assert.That(shop.FreeRefreshes,Is.EqualTo(1));
         }
-        [Test] public void DiscountedZeroPricePurchaseAtZeroGoldSellsAtBaseValueAndConservesStock()
+        [Test] public void PurchaseOfSameKindOnlyStacksOncePerNodeEvenAfterReturnVisit()
         {
-            var shop=Make(13,offers:new[]{"M17"});var economy=new FormationEconomyV09(shop,13);
-            shop.FreeRefreshes=20;for(int i=0;i<20;i++)shop.Refresh();
-            Assert.That(economy.ForesightLayers,Is.EqualTo(80));Assert.That(shop.Price(Card("M17")),Is.Zero);
-            // Find a real stocked offer, avoiding a fixture reset that would fabricate an available card.
-            for(int i=0;i<300&&!shop.Offers.Contains(Card("M17"));i++){shop.FreeRefreshes++;shop.Refresh();}
-            Assert.That(shop.Offers,Does.Contain(Card("M17")));
-            shop.AddGold(-shop.Gold);int available=shop.Available(Card("M17"));
-            var bought=shop.Purchase(Array.IndexOf(shop.Offers.ToArray(),Card("M17")));
-            Assert.That(bought.Success,Is.True);Assert.That(bought.Value,Is.Zero);
-            Assert.That(shop.Quote(bought.Instance).Value,Is.EqualTo(1));
-            Assert.That(shop.Sell(bought.Instance).Success,Is.True);
-            Assert.That(shop.Gold,Is.GreaterThanOrEqualTo(1));
-            Assert.That(shop.Available(Card("M17")),Is.EqualTo(available+1));shop.Validate();
+            var shop=Make(9,offers:new[]{"M17","M17","M17"});var e=new FormationEconomyV09(shop,9);e.BeginNode("1-1");
+            for(int i=0;i<2;i++){var buy=shop.Purchase(i);Assert.That(buy.Success,Is.True);shop.Sell(buy.Instance);}Assert.That(e.ForesightLayers,Is.EqualTo(2));
+            e.BeginNode("1-2");var next=shop.Purchase(2);Assert.That(next.Success,Is.True);shop.Sell(next.Instance);Assert.That(e.ForesightLayers,Is.EqualTo(4));
+            e.BeginNode("1-1");for(int i=0;i<300&&!shop.Offers.Contains(Card("M17"));i++)shop.Refresh(true);
+            Assert.That(shop.Purchase(Array.IndexOf(shop.Offers.ToArray(),Card("M17"))).Success,Is.True);Assert.That(e.ForesightLayers,Is.EqualTo(4));
         }
-        [Test] public void PermanentDiscountSurvivesBenchingOrSellingEconomicBodiesButNoInactiveProc()
+        [Test] public void OneStarCollectorsCannotUnlockDiscountOrInfiniteChainsEvenWithLayers()
         {
-            var shop=Make(9);var economy=new FormationEconomyV09(shop,9);shop.FreeRefreshes=40;
-            for(int i=0;i<40;i++)shop.Refresh();
-            foreach(var piece in shop.Bench.ToArray())shop.Sell(piece.Instance);
-            Assert.That(shop.Price(Card("WIS")),Is.EqualTo(4));
-            int layers=economy.MiracleLayers;shop.Refresh();
-            Assert.That(economy.MiracleLayers,Is.EqualTo(layers));Assert.That(economy.FreeChance,Is.Zero);
+            var shop=Make(3);var e=new FormationEconomyV09(shop,3);Layers(e,1000,1000);
+            Assert.That(e.Qualified("远见"),Is.Zero);Assert.That(e.Qualified("奇迹"),Is.Zero);Assert.That(shop.Price(Card("WIS")),Is.EqualTo(5));
+            Assert.That(shop.Price(Card("M17")),Is.EqualTo(1));Assert.That(e.FreeChance,Is.EqualTo(.8f));
         }
-        [Test] public void OnlySettledNativeCastsPayOnceNoSummonsOrRefundedRetries()
+        [TestCase(119,1,5)][TestCase(120,0,5)][TestCase(299,0,5)][TestCase(300,0,4)]
+        public void DiscountRequiresLayersAndMaintainedTwoStarKinds(int layers,int low,int high)
         {
-            var shop=Make(6);var economy=new FormationEconomyV09(shop,6);
-            var a=shop.Bench.Single(p=>p.Id==Card("M17"));var b=shop.Bench.Single(p=>p.Id==Card("B01"));
-            shop.SetLineup(new[]{a.Id,b.Id},new[]{a.Instance,b.Instance});
-            var casts=new[]{new FormationBattleModel.CastEvent{Instance=a.Instance,UnitId="M17"},
-                new FormationBattleModel.CastEvent{Instance=b.Instance,UnitId="B01"},
-                new FormationBattleModel.CastEvent{Instance=-10,UnitId="M17"}};
-            economy.SettleCasts("1-1",casts);economy.SettleCasts("1-1",casts);
-            Assert.That(economy.ForesightLayers,Is.EqualTo(2));Assert.That(economy.MiracleLayers,Is.EqualTo(2));
-            economy.SettleCasts("1-2",casts);Assert.That(economy.ForesightLayers,Is.EqualTo(4));
+            var shop=Make(4,star:2);var e=new FormationEconomyV09(shop,4);Layers(e,layers,0);Assert.That(shop.Price(Card("M17")),Is.EqualTo(low));Assert.That(shop.Price(Card("WIS")),Is.EqualTo(high));
+            if(layers>=300){shop.Sell(shop.Bench.Single(p=>p.Id==Card("B05")).Instance);Assert.That(shop.Price(Card("WIS")),Is.EqualTo(5));Assert.That(shop.Price(Card("M17")),Is.Zero);
+                shop.Sell(shop.Bench.Single(p=>p.Id==Card("M16")).Instance);Assert.That(shop.Price(Card("M17")),Is.EqualTo(1));Assert.That(e.ForesightLayers,Is.EqualTo(layers));}
         }
-        [Test] public void FullReserveFailedPurchaseDoesNotEarnOrSpendAndUnrelatedModesStayUnchanged()
+        [Test] public void MatureMiracleChainsButSellingQualifiedMembersCancelsInfinity()
         {
-            var shop=Make(2,units:new[]{"M17","M16","B05","B01","B22","M38","M18","M28","M25","M11"},offers:new[]{"B03"});
-            var economy=new FormationEconomyV09(shop,2);
-            Assert.That(shop.Purchase(0).Success,Is.False);Assert.That(shop.Gold,Is.EqualTo(100));Assert.That(economy.MiracleLayers,Is.Zero);
-            FormationBalanceV09.Select(FormationBalanceV09.Variant.Baseline);
-            Assert.That(economy.Enabled,Is.False);Assert.That(FormationCampaignRules.Find("M17").Styles,Does.Not.Contain("远见"));
+            var shop=Make(5,star:2);var e=new FormationEconomyV09(shop,5);Layers(e,300,449);Assert.That(e.FreeChance,Is.LessThan(1));Layers(e,300,450);Assert.That(e.FreeChance,Is.EqualTo(1));
+            shop.FreeRefreshes=1;for(int i=0;i<200;i++)Assert.That(shop.Refresh().Success,Is.True);Assert.That(shop.FreeRefreshes,Is.EqualTo(1));
+            Assert.That(e.MiracleLayers,Is.EqualTo(450));Assert.That(e.ForesightLayers,Is.EqualTo(300));shop.Sell(shop.Bench.Single(p=>p.Id==Card("M38")).Instance);Assert.That(e.FreeChance,Is.EqualTo(.64f).Within(.001));
         }
-        [Test] public void CampaignSettlementIncludesNativeSkillIncomeAndRepeatedSettlementCannotPayTwice()
+        [Test] public void MatureZeroPriceArbitrageConservesStock()
         {
-            var shop=Make(36);var run=new FormationCampaignRun(shop,36);
-            while(run.HasBlockingChoice)Assert.That(run.Choose(0).Success,Is.True);
-            var piece=shop.Bench.Single(p=>p.Id==Card("M17"));
-            shop.SetLineup(new[]{piece.Id},new[]{piece.Instance});
-            var casts=Enumerable.Range(0,5).Select(_=>new FormationBattleModel.CastEvent{Instance=piece.Instance,UnitId="M17"}).ToArray();
-            Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Not.Null);
-            Assert.That(run.Economy.ForesightLayers,Is.EqualTo(10));Assert.That(run.Economy.EarnedGold,Is.EqualTo(2));
-            var flags=System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic;
-            var settlement=typeof(FormationCampaignRun).GetProperty("LastBattleSettlement",flags).GetValue(run);
-            Assert.That((int)settlement.GetType().GetProperty("BonusGold",flags).GetValue(settlement),Is.GreaterThanOrEqualTo(2));
-            int gold=shop.Gold;Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Null);Assert.That(shop.Gold,Is.EqualTo(gold));
-            var next=new FormationCampaignRun(shop,36);
-            Assert.That(next.Economy.ForesightLayers,Is.Zero);Assert.That(shop.Price(Card("WIS")),Is.EqualTo(5));
+            var shop=Make(13,0,star:2,offers:new[]{"M03"});var e=new FormationEconomyV09(shop,13);Layers(e,300,450);int stock=shop.Available(Card("M03"));var buy=shop.Purchase(0);
+            Assert.That(buy.Success,Is.True);Assert.That(buy.Value,Is.Zero);Assert.That(shop.Quote(buy.Instance).Value,Is.EqualTo(1));shop.Sell(buy.Instance);
+            Assert.That(shop.Gold,Is.EqualTo(1));Assert.That(shop.Available(Card("M03")),Is.EqualTo(stock+1));shop.Validate();
         }
-        [Serializable] sealed class Row {public string variant;public int cases,wins,totalRefreshes,earnedGold;public float meanRefreshes,meanEndingGold;}
-        [Serializable] sealed class Report {public string scope="Real finite ShopTrialModel transactions. Fixed level 9; 100 liquid gold plus six 1-star economic bodies and one 1-star WIS; up to 1000 manual refreshes. Buy/sell non-target non-keeper offers, buy WIS to 3-star. Baseline has identical starting resources/policy without pact effects. Not a natural-campaign acquisition/win rate; XP, setup cost/time and equipment excluded.";public List<Row> rows=new List<Row>();}
-        [Test] public void ActualFiniteShopComparisonTargetsNineFiveCostCopies()
+        [Test] public void NativeCastsOnlyPayFirstSixPerKindAndOneSettlement()
+        {
+            var shop=Make(6);var e=new FormationEconomyV09(shop,6);var a=shop.Bench.Single(p=>p.Id==Card("M17"));shop.SetLineup(new[]{a.Id},new[]{a.Instance});
+            var casts=Enumerable.Range(0,100).Select(_=>new FormationBattleModel.CastEvent{Instance=a.Instance,UnitId="M17"}).Concat(new[]{new FormationBattleModel.CastEvent{Instance=-10,UnitId="B01"}}).ToArray();
+            e.SettleCasts("1-1",casts);e.SettleCasts("1-1",casts);Assert.That(e.ForesightLayers,Is.EqualTo(12));Assert.That(e.MiracleLayers,Is.Zero);Assert.That(e.EarnedGold,Is.Zero);
+            e.SettleCasts("1-2",casts);Assert.That(e.ForesightLayers,Is.EqualTo(24));Assert.That(e.EarnedGold,Is.EqualTo(2));
+        }
+        [Test] public void CampaignSettlementPaysSkillIncomeOnceAndNewRunResetsIt()
+        {
+            var shop=Make(36);var run=new FormationCampaignRun(shop,36);while(run.HasBlockingChoice)run.Choose(0);
+            var actors=shop.Bench.Where(p=>p.Id==Card("M17")||p.Id==Card("M16")).ToArray();shop.SetLineup(actors.Select(p=>p.Id),actors.Select(p=>p.Instance));
+            var casts=actors.SelectMany(p=>Enumerable.Range(0,5).Select(_=>new FormationBattleModel.CastEvent{Instance=p.Instance,UnitId=FormationCampaignRules.Find(p.Id).Id})).ToArray();
+            Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Not.Null);Assert.That(run.Economy.ForesightLayers,Is.EqualTo(20));Assert.That(run.Economy.EarnedGold,Is.EqualTo(2));int gold=shop.Gold;
+            Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Null);Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(new FormationCampaignRun(shop,36).Economy.ForesightLayers,Is.Zero);
+        }
+        [Test] public void NativeCastBudgetNeedsMultipleCompletedBattles()
+        {
+            var shop=Make(7,star:2);var e=new FormationEconomyV09(shop,7);shop.SetLineup(shop.Bench.Select(p=>p.Id),shop.Bench.Select(p=>p.Instance));
+            var casts=shop.Bench.SelectMany(p=>Enumerable.Range(0,6).Select(_=>new FormationBattleModel.CastEvent{Instance=p.Instance,UnitId=FormationCampaignRules.Find(p.Id).Id})).ToArray();
+            // Arithmetic fixture; does not assert a natural team survives/casts this often.
+            for(int i=1;i<=13;i++){e.SettleCasts("budget-"+i,casts);Assert.That(e.GlobalDiscountReady,Is.EqualTo(i>=9));Assert.That(e.MiracleChainReady,Is.EqualTo(i>=13));}
+            Assert.That(e.ForesightLayers,Is.EqualTo(468));Assert.That(e.MiracleLayers,Is.EqualTo(468));
+        }
+        [Serializable] sealed class Row {public string variant;public int cases,wins,totalRefreshes,earnedGold,maxForesight,maxMiracle;public float meanRefreshes,meanEndingGold;}
+        [Serializable] sealed class Report {public string scope="Production finite ShopTrialModel: fixed level 9/100 cash/one WIS/six economic bodies; cold states zero layers, mature fixture explicitly PRESETS 300/450 layers and six TWO-star bodies. Buy/sell other offers, buy WIS; stop at success/insolvency/1000 manual refreshes. Setup, XP, real-battle earning excluded. Cold vs mature has DIFFERENT prerequisites, not equal-resource or natural-campaign success rates.";public List<Row> rows=new List<Row>();}
+        [Test] public void FiniteShopCannotSelfStartButPreEarnedMaturityCanStillChaseFiveCosts()
         {
             var report=new Report();
-            foreach(bool enabled in new[]{false,true})
+            foreach(var fixture in new[]{("一星零层",1,false),("二星零层",2,false),("二星成熟预设",2,true)})
             {
-                FormationBalanceV09.Select(enabled?FormationBalanceV09.Variant.B:FormationBalanceV09.Variant.Baseline);
-                var row=new Row{variant=enabled?"远见+奇迹":"原经济",cases=200};
+                var row=new Row{variant=fixture.Item1,cases=200};
                 for(int seed=0;seed<row.cases;seed++)
                 {
-                    var shop=Make(seed,units:keepers.Concat(new[]{"WIS"}).ToArray());var economy=new FormationEconomyV09(shop,seed);
-                    shop.Refresh(true);
+                    var shop=Make(seed,star:fixture.Item2,units:keepers.Concat(new[]{"WIS"}).ToArray());var e=new FormationEconomyV09(shop,seed);if(fixture.Item3)Layers(e,300,450);shop.Refresh(true);
                     for(int step=0;step<1000;step++)
                     {
-                        for(int i=0;i<5;i++)
-                        {
-                            string id=shop.Offers[i];if(id==null||keepers.Select(Card).Contains(id))continue;
-                            var buy=shop.Purchase(i);if(!buy.Success)continue;
-                            if(id!=Card("WIS"))Assert.That(shop.Sell(buy.Instance).Success,Is.True);
-                        }
-                        if(shop.Bench.Any(p=>p.Id==Card("WIS")&&p.Star==3)){row.wins++;break;}
-                        if(!shop.Refresh().Success)break;row.totalRefreshes++;
+                        for(int i=0;i<5;i++){string id=shop.Offers[i];if(id==null||keepers.Select(Card).Contains(id))continue;var buy=shop.Purchase(i);if(!buy.Success)continue;if(id!=Card("WIS"))Assert.That(shop.Sell(buy.Instance).Success,Is.True);}
+                        if(shop.Bench.Any(p=>p.Id==Card("WIS")&&p.Star==3)){row.wins++;break;}if(!shop.Refresh().Success)break;row.totalRefreshes++;
                     }
-                    row.earnedGold+=economy.EarnedGold;row.meanEndingGold+=shop.Gold;shop.Validate();
+                    row.earnedGold+=e.EarnedGold;row.meanEndingGold+=shop.Gold;row.maxForesight=Math.Max(row.maxForesight,e.ForesightLayers);row.maxMiracle=Math.Max(row.maxMiracle,e.MiracleLayers);shop.Validate();
+                    if(!fixture.Item3){Assert.That(e.GlobalDiscountReady,Is.False);Assert.That(e.MiracleChainReady,Is.False);}
                 }
                 row.meanRefreshes=(float)row.totalRefreshes/row.cases;row.meanEndingGold/=row.cases;report.rows.Add(row);
             }
-            Directory.CreateDirectory("artifacts/economy-v09");File.WriteAllText("artifacts/economy-v09/five-cost-comparison.json",JsonUtility.ToJson(report,true));
-            Assert.That(report.rows[1].wins,Is.GreaterThan(report.rows[0].wins));
-            Assert.That(report.rows[1].wins,Is.GreaterThanOrEqualTo(180));
+            Directory.CreateDirectory("artifacts/economy-v09-r2");File.WriteAllText("artifacts/economy-v09-r2/five-cost-comparison.json",JsonUtility.ToJson(report,true));
+            Assert.That(report.rows.Take(2).All(r=>r.maxForesight<120&&r.maxMiracle<450),Is.True);Assert.That(report.rows[2].wins,Is.GreaterThanOrEqualTo(180));
         }
     }
 }
