@@ -86,8 +86,8 @@ lines += ['        public static readonly int[] ExperienceToNext = {0,2,4,6,10,2
 for level in range(1,11):
     lines.append('            ' + ints(data['shop_odds'][str(level)] if isinstance(data['shop_odds'],dict) else data['shop_odds'][level-1]) + ',')
 lines += ['        };',
-          '        public static UnitDefinition Find(string id) => AllUnits.FirstOrDefault(u => u.Id == id || u.CardId == id || u.CardId == "CARD_" + id || u.Name == id);',
-          '        public static DataRecord FindRecord(string id) => AllPreplans.Concat(AllAugments).Concat(AllItems).Concat(AllComponents).Concat(AllPopulationItems).Concat(AllFactions).Concat(AllStyles).FirstOrDefault(r => r.Id == id || r.Name == id);',
+          '        public static UnitDefinition Find(string id) => FormationBalanceV09.Tune(AllUnits.FirstOrDefault(u => u.Id == id || u.CardId == id || u.CardId == "CARD_" + id || u.Name == id));',
+          '        public static DataRecord FindRecord(string id) => AllPreplans.Concat(AllAugments).Concat(FormationBalanceV09.Heroes).Concat(AllItems).Concat(AllComponents).Concat(AllPopulationItems).Concat(AllFactions).Concat(AllStyles).FirstOrDefault(r => r.Id == id || r.Name == id);',
           '    }', '}']
 TARGET.write_text('\n'.join(lines)+'\n',encoding='utf-8')
 print('Generated',TARGET,':',len(data['units']),'units;',len(data['preplans']),'preplans')

@@ -83,6 +83,8 @@ namespace YesterdayConvoy
         internal bool ReserveFull => ReserveCount(bench) >= ShopSeatLayout.ReserveCapacity;
         internal int ReserveOverflowCount => Math.Max(0, ReserveCount(bench) - ShopSeatLayout.ReserveCapacity);
         internal string GuaranteedRefreshOffer {get;set;}
+        internal string HeroRecruitId;
+        internal int HeroRefreshes,HeroGuarantees;
         public int Gold {get;private set;}=80;
         public int Level {get;private set;}=5;
         public int XP {get;private set;}=18;
@@ -182,6 +184,11 @@ namespace YesterdayConvoy
             var next=new Dictionary<string,int>(pool);foreach(var id in offers)if(id!=null)next[id]++;
             var row=Odds[Level-1];
             string guaranteed=GuaranteedRefreshOffer;
+            bool heroPaid=FormationEconomy&&!free&&!coupon&&!UnlimitedGold&&HeroRecruitId!=null&&FormationBalanceV09.Active!=FormationBalanceV09.Variant.Baseline;
+            int heroLimit=HeroRecruitId!=null&&roles.TryGetValue(HeroRecruitId,out var heroRole)&&heroRole.Cost==1?1:2;
+            bool heroDue=heroPaid&&(HeroRefreshes+1)%5==0&&HeroGuarantees<heroLimit&&!bench.Any(piece=>piece.Id==HeroRecruitId&&piece.Star>=3);
+            bool heroInserted=heroDue&&guaranteed==null&&next[HeroRecruitId]>0&&row[roles[HeroRecruitId].Cost-1]>0;
+            if(heroInserted)guaranteed=HeroRecruitId;
             if(guaranteed!=null&&(!roles.TryGetValue(guaranteed,out var guaranteedRole)||next[guaranteed]<=0||row[guaranteedRole.Cost-1]<=0))return Fail("保底卡当前无库存或未解锁，不扣费");
             bool Allowed(Role role)=>!FormationEconomy||!bench.Any(p=>p.Id==role.Id&&p.Star>=MaxStar(role.Id));
             if(!roles.Values.Any(r=>row[r.Cost-1]>0&&next[r.Id]>0&&Allowed(r)))return Fail("当前等级库存已空，不扣费");
@@ -196,7 +203,7 @@ namespace YesterdayConvoy
                 foreach(var r in candidates){k-=next[r.Id]*(RecruitmentWeight?.Invoke(r.Id)??1);if(k<0){chosen=r;break;}}
                 drawn[slot]=chosen.Id;next[chosen.Id]--;count++;
             }
-            foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);if(coupon)FreeRefreshes--;else if(!free&&!UnlimitedGold)Gold-=price;GuaranteedRefreshOffer=null;Validate();
+            foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);if(coupon)FreeRefreshes--;else if(!free&&!UnlimitedGold)Gold-=price;GuaranteedRefreshOffer=null;if(heroPaid)HeroRefreshes++;if(heroInserted)HeroGuarantees++;Validate();
             return new Result{Success=true,Message=count<5?$"库存不足，仅刷新{count}张":"刷新完成"};
         }
         public Result Commission(string id)

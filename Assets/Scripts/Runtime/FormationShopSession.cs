@@ -9,7 +9,7 @@ namespace YesterdayConvoy
     /// Real finite-stock preparation for the existing recruitable catalog. The battle never owns money,
     /// card copies or XP. Unlimited test gold bypasses payment, while stock, XP and population remain real.
     /// </summary>
-    public sealed class FormationShopSession
+    public sealed partial class FormationShopSession
     {
         static readonly int[] OpeningCostWeights = { 75, 20, 5 };
         public static FormationShopSession Current { get; private set; }

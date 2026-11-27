@@ -124,7 +124,7 @@ namespace YesterdayConvoy
             int starSum=owners.Sum(u=>u.Star),n=synergyCounts["泥岩"],xp=Campaign.MudrockXP;
             int stage=xp>=80&&starSum>=9&&n>=5&&Campaign.Shop.Level>=9?5:xp>=50&&starSum>=7&&n>=3?4:xp>=24&&starSum>=5&&n>=3?3:xp>=8&&starSum>=3&&n>=2?2:1;
             float baseHealth = owners.Average(u => FormationCampaignRules.BaseHealthAtStar(State(u).Spec, u.Star, Campaign.TalulahCost));
-            var golem=new FormationFighter{Id=nextSummon--,Name="泥岩巨像 "+stage,ArtId="GOLEM",Position=owners[0].Position,Spawn=owners[0].Spawn,Enabled=true,Alive=true,MaxHealth=baseHealth*(stage+1),Attack=owners.Average(u=>State(u).BaseAttack)*new[]{0,1,1.3f,1.6f,2,2.5f}[stage],Armor=owners.Average(u=>u.Armor),MagicResistance=owners.Average(u=>u.MagicResistance),Interval=3,Range=1.5f,MoveSpeed=.6f};
+            var golem=new FormationFighter{Id=nextSummon--,Name="泥岩巨像 "+stage,ArtId="GOLEM",Position=owners[0].Position,Spawn=owners[0].Spawn,Enabled=true,Alive=true,MaxHealth=baseHealth*(stage+1),Attack=owners.Average(u=>State(u).BaseAttack/HeroPromotion(u))*new[]{0,1,1.3f,1.6f,2,2.5f}[stage],Armor=owners.Average(u=>u.Armor),MagicResistance=owners.Average(u=>u.MagicResistance),Interval=3,Range=1.5f,MoveSpeed=.6f};
             if(stage==5&&Level("泥岩")>=5){golem.MaxHealth*=2.5f;golem.Attack*=2;}
             golem.Health=golem.MaxHealth;State(golem).ExpiresAt=double.PositiveInfinity;State(golem).Stage=stage;Summons.Add(golem);
             if(stage>=5)foreach(var u in Units.Where(u=>u.Enabled))GiveBuff(u,"golem_shield",.15f,999);
@@ -146,7 +146,7 @@ namespace YesterdayConvoy
         }
         void KillCampaignFighter(FormationFighter f)
         {
-            var s=State(f);s.LifeVersion++;f.Alive=false;f.IsMoving=false;f.LastDeathAt=Clock;f.TargetId=-1;f.Shield=0;s.Shields.Clear();
+            var s=State(f);s.LifeVersion++;ClearHeroLife(f);f.Alive=false;f.IsMoving=false;f.LastDeathAt=Clock;f.TargetId=-1;f.Shield=0;s.Shields.Clear();
             if(Summons.Contains(f)){Summons.Remove(f);return;}
             if(IsMech(f)){BeginModeDeath(f);return;}
             RefreshV08PatriotAura();

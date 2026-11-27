@@ -29,7 +29,7 @@ namespace YesterdayConvoy
                 var t=victims[i];
                 if(blast>=6&&skill&&s.ActionHits==1){GiveBuff(t,"blast_armor",-15,6);GiveBuff(t,"blast_mr",-15,6);}
                 float projectileMultiplier=GuardProjectileMultiplier(source,t,area);
-                float actual=CombatDamage(source,t,raw*(Key(source)=="M42"&&skill&&t.Shield>0?1.25f:1)*mult*(skill&&area&&blast>=4&&i>0?1.15f:1)*projectileMultiplier,type,skill,true,out bool targetHit);total+=actual;
+                float actual=CombatDamage(source,t,raw*HeroShieldMultiplier(source,t,skill)*mult*(skill&&area&&blast>=4&&i>0?1.15f:1)*projectileMultiplier,type,skill,true,out bool targetHit);total+=actual;
                 landed |= targetHit;
                 if(skill){if(targetHit||!centurion)s.SkillTargets.Add(t.Id);AddStack(source,"last_skill_raw",actual);s.SkillDamage[t.Id]=(s.SkillDamage.TryGetValue(t.Id,out var prev)?prev:0)+actual;}
                 if(element>0)Element(source,t,element,fire);
@@ -94,12 +94,14 @@ namespace YesterdayConvoy
             if(Buff(target,"v08_king_mr")>0)mr=-50;
             if (type == MakotoWeakPointDamage)
                 type = DamageAfterDefense(raw, 0, armor, mr) > DamageAfterDefense(raw, 1, armor, mr) ? 0 : 1;
+            if(skill&&native&&Hero(source,"H42")&&armor>=35)raw*=FormationBalanceV09.Hero(1,1.18f);
             float baseDamage=DamageAfterDefense(raw,type,armor,mr);
             float expectedDamage=DamageAfterDefense(source.Attack,type,armor,mr);
             bool inKingdom=zones.Any(z=>z.Kind=="kingdom"&&z.Until>Clock&&z.Cells!=null&&z.Cells.Contains(Vector2Int.RoundToInt(source.Position)));
             float amp=Buff(source,"theatre_damage")+(inKingdom?Buff(source,"kingdom_damage"):0)+Buff(target,"vulnerable")+(type==1?Buff(target,"arts_vulnerable"):0)+(skill&&native?Buff(target,"skill_vulnerable"):0);
             if(source is FormationFighter)
             {
+                if(Hero(source,"H16")&&Stack(source,"hero_target")==target.Id&&!HeroFocusExpired(source))amp+=Stack(source,"hero_focus")*FormationBalanceV09.Hero(0,.06f);
                 int l=Level("接棒");amp+=s.HandoffStacks*(l>=6?.18f:l>=4?.12f:.08f);
                 if(Tagged(source,"雪怪")&&Level("雪怪")>=2&&Buff(target,"cold")>0)amp+=.15f;
                 if(Tagged(source,"雪怪")&&Level("雪怪")>=4&&Buff(target,"freeze")>0)amp+=.3f;
@@ -133,6 +135,7 @@ namespace YesterdayConvoy
             foreach(var shield in t.Shields.OrderBy(sh=>sh.Until).ToArray())
             {
                 float absorbed=Mathf.Min(amount,shield.Amount);shield.Amount-=absorbed;amount-=absorbed;
+                HeroAbsorb(source,target,shield,absorbed);
                 if(target is FormationFighter f&&absorbed>0)
                 {
                     t.ShieldAbsorbed+=absorbed;t.ReflectAbsorbed+=absorbed;
@@ -144,7 +147,7 @@ namespace YesterdayConvoy
                 if(amount<=0)break;
             }
             target.Shield=t.Shields.Sum(sh=>Mathf.Max(0,sh.Amount));float healthLoss=Mathf.Min(target.Health,amount);target.Health=Mathf.Max(0,target.Health-healthLoss);
-            source.DamageDone+=healthLoss;target.LastHitAt=Clock;
+            source.DamageDone+=healthLoss;target.LastHitAt=Clock;HeroLeech(source,target,healthLoss,native);
             if(t.InitialGuard)t.LowestHealth=Mathf.Min(t.LowestHealth,target.Health);
             if(target is FormationFighter fighter)
             {

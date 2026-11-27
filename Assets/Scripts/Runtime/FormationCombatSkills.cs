@@ -33,6 +33,7 @@ namespace YesterdayConvoy
             if(k=="WIS"&&Campaign.WisadelSkill==2)action=.6f;
             if(IsMech(u))action=SteamSourceDuration/2*(Buff(u,"haste")>0?Buff(u,"haste"):1);
             var presentation=BeginAction(u,action,true,k=="B23"?target:null);s.Casts++;SkillCasts.Add(new CastEvent{At=Clock,Instance=u.Instance,UnitId=k});s.Stacks["hasteused"]=Buff(u,"haste");s.Buffs.Remove("haste");
+            HeroSkillFocus(u,target,presentation);
             if(k=="TAL"&&FiveStar(u)&&s.Casts==1)GiveBuff(u,"v08_invulnerable",1,action);
             if(k=="TAL"&&Campaign.TalulahCost==5)
                 foreach(var pending in presentationActions)
@@ -51,18 +52,20 @@ namespace YesterdayConvoy
             switch(k)
             {
                 case "M03": SkillSingle(u,target,target.Health<target.MaxHealth*.5f?3.4f:2.6f,0);break;
-                case "M11": SkillSingle(u,target,Buff(target,"freeze")>0?3.8f:2.5f,0);Cold(target);break;
+                case "M11": SkillSingle(u,target,Buff(target,"freeze")>0?(Hero(u,"H11")?FormationBalanceV09.Hero(3.8f,4.8f):3.8f):(Hero(u,"H11")?FormationBalanceV09.Hero(2.5f,3.2f):2.5f),0);Cold(target);if(Hero(u,"H11"))GiveBuff(target,"hero_frost",1,4);break;
                 case "M17":
                     HealLow(u,2,1.6f);foreach(var ally in Units)State(ally).Buffs.Remove("herald_as");if(main!=null)GiveBuff(main,"herald_as",.12f,999);PromptSupport(u);break;
                 case "M21":
-                    float hit=SkillSingle(u,target,2.8f,0);CombatHeal(u,u,hit*.25f,true,true);break;
+                    if(Hero(u,"H21")){GiveBuff(u,"hero_leech",1,6);SkillSequence(u,target,2,FormationBalanceV09.Hero(1.4f,2.4f),0,action);}
+                    else {float hit=SkillSingle(u,target,2.8f,0);CombatHeal(u,u,hit*.25f,true,true);}break;
                 case "M35":
                     SkillSingle(u,target,2.4f,0);Element(u,target,18,false);BlinkBehind(u,target,.8f);break;
                 case "B01":
                     SkillArea(u,target,2.4f,0,1.8f,4);foreach(var d in Nearby(target.Position,AreaRadius(u,1.8f),4,target))Stun(d,1);
                     if(s.Casts>=2)ScheduleOwned(u,Clock+.3,()=>{if(u.Alive){SkillArea(u,target,1.2f,0,1.8f,4);}});break;
                 case "B22":
-                    float coefficient=.55f+Mathf.Min(10,s.Casts-1)*.02f;
+                    if(Hero(u,"HB22"))Shield(u,u,u.MaxHealth*FormationBalanceV09.Hero(0,.35f),6,"hero_b22");
+                    float coefficient=(Hero(u,"HB22")?FormationBalanceV09.Hero(.55f,1.25f):.55f)+Mathf.Min(10,s.Casts-1)*.02f;
                     SkillSequence(u,target,4,coefficient,0,action);
                     AddStack(u,"ramp",1,10);
                     if(s.Casts>=5)
@@ -72,7 +75,7 @@ namespace YesterdayConvoy
                         {
                             if(!u.Alive||SnowBossFreezeRemaining(u)>0)return;var t=FighterTarget(u);if(t==null)return;
                             var follow=BeginAction(u,.35,false);
-                            QueueOrdinaryAction(u,t,follow,()=>{s.Autos++;NativeSegment(u,new[]{t},u.Attack*.6f,0,false,0,false);CompleteAuto(u,true);});
+                            QueueOrdinaryAction(u,t,follow,()=>{s.Autos++;NativeSegment(u,new[]{t},u.Attack*(Hero(u,"HB22")?FormationBalanceV09.Hero(.6f,1):.6f),0,false,0,false);CompleteAuto(u,true);});
                         });
                     }
                     break;
@@ -80,14 +83,18 @@ namespace YesterdayConvoy
                     var frozen=Nearby(target.Position,AreaRadius(u,2),5,target).Where(d=>Buff(d,"freeze")>0).ToArray();
                     SkillArea(u,target,3.2f,1,2,5);foreach(var d in frozen)CombatDamage(u,d,u.Attack*Power(u),1,true,false);foreach(var d in Nearby(target.Position,AreaRadius(u,2),5,target))Cold(d);break;
                 case "M13":
-                    bool broken=Buff(target,"freeze")>0;SkillSingle(u,target,broken?6.5f:4,0);
+                    bool broken=Buff(target,"freeze")>0;float ice=broken?6.5f:4;
+                    if(Hero(u,"H13"))ice=broken?FormationBalanceV09.Hero(6.5f,8.5f):(Buff(target,"cold")>0||Buff(target,"hero_frost")>0)?FormationBalanceV09.Hero(4,6):FormationBalanceV09.Hero(4,4.5f);
+                    SkillSingle(u,target,ice,0);
                     if(broken){State(target).Buffs.Remove("freeze");if(Level("雪怪")>=4&&Clock-State(target).LastSnowBreak>=4){State(target).LastSnowBreak=Clock;foreach(var f in Units.Where(f=>f.Enabled&&Tagged(f,"雪怪")))GainSP(f,3);}}
                     break;
-                case "M16": SkillSequence(u,target,5,.95f,0,action);break;
+                case "M16": SkillSequence(u,target,5,Hero(u,"H16")?FormationBalanceV09.Hero(.95f,1.1f):.95f,0,action);break;
                 case "M25":
                     foreach(var f in LowAllies(3)){CombatHeal(u,f,u.Attack*2.5f*Power(u),true,true);if(Buff(f,"slow")>0)State(f).Buffs.Remove("slow");else State(f).Buffs.Remove("silence");GiveBuff(f,"heal_received",.15f,4);}PromptSupport(u);break;
                 case "M27":
-                    NativeSegment(u,new[]{target},u.Attack*3+u.MaxHealth*.08f,0,true,0,false);Shield(u,u,u.MaxHealth*.25f,8,"native");break;
+                    float stored=Hero(u,"H27")?Stack(u,"hero_shield"):0;s.Stacks["hero_shield"]=0;
+                    NativeSegment(u,new[]{target},u.Attack*3+u.MaxHealth*.08f,0,true,0,false);
+                    if(stored>0&&target.Alive)CombatDamage(u,target,stored,0,true,false);Shield(u,u,u.MaxHealth*.25f,8,"native");break;
                 case "M29": Shield(u,u,u.MaxHealth*.4f,8,"native");SkillArea(u,target,3,0,1.8f,3);break;
                 case "M30": s.Stacks["fireautos"]=3;break;
                 case "M38":
@@ -100,7 +107,7 @@ namespace YesterdayConvoy
                 case "M24": SkillSequence(u,target,4,1.1f,1,action,1.6f,3);break;
                 case "M42":
                     NativeSegment(u,Nearby(target.Position,AreaRadius(u,2),5,target),u.Attack*5.2f,1,true,0,true);foreach(var d in Nearby(target.Position,AreaRadius(u,2),5,target))Stun(d,1);break;
-                case "M31": SkillSequence(u,target,6,1,1,action,2.3f,5,12);break;
+                case "M31": SkillSequence(u,target,6,Hero(u,"H31")?FormationBalanceV09.Hero(1,1.3f):1,1,action,2.3f,Hero(u,"H31")?3:5,12);break;
                 case "M34": SkillSequence(u,target,4,1.5f,1,action,2.2f,4,15,false);break;
                 case "TAL":
                     int cost=Campaign.TalulahCost;
@@ -117,8 +124,16 @@ namespace YesterdayConvoy
                     if(main!=null){s.RecordOwner=main;s.RecordUntil=Clock+8;s.RecordDamage=0;GiveBuff(main,"skill_bonus",.15f,999);}PromptSupport(u);break;
                 case "B14":SkillArea(u,target,3.5f,0,2,3);break;
                 case "B23":
-                    SkillSequence(u,target,6,.9f+Mathf.Min(8,s.Casts-1)*.08f,0,action);
-                    if(s.Casts%3==0){var extra=Defenders.FirstOrDefault(d=>d.Alive&&d!=target);if(extra!=null)SkillSequence(u,extra,6,.9f+Mathf.Min(8,s.Casts-1)*.08f,0,action);}break;
+                    bool hero=Hero(u,"HB23");int beats=hero?8:6;
+                    float ramp=hero?.06f:.08f;
+                    float baseHit=hero?FormationBalanceV09.Hero(.675f,.8f):.9f;
+                    float slash=baseHit+Mathf.Min(8,s.Casts-1)*ramp;
+                    SkillSequence(u,target,beats,slash,0,action);
+                    if(s.Casts%3==0){var extra=Defenders.FirstOrDefault(d=>d.Alive&&d!=target);
+                        if(extra!=null)SkillSequence(u,extra,beats,slash,0,action);
+                        else if(hero)ScheduleOwned(u,Clock+action-.01,()=>{
+                            if(target.Alive&&s.SkillDamage.TryGetValue(target.Id,out var dealt))CombatDamage(u,target,dealt*FormationBalanceV09.Hero(0,.25f),0,true,false);
+                        });}break;
                 case "M14":
                     SkillArea(u,target,6.5f,1,3,6);foreach(var d in Nearby(target.Position,AreaRadius(u,3),6,target)){Cold(d);if(s.Stage>0)Schedule(Clock+.5,()=>Cold(d));}
                     AddZone(u,target.Position,AreaRadius(u,3),.55f,6,6,"snow");break;

@@ -365,7 +365,7 @@ namespace YesterdayConvoy
         }
         ChoiceOption Option(string id,string name,string description,Action apply)=>new ChoiceOption{Id=id,Name=name,Description=description,Apply=apply};
         ChoiceOption StrategyOption(FormationCampaignRules.DataRecord record, Action apply) =>
-            new ChoiceOption{Id=record.Id,Name=record.Name,Description=record.Effect,Apply=apply,Strategy=record};
+            new ChoiceOption{Id=record.Id,Name=record.Name,Description=FormationBalanceV09.ChoiceText(record),Apply=apply,Strategy=record};
         ChoiceOption SupplyOption(FormationCampaignRules.UnitDefinition unit, string component, string description, Action apply) =>
             new ChoiceOption
             {
@@ -625,6 +625,8 @@ namespace YesterdayConvoy
                     var pool=candidates.Where(a=>a.Kind==kind).ToArray();var ordinary=Shuffle(pool.Where(a=>!IsBadgeAugment(a.Id))).ToArray();var badge=Shuffle(pool.Where(a=>IsBadgeAugment(a.Id))).ToArray();
                     var choice=badge.Length>0&&random.NextDouble()<.08?badge[0]:ordinary.FirstOrDefault();if(choice!=null)picks.Add(choice);
                 }
+                var hero=Shuffle(EligibleHeroes(tier,plane)).FirstOrDefault();
+                if(hero!=null){picks.Add(hero);return picks.Select(a=>StrategyOption(a,()=>ApplyAugment(a.Id))).ToList();}
                 string thirdKind=random.Next(2)==0?"经济":"战力";
                 var thirdPool=candidates.Except(picks).Where(a=>a.Kind==thirdKind).ToArray();
                 var third=(random.NextDouble()<.08?Shuffle(thirdPool.Where(a=>IsBadgeAugment(a.Id))).FirstOrDefault():null)??Shuffle(thirdPool.Where(a=>!IsBadgeAugment(a.Id))).FirstOrDefault()??Shuffle(candidates.Except(picks).Where(a=>!IsBadgeAugment(a.Id))).FirstOrDefault();if(third!=null)picks.Add(third);
@@ -635,6 +637,7 @@ namespace YesterdayConvoy
         public static bool IsBadgeAugment(string id)=>new[]{"CG1","CG2","CP3","CP4","CP5"}.Contains(id);
         void ApplyAugment(string id)
         {
+            if(FormationBalanceV09.Heroes.Any(hero=>hero.Id==id)){ApplyHero(id);return;}
             augments.Add(id);
             switch(id)
             {

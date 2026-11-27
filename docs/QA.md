@@ -1,5 +1,22 @@
 # 验证证据与回归
 
+## 2026-11-27 本地低费专属与PVE数值试验
+
+- 用户授权本地实现、多版迭代、实际游戏检查，明确先不上传。本轮未推送、未更新PR。基础为 `630ebd2b`，正式场景仍为 `Assets/Scenes/FormationBattle.unity`；无场景、Prefab、包、美术修改。构建产生的图形API序列化块已单独还原，保留既存个人配置。
+- 数据入口：生成的 `FormationCampaignRules.Find` → `FormationBalanceV09.Tune`；原 v0.8 JSON/目录是不可变基准，不再把它的原始面板直接当成本地预览值。`FormationStarRules`与战斗、详情共用成长接口。`FormationHeroAugments`只向唯一指定本体应用专属；巨像求平均基础攻击时剔除本体专属倍率。
+- 预览涵盖碎霜弩机、狂化宿主、狂躁回响、破冰重锤、定点歼灭、盾锋反攻、高压喷焰、攻坚装药、赎罪终章。狂化吸血只计原生攻击造成的实际敌方生命损失，每秒不超过自身8%最大生命；盾锋只存自身原生盾的敌方承伤、死亡清空；定点集火不会因既有技能动画占用角色而自行丢层，换目标/真正停攻仍重置；裂兽施法短盾与攻速叠层本场有效，重试重置。
+- 首次功能定向18/18；完整回归1320/1320，随后最终36/36复核，包含单本体、普通/三星门槛、实际赠卡、付费补卡上限、暂停/死亡/重试、长技能集火、护盾和巨像不继承专属。旧 v0.8 精确面板回归用显式 Baseline 参数执行，当前B参数由新增测试与Player验证，未把基准旧数值冒充新参数验收。[完整XML](../artifacts/v09/final-all-tests.xml) · [最终定向XML](../artifacts/v09/delivery-tests.xml)
+- 有限经济实验直接使用生产 `ShopTrialModel`，8种情境×1000种子，共8000组；固定等级、80金仅刷新/目标购买，初始1张，有专属再实际赠1张。1费三星65.1%→85.1%，2费13.7%→49.4%，3费13.2%→52.3%；4费二星85.9%、5费二星55.4%。不计XP、利息、其他队员、战利品，不是自然整局成型率。[生产商店数据](../artifacts/v09/production-shop-comparison.json)
+- 实机第2/3轮各88场，均从 Windows Player、实际保存地图和原动作接触点运行，退出码0、脚本异常记录0。第3轮低费固定阵容2-7/3-7：原版0/9、0/9；A版2/9、0/9；B调校前6/9、2/9；C版8/9、8/9。是固定阵容观察，不是玩家胜率。[第2轮](../artifacts/v09/player-round2/comparison.json) · [第3轮](../artifacts/v09/player-round3/comparison.json)
+- B版再收敛后，以相同8人口、同关卡12/18件装备复核22场；攻回角色改用已有BC/BE，掷能者改用DD；部分辅助按羁绊调整，故不能把跨轮差值视为纯数值提升。最终低费2-7为8/9、3-7为8/9。宿主的中期复苏阵容未过，掷能者终关单核未过；红刀对照终关未过，维什戴尔对照102.2秒通过，不能据单一配队给费用整体排名。[最终复测](../artifacts/v09/player-delivery/comparison.json)
+- 后期实图：H11/H31/H42/HB23各测3-1、3-4、3-5，共12例6胜6负；3-5四套均失败，H11虽清空守军但未按时入门，仍记失败。两种新守军布局种子下，H11/H27/H31的2-7共6/6胜。未证明全节点全胜或自然运营整局通关。[后期实图](../artifacts/v09/player-late-waves/comparison.json) · [布局种子](../artifacts/v09/player-seeds/comparison.json)
+- 正式有限经济模式前三战142/142检查、3场实际战斗、脚本异常0、退出0；覆盖开局选择、商店、部署、装备、地面奖励和推进。[正式流程](../artifacts/v09/player-campaign/campaign-smoke.json)
+- 选择界面8项结构/交易检查通过，实看了最终截图：同档经济/战力/专属三选一，实际选取只占库赠1张。长说明改成卡面简述，完整规则保留详情。最初截图太早未见纸面，最终改为等待入场动画后重拍；未将原空画面认作视觉通过。[实际选择画面](../artifacts/v09/player-delivery/hero-offer.png)
+- 最终构建 Windows x64 Development 1,404,906,197字节，0错误，默认D3D11；先完整构建资源，再在无资源/序列化布局变化时使用脚本增量构建。普通启动为正式挑战；`-formationBalancePreview`为可切阵容的本地试玩，固定初始阵容，后续招募无限测试金币；比较模式禁用无限金币，不灌伤害、技力、治疗或跳过阶段。[构建日志](../artifacts/v09/build-delivery.log)
+- 首次中断诊断时由窗口X关闭触发退出码0xc0000005；原生窗口回调改为下帧主循环退出并先卸钩后，两次关闭测试均0。独立完整比较和正式流程正常退出。原有素材的shader/缺失原作脚本警告仍存在，不把“脚本异常0”说成日志完全无警告。[关闭记录](../artifacts/v09/window-exit/results.json)
+- 最终EXE补充等待真实战斗35秒截图生成后再发送原生关闭消息，退出0；实机短片来自最终一费裂兽终关，约9.5秒、40fps取帧，整场136秒通过，退出0。取帧区间按原游戏钟推进，不用来证明性能帧率。[战斗中关闭](../artifacts/v09/window-close-in-combat/result.json) · [录像整场结果](../artifacts/v09/player-video/comparison.json)
+- 可复核入口：`YesterdayConvoy.exe -formationBalanceCompare -formationBalanceProfiles B -formationBalanceGear specialized -formationEvidenceDir <本地证据目录>`；关卡、阵容、种子可分别用 `-formationBalanceStages`、`-formationBalanceTeams`、`-formationBalanceSeeds`指定。未新增cmd/bat启动器。未测第二台电脑、全部装备/站位、全自然运营路线及所有遭遇层数；无全局最优或长期胜率结论。
+
 ## 2026-11-25 蒸汽骑士 V2 与火雨阻挡
 
 - 用户确认“按 V2 接入”，沿用 `codex/v08-balance-synergies-20261125` 和 PR #116。仅本轮角色与战斗规则接入；未更改保存场景、Prefab、Packages或项目设置。既存 `.vscode/` 保留；Unity测试临时场景不提交。

@@ -215,7 +215,7 @@ namespace YesterdayConvoy
             new int[]{15,20,25,30,10},
             new int[]{5,10,20,40,25},
         };
-        public static UnitDefinition Find(string id) => AllUnits.FirstOrDefault(u => u.Id == id || u.CardId == id || u.CardId == "CARD_" + id || u.Name == id);
-        public static DataRecord FindRecord(string id) => AllPreplans.Concat(AllAugments).Concat(AllItems).Concat(AllComponents).Concat(AllPopulationItems).Concat(AllFactions).Concat(AllStyles).FirstOrDefault(r => r.Id == id || r.Name == id);
+        public static UnitDefinition Find(string id) => FormationBalanceV09.Tune(AllUnits.FirstOrDefault(u => u.Id == id || u.CardId == id || u.CardId == "CARD_" + id || u.Name == id));
+        public static DataRecord FindRecord(string id) => AllPreplans.Concat(AllAugments).Concat(FormationBalanceV09.Heroes).Concat(AllItems).Concat(AllComponents).Concat(AllPopulationItems).Concat(AllFactions).Concat(AllStyles).FirstOrDefault(r => r.Id == id || r.Name == id);
     }
 }

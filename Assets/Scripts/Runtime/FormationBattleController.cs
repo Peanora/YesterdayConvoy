@@ -90,7 +90,7 @@ namespace YesterdayConvoy
                 if (FormationBoardUnfoldActive) return;
             }
             RefreshFormationAnimationProfiles();
-            bool showcaseDrives = FormationShowcaseRecorder.Drives(this);
+            bool showcaseDrives = FormationShowcaseRecorder.Drives(this) || FormationBalanceEvidence.Drives;
             bool opening = FormationBattleOpeningActive;
             if(!showcaseDrives)
             {
