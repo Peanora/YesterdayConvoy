@@ -149,7 +149,7 @@ namespace YesterdayConvoy
         static bool TryBuildRoster(IEnumerable<FormationRosterEntry> entries, int capacity, out List<FormationFighter> planned)
         {
             planned = new List<FormationFighter>();
-            if (entries == null || capacity < 1 || capacity > 11) return false;
+            if (entries == null || capacity < 1 || capacity > 14) return false;
             var instances = new HashSet<int>();
             var kinds = new HashSet<string>(StringComparer.Ordinal);
             var occupied = new List<RectInt>();
@@ -272,6 +272,7 @@ namespace YesterdayConvoy
 
         public bool Retry()
         {
+            Campaign?.BeginV08Preparation();
             PrepareRound(); return true;
         }
 

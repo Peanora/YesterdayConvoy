@@ -132,6 +132,7 @@ namespace YesterdayConvoy
                     1.5f, rules.Size == "重" ? new Vector2Int(2,2) : Vector2Int.one);
                 list.Add(definition); Register(definition);
             }
+            AddSpecial(list,"CARD_STEAM","蒸汽骑士驾驶员","BossRoster/STEAM/main",0,2.95f);
             // Historical metadata remains available to simulations. Only the
             // official challenge roster owns authored card and art references.
             list.RemoveAll(definition=>FormationCampaignRules.Find(definition.CardId)==null);

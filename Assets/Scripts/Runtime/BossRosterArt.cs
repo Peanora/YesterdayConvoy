@@ -30,7 +30,7 @@ namespace YesterdayConvoy
 
         static readonly Dictionary<string,BossRosterArt> cache=new Dictionary<string,BossRosterArt>(StringComparer.Ordinal);
         static readonly Dictionary<string,string> coreTasks=new Dictionary<string,string>(StringComparer.Ordinal)
-        {{"CARD_M25","B02"},{"CARD_M32","B06"},{"CARD_TALULAH_TRIAL","B16"},{"CARD_M20","B17"},{"CARD_M14","B18"},{"CARD_M28","B19"},{"CARD_WISADEL_APRIL","B20"}};
+        {{"CARD_M25","B02"},{"CARD_M32","B06"},{"CARD_TALULAH_TRIAL","B16"},{"CARD_M20","B17"},{"CARD_M14","B18"},{"CARD_M28","B19"},{"CARD_WISADEL_APRIL","B20"},{"CARD_STEAM","STEAM"}};
         readonly Dictionary<string,Clip> clips=new Dictionary<string,Clip>(StringComparer.Ordinal);
         readonly Dictionary<string,string> aliases=new Dictionary<string,string>(StringComparer.Ordinal);
         readonly List<ArtSequence> runtime=new List<ArtSequence>();
@@ -213,7 +213,7 @@ namespace YesterdayConvoy
             bool april=cardIdOrTask=="CARD_WISADEL_APRIL"||cardIdOrTask=="WISADEL_APRIL"||cardIdOrTask=="WIS_APRIL_G9";
             string task=april?"WIS_APRIL_G9":coreTasks.TryGetValue(cardIdOrTask,out var core)?core:cardIdOrTask.StartsWith("CARD_",StringComparison.Ordinal)?cardIdOrTask.Substring(5):cardIdOrTask.StartsWith("AUX_",StringComparison.Ordinal)?cardIdOrTask.Substring(4):cardIdOrTask;
             bool auxiliary=task=="P14"||task=="P14H"||task=="P20"||task=="P26"||task=="P12I"||task=="P15C"||task=="P24D"||task=="P25M";
-            if(!april&&!auxiliary&&(task.Length!=3||task[0]!='B'||!int.TryParse(task.Substring(1),out int n)||n<1||n>26))return null;
+            if(!april&&!auxiliary&&task!="STEAM"&&(task.Length!=3||task[0]!='B'||!int.TryParse(task.Substring(1),out int n)||n<1||n>26))return null;
             if(task=="B20"&&view=="main")view="front";
             if(view!="main"&&view!="front"&&view!="back")throw new ArgumentException("Unsupported Boss source view",nameof(view));
             string root="BossRoster/"+task+"/"+view;

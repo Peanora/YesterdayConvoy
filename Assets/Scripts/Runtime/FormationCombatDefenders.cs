@@ -382,7 +382,7 @@ namespace YesterdayConvoy
         {
             if (!target.Alive || target.Health <= 0) return 0;
             var recipient = Kit(target);
-            float amount = Mathf.Min(raw, target.MaxHealth - target.Health);
+            float amount = Mathf.Min(raw*(1-Buff(target,"eternal_heal_down")), target.MaxHealth - target.Health);
             if (source != target) amount = Mathf.Min(amount, target.MaxHealth * .2f - recipient.OutsideHealing);
             if (amount <= 0) return 0;
             if (source != target) recipient.OutsideHealing += amount;

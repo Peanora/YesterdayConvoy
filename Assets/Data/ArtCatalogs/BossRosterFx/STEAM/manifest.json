@@ -1,0 +1,693 @@
+{
+  "version": 1,
+  "task": "STEAM",
+  "fps": 30,
+  "encoding": "sqrt-linear-rgb-effective-alpha",
+  "clips": [
+    {
+      "key": "attack_start_01",
+      "count": 60,
+      "width": 96,
+      "height": 96,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.28125,
+      "pivotY": 0.35416666666666663,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "attack_start_01/page-000.png",
+          "count": 60,
+          "width": 768,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "key": "attack_weapon_01",
+      "count": 75,
+      "width": 160,
+      "height": 160,
+      "columns": 8,
+      "duration": 2.5,
+      "ppu": 64.0,
+      "pivotX": 0.01875,
+      "pivotY": 0.49375,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "attack_weapon_01/page-000.png",
+          "count": 64,
+          "width": 1280,
+          "height": 1280
+        },
+        {
+          "file": "attack_weapon_01/page-001.png",
+          "count": 11,
+          "width": 1280,
+          "height": 320
+        }
+      ]
+    },
+    {
+      "key": "attack_hit_01",
+      "count": 60,
+      "width": 176,
+      "height": 176,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5340909090909091,
+      "pivotY": 0.6136363636363636,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "attack_hit_01/page-000.png",
+          "count": 60,
+          "width": 1408,
+          "height": 1408
+        }
+      ]
+    },
+    {
+      "key": "skill_01_start_01",
+      "count": 171,
+      "width": 144,
+      "height": 144,
+      "columns": 8,
+      "duration": 5.699999809265137,
+      "ppu": 64.0,
+      "pivotX": 0.8055555555555556,
+      "pivotY": 0.47916666666666663,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_01_start_01/page-000.png",
+          "count": 64,
+          "width": 1152,
+          "height": 1152
+        },
+        {
+          "file": "skill_01_start_01/page-001.png",
+          "count": 64,
+          "width": 1152,
+          "height": 1152
+        },
+        {
+          "file": "skill_01_start_01/page-002.png",
+          "count": 43,
+          "width": 1152,
+          "height": 864
+        }
+      ]
+    },
+    {
+      "key": "skill_01_start_02",
+      "count": 171,
+      "width": 244,
+      "height": 244,
+      "columns": 8,
+      "duration": 5.699999809265137,
+      "ppu": 64.0,
+      "pivotX": 0.6926229508196722,
+      "pivotY": 0.5040983606557377,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_01_start_02/page-000.png",
+          "count": 64,
+          "width": 1952,
+          "height": 1952
+        },
+        {
+          "file": "skill_01_start_02/page-001.png",
+          "count": 64,
+          "width": 1952,
+          "height": 1952
+        },
+        {
+          "file": "skill_01_start_02/page-002.png",
+          "count": 43,
+          "width": 1952,
+          "height": 1464
+        }
+      ]
+    },
+    {
+      "key": "skill_01_start_03",
+      "count": 60,
+      "width": 344,
+      "height": 344,
+      "columns": 5,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.6191860465116279,
+      "pivotY": 0.45639534883720934,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_01_start_03/page-000.png",
+          "count": 25,
+          "width": 1720,
+          "height": 1720
+        },
+        {
+          "file": "skill_01_start_03/page-001.png",
+          "count": 25,
+          "width": 1720,
+          "height": 1720
+        },
+        {
+          "file": "skill_01_start_03/page-002.png",
+          "count": 10,
+          "width": 1720,
+          "height": 688
+        }
+      ]
+    },
+    {
+      "key": "skill_01_start_weapon_01",
+      "count": 75,
+      "width": 172,
+      "height": 172,
+      "columns": 8,
+      "duration": 2.5,
+      "ppu": 64.0,
+      "pivotX": 0.9825581395348837,
+      "pivotY": 0.313953488372093,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_01_start_weapon_01/page-000.png",
+          "count": 64,
+          "width": 1376,
+          "height": 1376
+        },
+        {
+          "file": "skill_01_start_weapon_01/page-001.png",
+          "count": 11,
+          "width": 1376,
+          "height": 344
+        }
+      ]
+    },
+    {
+      "key": "skill_01_start_weapon_02",
+      "count": 75,
+      "width": 164,
+      "height": 164,
+      "columns": 8,
+      "duration": 2.5,
+      "ppu": 64.0,
+      "pivotX": 0.975609756097561,
+      "pivotY": 0.39634146341463417,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_01_start_weapon_02/page-000.png",
+          "count": 64,
+          "width": 1312,
+          "height": 1312
+        },
+        {
+          "file": "skill_01_start_weapon_02/page-001.png",
+          "count": 11,
+          "width": 1312,
+          "height": 328
+        }
+      ]
+    },
+    {
+      "key": "skill_01_hit_01",
+      "count": 60,
+      "width": 224,
+      "height": 224,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5267857142857143,
+      "pivotY": 0.5089285714285714,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_01_hit_01/page-000.png",
+          "count": 60,
+          "width": 1792,
+          "height": 1792
+        }
+      ]
+    },
+    {
+      "key": "skill_02_begin_01",
+      "count": 60,
+      "width": 64,
+      "height": 64,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.53125,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_02_begin_01/page-000.png",
+          "count": 60,
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "skill_02_begin_02",
+      "count": 60,
+      "width": 260,
+      "height": 260,
+      "columns": 7,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.45384615384615384,
+      "pivotY": 0.4884615384615385,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_02_begin_02/page-000.png",
+          "count": 49,
+          "width": 1820,
+          "height": 1820
+        },
+        {
+          "file": "skill_02_begin_02/page-001.png",
+          "count": 11,
+          "width": 1820,
+          "height": 520
+        }
+      ]
+    },
+    {
+      "key": "skill_02_end_01",
+      "count": 60,
+      "width": 272,
+      "height": 272,
+      "columns": 7,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5183823529411765,
+      "pivotY": 0.4338235294117647,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_02_end_01/page-000.png",
+          "count": 49,
+          "width": 1904,
+          "height": 1904
+        },
+        {
+          "file": "skill_02_end_01/page-001.png",
+          "count": 11,
+          "width": 1904,
+          "height": 544
+        }
+      ]
+    },
+    {
+      "key": "skill_02_marker_01",
+      "count": 60,
+      "width": 64,
+      "height": 64,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5,
+      "pivotY": 0.5,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 2.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "skill_02_marker_01/page-000.png",
+          "count": 60,
+          "width": 512,
+          "height": 512
+        }
+      ]
+    },
+    {
+      "key": "skill_02_range_01",
+      "count": 60,
+      "width": 188,
+      "height": 188,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5106382978723404,
+      "pivotY": 0.7127659574468085,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 2.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "skill_02_range_01/page-000.png",
+          "count": 60,
+          "width": 1504,
+          "height": 1504
+        }
+      ]
+    },
+    {
+      "key": "skill_02_hit_01",
+      "count": 60,
+      "width": 268,
+      "height": 268,
+      "columns": 7,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5373134328358209,
+      "pivotY": 0.5335820895522387,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_02_hit_01/page-000.png",
+          "count": 49,
+          "width": 1876,
+          "height": 1876
+        },
+        {
+          "file": "skill_02_hit_01/page-001.png",
+          "count": 11,
+          "width": 1876,
+          "height": 536
+        }
+      ]
+    },
+    {
+      "key": "skill_02_hit_02",
+      "count": 60,
+      "width": 260,
+      "height": 260,
+      "columns": 7,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.5384615384615384,
+      "pivotY": 0.5461538461538462,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "skill_02_hit_02/page-000.png",
+          "count": 49,
+          "width": 1820,
+          "height": 1820
+        },
+        {
+          "file": "skill_02_hit_02/page-001.png",
+          "count": 11,
+          "width": 1820,
+          "height": 520
+        }
+      ]
+    },
+    {
+      "key": "presure_buff_01",
+      "count": 60,
+      "width": 144,
+      "height": 144,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.6527777777777778,
+      "pivotY": 0.23611111111111116,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 2.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "presure_buff_01/page-000.png",
+          "count": 60,
+          "width": 1152,
+          "height": 1152
+        }
+      ]
+    },
+    {
+      "key": "shield_01",
+      "count": 60,
+      "width": 72,
+      "height": 72,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.4722222222222222,
+      "pivotY": 0.2777777777777778,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 2.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "shield_01/page-000.png",
+          "count": 60,
+          "width": 576,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "key": "reborn_01",
+      "count": 240,
+      "width": 244,
+      "height": 244,
+      "columns": 8,
+      "duration": 8.0,
+      "ppu": 64.0,
+      "pivotX": 0.5163934426229508,
+      "pivotY": 0.4385245901639344,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "reborn_01/page-000.png",
+          "count": 64,
+          "width": 1952,
+          "height": 1952
+        },
+        {
+          "file": "reborn_01/page-001.png",
+          "count": 64,
+          "width": 1952,
+          "height": 1952
+        },
+        {
+          "file": "reborn_01/page-002.png",
+          "count": 64,
+          "width": 1952,
+          "height": 1952
+        },
+        {
+          "file": "reborn_01/page-003.png",
+          "count": 48,
+          "width": 1952,
+          "height": 1464
+        }
+      ]
+    },
+    {
+      "key": "reborn_02",
+      "count": 240,
+      "width": 308,
+      "height": 308,
+      "columns": 6,
+      "duration": 8.0,
+      "ppu": 64.0,
+      "pivotX": 0.4967532467532468,
+      "pivotY": 0.4967532467532467,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "reborn_02/page-000.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1848
+        },
+        {
+          "file": "reborn_02/page-001.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1848
+        },
+        {
+          "file": "reborn_02/page-002.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1848
+        },
+        {
+          "file": "reborn_02/page-003.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1848
+        },
+        {
+          "file": "reborn_02/page-004.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1848
+        },
+        {
+          "file": "reborn_02/page-005.png",
+          "count": 36,
+          "width": 1848,
+          "height": 1848
+        },
+        {
+          "file": "reborn_02/page-006.png",
+          "count": 24,
+          "width": 1848,
+          "height": 1232
+        }
+      ]
+    },
+    {
+      "key": "reborn_head_01",
+      "count": 240,
+      "width": 64,
+      "height": 64,
+      "columns": 8,
+      "duration": 8.0,
+      "ppu": 64.0,
+      "pivotX": 0.4375,
+      "pivotY": 0.515625,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 0,
+      "loop": false,
+      "pages": [
+        {
+          "file": "reborn_head_01/page-000.png",
+          "count": 64,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "file": "reborn_head_01/page-001.png",
+          "count": 64,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "file": "reborn_head_01/page-002.png",
+          "count": 64,
+          "width": 512,
+          "height": 512
+        },
+        {
+          "file": "reborn_head_01/page-003.png",
+          "count": 48,
+          "width": 512,
+          "height": 384
+        }
+      ]
+    },
+    {
+      "key": "reborn_presure_buff_01",
+      "count": 60,
+      "width": 140,
+      "height": 140,
+      "columns": 8,
+      "duration": 2.0,
+      "ppu": 64.0,
+      "pivotX": 0.65,
+      "pivotY": 0.23571428571428577,
+      "hdrRange": 16.0,
+      "sourceStart": 0,
+      "loopPeriod": 2.0,
+      "loop": true,
+      "pages": [
+        {
+          "file": "reborn_presure_buff_01/page-000.png",
+          "count": 60,
+          "width": 1120,
+          "height": 1120
+        }
+      ]
+    }
+  ],
+  "bindings": [],
+  "preload": [
+    {
+      "phase": 0,
+      "keys": [
+        "attack_start_01",
+        "attack_weapon_01",
+        "attack_hit_01",
+        "skill_01_start_01",
+        "skill_01_start_02",
+        "skill_01_start_03",
+        "skill_01_start_weapon_01",
+        "skill_01_start_weapon_02",
+        "skill_01_hit_01",
+        "skill_02_begin_01",
+        "skill_02_begin_02",
+        "skill_02_end_01",
+        "skill_02_marker_01",
+        "skill_02_range_01",
+        "skill_02_hit_01",
+        "presure_buff_01",
+        "shield_01",
+        "reborn_01",
+        "reborn_02",
+        "reborn_head_01",
+        "reborn_presure_buff_01"
+      ]
+    }
+  ]
+}

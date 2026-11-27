@@ -69,7 +69,7 @@ namespace YesterdayConvoy
             Ready=true;EnsureOriginalShop();SelectFirstLineup();SyncActors();approvedShop.SyncShopBenchModels();
             InitializeFormationCamera();
             BeginFormationBoardUnfold();
-            Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.7 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
+            Debug.Log(Session.Run!=null?"FORMATION_CAMPAIGN_READY: approved v0.8 full challenge, finite economy and authored board":"FORMATION_DEMO_READY: legacy formation test");
         }
 
         FormationBattleTerrainLayout SelectFormationTerrain(FormationCampaignRun run)

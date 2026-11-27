@@ -369,7 +369,7 @@ namespace YesterdayConvoy
             int x=Mathf.FloorToInt(world.x+FormationBattleModel.Width*.5f+.0001f),y=Mathf.FloorToInt(world.z+FormationBattleModel.Height*.5f+.0001f);
             if(x<FormationBattleModel.DeploymentColumns+1||x>=FormationBattleModel.Width-1||y<0||y>=FormationBattleModel.Height)
             {notice="溟痕请布置在右侧战场内。";return true;}
-            int id=x+y*FormationBattleModel.Width,cap=Campaign.TraitCount("海嗣")>=5?10:Campaign.TraitCount("海嗣")>=4?7:4;
+            int id=x+y*FormationBattleModel.Width,cap=Campaign.TraitCount("海嗣")>=6?10:Campaign.TraitCount("海嗣")>=4?7:4;
             if(!Campaign.SeaCellIds.Remove(id))
             {if(Campaign.SeaCellIds.Count>=cap){notice="当前羁绊最多布置 "+cap+" 格溟痕。";return true;}Campaign.SeaCellIds.Add(id);}
             Model.RefreshSeaPreview();notice=Model.ValidateSeaPlacement(out string reason)?$"溟痕 {Campaign.SeaCellIds.Count}/{cap} 格；保持上下左右连通。":reason;

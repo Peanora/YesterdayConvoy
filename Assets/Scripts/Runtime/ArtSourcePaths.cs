@@ -59,6 +59,7 @@ namespace YesterdayConvoy
         }
 
         public static bool PreserveNativeEffectPixels(string logicalRelative) =>
+            logicalRelative.StartsWith("BossRosterFx/STEAM/", StringComparison.Ordinal) ||
             logicalRelative.StartsWith("BossRosterFx/B20/wisdel_skill_02_", StringComparison.Ordinal) ||
             logicalRelative.StartsWith("BossRosterFx/B20/wisdel_skill_03_", StringComparison.Ordinal) ||
             logicalRelative.StartsWith("BossRosterFx/" + BossRosterFxArt.MakotoTask + "/", StringComparison.Ordinal);

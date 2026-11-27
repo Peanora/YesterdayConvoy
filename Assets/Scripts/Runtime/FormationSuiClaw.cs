@@ -45,7 +45,7 @@ namespace YesterdayConvoy
             var cue = new FormationSuiClawStrike
             {
                 Cast=cast, Wave=wave, LifeVersion=State(owner).LifeVersion,
-                AnchorId=anchor?.Id??-1, Center=anchor?.Position??owner.Position,
+                AnchorId=-1, Center=Campaign.SuiCentre.HasValue?(Vector2)Campaign.SuiCentre.Value:owner.SpawnCenter,
                 WarningAt=Clock, ImpactAt=impactAt, LiftAt=impactAt+plantedSeconds, Flip=owner.Facing.x<0
             };
             suiClawStrikes.Add(cue);
@@ -69,7 +69,7 @@ namespace YesterdayConvoy
 
         void ReleaseSuiClaw(FormationFighter owner, FormationSuiClawStrike strike)
         {
-            if (strike.Released) return;
+            if (strike.Released || FiveStar(owner)&&RemainingDefenders>0&&Phase==FormationPhase.Fighting) return;
             double freeze = SnowBossFreezeRemaining(owner);
             if (freeze > 1e-8)
             {
@@ -89,6 +89,7 @@ namespace YesterdayConvoy
                 if (strike == null || !strike.Landed || strike.Released) continue;
                 // Keep the contact readable, then let a cleared board proceed to the
                 // gate from the approach point, using the same path as other fighters.
+                if(FiveStar(owner)){State(owner).BusyUntil=Clock;owner.ActionUntil=Clock;strike.Cast.EndAt=Clock;}
                 strike.LiftAt = Math.Min(strike.LiftAt, Math.Max(Clock, strike.ImpactAt + .45));
                 ReleaseSuiClaw(owner, strike);
             }
@@ -159,14 +160,14 @@ namespace YesterdayConvoy
             state.Stacks["chess"] = 0;
             double firstContact = Clock;
             float radius = AreaRadius(owner,3);
-            var victims = Nearby(target.Position,radius,100,target);
+            var victims = Nearby(opening.Center,radius,100,target);
             if (victims.Length==0)
             {
                 var next = Defenders.Where(defender=>defender.Alive)
                     .OrderBy(defender=>(defender.Position-target.Position).sqrMagnitude).ThenBy(defender=>defender.Id).FirstOrDefault();
                 if (next!=null) victims=Nearby(next.Position,radius,100,next);
             }
-            SettleSuiClawStrike(owner,opening,victims.FirstOrDefault()?.Position??target.Position,victims.Length>0);
+            SettleSuiClawStrike(owner,opening,opening.Center,true);
             NativeSegment(owner,victims,owner.Attack*(18*(1+chess*.3f)),0,true,0,true);
             if (opening.Landed) ScheduleSuiStomp(owner,opening,firstContact+4);
 

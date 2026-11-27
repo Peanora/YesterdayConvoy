@@ -39,6 +39,14 @@ namespace YesterdayConvoy
 
         internal static Texture2D SupplyItemArt(string key)
         {
+            string population=key=="CROWN"?"v08-crown":key=="AEGIS"?"v08-shield":key=="CLOAK"?"v08-cloak":null;
+            if(population!=null)
+            {
+                if(!SupplyTextures.TryGetValue(population,out var picture))
+                {picture=Resources.Load<Texture2D>("UI/Synergies/"+population);SupplyTextures[population]=picture;}
+                return picture;
+            }
+
             string trait = FormationCampaignRun.BadgeTrait(key);
             if (trait != null)
             {

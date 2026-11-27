@@ -15301,6 +15301,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f318166f5a9e8404cb39665e4dcb3c90, type: 2}
   - {fileID: 11400000, guid: cdeab602ee88c844cb1ee9cdc8545cd9, type: 2}
   - {fileID: 11400000, guid: a15a0cdc42a63a54c8daedb85e1fb2d0, type: 2}
+  - {fileID: 11400000, guid: 1b079671ae79a9c4bafacd5b567d3034, type: 2}
   seed: 20261117
   roundSeconds: 90
   reviveSeconds: 8

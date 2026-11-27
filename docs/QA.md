@@ -1,5 +1,37 @@
 # 验证证据与回归
 
+## 2026-11-25 蒸汽骑士 V2 与火雨阻挡
+
+- 用户确认“按 V2 接入”，沿用 `codex/v08-balance-synergies-20261125` 和 PR #116。仅本轮角色与战斗规则接入；未更改保存场景、Prefab、Packages或项目设置。既存 `.vscode/` 保留；Unity测试临时场景不提交。
+- 完整 EditMode **1286/1286**，零失败、零跳过。新增蒸汽一／三档原出手点2.85秒、3段物伤／3段法伤、施法期间不插普攻、暂停、死亡取消和重试检查；五费塔露拉覆盖六段直伤及八次灼烧的前排阻挡、倒下后重新索敌与行间独立。补全复生后再次全量通过。 [最终XML](../artifacts/steam-v2-integration/edit-rebirth.xml)
+- GPU正式场景4项与蒸汽画面专项共 **5/5**。透明留白裁切后，蒸汽专项再测 **1/1**，最终补明确站位和朝向断言 **1/1**。在同一模拟时刻实际相机拍FX开／关：一档重拳26,322像素、三档重拳27,558像素、肩炮16,589像素超过RGB总差20；已目视检查亮部、朝向、爆点和地面层。测试暂停时模拟钟冻结。 [最终XML](../artifacts/steam-v2-integration/play-contact.xml) · [图片](../artifacts/steam-v2-integration/pixels/)
+- 原版Die_A及四层复生特效补全后，GPU蒸汽专项 **1/1**：真实致死后6.9秒仍未复活，身体保持可见且选中Die_A；FX开／关差异 **2,361像素**，暂停冻结，满8秒后真实满血返回。 [复生XML](../artifacts/steam-v2-integration/play-rebirth.xml)
+- **2127帧**全部RGBA逐通道对照证明裁切可无损还原512源画幅，包括alpha为0的加色RGB；共同裁切边界和新pivot保持挂点及世界尺度。现役21个FX片段45页原始GPU纹理约346.2MiB。运行依赖382个图片／JSON文件无忽略、无缺meta；运行只用仓库内清单、资源、Shader和构建自动装入的处理纹理。 [素材报告](../artifacts/steam-v2-integration/package-verification.json)
+- Unity **6000.6.5f1** / Windows x64 Development / 默认 **D3D11**，最终构建 **1,404,866,387字节，0错误**。自动装入144份清单、5,753张处理纹理，工程外原客户端、AB、提取器和预览文件均不参与运行。Runtime DLL SHA-256：`9F55DA6292839F9844C88C8B46B6E4AA3017D1078732B1C6F4D096B2E4A2DB6A`。 [构建日志](../artifacts/steam-v2-integration/build-final.log)
+- 最终独立Player：正式前三战 **142/142**、22羁绊样板 **152/152**，共25场，零异常，两个进程退出码均 **0**。样板按真实进门／时限结算，不代表22阵容全部获胜；未额外运行前一版的菜单交互180项。 [正式报告](../artifacts/steam-v2-integration/campaign-final/campaign-smoke.json) · [羁绊报告](../artifacts/steam-v2-integration/synergies-final/synergy-smoke.json)
+- 补全复生前的EXE完成 **3段1280×720 / 60fps无声实录**：STEAM16秒、STEAM3含真实双徽章合体16秒、TAL5共22秒。展示靶高生命不反击、右侧起点、段间可跳过自然SP等待；不是自然对局或平衡证据。重拳及肩炮已在Player实际相机核对。 [该版录像](../artifacts/steam-v2-integration/player-showcase/manifest.json)
+- 最终EXE补录三档肩炮16秒与真实复生21.47秒（先前版本一档／塔露拉录像保留）。复生夹具等待真实满8秒返回后才重置演示站位，不会提前拉动未复活身体。两段1280×720 / 60fps无声录像均正常完成，Player退出0。 [最终录像](../artifacts/steam-v2-integration/player-final/manifest.json)
+- 原作全部AI、音效、历史轨迹网格、完整炮弹飞行未接入。平衡长局、所有地图与第二台电脑未测。素材来源、逐依赖哈希及真实权利状态见 [移植记录](art/STEAM_KNIGHT_V2.md) 和 [源文件索引](art/STEAM_KNIGHT_SOURCE.json)。本机证据、构建、缓存、原包不随Git提交，无ZIP／Releases。
+
+## 2026-11-25 v0.8 数值、彩档与单机甲
+
+- 用户确认按评审稿实施，并确认由程序补齐蒸汽驾驶员和模块初版。基于 main `c4e39490`，分支 `codex/v08-balance-synergies-20261125`，保留已验证的 D3D11 崩溃修复；既存 `.vscode/` 保留、不提交。 [范围与口径](design/V08_IMPLEMENTATION.md) · [原评审稿](design/V08_REVIEW.md)
+- 完整 EditMode **1280/1280**，零失败／零跳过。覆盖三星五费独立面板与真实伤害、三四费塔露拉隔离、免控、免死优先、两徽章缺口、DOT锁定与增援、寒风暂停、严格处决、12段防递归、冠冕去重、一次交易、驾驶员隐藏／复活／主C重定向，以及图标依赖。GPU正式场景 PlayMode **4/4**。 [EditMode XML](../artifacts/v08/edit-icons.xml) · [PlayMode XML](../artifacts/v08/play-final.xml)
+- Unity **6000.6.5f1** Windows x64 Development 构建 **1,401,055,446字节，0错误**。默认 Direct3D11，无需传强制后端参数。完整装入142份清单与5,373张处理纹理；新增7枚原创图标与meta随源码，不依赖额外本地图片。Runtime DLL SHA-256：`967448E60D8AD43793A40CD8B9C2F20AA1D9613B12BB7041511CEF9149735421`。 [构建日志](../artifacts/v08/build-icons-delivery.log)
+- 最终EXE正式前三战 **142/142**，全22个羁绊样板 **152/152**；共 **25场**，两个进程均零异常、退出0，实测22种羁绊、30种装备图标加载。预设胜负均按真实战斗与进门／时限结算，不表示22套阵容全都通关。 [正式前三战](../artifacts/v08/campaign-complete/campaign-smoke.json) · [羁绊报告](../artifacts/v08/synergies-complete/synergy-smoke.json)
+- 前一轮同菜单构建的Windows交互驱动 **180/180**，零异常、退出0。确认新伊比利亚双选、军需交易次数、画境行列选格、主驾驶实例和原有升费／奖励／搭档菜单。最终构建仅随后补图标与说明，保留同一交互逻辑。 [菜单报告](../artifacts/v08/decisions-verified/decision-drawer-smoke.json)
+- 生成器输出一致性通过；原v0.7模型明确标记历史，未充当v0.8胜率结论。普通二星五费全部终局路线与自然获取率、长局强度和第二台电脑验收**未完成**，参数仍供队友实战评审。蒸汽专用人物美术未制作，当前明确复用仓库已有GOLEM原型；新增UI图标为原创几何图案，无第三方素材输入。 [图标来源和生成方式](art/V08_ICONS.md)
+- 本节链接的 `artifacts/v08` 是本机生成证据，不随Git提交；接收者可用本轮提交的测试与生成器重新验证。源码、卡牌、单位、图标、SVG与必要meta一起交付；不提交Library、日志、构建或本地AGENTS，不自动发布ZIP／Releases。
+
+## 2026-11-24 Windows 战斗崩溃兼容修复
+
+- 基于 main `c4e394909118ca9d255915e08e95767fac674765`，分支 `codex/fix-player-battle-crash-20261124`。保留既存未跟踪 `.vscode/`，仅调整标准 Windows 构建入口的图形 API 选择；构建后恢复原设置值，构建生成的等价自动 API 序列化条目不纳入提交。
+- Windows 事件确认 14:38 战斗崩溃为 `UnityPlayer.dll` 内 `0xc0000005`，偏移 `0x1a39822`。同版本 Unity 6000.6.5f1 Development x64 PDB 解析为 `GfxDeviceD3D12Base::SetTextures + 0x112`，后续为 `GpuProgram::ApplyTextureParameters`、`D3D12CommonShader::ApplyGpuProgram`、`D3D12ImmediateContext::BindShaders`、图形工作线程。已证实故障位于 D3D12 纹理绑定；尚未证明是哪张纹理、哪名角色或驱动内部原因。移植资源缺脚本／旧着色器警告不能独立证明崩溃原因。 [原 Player 日志备份](../artifacts/crash-investigation/Player.log)
+- 同一份未修改的旧构建加 `-force-d3d11` 对照：正式前三场 **142/142**，零异常。随后标准构建显式选择 Direct3D 11，恢复编辑器设置。Windows x64 Development 构建 **1,399,177,731 字节，0 错误**。包含 142 份运行清单、5,373 张预处理纹理；不依赖额外启动脚本。 [构建日志](../artifacts/crash-investigation/build-d3d11.log)
+- **以下修复版测试均未传 `-force-d3d11` 或其他强制渲染后端参数**，Player 日志确认默认 `Direct3D 11.0`，NVIDIA RTX 4090 Laptop GPU。1280×720，正式前三战 **142/142**、3 场；守军测试 **112/112**、7 场（1-6、2-4、2-5、3-2、3-4、3-5、3-7）。两个进程均零异常、退出码 0，复查 Windows 事件无本轮新崩溃。守军预设 3-4／3-7 正常超时失败，属于有效战斗结算，不算通关；其余五关胜利。 [前三战报告](../artifacts/crash-investigation/default-campaign/campaign-smoke.json) · [守军报告](../artifacts/crash-investigation/default-defenses/defense-smoke.json)
+- 守军运行包含 D22 火墙、D27 技能、D35 技能、3-5 D31／D36 技能与首领阶段。测试使用现有自动驱动和加速模拟，不能等同人类长局试玩或所有角色技能逐一验收。运行 DLL SHA-256：`F008FB2ECF9FC0C5B0281629D3C55362182068005CEC649920CD2D1F6099DFF3`。 [3-5 第三阶段实机帧](../artifacts/crash-investigation/default-defenses/3-5-D36-phase-3.png)
+- 仓库检查通过 **17,723** 个跟踪文件；未重跑完整 EditMode／PlayMode。本次验证为本机 Windows 构建及上述战斗样本，其他电脑、全流程长局和 D3D12 仍未通过验收。原素材全部保留，本修复通过默认 D3D11 绕开已捕获的 D3D12 故障。
+
 ## 2026-11-23 顶部抉择抽屉
 
 - 运行源码 `ef6a5d803a4d9fb7e55145379ac60265c2b8e579`。Unity 6000.6.5f1 Windows x64 Development 构建 1,399,429,710 字节、0 错误、退出 0。Runtime DLL SHA-256 `7F58487C853CFDFFFCF1944FF9814BE615FF0DF3AE40FD9384484E2C37D33FA6`。同源码完整 EditMode **1236/1236**、正式挑战场景定向 PlayMode **1/1**。最初包含截图用例的无图形 PlayMode 运行卡在场景加载后的用例阶段，已停止。 [构建日志](../artifacts/formation-decision-drawer/build-verified.log) · [EditMode](../artifacts/formation-decision-drawer/edit-verified.xml) · [PlayMode](../artifacts/formation-decision-drawer/play-verified.xml)

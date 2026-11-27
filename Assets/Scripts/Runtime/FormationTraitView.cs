@@ -47,9 +47,15 @@ namespace YesterdayConvoy
         public static SynergyVisualGrade GradeFor(FormationCampaignRules.DataRecord rule, int level)
         {
             if (rule == null || level <= 0) return SynergyVisualGrade.Inactive;
+            if (FormationCampaignRules.AllFactions.Contains(rule) && FormationCampaignRun.BadgeTraits.Contains(rule.Id) && level == rule.Levels.Last()) return SynergyVisualGradeForPrismatic();
             int index = Array.IndexOf(rule.Levels, level);
             return index < 0 ? SynergyVisualGrade.Inactive : (SynergyVisualGrade)Math.Min(4, index + 1);
         }
+
+        static SynergyVisualGrade SynergyVisualGradeForPrismatic() => (SynergyVisualGrade)4;
+
+        public int NaturalMemberCount => Members.Count;
+        public int HighestBadgeRequirement => FormationCampaignRun.BadgeTraits.Contains(Id) ? Math.Max(0,Rule.Levels.Last()-NaturalMemberCount) : 0;
 
         FormationTraitView(FormationCampaignRules.DataRecord rule, FormationCampaignRun run, ShopTrialModel shop)
         {

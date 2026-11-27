@@ -22,7 +22,7 @@ namespace YesterdayConvoy
             Phase == FormationPhase.Fighting && guard.IsSnowBoss && guard.SnowBossPhase == 1 && guard.SnowBossTransitionUntil > Clock;
 
         public double SnowBossFreezeRemaining(FormationFighter unit) =>
-            Phase == FormationPhase.Fighting && snowBossFrozenUntil > Clock && unit.Enabled && unit.Alive && snowBossFrozen.Contains(unit.Id)
+            !ControlImmune(unit) && Phase == FormationPhase.Fighting && snowBossFrozenUntil > Clock && unit.Enabled && unit.Alive && snowBossFrozen.Contains(unit.Id)
                 ? snowBossFrozenUntil - Clock : 0;
 
         public IReadOnlyDictionary<Vector2Int, int> SnowBossSnow(FormationDefender guard) =>
@@ -281,6 +281,7 @@ namespace YesterdayConvoy
 
         bool MoveSnowBossInduced(FormationFighter unit, float dt)
         {
+            if(ControlImmune(unit))return false;
             var guard = Defenders.FirstOrDefault(defender => defender.IsSnowBoss && defender.Alive && defender.SnowBossPhase == 2);
             if (guard == null) return false;
             var kit = Kit(guard);

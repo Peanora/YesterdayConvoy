@@ -7,7 +7,7 @@ namespace YesterdayConvoy
     enum FormationBossTrial { None, Pramanix, Supernova, Makoto }
 
     /// <summary>One finite v0.7 challenge. Scene/UI only choose options; this owns rewards and their once-only keys.</summary>
-    public sealed class FormationCampaignRun
+    public sealed partial class FormationCampaignRun
     {
         static readonly FormationCampaignRules.NodeDefinition SupernovaTrialNode = new FormationCampaignRules.NodeDefinition
         {
@@ -418,6 +418,7 @@ namespace YesterdayConvoy
             if(HasAugment("ES5")&&!graduationPaid&&shop.Level>=8){graduationPaid=true;shop.AddGold(18);}
             var cannott=shop.Bench.FirstOrDefault(p=>p.Star>=3&&FormationCampaignRules.Find(p.Id)?.Name=="坎诺特");
             if(cannott!=null)NotifyCannottThreeStar(cannott.Instance);
+            RefreshV08Economy();
             DrainDeliveries();
             if(deferredAutoRefresh&&!shop.TransactionBlocked)
             {deferredAutoRefresh=false;if(!shop.Locked)shop.Refresh(true);DrainDeliveries();}
@@ -458,7 +459,7 @@ namespace YesterdayConvoy
             }
         }
         public void LockBattleLineup()
-        {lockedReunionCount=TraitCount("整合");}
+        {lockedReunionCount=TraitCount("整合");v08BattleLocked=true;}
         public int TraitCount(string trait)=>shop.Bench.Where(x=>shop.IsLineupInstance(x.Instance)&&HasTrait(x,trait)).Select(x=>x.Id).Distinct().Count();
         public bool HasTrait(ShopTrialModel.Piece piece,string trait)=>HasNativeTrait(piece.Id,trait)||Equipment(piece.Instance).Any(x=>BadgeTrait(x.Key)==trait);
         public static bool HasNativeTrait(string id,string trait)
@@ -538,7 +539,7 @@ namespace YesterdayConvoy
             int count = TraitCount("泥岩");
             if (count < 2) return 0;
             int stars = shop.Bench.Where(piece => shop.IsLineupInstance(piece.Instance) && HasNativeTrait(piece.Id, "泥岩")).Sum(piece => piece.Star);
-            int cap = count >= 4 ? 99 : count == 3 ? 79 : 23;
+            int cap = count >= 5 ? 99 : count >= 3 ? 79 : 23;
             int before = MudrockXP;
             MudrockXP = Math.Min(cap, before + (count + stars) / 2);
             return MudrockXP - before;
@@ -563,6 +564,7 @@ namespace YesterdayConvoy
         }
         void EnterNode()
         {
+            EnterV08Node();
             if(CurrentNode.Kind=="补给"){if(shop.TransactionBlocked)deferredSupply=true;else RequestSupply();}
             else if(CurrentNode.Kind=="战斗战备")RequestAugment();
         }
@@ -656,7 +658,7 @@ namespace YesterdayConvoy
                 case "EP6":shop.AddGold(12);shop.RefreshPrice=1;break;
                 case "CG1":AddItem("徽章:同频");Give("M25");break;
                 case "CG2":AddItem("徽章:整合");Give("M25");AddHope(10);break;
-                case "CP1":shop.ExtraPopulation=1;break;
+                case "CP1":shop.ExtraPopulation=1+CrownPopulation;break;
                 case "CP3":AddItem("徽章:同频");break;
                 case "CP4":AddItem("徽章:便车");break;
                 case "CP5":AddItem("徽章:接棒");break;
@@ -881,7 +883,7 @@ namespace YesterdayConvoy
         {Request(title,Shuffle(FormationCampaignRules.AllItems).Take(count).Select(x=>Option(x.Id,x.Name,x.Effect,()=>{if(different&&modulus.TryGetValue("CP6-item",out var first)&&FormationCampaignRules.AllItems[first].Id==x.Id){RequestAdvanced(title,count,true);return;}AddItem(x.Id);if(!different&&title.StartsWith("满载军械"))modulus["CP6-item"]=Array.FindIndex(FormationCampaignRules.AllItems.ToArray(),v=>v.Id==x.Id);})));}
         void RequestBadge()
         {Request("徽章匣 · 三选一",Shuffle(BadgeTraits).Where(t=>items.Count(x=>BadgeTrait(x.Key)==t)<2).Take(3).Select(t=>Option("徽章:"+t,t+"徽章","添加羁绊标签，占一格装备；无额外基础属性。",()=>AddItem("徽章:"+t))));}
-        public static readonly string[] BadgeTraits={"整合","雪怪","泥岩","深池","萨卡兹","海嗣","连击","迅攻","复苏","爆破","提词","便车","剧场","接棒","同频"};
+        public static readonly string[] BadgeTraits={"整合","雪怪","泥岩","深池","萨卡兹","海嗣","连击","迅攻","复苏","爆破","提词","便车","剧场","接棒","同频","伊比利亚","蒸汽"};
         public ItemInstance AddItem(string key,bool countBudget=true)
         {
             string badge=BadgeTrait(key);
@@ -892,7 +894,7 @@ namespace YesterdayConvoy
                 {var parts=key.Split(':');if(parts.Length>=3)return AddItem(parts[2],countBudget);RequestComponents("重复徽章拆解 · 基础装备自选",6);return null;}
                 badgeCounts[badge]=count+1;
             }
-            var item=new ItemInstance{Instance=++sequence,Key=key};items.Add(item);if(countBudget){if(key.Length==1&&"ABCDEF".Contains(key))equipmentGranted++;else if(FormationCampaignRules.AllItems.Any(x=>x.Id==key))equipmentGranted+=2;}return item;
+            var item=new ItemInstance{Instance=++sequence,Key=key};items.Add(item);if(countBudget){if(key.Length==1&&"ABCDEF".Contains(key))equipmentGranted++;else if(FormationCampaignRules.AllItems.Any(x=>x.Id==key))equipmentGranted+=2;}RefreshV08Economy();return item;
         }
         public static string BadgeTrait(string key)=>key!=null&&key.StartsWith("徽章:")?key.Split(':')[1]:null;
         public static string ItemName(string key)=>key.StartsWith("徽章:")?key.Split(':')[1]+"徽章":key=="复制器"?"完美复制器":FormationCampaignRules.FindRecord(key)?.Name??key;
@@ -906,7 +908,7 @@ namespace YesterdayConvoy
             string badge=BadgeTrait(item.Key);
             if(badge!=null&&(HasNativeTrait(piece.Id,badge)||equipped.Any(x=>BadgeTrait(x.Key)!=null)))return Fail("已有该标签或已装备徽章");
             if(equipped.Any(x=>x.Key==item.Key)&&item.Key.Length>1)return Fail("同名进阶装备不可重复装备");
-            item.Owner=pieceInstance;return Ok("装备已交给"+shop.Definition(piece.Id).Name);
+            item.Owner=pieceInstance;RefreshV08Economy();return Ok("装备已交给"+shop.Definition(piece.Id).Name);
         }
         public ShopTrialModel.Result Unequip(int itemInstance)
         {if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);if(item==null)return Fail("装备不存在");item.Owner=0;return Ok("已免费卸装");}
@@ -925,7 +927,7 @@ namespace YesterdayConvoy
             var piece=shop.Bench.FirstOrDefault(p=>p.Instance==owner);
             if(owner!=0&&piece!=null&&Equipment(owner).Count<3&&!Equipment(owner).Any(i=>i.Key==key)&&
                 (BadgeTrait(key)==null||!HasNativeTrait(piece.Id,BadgeTrait(key))&&!Equipment(owner).Any(i=>BadgeTrait(i.Key)!=null)))next.Owner=owner;
-            return Ok("合成："+next.Name);
+            RefreshV08Economy();return Ok("合成："+next.Name);
         }
 
         ShopTrialModel.Result ValidateCombination(ItemInstance x,ItemInstance y,out string key)
@@ -935,6 +937,8 @@ namespace YesterdayConvoy
             if(x==null||y==null||x==y)return Fail("选择两个不同物品");
             bool Base(string s)=>s.Length==1&&"ABCDEF".Contains(s);
             if(Base(x.Key)&&Base(y.Key))key=string.Concat(new[]{x.Key[0],y.Key[0]}.OrderBy(c=>c));
+            else if(x.Key.EndsWith("宝石")&&y.Key.EndsWith("宝石"))
+                key=x.Key==y.Key?(x.Key=="赤宝石"?"CROWN":"AEGIS"):"CLOAK";
             else
             {
                 var gem=x.Key.EndsWith("宝石")?x:y.Key.EndsWith("宝石")?y:null;var component=gem==x?y:x;
@@ -954,7 +958,8 @@ namespace YesterdayConvoy
             string key="cannott-"+CurrentNode.Id;if(modulus.GetValueOrDefault(key)>0)return;modulus[key]=1;shop.AddGold(piece.Star==1?2:piece.Star==2?4:10);
         }
         public void NotifyCannottThreeStar(int pieceInstance)
-        {if(modulus.GetValueOrDefault("cannott-3star")!=0)return;modulus["cannott-3star"]=1;shop.AddGold(120);}
+        {if(!shop.Bench.Any(piece=>piece.Instance==pieceInstance&&piece.Star==3&&FormationCampaignRules.Find(piece.Id)?.Id=="B10"))return;
+            if(modulus.GetValueOrDefault("cannott-3star")!=0)return;modulus["cannott-3star"]=1;modulus["v08-can-node-"+CurrentNode.Id]=1;shop.AddGold(300);}
         static ShopTrialModel.Result Ok(string message)=>new ShopTrialModel.Result{Success=true,Message=message};
         static ShopTrialModel.Result Fail(string message)=>new ShopTrialModel.Result{Message=message};
     }

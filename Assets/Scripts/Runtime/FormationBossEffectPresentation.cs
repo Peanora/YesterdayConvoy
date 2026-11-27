@@ -23,6 +23,7 @@ namespace YesterdayConvoy
             foreach(var actor in Model.Units.Where(u=>u.Enabled))
             {
                 if(!FormationActorVisibleInView(actor)||!formationMonsterArt.TryGetValue(actor.ArtId,out var source))continue;
+                if(actor.ArtId=="STEAM"){PresentFormationSteamEffects(actor);continue;}
                 var bindings=FormationBindings(source.NativeTask);
                 int phase=source.NativeTask=="B08"&&actor.NativePhase>0?3:actor.NativePhase+1;
                 bool legacyCore=new[]{"TALULAH_TRIAL","M14","M20","M25","M28","M32"}.Contains(actor.ArtId);
@@ -108,6 +109,8 @@ namespace YesterdayConvoy
                 double age=(now-hit.At)*FormationVisualRate;if(age<0||age>6||!FormationPointVisibleInView(hit.To))continue;
                 var actor=Model.Units.FirstOrDefault(u=>u.Id==hit.FromId);
                 FormationUnitArt source=null;if(actor!=null)formationMonsterArt.TryGetValue(actor.ArtId,out source);
+                if(actor?.ArtId=="STEAM")
+                {if(PresentFormationSteamHit(hit,actor))formationImpactOwners.Add(hit);continue;}
                 if(actor!=null&&FormationHasLegacyImpact(actor.ArtId,hit.Skill))formationImpactOwners.Add(hit);
                 if(actor?.ArtId=="B26"&&hit.Skill&&!hit.Secondary&&hit.Action!=null&&formationBeamActions.Add(hit.Action.Sequence))
                     PresentFormationBeams(actor,hit.To,now-hit.At);

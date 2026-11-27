@@ -115,7 +115,7 @@ namespace YesterdayConvoy
         {
             if (decisionUsesForeground && keyboard) yield return PressStrategyUiKey((byte)(0x31 + index));
             else yield return UseDrawerEvidenceInput(controller.FormationDecisionOptionRect(index).center,
-                () => controller.ActivateFormationDecisionCard(index));
+                () => {bool accepted=controller.ActivateFormationDecisionCard(index);Debug.Log("DRAWER_EVIDENCE_INPUT: index="+index+" accepted="+accepted+" "+controller.FormationDecisionInputState);});
         }
 
         IEnumerator VerifyCampaignRewardDecisions()
@@ -221,13 +221,18 @@ namespace YesterdayConvoy
                 mouse_event(0x0800, 0, 0, unchecked((uint)-480), UIntPtr.Zero);
                 yield return new WaitForSecondsRealtime(.15f);
             }
+            if(!decisionUsesForeground){controller.RevealFormationDecisionOption(index);yield return null;}
             var card = controller.FormationDecisionOptionRect(index);
             Assert(card.height >= 22, "Menu scrolling exposes tactic " + index);
+            yield return new WaitForSecondsRealtime(.35f);
+            yield return Frame("navigation-before-"+index);
             yield return ActivateDrawerEvidenceCard(index);
         }
 
         IEnumerator SelectDecisionCard(int index)
         {
+            yield return new WaitForSecondsRealtime(.35f);
+            if(!decisionUsesForeground){controller.RevealFormationDecisionOption(index);yield return null;}
             var card = controller.FormationDecisionOptionRect(index);
             Assert(card.height > 0, "The option card has a rendered hit target");
             yield return ActivateDrawerEvidenceCard(index);
@@ -248,7 +253,9 @@ namespace YesterdayConvoy
             controller.SelectSynergyTrial("萨卡兹");
             yield return WaitForScoutingView(false);
             var run = controller.Campaign;
-            Assert(run.TraitCount("萨卡兹") == 6, "The real Sarkaz preset fields six members");
+            Assert(run.TraitCount("萨卡兹") == 10, "The v0.8 Sarkaz preset fields ten members");
+            foreach(var extra in controller.Session.Seats.Lineup(controller.Shop.Bench).Take(4).ToArray())
+                Assert(controller.Session.Move(extra.Instance,false,controller.Session.Seats.FirstEmpty(false,ShopSeatLayout.ReserveCapacity)).Success,"Prepare six members for dual-pact boundary checks");
             int initialPact = run.SarkazPact;
             var member = controller.Session.Seats.Lineup(controller.Shop.Bench).Last();
             int seat = controller.Session.Seats.For(member.Instance).Value.Index;
@@ -356,6 +363,32 @@ namespace YesterdayConvoy
             yield return WaitForStrategyUi(() => run.SeaCellIds.SequenceEqual(new[] { cell.x + cell.y * FormationBattleModel.Width }),
                 "The Sea editor pointer handler records the projected legal tile");
             yield return Frame("12-sea-manual-tile");
+
+            controller.SelectSynergyTrial("伊比利亚");
+            yield return WaitForScoutingView(false);run=controller.Campaign;
+            yield return ClickTacticalMenuOption(12);yield return SelectDecisionCard(4);yield return ConfirmDrawerEvidence();
+            Assert(run.IberiaFirst==2&&run.IberiaSecond==0,"v0.8 Iberia drawer confirms execution plus healing as two distinct choices");
+            yield return Frame("13-v08-iberia-confirmed");
+
+            controller.SelectSynergyTrial("行商");yield return WaitForScoutingView(false);run=controller.Campaign;
+            int refreshes=run.FreeRefreshes;
+            yield return ClickTacticalMenuOption(13);yield return SelectDecisionCard(2);yield return ConfirmDrawerEvidence();
+            Assert(!run.MilitaryTradeAvailable&&run.FreeRefreshes==refreshes+4,"v0.8 military trade awards four refreshes once per plane");
+            Assert(!run.MilitaryTrade(1).Success,"v0.8 military trade cannot pay a second time");
+            yield return Frame("14-v08-military-trade");
+
+            controller.SelectSynergyTrial("画中天地");yield return WaitForScoutingView(false);run=controller.Campaign;
+            yield return ClickTacticalMenuOption(14);yield return new WaitForSecondsRealtime(.4f);yield return ActivateDrawerEvidenceCard(3);
+            yield return WaitForStrategyUi(()=>controller.FormationDecisionKey=="tactical:v08-sui-cell:3","v0.8 Sui row choice opens column selection");
+            yield return SelectDecisionCard(2);yield return ConfirmDrawerEvidence();
+            Assert(run.SuiCentre==new Vector2Int(2,3),"v0.8 manifestation centre confirms an actual own-side grid cell");
+            yield return Frame("15-v08-sui-centre");
+
+            controller.SelectSynergyTrial("蒸汽");yield return WaitForScoutingView(false);run=controller.Campaign;
+            var drivers=controller.Session.Seats.Lineup(controller.Shop.Bench).Where(piece=>run.HasTrait(piece,"蒸汽")).ToArray();
+            yield return ClickTacticalMenuOption(15);yield return SelectDecisionCard(2);yield return ConfirmDrawerEvidence();
+            Assert(run.SteamMainDriver==drivers[1].Instance,"v0.8 steam drawer stores the actual chosen driver instance");
+            yield return Frame("16-v08-steam-driver");
         }
     }
 }

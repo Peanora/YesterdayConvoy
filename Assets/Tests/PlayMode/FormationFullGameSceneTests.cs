@@ -231,7 +231,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(controller,Is.Not.Null);Assert.That(controller.Ready,Is.True);
             Assert.That(controller.Campaign,Is.Not.Null);Assert.That(controller.Shop.UnlimitedGold,Is.False);
             Assert.That(controller.Shop.Gold,Is.EqualTo(8));Assert.That(controller.Shop.Level,Is.EqualTo(3));
-            Assert.That(controller.Shop.Roles.Count,Is.EqualTo(46));
+            Assert.That(controller.Shop.Roles.Count,Is.EqualTo(47));
             controller.StartBattle();Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation),"Automatic opening delivery must finish before combat.");
             yield return WaitForOpeningDelivery(controller);
             controller.StartBattle();Assert.That(controller.Model.Phase,Is.EqualTo(FormationPhase.Preparation),"The preplan must be confirmed before combat.");

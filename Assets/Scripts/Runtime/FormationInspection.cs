@@ -86,8 +86,8 @@ namespace YesterdayConvoy
             "TAL" when Campaign.TalulahCost == 4 =>
                 "焚城：半径2.5内至多6人，3段各280%攻击力法伤；6秒灼烧，每秒35%。强化后4段并获得20%最大生命护盾8秒。",
             "TAL" when Campaign.TalulahCost == 5 =>
-                "火雨：全场至多8人，6段各260%攻击力法伤；8秒灼烧，每秒50%。火雨结束后恢复普攻。三星令本次灼烧的一半转为真伤，并获得整合三星终局奖励。",
-            "B21" => SuiClawDescription,
+                "火雨：常规至多8人，6段各200%攻击力法伤；8秒每秒40%攻击法伤。三星五费：全敌6段各2500%攻击真伤，保留灼烧，首次施法免伤，整合三星奖励整局一次。",
+            "B21" => spec.Effect,
             _ => spec.Effect
         };
 
@@ -120,9 +120,11 @@ namespace YesterdayConvoy
             Fill(portrait, new Color32(205, 211, 224, 255));
             DrawFormationPortrait(portrait, card);
             string hp = (actor?.MaxHealth ?? FormationCampaignRules.BaseHealthAtStar(spec, star, Campaign.TalulahCost)).ToString("0");
-            string attack = (actor?.Attack ?? spec.Attack * FormationCampaignRules.AttackStarMultiplier(star)).ToString("0");
-            string armor = (actor?.Armor ?? spec.Armor).ToString("0");
-            string resist = (actor?.MagicResistance ?? spec.MagicResistance).ToString("0");
+            float baseAttack=spec.Id=="TAL"?(Campaign.TalulahCost==5?560:Campaign.TalulahCost==4?310:190):spec.Attack;
+            bool finalFive=FormationCampaignRules.IsThreeStarFiveCost(spec,star,Campaign.TalulahCost);
+            string attack = (actor?.Attack ?? baseAttack * FormationCampaignRules.AttackStarMultiplier(spec,star,Campaign.TalulahCost)).ToString("0");
+            string armor = (actor?.Armor ?? (spec.Id=="TAL"?(Campaign.TalulahCost==5?26:Campaign.TalulahCost==4?18:12):spec.Armor)+(finalFive?50:0)).ToString("0");
+            string resist = (actor?.MagicResistance ?? Mathf.Min(80,(spec.Id=="TAL"?(Campaign.TalulahCost==5?40:Campaign.TalulahCost==4?30:25):spec.MagicResistance)+(finalFive?30:0))).ToString("0");
             OperationsLabel(new Rect(r.x + 83, r.y + 75, 203, 17), $"生命 {hp}   攻击 {attack}", 12, OperationsInk);
             OperationsLabel(new Rect(r.x + 83, r.y + 94, 203, 17), $"护甲 {armor}   法抗 {resist}", 12, OperationsInk);
             OperationsLabel(new Rect(r.x + 83, r.y + 113, 203, 17), spec.RequiredSP <= 0 ? spec.Recovery :
@@ -142,6 +144,15 @@ namespace YesterdayConvoy
                         ToggleFormationEquipmentDetails(item.Instance, slot);
                 }
                 offset += 32;
+            }
+            if(piece!=null&&Campaign.HasTrait(piece,"蒸汽"))
+            {
+                int tier=Campaign.TraitCount("蒸汽");
+                OperationsLabel(new Rect(r.x+11,r.y+offset,r.width-22,16),"机甲模块 · 独立栏，不占装备格",10,OperationsMuted);
+                string[] modules={"蒸汽重拳","高压护甲","过载炉芯","肩炮"};
+                for(int index=0;index<modules.Length;index++)
+                    OperationsLabel(new Rect(r.x+11+index*68,r.y+offset+16,67,19),modules[index],10,tier>=(index<2?index+1:3)?OperationsFocus:OperationsMuted);
+                offset+=38;
             }
             var area = new Rect(r.x + 11, r.y + offset, r.width - 22, r.height - offset - 8);
             var style = new GUIStyle(approvedShop.LoopText(11, TextAnchor.UpperLeft, OperationsInk)){wordWrap=true};

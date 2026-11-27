@@ -32,7 +32,7 @@ namespace YesterdayConvoy
         }
         [Serializable] public sealed class Manifest
         {
-            public string sourceCommit,scope="当前保存棋盘与生产v0.7动作/技能/特效的GPU实录。预置一星编队、右侧起点及高生命靶；片中标注跳过的等待。主角色数值/技力不改，不是自然对局或原作完整还原。";
+            public string sourceCommit,scope="当前保存棋盘与生产v0.8动作/技能/特效的GPU实录。预置一星编队、右侧起点及高生命靶；片中标注跳过的等待。主角色数值/技力不改，不是自然对局或原作完整还原。";
             public int width=1280,height=720,fps=24;
             public bool audio=false,completed,onePerRole;
             public List<Clip> clips=new List<Clip>();
@@ -42,7 +42,7 @@ namespace YesterdayConvoy
         {
             internal string Id,Kind,Name;
             internal string[] Units;
-            internal int Cost=3,Skill=3;
+            internal int Cost=3,Skill=3,SteamTier=1;
             internal bool Phase,WalkOnly;
             internal string GuardArt,SummonArt;
             internal bool SnowBoss;
@@ -119,6 +119,8 @@ namespace YesterdayConvoy
                 yield return new Plan{Id="GOLEM",SummonArt="GOLEM",Kind="summon",Name="泥岩巨像",Units=new[]{"M27","M42"}};
                 yield break;
             }
+            yield return new Plan{Id="STEAM3",Kind="variant",Name="蒸汽骑士 · 三档肩炮",Units=new[]{"STEAM","B01","M03"},SteamTier=3};
+            yield return new Plan{Id="STEAM-rebirth",Kind="variant",Name="蒸汽骑士 · 原版复生",Units=new[]{"STEAM"},Phase=true};
             foreach(int cost in new[]{4,5})yield return new Plan{Id="TAL"+cost,Kind="variant",Name="塔露拉 · "+cost+"费",Units=new[]{"TAL"},Cost=cost};
             foreach(int skill in new[]{1,2})yield return new Plan{Id="WIS"+skill,Kind="variant",Name="维维美 · 技能"+skill,Units=new[]{"WIS"},Skill=skill};
             foreach(string id in new[]{"M20","M32","M14","M30","B04","B08","B13","B24"})
@@ -310,7 +312,8 @@ namespace YesterdayConvoy
 
         IEnumerator Prepare(Plan plan)
         {
-            yield return controller.PrepareShowcaseRoleFixture(plan.Units,plan.Cost,plan.Skill,plan.GuardArt,plan.SnowBoss,RoleVideos);
+            yield return controller.PrepareShowcaseRoleFixture(plan.Units,plan.Cost,plan.Skill,plan.GuardArt,plan.SnowBoss,RoleVideos,plan.SteamTier);
+            if(plan.SteamTier>1)clip.notes+=" 三档展示夹具：另两位真实角色装备蒸汽徽章，按生产合体规则隐藏为驾驶员。";
             controller.BeginShowcaseFixture();
             controller.Model.Paused=false;
             clip.activeSynergies=controller.Model.ActiveSynergies.Where(p=>p.Value>0).Select(p=>p.Key+" "+p.Value).ToArray();
@@ -399,7 +402,9 @@ namespace YesterdayConvoy
             clip.notes+=" 阶段夹具：首靶提高攻击力，实际受伤/致死触发原生阶段；返场后重置显示起点以核对二阶段走路。";
             yield return Segment("阶段夹具 · 靶攻击触发受伤/返场",3,plan.Units[0]=="B04"?.5f:2.1f);
             controller.SetShowcaseTargetPressure(0);
-            yield return Segment("原生阶段 / 返场等待",5);
+            yield return Segment(plan.Id=="STEAM-rebirth"?"原版Die_A复生 · 满8秒后返场":"原生阶段 / 返场等待",
+                plan.Id=="STEAM-rebirth"?actor.RespawnRemaining+.2f:5);
+            if(plan.Id=="STEAM-rebirth"&&!actor.Alive)throw new InvalidOperationException("Steam Knight did not complete the real eight-second return.");
             if(plan.Units[0]=="B13")
             {
                 controller.SetShowcaseTargetPressure(actor.Armor+actor.MaxHealth*.6f,.8f);

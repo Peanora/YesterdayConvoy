@@ -94,7 +94,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(firstProgress.LastTrialProgress, Is.Not.Empty);
             int hope = 30 + (won ? 2 : 0);
             Assert.That(firstProgress.Hope, Is.EqualTo(id == "整合" ? hope : 0));
-            Assert.That(firstProgress.MudrockXP, Is.EqualTo(id == "泥岩" ? 80 : 0));
+            Assert.That(firstProgress.MudrockXP, Is.EqualTo(id == "泥岩" ? 81 : 0));
 
             session.SettleBattle(won, model.EncounterProgress, model.InitialDefenderCount, model.RemainingDefenders, model.BossAlive);
             Assert.That((run.Hope, run.MudrockXP, run.LastTrialProgress), Is.EqualTo(firstProgress));

@@ -45,7 +45,7 @@ namespace YesterdayConvoy
         public bool CommissionUsed {get;private set;}
         public bool FormationEconomy {get;private set;}
         public int ExtraPopulation {get;set;}
-        public int PopulationCap=>Math.Min(11,Level+ExtraPopulation);
+        public int PopulationCap=>Math.Min(FormationEconomy?14:11,Level+ExtraPopulation);
         public int RefreshPrice {get;set;}=2;
         public int PurchasedXP {get;set;}=4;
         public int FreeRefreshes {get;set;}

@@ -47,7 +47,7 @@ namespace YesterdayConvoy.Editor
                 if(rules.RequiredSP>0&&!art.HasAction("cast")&&!art.HasAction("skill")&&!art.HasAction("attack"))
                     throw new InvalidOperationException("Missing actual cast or attack motion: "+rules.CardId);
             }
-            Debug.Log("FORMATION_V07_ROSTER_VALIDATE_PASS: 46 approved identities with real source motion metadata.");
+            Debug.Log("FORMATION_V07_ROSTER_VALIDATE_PASS: 47 approved identities with real source motion metadata.");
         }
 
         static T LoadOrCreate<T>(string path)where T:ScriptableObject

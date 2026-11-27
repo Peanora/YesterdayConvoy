@@ -281,6 +281,7 @@ namespace YesterdayConvoy
             float deathDuration=defender?GuardDeathDuration(actor):
                 (formationMonsterArt.TryGetValue(actor.ArtId,out var deathSource)?deathSource.Duration("death"):.65f)/FormationVisualRate;
             string bodyArtId=FormationBodyArtId(actor);
+            if(actor.ArtId=="STEAM"&&!actor.Alive&&actor is FormationFighter{RespawnRemaining:>0})deathDuration=(float)Model.ReviveSeconds;
             body.enabled=FormationActorVisibleInView(actor)&&FormationArtAvailable(bodyArtId)&&(actor.Alive||returning||deathAge>=0&&deathAge<deathDuration);
             if(!body.enabled)return;
             bool pramanix = actor is FormationDefender { IsSnowBoss: true };
@@ -549,6 +550,11 @@ namespace YesterdayConvoy
         IEnumerable<string> FormationInitialMotionKeys(FormationUnitArt source,string id)
         {
             if(source.NativeTask==null)yield break;
+            if(source.NativeTask=="STEAM")
+            {
+                foreach(var motion in new[]{"Attack_A","Skill_1_Begin_A","Skill_1_Attack_A","Skill_2_Begin_A","Skill_2_End_A","Boost_A","Idle_B","Die_A"})yield return motion;
+                yield break;
+            }
             var actor=Model.Units.FirstOrDefault(u=>u.ArtId==id);
             if(actor==null)yield break;
             if(source.NativeTask=="B21")
@@ -588,6 +594,7 @@ namespace YesterdayConvoy
             ref string key,ref double age,ref bool loop)
         {
             string task=source.NativeTask;
+            if(task=="STEAM"){SelectFormationSteamMotion(actor,now,ref key,ref age,ref loop);return;}
             int phase=actor is FormationFighter fighter?fighter.NativePhase:0;
             if(returning)
             {
@@ -720,6 +727,9 @@ namespace YesterdayConvoy
         IEnumerable<ArtSequence> FormationEffectSequences(FormationUnitArt source)
         {
             var seen=new HashSet<string>();
+            if(source.NativeTask=="STEAM")
+                foreach(var sequence in BossRosterFxArt.SequencesFor(new[]{"CARD_STEAM"}))
+                    if(seen.Add(sequence.CacheKey))yield return sequence;
             foreach(var actor in Model?.Units??Enumerable.Empty<FormationFighter>())
                 if(formationMonsterArt.TryGetValue(actor.ArtId,out var same)&&same==source)
                     foreach(var sequence in FormationLegacySequences(actor.ArtId))

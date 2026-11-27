@@ -81,7 +81,7 @@ namespace YesterdayConvoy
         }
         void SetupSea()
         {
-            int l=Level("海嗣"),count=l>=5?10:l>=4?7:l>=2?4:0;
+            int l=Level("海嗣"),count=l>=6?10:l>=4?7:l>=2?4:0;
             if(Campaign.SeaCellIds.Count>0)
             {
                 if(ValidateSeaPlacement(out _))seaCells.AddRange(Campaign.SeaCellIds.Distinct().Select(id=>new Vector2(id%Width,id/Width)));
@@ -93,11 +93,11 @@ namespace YesterdayConvoy
             seaCells.AddRange(cells.Take(count));
         }
         public void RefreshSeaPreview()
-        { if(Campaign==null||Phase!=FormationPhase.Preparation)return;seaCells.Clear();SetupSea(); }
+        { if(Campaign==null||Phase!=FormationPhase.Preparation)return;seaCells.Clear();SetupSea();ExpandV08Sea(); }
         public bool ValidateSeaPlacement(out string reason)
         {
             reason=null;if(Campaign==null||Campaign.SeaCellIds.Count==0)return true;
-            int l=Level("海嗣"),cap=l>=5?10:l>=4?7:l>=2?4:0;
+            int l=Level("海嗣"),cap=l>=6?10:l>=4?7:l>=2?4:0;
             var ids=Campaign.SeaCellIds.Distinct().ToArray();
             if(ids.Length>cap||ids.Length==0){reason="溟痕数量超过当前海嗣羁绊上限";return false;}
             foreach(int id in ids)
@@ -122,9 +122,10 @@ namespace YesterdayConvoy
         {
             if(Level("泥岩")<2)return;var owners=Units.Where(u=>u.Enabled&&State(u).Spec?.Factions.Contains("泥岩")==true).ToArray();if(owners.Length==0)return;
             int starSum=owners.Sum(u=>u.Star),n=synergyCounts["泥岩"],xp=Campaign.MudrockXP;
-            int stage=xp>=80&&starSum>=9&&n>=4?5:xp>=50&&starSum>=7&&n>=3?4:xp>=24&&starSum>=5&&n>=3?3:xp>=8&&starSum>=3&&n>=2?2:1;
+            int stage=xp>=80&&starSum>=9&&n>=5&&Campaign.Shop.Level>=9?5:xp>=50&&starSum>=7&&n>=3?4:xp>=24&&starSum>=5&&n>=3?3:xp>=8&&starSum>=3&&n>=2?2:1;
             float baseHealth = owners.Average(u => FormationCampaignRules.BaseHealthAtStar(State(u).Spec, u.Star, Campaign.TalulahCost));
             var golem=new FormationFighter{Id=nextSummon--,Name="泥岩巨像 "+stage,ArtId="GOLEM",Position=owners[0].Position,Spawn=owners[0].Spawn,Enabled=true,Alive=true,MaxHealth=baseHealth*(stage+1),Attack=owners.Average(u=>State(u).BaseAttack)*new[]{0,1,1.3f,1.6f,2,2.5f}[stage],Armor=owners.Average(u=>u.Armor),MagicResistance=owners.Average(u=>u.MagicResistance),Interval=3,Range=1.5f,MoveSpeed=.6f};
+            if(stage==5&&Level("泥岩")>=5){golem.MaxHealth*=2.5f;golem.Attack*=2;}
             golem.Health=golem.MaxHealth;State(golem).ExpiresAt=double.PositiveInfinity;State(golem).Stage=stage;Summons.Add(golem);
             if(stage>=5)foreach(var u in Units.Where(u=>u.Enabled))GiveBuff(u,"golem_shield",.15f,999);
         }
@@ -147,6 +148,8 @@ namespace YesterdayConvoy
         {
             var s=State(f);s.LifeVersion++;f.Alive=false;f.IsMoving=false;f.LastDeathAt=Clock;f.TargetId=-1;f.Shield=0;s.Shields.Clear();
             if(Summons.Contains(f)){Summons.Remove(f);return;}
+            if(IsMech(f)){BeginModeDeath(f);return;}
+            RefreshV08PatriotAura();
             int nativeMax=Key(f)=="B13"?2:new[]{"M30","M14","M32","B24","M20","B08"}.Contains(Key(f))?1:0;
             if(s.NativeLives<nativeMax)
             {
@@ -185,12 +188,14 @@ namespace YesterdayConvoy
             if(native&&Key(f)=="B08"&&!zones.Any(z=>z.Until>Clock&&(z.Kind=="burn"||z.Kind.StartsWith("deep:"))))
             {BeginModeDeath(f);return;}
             s.NativePending=false;f.Alive=true;f.Health=f.MaxHealth*(native?(float)s.NativeReturnHealth:1);f.Position=native?f.Position:f.SpawnCenter;
+            RefreshV08PatriotAura();
             f.ActionUntil=Clock+.2;f.NextAttackAt=Math.Max(f.NextAttackAt,Clock+.2);f.TargetId=-1;f.Facing=Vector2.right;f.RespawnRemaining=0;
             if(native)
             {
                 s.Stage++;f.PhaseStage=s.Stage;NativePhasePresentation(f);
                 if(Key(f)=="B24")GiveBuff(f,"next_trench",.5f,999);
-                if(Key(f)=="B08"&&f.Star>=3)
+                V08NativeReturn(f);
+                if(Key(f)=="B08"&&f.Star>=3&&!FiveStar(f))
                     foreach(var friend in Units.Where(u=>u!=f&&u.Enabled&&!u.Alive&&Tagged(u,"接棒")).ToArray())
                     {friend.Alive=true;friend.Health=friend.MaxHealth*.3f;friend.Position=friend.SpawnCenter;friend.RespawnRemaining=0;State(friend).NativePending=false;friend.RebornAt=0;/* a derived recall deliberately grants no handoff stack */}
             }

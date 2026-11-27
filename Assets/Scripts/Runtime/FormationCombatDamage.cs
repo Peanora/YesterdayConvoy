@@ -23,6 +23,7 @@ namespace YesterdayConvoy
             float mult=skill?Power(source)*Mathf.Max(1,Stack(source,"cast_multiplier")):1;
             int blast=Tagged(source,"爆破")?Level("爆破"):0;if(area&&skill)mult*=1+(blast>=6?.5f:blast>=4?.3f:blast>=2?.15f:0);
             if(!skill&&victims.Length==1&&Campaign.HasAugment("CS5"))mult*=1.12f;
+            float saintExtra=Summons.Contains(source)?0:V08SaintExtra(source,skill);
             for(int i=0;i<victims.Length;i++)
             {
                 var t=victims[i];
@@ -32,13 +33,13 @@ namespace YesterdayConvoy
                 landed |= targetHit;
                 if(skill){if(targetHit||!centurion)s.SkillTargets.Add(t.Id);AddStack(source,"last_skill_raw",actual);s.SkillDamage[t.Id]=(s.SkillDamage.TryGetValue(t.Id,out var prev)?prev:0)+actual;}
                 if(element>0)Element(source,t,element,fire);
-                if(Tagged(source,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(source.Position-c).sqrMagnitude<=.6f*.6f))Element(source,t,Level("海嗣")>=5?15:Level("海嗣")>=4?10:6,false);
+                if(Tagged(source,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(source.Position-c).sqrMagnitude<=.6f*.6f))Element(source,t,Level("海嗣")>=6?15:Level("海嗣")>=4?10:6,false);
                 if(Tagged(source,"深池")&&Level("深池")>=2)DeepBurn(source,t);
                 if(Buff(source,"eblana_fire")>0&&s.ActionHits==1&&i==0)Element(source,t,30,true);
-                if(Buff(source,"saint_damage")>0&&t.Alive)CombatDamage(source,t,Buff(source,"saint_damage"),type,skill,false);
+                if(saintExtra>0&&t.Alive)CombatDamage(source,t,saintExtra,Stack(source,"saint_v08")>0?2:type,skill,false);
                 if(skill&&HasItem(source,"AF")&&s.MeasuredTargets.Add(t.Id))AddStack(source,"measure",1,8);
             }
-            if(Tagged(source,"伊比利亚")&&Level("伊比利亚")>=2)AddStack(source,"evidence",1,24);
+            if((Key(source)=="B23"||Key(source)=="B25")&&Tagged(source,"伊比利亚")&&Level("伊比利亚")>=2)AddStack(source,"evidence",1,24);
             if(HasItem(source,"AA")&&(int)Stack(source,"native_segments")%3==0)AddStack(source,"saw",1,10);
             if (!skill && landed && s.ActionHits == 1 && source.Alive && centurion)
                 HealCenturionOrdinary(source);
@@ -83,12 +84,14 @@ namespace YesterdayConvoy
                 !(target is FormationDefender boss && (SnowBossTransitionActive(boss) || SupernovaBossTransitionActive(boss) ||
                     MakotoBossTransitionActive(boss)));
             if (!landed) return 0;
+            if(Buff(target,"v08_invulnerable")>0)return 0;
             var t=State(target);var s=State(source);
             float armor=target.Armor+Buff(target,"mandra_armor")+Buff(target,"blast_armor")+Buff(target,"kingdom_armor");
             if(Buff(target,"armorbreak")>0)armor-=Mathf.Min(5,Stack(target,"armorbreak"))*2;
             armor-=Stack(target,"guard_corrosion_defense");
             if(source is FormationFighter sf&&HasItem(sf,"AA")&&armor>0)armor*=1-Stack(source,"saw")*.02f;
             float mr=target.MagicResistance+Buff(target,"mandra_mr")+Buff(target,"blast_mr")+Buff(target,"kingdom_mr")+Buff(target,"king_mr")+Buff(target,"burn_mr");
+            if(Buff(target,"v08_king_mr")>0)mr=-50;
             if (type == MakotoWeakPointDamage)
                 type = DamageAfterDefense(raw, 0, armor, mr) > DamageAfterDefense(raw, 1, armor, mr) ? 0 : 1;
             float baseDamage=DamageAfterDefense(raw,type,armor,mr);
@@ -103,11 +106,13 @@ namespace YesterdayConvoy
                 if(Key(source)=="B24"&&inKingdom&&Level("国度")>=2)amp+=.2f;
                 if(s.RidingCarrier!=0&&Level("便车")>=6)amp+=.25f;
             }
+            if(target is FormationDefender&&Level("海嗣")>=6&&seaCells.Any(cell=>(target.Position-cell).sqrMagnitude<=.36f))amp+=.3f;
             float reduction=Buff(target,"patriot_dr");
+            if(target is FormationFighter && Units.Any(owner=>owner.Enabled&&owner.Alive&&Key(owner)=="B21"&&State(owner).BusyUntil>Clock&&Vector2.Distance(owner.Position,target.Position)<=3))reduction+=.1f;
             if (type != 2 && target is FormationDefender recoveringBoss && MakotoBossRecovering(recoveringBoss))
                 reduction += MakotoRecoveryReduction;
             if(Buff(target,"shieldguard")>0&&Units.Any(u=>Key(u)=="M18"&&u.Alive&&u.Shield>0))reduction+=.15f;
-            if(Tagged(target,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(target.Position-c).sqrMagnitude<=.36f))reduction+=Level("海嗣")>=5?.2f:Level("海嗣")>=4?.15f:.1f;
+            if(Tagged(target,"海嗣")&&Level("海嗣")>=2&&seaCells.Any(c=>(target.Position-c).sqrMagnitude<=.36f))reduction+=Level("海嗣")>=6?.2f:Level("海嗣")>=4?.15f:.1f;
             if(t.RidingCarrier!=0&&source is FormationDefender&&skill&&Campaign.HasAugment("CP4"))reduction+=.25f;
             float amount=Mathf.Max(1,baseDamage*(1+amp)*(1-Mathf.Min(.85f,reduction)));
             if(target is FormationFighter actor&&!transferred)
@@ -147,6 +152,8 @@ namespace YesterdayConvoy
                 if(Key(fighter)=="B04"&&fighter.Health<fighter.MaxHealth*.5f&&t.Stage==0){t.Stage=1;fighter.PhaseStage=1;NativePhasePresentation(fighter);GiveBuff(fighter,"stage_as",.3f,999);GainSP(fighter,6);RelayReturned(fighter);}
                 if(HasItem(fighter,"BE")&&!t.EmergencyUsedThisLife&&fighter.Health<fighter.MaxHealth*.3f&&Stack(fighter,"emergency")<2&&fighter.Health>0){t.EmergencyUsedThisLife=true;AddStack(fighter,"emergency",1,2);Shield(fighter,fighter,fighter.MaxHealth*.2f,6,"emergency");GiveBuff(fighter,"move",.4f,4);}
             }
+            if(target is FormationFighter saved)V08PreventLethal(saved);
+            if(native&&source is FormationFighter executor&&target is FormationDefender victim&&target.Health>0)V08Execute(executor,victim);
             bool killed=target.Health<=0 && !(target is FormationDefender transitioningBoss &&
                 (BeginSnowBossTransition(transitioningBoss)||BeginSupernovaBossTransition(transitioningBoss)||
                     BeginMakotoBossTransition(transitioningBoss)));
@@ -219,7 +226,7 @@ namespace YesterdayConvoy
             if(target==null||!target.Alive||amount<=0)return false;var t=State(target);
             if(source.LastSkillAt==Clock&&source is FormationFighter resonanceShielder&&Campaign.HasAugment("CG1")&&IsResonanceMember(resonanceShielder))amount*=1.1f;
             if(source is FormationFighter&&source.LastSkillAt==Clock&&!key.StartsWith("mirror")){var owner=State(source);owner.SkillShields[target.Id]=(owner.SkillShields.TryGetValue(target.Id,out var prev)?prev:0)+amount;}
-            if(Tagged(target,"泥岩")){int l=Level("泥岩");amount*=1+(l>=4?.4f:l>=3?.25f:l>=2?.15f:0);}
+            if(Tagged(target,"泥岩")){int l=Level("泥岩");amount*=1+(l>=5?.4f:l>=3?.25f:l>=2?.15f:0);}
             amount*=1+Buff(target,"golem_shield");
             var existing=t.Shields.FirstOrDefault(s=>s.Key==key);float old=existing?.Amount??0;
             float renewalOther=t.Shields.Where(s=>s.Renewal&&s!=existing).Sum(s=>s.Amount);
@@ -233,7 +240,7 @@ namespace YesterdayConvoy
         {
             if(d==null||!d.Alive)return;
             if(Buff(d,"cold")>0&&Buff(d,"freeze_lock")==0)
-            {if(State(d).Boss)GiveBuff(d,"cold",1,4);else GiveBuff(d,"freeze",1,2);GiveBuff(d,"freeze_lock",1,6);State(d).Buffs.Remove("cold");}
+            {if(State(d).Boss)GiveBuff(d,"cold",1,4);else GiveBuff(d,"freeze",1,2);GiveBuff(d,"freeze_lock",1,6);if(!State(d).Boss)State(d).Buffs.Remove("cold");}
             else GiveBuff(d,"cold",1,4);
         }
         void Stun(FormationActor d,float time){if(d!=null&&d.Alive)GiveBuff(d,"stun",1,time);}
@@ -249,7 +256,7 @@ namespace YesterdayConvoy
         }
         void DeepBurn(FormationFighter source,FormationActor target)
         {
-            int l=Level("深池");float mult=l>=5?.4f:l>=4?.25f:.15f;string kind="deep:"+source.Id;
+            int l=Level("深池");float mult=l>=7?.4f:l>=4?.25f:.15f;string kind="deep:"+source.Id;
             var zone=zones.FirstOrDefault(z=>z.Kind==kind&&z.Center==target.Position);
             if(zone==null)AddZone(source,target.Position,.2f,mult,4,1,kind);
             else{zone.Multiplier=Mathf.Max(zone.Multiplier,mult);zone.Until=Clock+4;}
@@ -258,8 +265,8 @@ namespace YesterdayConvoy
         {
             if(!State(dead).InitialGuard||!zones.Any(z=>z.Kind.StartsWith("deep:")&&z.Until>Clock&&(z.Center-dead.Position).sqrMagnitude<.25f))return;
             var receiver=Units.Where(u=>u.Enabled&&u.Alive&&Tagged(u,"深池")).OrderBy(u=>(u.Position-dead.Position).sqrMagnitude).FirstOrDefault();
-            if(receiver==null)return;int l=Level("深池");GiveBuff(receiver,"ember",l>=5?.5f:l>=4?.35f:.2f,999);
-            if(l>=5&&Buff(receiver,"ember_lock")==0){GainSP(receiver,4);GiveBuff(receiver,"ember_lock",1,2);}
+            if(receiver==null)return;int l=Level("深池");GiveBuff(receiver,"ember",l>=7?.5f:l>=4?.35f:.2f,999);
+            if(l>=7&&Buff(receiver,"ember_lock")==0){GainSP(receiver,4);GiveBuff(receiver,"ember_lock",1,2);}
         }
         void AddZone(FormationActor source,Vector2 center,float radius,float multiplier,double duration,int cap,string kind)
         {
@@ -284,6 +291,7 @@ namespace YesterdayConvoy
                 }
                 if(z.Kind=="trench")victims=Defenders.Where(d=>d.Alive&&new[]{-.8f,0,.8f}.Any(offset=>Mathf.Abs(d.Position.y-z.Center.y-offset)<=.6f)).ToArray();
                 bool rainBurn = z.Kind == "burn" && z.Source.ArtId == "TALULAH_TRIAL" && Campaign.TalulahCost == 5;
+                if(rainBurn)victims=TalulahRainVictims(z.Cap);
                 foreach(var d in victims)
                 {
                     float mult=z.Multiplier*(z.Kind=="trench"?Math.Min(2,new[]{-.8f,0,.8f}.Count(offset=>Mathf.Abs(d.Position.y-z.Center.y-offset)<=.6f)):1);
