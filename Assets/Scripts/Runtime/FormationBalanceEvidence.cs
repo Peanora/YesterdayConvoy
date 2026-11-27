@@ -20,9 +20,11 @@ namespace YesterdayConvoy
     {
         internal static FormationShopSession BalanceFixture(int seed,string node,string hero,bool enhanced)
         {
+            bool fourStar=hero.EndsWith("_4",StringComparison.Ordinal);
+            if(fourStar)hero=hero.Substring(0,hero.Length-2);
             var session=StartPractice(seed,Array.FindIndex(FormationCampaignRules.Nodes,entry=>entry.Id==node));
             session.Run.ResetBalanceFixture();
-            string core=hero=="FOUR"?"B04":hero=="FIVE"?"WIS":FormationBalanceV09.Heroes.Single(entry=>entry.Id==hero).Extra;
+            string core=hero=="FOUR"?"B04":hero is "FIVE" or "FIVE3"?"WIS":FormationBalanceV09.Heroes.Single(entry=>entry.Id==hero).Extra;
             // Eight bodies. Equipment is fixed by stage, identical across variants. No badges or preplan.
             string[] support = core switch
             {
@@ -36,12 +38,13 @@ namespace YesterdayConvoy
                 "B23" => new[]{"M18","M28","M25","M17","B09","B22","B25"},
                 _ => new[]{"M18","M28","M25","M17","B09","M14","M12"}
             };
+            if(fourStar&&FormationCampaignRules.Find(core).Cost!=1)throw new ArgumentException("Four-star comparison is only legal for one-cost cores");
             var ids=new[]{core}.Concat(support).Distinct().ToArray();
-            if(enhanced&&hero!="FOUR"&&hero!="FIVE")session.Run.ApplyHero(hero);
+            if(enhanced&&hero!="FOUR"&&hero!="FIVE"&&hero!="FIVE3")session.Run.ApplyHero(hero);
             session.Shop.EnableFormationEconomy();
             session.Shop.Preset(ids.Select((id,index)=>new ShopTrialModel.Piece{
                 Id=FormationCampaignRules.Find(id).CardId,
-                Star=index==0?(hero is "FOUR" or "FIVE"?2:3):FormationCampaignRules.Find(id).Cost>=4&&node[0]!='3'?1:2
+                Star=index==0?(fourStar?4:hero=="FIVE3"?3:hero is "FOUR" or "FIVE"?2:3):FormationCampaignRules.Find(id).Cost>=4&&node[0]!='3'?1:2
             }),Array.Empty<string>(),8,0,0);
             session.Seats=new ShopSeatLayout(true);session.lineup.Clear();session.lineup.AddRange(session.Shop.Bench.Select(piece=>piece.Id));
             session.instancePositions.Clear();session.kindPositions.Clear();session.Synchronize();
@@ -87,7 +90,7 @@ namespace YesterdayConvoy
     {
         [Serializable] public sealed class Battle
         {
-            public string variant,hero,node,outcome,preplan,coreGear;public bool enhanced;
+            public string variant,defense,hero,node,outcome,preplan,coreGear;public bool enhanced;
             public int seed,cardCost,itemCount,deaths,coreDeaths,casts,coreCasts,frames,remaining;public float progress,coreDamage,totalDamage,guardHealth;public double seconds,clearSeconds=-1;
         }
         [Serializable] public sealed class Report
@@ -156,16 +159,18 @@ namespace YesterdayConvoy
             string Option(string key,string fallback){int index=Array.IndexOf(args,key);return index>=0&&index+1<args.Length?args[index+1]:fallback;}
             Drives=true;
             foreach(string variantName in Option("-formationBalanceProfiles","Baseline,A,B,C").Split(','))
+            foreach(string defenseName in Option("-formationDefenseProfiles",FormationBalanceV09.Defense.ToString()).Split(','))
             foreach(string hero in Option("-formationBalanceTeams",string.Join(",",FormationBalanceV09.Heroes.Select(entry=>entry.Id).Concat(new[]{"FOUR","FIVE"}))).Split(','))
             foreach(string stage in Option("-formationBalanceStages","2-7,3-7").Split(','))
             foreach(int fixtureSeed in Option("-formationBalanceSeeds","20261127").Split(',').Select(int.Parse))
             {
                 var variant=(FormationBalanceV09.Variant)Enum.Parse(typeof(FormationBalanceV09.Variant),variantName,true);
                 FormationBalanceV09.Select(variant);
+                FormationBalanceV09.SelectDefense((FormationBalanceV09.DefenseProfile)Enum.Parse(typeof(FormationBalanceV09.DefenseProfile),defenseName,true));
                 bool enhanced=variant!=FormationBalanceV09.Variant.Baseline&&Array.IndexOf(args,"-formationBalanceNoHeroes")<0;
                 yield return controller.OpenBalanceFixture(stage,hero,enhanced,fixtureSeed);
                 var model=controller.Model;var shop=controller.Shop;
-                var battle=new Battle{variant=variant.ToString(),hero=hero,node=stage,seed=model.Seed,enhanced=enhanced,
+                var battle=new Battle{variant=variant.ToString(),defense=defenseName,hero=hero,node=stage,seed=model.Seed,enhanced=enhanced,
                     cardCost=shop.Bench.Sum(piece=>shop.Definition(piece.Id).Cost*ShopTrialModel.Copies(piece.Star)),
                     guardHealth=model.Defenders.Sum(guard=>guard.MaxHealth+model.GuardFutureHealth(guard)),preplan=controller.Campaign.PreplanId,
                     itemCount=shop.Bench.Sum(piece=>controller.Campaign.Equipment(piece.Instance).Count),
@@ -185,11 +190,11 @@ namespace YesterdayConvoy
                     battle.frames++;yield return null;
                     if(recordFrame)
                     {
-                        string clips=Path.Combine(directory,"clip-"+variant+"-"+hero+"-"+stage);Directory.CreateDirectory(clips);
+                        string clips=Path.Combine(directory,"clip-"+defenseName+"-"+variant+"-"+hero+"-"+stage);Directory.CreateDirectory(clips);
                         yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(clips,(clipFrame++).ToString("D5")+".png"));
                     }
                     if(!shot&&model.Clock>=35&&hero=="H11")
-                    {shot=true;yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,variant+"-"+stage+".png"));}
+                    {shot=true;yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(directory,defenseName+"-"+variant+"-"+stage+".png"));}
                     if(report.exceptions.Count>0)break;
                 }
                 battle.seconds=model.Clock;battle.outcome=model.Phase.ToString();battle.progress=model.EncounterProgress;

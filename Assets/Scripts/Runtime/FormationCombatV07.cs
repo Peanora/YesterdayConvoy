@@ -366,6 +366,7 @@ namespace YesterdayConvoy
                 d.MaxHealth = MakotoPhaseHealth(d, 1);
             }
             if (!d.IsSupernovaBoss && !d.IsMakotoBoss) ConfigureArchivedGuard(d);
+            if (!Campaign.IsStandaloneBossTrial) d.Attack *= FormationBalanceV09.GuardAttack(node.Id);
             if (watchesApproach)
             {
                 // Cover a 3.5-cell attacker on the approach to this wing's first frontliner.

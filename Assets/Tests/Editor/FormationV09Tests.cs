@@ -14,7 +14,7 @@ namespace YesterdayConvoy.Tests
     }
     public sealed class FormationV09Tests
     {
-        [SetUp] public void Begin()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.B);
+        [SetUp] public void Begin(){FormationBalanceV09.Select(FormationBalanceV09.Variant.B);FormationBalanceV09.SelectDefense(FormationBalanceV09.DefenseProfile.Pressure);}
         [TearDown] public void End()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.Baseline);
         static ShopTrialModel Shop(int seed=81)
         {
@@ -127,10 +127,52 @@ namespace YesterdayConvoy.Tests
             var model=Fixture("M11",out var run);
             typeof(FormationCampaignRun).GetProperty("NodeIndex").SetValue(run,Array.FindIndex(FormationCampaignRules.Nodes,node=>node.Id=="3-7"));
             model.BindCampaign(run);var boss=model.Defenders.Single();Assert.That(boss.IsSnowBoss,Is.True);
-            Assert.That(boss.MaxHealth,Is.EqualTo(140000));model.StartBattle();
+            Assert.That(boss.MaxHealth,Is.EqualTo(161000).Within(.1));model.StartBattle();
             Call(model,"CombatDamage",model.Units[0],boss,10000000f,2,true,true,false);
             Assert.That(boss.Alive,Is.True);for(int i=0;i<85;i++)model.Advance(.025f);
-            Assert.That(boss.SnowBossPhase,Is.EqualTo(2));Assert.That(boss.MaxHealth,Is.EqualTo(140000));Assert.That(boss.Health,Is.GreaterThan(0));
+            Assert.That(boss.SnowBossPhase,Is.EqualTo(2));Assert.That(boss.MaxHealth,Is.EqualTo(161000).Within(.1));Assert.That(boss.Health,Is.GreaterThan(0));
+        }
+        [TestCase("1-1")][TestCase("1-2")][TestCase("1-3")][TestCase("1-8")][TestCase("2-6")][TestCase("3-6")]
+        public void PressurePreservesOpeningAndRewardFights(string node)
+        {
+            var model=Fixture("M11",out var run);
+            typeof(FormationCampaignRun).GetProperty("NodeIndex").SetValue(run,Array.FindIndex(FormationCampaignRules.Nodes,n=>n.Id==node));
+            FormationBalanceV09.SelectDefense(FormationBalanceV09.DefenseProfile.Previous);model.BindCampaign(run);
+            var before=model.Defenders.Select(d=>(d.MaxHealth,d.Attack)).ToArray();
+            FormationBalanceV09.SelectDefense(FormationBalanceV09.DefenseProfile.Pressure);model.BindCampaign(run);
+            Assert.That(model.Defenders.Select(d=>(d.MaxHealth,d.Attack)),Is.EqualTo(before));
+        }
+        [TestCase("1-4",1.12f,1.08f)][TestCase("2-7",1.15f,1.15f)]
+        [TestCase("3-4",1.05f,1.20f)][TestCase("3-5",1.05f,1.20f)][TestCase("3-7",1.15f,1.18f)]
+        public void PressureRebindsOnceAndKeepsPositionsAndClock(string node,float hp,float attack)
+        {
+            var model=Fixture("M11",out var run);
+            typeof(FormationCampaignRun).GetProperty("NodeIndex").SetValue(run,Array.FindIndex(FormationCampaignRules.Nodes,n=>n.Id==node));
+            FormationBalanceV09.SelectDefense(FormationBalanceV09.DefenseProfile.Previous);model.BindCampaign(run);
+            var before=model.Defenders.Select(d=>(d.ArtId,d.Position,d.MaxHealth,d.Attack)).ToArray();
+            FormationBalanceV09.SelectDefense(FormationBalanceV09.DefenseProfile.Pressure);
+            for(int repeat=0;repeat<3;repeat++)
+            {
+                model.BindCampaign(run);
+                for(int i=0;i<before.Length;i++)
+                {
+                    Assert.That(model.Defenders[i].ArtId,Is.EqualTo(before[i].ArtId));
+                    Assert.That(model.Defenders[i].Position,Is.EqualTo(before[i].Position));
+                    Assert.That(model.Defenders[i].MaxHealth,Is.EqualTo(before[i].MaxHealth*hp).Within(.1));
+                    Assert.That(model.Defenders[i].Attack,Is.EqualTo(before[i].Attack*attack).Within(.01));
+                }
+                Assert.That(model.LimitSeconds,Is.EqualTo(run.CurrentNode.TimeLimit));
+            }
+        }
+        [TestCase("H11_4","M11")][TestCase("H21_4","M21")][TestCase("HB22_4","B22")]
+        public void FourStarOneCostComparisonReservesTwentySevenRealCopies(string hero,string unit)
+        {
+            var method=typeof(FormationShopSession).GetMethod("BalanceFixture",BindingFlags.Static|BindingFlags.NonPublic);
+            var session=(FormationShopSession)method.Invoke(null,new object[]{20261127,"3-7",hero,true});
+            var core=session.Shop.Bench[0];
+            Assert.That(core.Id,Is.EqualTo(FormationCampaignRules.Find(unit).CardId));
+            Assert.That(core.Star,Is.EqualTo(4));Assert.That(ShopTrialModel.Copies(core.Star),Is.EqualTo(27));
+            Assert.That(session.Shop.Available(core.Id),Is.EqualTo(3));session.Shop.Validate();
         }
         [TestCase("M11",2f)][TestCase("M21",2f)][TestCase("B22",2f)]
         [TestCase("M13",1.5f)][TestCase("M16",1.5f)][TestCase("M27",1.5f)]

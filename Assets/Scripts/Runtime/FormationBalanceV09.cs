@@ -9,6 +9,9 @@ namespace YesterdayConvoy
     public static class FormationBalanceV09
     {
         public enum Variant { Baseline, A, B, C }
+        public enum DefenseProfile { Previous, Pressure, Siege }
+        public static DefenseProfile Defense { get; private set; } = DefenseProfile.Pressure;
+        public static void SelectDefense(DefenseProfile profile) => Defense = profile;
         public static Variant Active { get; private set; } = Variant.B;
         public static float Strength => Active == Variant.Baseline ? 0 : Active == Variant.A ? .65f : Active == Variant.C ? 1.3f : 1;
         public static float HeroStrength => Active == Variant.Baseline ? 0 : Active == Variant.A ? .8f : Active == Variant.C ? 1.25f : 1;
@@ -18,9 +21,12 @@ namespace YesterdayConvoy
         static void Initialize()
         {
             Select(Variant.B);
+            SelectDefense(DefenseProfile.Pressure);
             var args = Environment.GetCommandLineArgs();
             int index = Array.IndexOf(args, "-formationBalanceVariant");
             if (index >= 0 && index + 1 < args.Length && Enum.TryParse<Variant>(args[index + 1], true, out var variant)) Select(variant);
+            int defenseAt = Array.IndexOf(args, "-formationDefenseProfile");
+            if (defenseAt >= 0 && defenseAt + 1 < args.Length && Enum.TryParse<DefenseProfile>(args[defenseAt + 1], true, out var defense)) SelectDefense(defense);
         }
         public static float Towards(float original, float proposed) => Mathf.LerpUnclamped(original, proposed, Strength);
         public static float Hero(float original, float proposed) => Mathf.LerpUnclamped(original, proposed, HeroStrength);
@@ -71,7 +77,27 @@ namespace YesterdayConvoy
                 "3-5" => (.85f,.70f,.58f), "3-7" => (.50f,.28f,.23f),
                 _ => (1f,1f,1f)
             };
-            return Active==Variant.A?scales.Item1:Active==Variant.C?scales.Item3:scales.Item2;
+            return (Active==Variant.A?scales.Item1:Active==Variant.C?scales.Item3:scales.Item2)*DefenseScale(node,false);
+        }
+        // Authored opening/reward fights and standalone trials keep their existing contracts.
+        // Campaign pressure is applied once to initial stats, before the combat state caches them.
+        internal static float GuardAttack(string node) => DefenseScale(node,true);
+        static float DefenseScale(string node,bool attack)
+        {
+            if(Active==Variant.Baseline || Defense==DefenseProfile.Previous)return 1;
+            var scale=node switch
+            {
+                "1-4" => (1.12f,1.08f),
+                "1-6" or "1-7" or "1-9" => (1.20f,1.10f),
+                "2-1" or "2-2" or "2-4" or "2-5" => (1.18f,1.15f),
+                "2-7" => (1.15f,1.15f),
+                "3-1" or "3-2" => (1.12f,1.20f),
+                "3-4" or "3-5" => (1.05f,1.20f),
+                "3-7" => (1.15f,1.18f),
+                _ => (1f,1f)
+            };
+            float target=attack?scale.Item2:scale.Item1;
+            return Mathf.LerpUnclamped(1,target,Defense==DefenseProfile.Siege?1.5f:1);
         }
         public static readonly FormationCampaignRules.DataRecord[] Heroes =
         {
