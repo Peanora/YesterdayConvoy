@@ -56,6 +56,10 @@ namespace YesterdayConvoy
         public bool TalulahEnhanced {get;private set;}
         public string TalulahId {get;private set;}
         public Func<string,double> RecruitmentWeight {get;set;}
+        internal Func<string,int> PurchaseDiscount;
+        internal Action<string> PurchaseCompleted;
+        internal Action ManualRefreshCompleted;
+        public int Price(string id)=>Math.Max(0,roles[id].Cost-Math.Max(0,PurchaseDiscount?.Invoke(id)??0));
         public bool TransactionBlocked=>FormationEconomy&&PendingTalulahChoice!=0;
         public void EnableFormationEconomy(string talulahId="CARD_TALULAH_TRIAL")=>EnableFormationEconomy(false,talulahId);
         internal void EnableFormationEconomy(bool unlimited,string talulahId="CARD_TALULAH_TRIAL")
@@ -130,6 +134,7 @@ namespace YesterdayConvoy
             planned=null;
             if(index<0||index>=5||offers[index]==null)return Fail("该位置没有可购买棋子");
             var result = PlanIncoming(offers[index], out planned);
+            if(result.Success)result.Value=Price(offers[index]);
             if (FormationEconomy && ReserveFull && ReserveCount(planned) >= ReserveCount(bench))
                 return Fail("备战席已满，本次招募不能通过升星腾出位置");
             return result;
@@ -155,7 +160,7 @@ namespace YesterdayConvoy
             if(TransactionBlocked)return Fail("先完成塔露拉抉择");
             var result=PlanPurchase(index,out var planned);if(!result.Success)return result;
             if(!CanAfford(result.Value))return Fail("金币不足");
-            bench.Clear();bench.AddRange(planned);if(!UnlimitedGold)Gold-=result.Value;offers[index]=null;sequence++;DetectTalulahChoice();RemoveMaxStarOffers();Validate();return result;
+            bench.Clear();bench.AddRange(planned);if(!UnlimitedGold)Gold-=result.Value;offers[index]=null;sequence++;DetectTalulahChoice();RemoveMaxStarOffers();Validate();PurchaseCompleted?.Invoke(result.Id);return result;
         }
         public Result Quote(int instance)
         {
@@ -204,6 +209,7 @@ namespace YesterdayConvoy
                 drawn[slot]=chosen.Id;next[chosen.Id]--;count++;
             }
             foreach(var id in roles.Keys)pool[id]=next[id];Array.Copy(drawn,offers,5);if(coupon)FreeRefreshes--;else if(!free&&!UnlimitedGold)Gold-=price;GuaranteedRefreshOffer=null;if(heroPaid)HeroRefreshes++;if(heroInserted)HeroGuarantees++;Validate();
+            if(FormationEconomy&&!free&&!UnlimitedGold)ManualRefreshCompleted?.Invoke();
             return new Result{Success=true,Message=count<5?$"库存不足，仅刷新{count}张":"刷新完成"};
         }
         public Result Commission(string id)

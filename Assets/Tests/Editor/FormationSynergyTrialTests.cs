@@ -16,7 +16,7 @@ namespace YesterdayConvoy.Tests
         FormationBattleTerrainLayout terrain;
 
         static IEnumerable<string> TrialIds => FormationCampaignRules.AllFactions.Concat(FormationCampaignRules.AllStyles)
-            .Select(rule => rule.Id);
+            .Where(rule=>!FormationEconomyV09.IsTrait(rule.Id)).Select(rule => rule.Id); // Economic traits are verified with finite stock, not unlimited combat trials.
 
         [OneTimeSetUp]
         public void ReadBoard()

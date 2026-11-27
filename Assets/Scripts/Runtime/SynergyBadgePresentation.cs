@@ -103,6 +103,8 @@ namespace YesterdayConvoy
                 case "无间剧场": return "theatre";
                 case "接棒时刻": return "handoff";
                 case "同频异响": return "resonance";
+                case "远见": return "guerrilla"; // Existing sight motif, no new third-party art.
+                case "奇迹": return "painted-world";
                 case "行商": return "merchant";
                 case "军械库": return "armory";
                 case "画中天地": return "painted-world";

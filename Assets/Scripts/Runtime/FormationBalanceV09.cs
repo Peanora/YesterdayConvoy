@@ -51,6 +51,7 @@ namespace YesterdayConvoy
                 case "B08": Set(attack:480); break; case "B12": Set(attack:550); break;
                 case "B21": Set(attack:570); break;
             }
+            unit.Styles=FormationEconomyV09.Tags(raw.Id,unit.Styles);
             cache.Add(raw.Id,unit); return unit;
         }
         internal static float Star(int cost,int star,bool health,float original)

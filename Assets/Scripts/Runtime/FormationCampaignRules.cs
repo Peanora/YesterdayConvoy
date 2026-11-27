@@ -182,7 +182,7 @@ namespace YesterdayConvoy
             new DataRecord{Id="画中天地",Name="画中天地",Effect="战前选我方部署区域的合法画境中心，岁从中心显现；显现中半径3格友方本体减伤10%。",Extra="v0.8",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{1},Stats=new Dictionary<string,float>{}},
             new DataRecord{Id="蒸汽",Name="蒸汽骑士",Effect="1/2/3：全体驾驶员合为一台机甲。生命为最终生命和×160%，攻击为最高攻击+其余之和×50%；继承主驾驶装备。2档追加高压护甲，3档追加过载肩炮及生命/攻击+100%。阵亡8秒后完整返场。",Extra="v0.8",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{1,2,3},Stats=new Dictionary<string,float>{}},
         };
-        public static readonly DataRecord[] AllStyles = {
+        public static readonly DataRecord[] BaseStyles = {
             new DataRecord{Id="连击",Name="连击",Effect="成员每累计6/5/4/3个原生独立伤害段，补击当前目标一次，造成来源攻击力60/80/100/140%的同类型伤害。每个原生动作最多触发4次。补击不再积连击；对“同频”计0.5拍。6/8人档补击额外回复自身1/2自然SP，攻击回复型每3点折1攻击SP。",Extra="天然6人：裂兽、安纳、瓦列里奥、维维美、圣徒、爱国者。8人必须两枚连击徽章；一费只有裂兽。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,4,6,8},Stats=new Dictionary<string,float>{}},
             new DataRecord{Id="迅攻",Name="迅攻",Effect="成员攻速+15/30/50%。4人起连续攻击同一目标，每次原生普攻攻速再+3%，最多10层；换目标保留一半层数向下取整。6人时每3次普攻额外获得2自然SP，攻击回复技能改为1攻击SP。",Extra="天然6人，仅3名一费；高档同时需要锏或转职。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,4,6},Stats=new Dictionary<string,float>{}},
             new DataRecord{Id="复苏",Name="复苏",Effect="成员受到治疗量+15/25/40%；过量治疗的20/35/50%转成护盾，单次不超过受盾者最大生命15%，复苏盾总量不超过30%最大生命，持续8秒。6人时主C每次有效获得复苏盾，使下次主技伤害+12%，可叠2层，施法消耗。",Extra="天然6人，高档含万火归一和坎诺特；不直接提供全员回血。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,4,6},Stats=new Dictionary<string,float>{}},
@@ -193,6 +193,8 @@ namespace YesterdayConvoy
             new DataRecord{Id="剧场",Name="无间剧场",Effect="成员战前选一名主角，其余为幕后。主角低于40%生命时，最近存活幕后替其承担接下来4秒的25/40/60%所受伤害，随后主角伤害+15/25/40%持续8秒。每名幕后本场最多替身一次，主角每8秒最多触发一次。",Extra="天然5人：弑君者、汉科、酒神、圣愚、圣徒。6人需徽章；承伤是真实转移，不能免掉双方应付的伤害。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,4,6},Stats=new Dictionary<string,float>{}},
             new DataRecord{Id="同频",Name="同频异响",Effect="战前从成员中选一名领奏者和一名伴奏者。双方原生普通行动（攻击或普通治疗）完成各计1拍，双方连击补击各计0.5拍；共享累计4拍触发一次异响，领奏者获1/2/3/5自然SP，其下一次主技动作×0.85/0.75/0.65/0.55，单份不可叠。",Extra="天然5人：梅菲斯特、酒神、蔓德拉、巫王、圣徒。只开放一对；所选伴奏者身份再提供一种额外效果，见专页。异响溢出的SP可存为余响，上限4/6/8/12SP，下次扣技能SP后补入；普通SP不进余响。搭档倒下时暂停售拍和身份效果，模式返场恢复。",Kind="",Tier="",Recipe="",Planes=new int[]{},Levels=new int[]{2,3,4,5},Stats=new Dictionary<string,float>{}},
         };
+        static readonly DataRecord[] EconomicStyles = BaseStyles.Concat(FormationEconomyV09.Traits).ToArray();
+        public static DataRecord[] AllStyles => FormationBalanceV09.Active == FormationBalanceV09.Variant.Baseline ? BaseStyles : EconomicStyles;
         public static readonly DefenderDefinition[] Defenders = {
             new DefenderDefinition{Name="先锋",Health=650f,Attack=64f,Armor=8f,MagicResistance=5f,Interval=1.4f,Range=1f,DamageType="物",Effect="8/20SP，单体160%攻击力物伤，动作1秒",InitialSP=8f,RequiredSP=20f,ActionSeconds=1f},
             new DefenderDefinition{Name="近卫",Health=900f,Attack=90f,Armor=12f,MagicResistance=10f,Interval=1.8f,Range=1.2f,DamageType="物",Effect="8/22SP，近处最多3人各150%攻击力物伤，动作1.4秒",InitialSP=8f,RequiredSP=22f,ActionSeconds=1.4f},

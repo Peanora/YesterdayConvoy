@@ -282,6 +282,7 @@ namespace YesterdayConvoy
         public bool HasAugment(string id)=>augments.Contains(id);
         public int VeteranStacks(string unitId)=>veteranStacks.TryGetValue(UnitId(unitId),out var value)?value:0;
         public ShopTrialModel Shop=>shop;
+        public FormationEconomyV09 Economy {get;private set;}
 
         public FormationCampaignRun(ShopTrialModel shop,int seed) : this(shop,seed,null) {}
 
@@ -289,6 +290,7 @@ namespace YesterdayConvoy
             IReadOnlyList<string> openingStarters = null, FormationBossTrial bossTrial = FormationBossTrial.None)
         {
             this.shop=shop??throw new ArgumentNullException(nameof(shop));random=new Random(seed^0x51f09);
+            Economy=new FormationEconomyV09(shop,seed);
             SynergyTrial=trial;
             this.bossTrial = bossTrial;
             IsPractice=practiceNode.HasValue;
@@ -460,11 +462,11 @@ namespace YesterdayConvoy
         }
         public void LockBattleLineup()
         {lockedReunionCount=TraitCount("整合");v08BattleLocked=true;}
-        public int TraitCount(string trait)=>shop.Bench.Where(x=>shop.IsLineupInstance(x.Instance)&&HasTrait(x,trait)).Select(x=>x.Id).Distinct().Count();
+        public int TraitCount(string trait)=>FormationEconomyV09.IsTrait(trait)?Economy.Count(trait):shop.Bench.Where(x=>shop.IsLineupInstance(x.Instance)&&HasTrait(x,trait)).Select(x=>x.Id).Distinct().Count();
         public bool HasTrait(ShopTrialModel.Piece piece,string trait)=>HasNativeTrait(piece.Id,trait)||Equipment(piece.Instance).Any(x=>BadgeTrait(x.Key)==trait);
         public static bool HasNativeTrait(string id,string trait)
         {var unit=FormationCampaignRules.Find(id);return unit!=null&&(unit.Factions.Contains(trait)||unit.Styles.Contains(trait));}
-        public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive)
+        public ShopTrialModel.RoundReward SettleBattle(bool won,float progress,int initialCount,int remainingCount,bool bossAlive,IEnumerable<FormationBattleModel.CastEvent> economyCasts=null)
         {
             string key=CurrentNode.Id;if(IsPractice||Finished||OpeningRewardsPending||CurrentNode.Kind=="补给")return null;
             if(!settled.Add(key))return null;
@@ -474,6 +476,7 @@ namespace YesterdayConvoy
             int debtPaid = Math.Min(3, debt);
             debt -= debtPaid;
             var receipt=shop.SettleRound("formation-v07-"+key,won,5-debtPaid,2,!reward);
+            Economy.SettleCasts(key,economyCasts??Array.Empty<FormationBattleModel.CastEvent>());
             int loss=won||reward?0:Math.Min(18,(CurrentNode.Plane==1?3:CurrentNode.Plane==2?5:7)+(int)Math.Ceiling(6d*remainingCount/Math.Max(1,initialCount))+(bossAlive?3:0));
             if(!won&&!reward&&PreplanId=="P14"&&CurrentNode.Kind=="遭遇")loss=Math.Min(21,loss+3);
             SquadHP=Math.Max(0,SquadHP-loss);

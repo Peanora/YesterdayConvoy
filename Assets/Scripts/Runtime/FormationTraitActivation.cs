@@ -48,9 +48,8 @@ namespace YesterdayConvoy
             currentTraitInputs.Clear();
             foreach (var piece in Shop.Bench)
             {
-                if (!Shop.IsLineupInstance(piece.Instance)) continue;
-                traitLineup.Add(piece);
-                currentTraitInputs.Add((piece.Instance, piece.Id));
+                if (Shop.IsLineupInstance(piece.Instance)) traitLineup.Add(piece);
+                currentTraitInputs.Add((piece.Instance, piece.Id+(Shop.IsLineupInstance(piece.Instance)?":lineup":":reserve")));
             }
             foreach (var item in Campaign.AllEquipment)
                 if (item.Owner != 0 && Shop.IsLineupInstance(item.Owner) && item.Key.StartsWith("徽章:", StringComparison.Ordinal))
@@ -60,7 +59,7 @@ namespace YesterdayConvoy
             {
                 var rows = FormationTraitRules.Select(rule =>
                 {
-                    string[] members = traitLineup.Where(piece => Campaign.HasTrait(piece, rule.Id))
+                    string[] members = (FormationEconomyV09.IsTrait(rule.Id)?Shop.Bench:traitLineup.AsEnumerable()).Where(piece => Campaign.HasTrait(piece, rule.Id))
                         .Select(piece => piece.Id).Distinct().ToArray();
                     int tier = rule.Levels.Where(level => level <= members.Length).DefaultIfEmpty(0).Max();
                     return new SynergySummary { Name = rule.Name, Tier = tier, Members = members };

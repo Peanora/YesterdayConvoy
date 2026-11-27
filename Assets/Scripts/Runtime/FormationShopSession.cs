@@ -448,8 +448,8 @@ namespace YesterdayConvoy
                 return null;
             }
             bool already=Run.NodeSettled;
-            LastReward=Run.SettleBattle(won,progress,initialCount,remainingCount,bossAlive);
-            if(!already&&model!=null)Shop.AddGold(model.BattleGold);
+            LastReward=Run.SettleBattle(won,progress,initialCount,remainingCount,bossAlive,model?.SkillCasts);
+            if(LastReward!=null&&!already&&model!=null)Shop.AddGold(model.BattleGold);
             Synchronize();return LastReward;
         }
 

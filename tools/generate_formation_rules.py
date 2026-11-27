@@ -65,7 +65,7 @@ for u in data['units']:
 lines.append('        };')
 
 for target, source in [('AllPreplans','preplans'),('AllAugments','augments'),('AllItems','items'),('AllComponents','components'),('AllPopulationItems','population_items'),('AllFactions','factions'),('AllStyles','styles')]:
-    lines.append('        public static readonly DataRecord[] ' + target + ' = {')
+    lines.append('        public static readonly DataRecord[] ' + ('BaseStyles' if target=='AllStyles' else target) + ' = {')
     for record in data[source]:
         key = record.get('id', record.get('recipe', ''))
         fields = {'Id':cs(key),'Name':cs(record['name']),'Effect':cs(record.get('effect',record.get('text',''))),
@@ -75,6 +75,8 @@ for target, source in [('AllPreplans','preplans'),('AllAugments','augments'),('A
         lines.append('            new DataRecord{' + ','.join(k + '=' + v for k,v in fields.items()) + '},')
     lines.append('        };')
 
+lines.append('        static readonly DataRecord[] EconomicStyles = BaseStyles.Concat(FormationEconomyV09.Traits).ToArray();')
+lines.append('        public static DataRecord[] AllStyles => FormationBalanceV09.Active == FormationBalanceV09.Variant.Baseline ? BaseStyles : EconomicStyles;')
 lines.append('        public static readonly DefenderDefinition[] Defenders = {')
 for row in data['defenders']:
     sp=re.search(r'(\d+)/(\d+)SP',row[8])
