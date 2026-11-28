@@ -9,12 +9,14 @@ namespace YesterdayConvoy.Tests
 {
     public sealed class FormationEconomicCampaignTests
     {
-        static string Card(string id)=>FormationCampaignRules.Find(id).CardId;
+        // Stable IDs do not depend on the selected balance variant. Avoid repeated catalog scans in long simulations.
+        static readonly Dictionary<string,string> cardIds=FormationCampaignRules.AllUnits.ToDictionary(u=>u.Id,u=>u.CardId);
+        static string Card(string id)=>cardIds[id];
         static readonly string[] members={"M17","M16","B05","B01","B22","M38"};
         [SetUp] public void Begin()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.B);
         [TearDown] public void End()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.Baseline);
-        static FormationEconomyV09 Economy(ShopTrialModel shop,int seed,bool previous=false)=>(FormationEconomyV09)Activator.CreateInstance(
-            typeof(FormationEconomyV09),BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic,null,new object[]{shop,seed,previous},null);
+        static FormationEconomyV09 Economy(ShopTrialModel shop,int seed,int version=4)=>(FormationEconomyV09)Activator.CreateInstance(
+            typeof(FormationEconomyV09),BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic,null,new object[]{shop,seed,version},null);
         static ShopTrialModel Shop(int star=2)
         {
             var shop=new ShopTrialModel(FormationCampaignRules.AllUnits.Select(u=>new ShopTrialModel.Role{Id=u.CardId,Name=u.Name,Cost=u.Cost}),71);
@@ -26,20 +28,40 @@ namespace YesterdayConvoy.Tests
             typeof(FormationEconomyV09).GetProperty("ForesightLayers").SetValue(e,f);
             typeof(FormationEconomyV09).GetProperty("MiracleLayers").SetValue(e,m);
         }
-        [Test] public void CurrentThresholdsStillRequireMaintainedTwoStarKinds()
+        [Test] public void ThresholdsKeepForesightTrainingButMiracleOnlyNeedsActivation()
         {
-            var shop=Shop();var e=Economy(shop,71);Layers(e,99,359);Assert.That(e.MemberDiscountReady,Is.False);Assert.That(e.MiracleChainReady,Is.False);
-            Layers(e,100,359);Assert.That(e.MemberDiscountReady,Is.True);Assert.That(e.GlobalDiscountReady,Is.False);
-            Layers(e,240,360);Assert.That(e.GlobalDiscountReady&&e.MiracleChainReady,Is.True);
-            shop.Sell(shop.Bench.Single(p=>p.Id==Card("M38")).Instance);Assert.That(e.MiracleChainReady,Is.False);
+            var shop=Shop();var e=Economy(shop,71);Layers(e,99,324);Assert.That(e.MemberDiscountReady,Is.False);Assert.That(e.MiracleChainReady,Is.False);
+            Layers(e,100,324);Assert.That(e.MemberDiscountReady,Is.True);Assert.That(e.GlobalDiscountReady,Is.False);
+            Layers(e,325,325);Assert.That(e.GlobalDiscountReady&&e.MiracleChainReady,Is.True);
+            shop.Sell(shop.Bench.Single(p=>p.Id==Card("M38")).Instance);Assert.That(e.MiracleChainReady,Is.True);
+            shop.Sell(shop.Bench.Single(p=>p.Id==Card("B22")).Instance);Assert.That(e.MiracleChainReady,Is.False);Assert.That(e.FreeChance,Is.Zero);
+            shop.Grant(Card("B22"),1);Assert.That(e.MiracleChainReady,Is.True);Assert.That(e.FreeChance,Is.EqualTo(1));
             shop.Sell(shop.Bench.Single(p=>p.Id==Card("B05")).Instance);Assert.That(e.GlobalDiscountReady,Is.False);
+        }
+        [Test] public void MiracleChancePassesEightyPercentContinuouslyAndReachesOneAt325WithOneStars()
+        {
+            var shop=Shop(1);var e=Economy(shop,71);
+            foreach(int layer in new[]{0,100,253,300,324,325})
+            {Layers(e,0,layer);Assert.That(e.FreeChance,Is.EqualTo(.1f+.9f*layer/325).Within(.000001f));}
+            Layers(e,0,300);Assert.That(e.FreeChance,Is.GreaterThan(.9f));Assert.That(e.MiracleChainReady,Is.False);
+            Layers(e,0,325);Assert.That(e.MiracleChainReady,Is.True);shop.FreeRefreshes=1000;
+            for(int i=0;i<1000;i++)Assert.That(shop.Refresh().Success,Is.True);
+            Assert.That(shop.FreeRefreshes,Is.EqualTo(1000));Assert.That(e.MiracleLayers,Is.EqualTo(325));
+        }
+        [Test] public void LayerOverflowPaysOnlyNewMilestonesAndCannotFarmAtFullLayers()
+        {
+            var shop=Shop(3);var e=Economy(shop,71);Layers(e,319,299);e.ObservePromotions();
+            Assert.That(e.ForesightLayers,Is.EqualTo(325));Assert.That(e.MiracleLayers,Is.EqualTo(325));Assert.That(e.EarnedGold,Is.EqualTo(12));
+            var p=shop.Bench.Single(x=>x.Id==Card("M17"));shop.SetLineup(new[]{p.Id},new[]{p.Instance});
+            for(int n=0;n<10;n++)e.SettleCasts("cap-"+n,Enumerable.Range(0,100).Select(_=>new FormationBattleModel.CastEvent{Instance=p.Instance,UnitId="M17"}));
+            Assert.That(e.ForesightLayers,Is.EqualTo(325));Assert.That(e.EarnedGold,Is.EqualTo(12));
         }
         [Test] public void PromotionPaysOncePerKindAcrossDuplicatesSellingRebuyingAndFourthStar()
         {
-            var shop=Shop(3);var e=Economy(shop,71);e.ObservePromotions();Assert.That(e.ForesightLayers,Is.EqualTo(72));Assert.That(e.MiracleLayers,Is.EqualTo(108));
-            for(int i=0;i<10;i++)e.ObservePromotions();Assert.That(e.ForesightLayers,Is.EqualTo(72));
+            var shop=Shop(3);var e=Economy(shop,71);e.ObservePromotions();Assert.That(e.ForesightLayers,Is.EqualTo(96));Assert.That(e.MiracleLayers,Is.EqualTo(96));
+            for(int i=0;i<10;i++)e.ObservePromotions();Assert.That(e.ForesightLayers,Is.EqualTo(96));
             var old=shop.Bench.Single(p=>p.Id==Card("M17"));shop.Sell(old.Instance);Assert.That(shop.Grant(Card("M17"),4).Success,Is.True);
-            e.ObservePromotions();Assert.That(e.ForesightLayers,Is.EqualTo(72));shop.Validate();
+            e.ObservePromotions();Assert.That(e.ForesightLayers,Is.EqualTo(96));shop.Validate();
         }
         [Test] public void PurchaseThatCompletesNineCopiesPaysImmediatelyDespitePriorPurchaseThisNode()
         {
@@ -48,21 +70,21 @@ namespace YesterdayConvoy.Tests
             {
                 shop.Refresh(true);for(int slot=0;slot<5;slot++)if(shop.Offers[slot]==Card("M17"))Assert.That(shop.Purchase(slot).Success,Is.True);
             }
-            Assert.That(shop.Bench.Any(p=>p.Id==Card("M17")&&p.Star==3),Is.True);Assert.That(e.ForesightLayers,Is.EqualTo(26));shop.Validate();
+            Assert.That(shop.Bench.Any(p=>p.Id==Card("M17")&&p.Star==3),Is.True);Assert.That(e.ForesightLayers,Is.EqualTo(34));shop.Validate();
         }
         [Test] public void ThreeStarNativeCastIncomeHasFirstCastBonusSixCastCapAndSettlementIdempotence()
         {
             var shop=Shop(3);var e=Economy(shop,71);var actor=shop.Bench.Single(p=>p.Id==Card("M17"));shop.SetLineup(new[]{actor.Id},new[]{actor.Instance});
             var casts=Enumerable.Range(0,100).Select(_=>new FormationBattleModel.CastEvent{Instance=actor.Instance,UnitId="M17"}).ToArray();
-            e.SettleCasts("1-4",casts);Assert.That(e.ForesightLayers,Is.EqualTo(72+24));Assert.That(e.MiracleLayers,Is.EqualTo(108));
-            e.SettleCasts("1-4",casts);Assert.That(e.ForesightLayers,Is.EqualTo(96));e.SettleCasts("1-6",casts);Assert.That(e.ForesightLayers,Is.EqualTo(120));
+            e.SettleCasts("1-4",casts);Assert.That(e.ForesightLayers,Is.EqualTo(96+30));Assert.That(e.MiracleLayers,Is.EqualTo(96));
+            e.SettleCasts("1-4",casts);Assert.That(e.ForesightLayers,Is.EqualTo(126));e.SettleCasts("1-6",casts);Assert.That(e.ForesightLayers,Is.EqualTo(156));
         }
         [Test] public void BenchDuplicatesCannotUpgradeTheOneStarActorsCastBonus()
         {
             var shop=Shop(1);Assert.That(shop.Grant(Card("M17"),3).Success,Is.True);var actor=shop.Bench.Single(p=>p.Id==Card("M17")&&p.Star==1);
             var e=Economy(shop,71);shop.SetLineup(new[]{actor.Id},new[]{actor.Instance});
             var casts=Enumerable.Range(0,8).Select(_=>new FormationBattleModel.CastEvent{Instance=actor.Instance,UnitId="M17"}).ToArray();
-            e.SettleCasts("1-4",casts);Assert.That(e.ForesightLayers,Is.EqualTo(24+3+12));
+            e.SettleCasts("1-4",casts);Assert.That(e.ForesightLayers,Is.EqualTo(32+3+18));
         }
         [Test] public void RefreshesAndUnrecruitedCastsStillCannotSelfStart()
         {
@@ -97,13 +119,13 @@ namespace YesterdayConvoy.Tests
                 var ball=run.PendingBalls.FirstOrDefault();if(ball==null||run.BeginBall(ball.Id)==null)break;run.CompleteBall(ball.Id);
             }
         }
-        static PathResult Simulate(int seed,string route,int scenario,bool previous)
+        static PathResult Simulate(int seed,string route,int scenario,int version)
         {
             var session=FormationShopSession.StartNew(seed,true);var shop=session.Shop;var run=session.Run;
-            var e=Economy(shop,seed,previous);typeof(FormationCampaignRun).GetField("<Economy>k__BackingField",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(run,e);
+            var e=Economy(shop,seed,version);typeof(FormationCampaignRun).GetField("<Economy>k__BackingField",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(run,e);
             FormationCampaignRunTests.CompleteOpeningDelivery(session);Resolve(run);
             var wanted=(route=="dual"?members:route=="foresight"?members.Take(3):members.Skip(3)).Concat(new[]{"M18","M25"}).Select(Card).ToArray();
-            var result=new PathResult{seed=seed,route=route,rules=previous?"R2":"R3",assumption=new[]{"low:1-3 casts; win .90/.65/.40","middle:2-4 casts; win .95/.80/.60","high:3-5 casts; win .98/.90/.80"}[scenario]};
+            var result=new PathResult{seed=seed,route=route,rules="R"+version,assumption=new[]{"low:1-3 casts; win .90/.65/.40","middle:2-4 casts; win .95/.80/.60","high:3-5 casts; win .98/.90/.80"}[scenario]};
             void Mark()
             {
                 if(e.GlobalDiscountReady&&result.firstF<0)result.firstF=run.NodeIndex;
@@ -155,17 +177,17 @@ namespace YesterdayConvoy.Tests
             }
             result.survived=run.Won;result.gold=shop.Gold;result.level=shop.Level;result.foresight=e.ForesightLayers;result.miracle=e.MiracleLayers;result.fiveThree=shop.Bench.Any(p=>p.Id==Card("WIS")&&p.Star==3);return result;
         }
-        [Test,Timeout(600000)] public void FullRouteEconomyMonteCarloIncludesAcquisitionCostsAndConditionalLosses()
+        [Test,Timeout(900000)] public void FullRouteEconomyMonteCarloIncludesAcquisitionCostsAndConditionalLosses()
         {
             var report=new CampaignReport();
-            foreach(bool previous in new[]{true,false})foreach(string route in new[]{"foresight","miracle","dual"})foreach(int scenario in new[]{0,1,2})
+            foreach(int version in new[]{3,4})foreach(string route in new[]{"foresight","miracle","dual"})foreach(int scenario in new[]{0,1,2})
                 for(int seed=0;seed<100;seed++)
                 {
-                    report.runs.Add(Simulate(20261128+seed,route,scenario,previous));
+                    report.runs.Add(Simulate(20261128+seed,route,scenario,version));
                     if(report.runs.Count%100==0)
-                    {Directory.CreateDirectory("artifacts/economy-v09-r3");File.WriteAllText("artifacts/economy-v09-r3/full-route.json",UnityEngine.JsonUtility.ToJson(report,true));UnityEngine.Debug.Log("ECONOMY_ROUTE_PROGRESS "+report.runs.Count);}
+                    {Directory.CreateDirectory("artifacts/economy-v09-r4");File.WriteAllText("artifacts/economy-v09-r4/full-route.json",UnityEngine.JsonUtility.ToJson(report,true));UnityEngine.Debug.Log("ECONOMY_ROUTE_PROGRESS "+report.runs.Count);}
                 }
-            Directory.CreateDirectory("artifacts/economy-v09-r3");File.WriteAllText("artifacts/economy-v09-r3/full-route.json",UnityEngine.JsonUtility.ToJson(report,true));
+            Directory.CreateDirectory("artifacts/economy-v09-r4");File.WriteAllText("artifacts/economy-v09-r4/full-route.json",UnityEngine.JsonUtility.ToJson(report,true));
             foreach(var pair in report.runs.GroupBy(r=>(r.seed,r.route,r.assumption)))
             {var a=pair.First().wins;var b=pair.Last().wins;int common=Math.Min(a.Length,b.Length);Assert.That(a.Substring(0,common),Is.EqualTo(b.Substring(0,common)),"Paired battle inputs must match");}
             Assert.That(report.runs.Count,Is.EqualTo(1800));Assert.That(report.runs.All(r=>r.gold>=0&&r.level>=3&&r.nodes>0),Is.True);

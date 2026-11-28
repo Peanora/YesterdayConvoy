@@ -44,7 +44,7 @@ namespace YesterdayConvoy
         {
             seed=20261128;Session=FormationShopSession.EconomyFixture(seed,mature,promotion);
             Model=new FormationBattleModel(seed,SelectFormationTerrain(Session.Run));Session.ApplyTo(Model);
-            ResetFormationPreparation(promotion?"三星里程碑验收：明确预置8张传令兵副本，实际购买第9张合成；非自然运营。":mature?"验收成熟预设：240/360层、6名二星、9级100金；不代表自然养成。":"零层验收：刷新不应自我叠层；9级100金、6名一星预设。");
+            ResetFormationPreparation(promotion?"三星里程碑验收：明确预置8张传令兵副本，实际购买第9张合成；非自然运营。":mature?"验收成熟预设：325/325层、6名二星、9级100金；不代表自然养成。":"零层验收：刷新不应自我叠层；9级100金、6名一星预设。");
             foreach(string id in RequiredFormationArtIds().ToArray())yield return WarmFormationArt(id);
             double deadline=Time.realtimeSinceStartupAsDouble+90;
             while((!RosterArtReady||CampaignInteractionBlocked)&&Time.realtimeSinceStartupAsDouble<deadline)yield return null;
@@ -59,7 +59,7 @@ namespace YesterdayConvoy
         static bool Requested=>Environment.GetCommandLineArgs().Contains("-formationEconomySmoke");
         [Serializable] sealed class Report
         {
-            public string scope="Rendered Windows Player, actual session purchases/sales/refreshes and real nine-copy fusion. R3: cold zero-layer/one-star refresh check, then EXPLICITLY PRESET 240/360 layers and six TWO-star members at level 9/100 gold. Also verifies a real ninth-copy promotion from an EXPLICIT eight-copy M17 preset; no milestone layers preset. Maturity is NOT earned by this fixture, not natural campaign. Fixed 2-7 map; no equipment or forced damage.";
+            public string scope="Rendered Windows Player, actual session purchases/sales/refreshes and real nine-copy fusion. R4: cold zero-layer/one-star refresh check, then EXPLICITLY PRESET 325/325 layers and six TWO-star members at level 9/100 gold. Also verifies a real ninth-copy promotion from an EXPLICIT eight-copy M17 preset; no milestone layers preset. Maturity is NOT earned by this fixture, not natural campaign. Fixed 2-7 map; no equipment or forced damage.";
             public bool passed,battleWon,maturityPreset=true;public int coldRefreshes,coldGold,coldForesight,coldMiracle,refreshes,gold,layersF,layersM,checks,promotionRefreshes,promotionLayers,promotionCopies;public float seconds;public List<string> exceptions=new List<string>();
         }
         readonly Report report=new Report();string directory;
@@ -75,7 +75,7 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            directory=Path.GetFullPath(at>=0?args[at+1]:"artifacts/economy-v09-r3/player");Directory.CreateDirectory(directory);
+            directory=Path.GetFullPath(at>=0?args[at+1]:"artifacts/economy-v09-r4/player");Directory.CreateDirectory(directory);
             var stack=new Stack<IEnumerator>();stack.Push(Work());
             while(stack.Count>0)
             {
@@ -120,7 +120,7 @@ namespace YesterdayConvoy
             }
             report.promotionCopies=shop.Bench.Where(p=>p.Id==promotionCard).Sum(p=>ShopTrialModel.Copies(p.Star));report.promotionLayers=economy.ForesightLayers;
             Check(report.promotionCopies==9&&shop.Bench.Any(p=>p.Id==promotionCard&&p.Star==3),"Actual nine-copy three-star fusion");
-            Check(report.promotionLayers==26,"Three-star milestone24 plus first purchase2");economy.ObservePromotions();Check(economy.ForesightLayers==26,"Milestone cannot pay twice");
+            Check(report.promotionLayers==34,"Three-star milestone32 plus first purchase2");economy.ObservePromotions();Check(economy.ForesightLayers==34,"Milestone cannot pay twice");
             Check(!economy.GlobalDiscountReady&&!economy.MiracleChainReady,"Single promotion cannot unlock full engine");
             controller.RefreshEconomicEvidencePresentation();
             Check(controller.Model.Units.Any(u=>FormationCampaignRules.Find(u.ArtId)?.Id=="M17"&&u.Star==3),"Rendered roster must show actual promoted star");
