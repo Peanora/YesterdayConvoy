@@ -304,7 +304,7 @@ namespace YesterdayConvoy
             SynergyBadgePresentation.DrawBadge(new Rect(panel.x + 15, panel.y + 13, TraitBadgeSize, TraitBadgeSize), view.Name, view.Grade, view.Count, null);
             TraitLabel(new Rect(panel.x + 62, panel.y + 8, 180, 25), view.Name, 20, PreparationPalette.Text, true);
             TraitLabel(new Rect(panel.x + 62, panel.y + 34, 272, 20),
-                (view.IsFaction ? "阵营" : "流派") + " · 天然 " + view.NaturalMemberCount + " · 上阵 " + view.Count +
+                (view.IsFaction ? "阵营" : "流派") + " · 天然 " + view.NaturalMemberCount + (FormationEconomyV09.IsTrait(view.Id)?" · 持有 ":" · 上阵 ") + view.Count +
                 (view.NextLevel > 0 ? " · 距下档 " + view.MissingForNext + " 人" : " · 最高档") + (view.HighestBadgeRequirement>0?" · 彩需"+view.HighestBadgeRequirement+"徽章":""), 10, PreparationPalette.Muted);
             TraitLabel(new Rect(panel.xMax - 133, panel.y + 10, 88, 22),
                 view.Active ? view.ActiveLevel + " 人档已激活" : "未激活", 11,
@@ -314,7 +314,7 @@ namespace YesterdayConvoy
             var body = new Rect(panel.x + 13, panel.y + 69, panel.width - 19, panel.height - 78);
             float width = body.width - 17;
             var effect = new GUIContent(ColorFormationTraitValues(view, view.Rule.Effect));
-            var extra = new GUIContent(ColorFormationTraitValues(view, view.Rule.Extra));
+            var extra = new GUIContent(ColorFormationTraitValues(view, view.Rule.Extra+(FormationEconomyV09.IsTrait(view.Id)?"\n"+Campaign.Economy.Detail(view.Id):"")));
             var effectStyle = TraitText(13, PreparationPalette.Ink, false, TextAnchor.UpperLeft);
             effectStyle.richText = true;
             float effectHeight = effectStyle.CalcHeight(effect, width);

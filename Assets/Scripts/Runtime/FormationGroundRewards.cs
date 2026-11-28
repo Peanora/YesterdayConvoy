@@ -249,7 +249,7 @@ namespace YesterdayConvoy
                 flight.ArrivalItems = Campaign.Inventory.Count - firstItem;
                 if (flight.ArrivalItems > 0)
                     RevealEquipmentSlot(firstItem + flight.ArrivalItems - 1);
-                notice = (ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
+                notice = (ball.Drop.Component==FormationCampaignRun.RemoverKey?"奖励关拆卸器":ball.Drop.Component != null ? "装备补足" : ball.Drop.Color+"球") + " · " + BallRewardText(reward);
                 changed = true;
             }
             if (changed)

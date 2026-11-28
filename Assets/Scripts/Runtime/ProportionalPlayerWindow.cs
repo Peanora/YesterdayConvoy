@@ -19,11 +19,11 @@ namespace YesterdayConvoy
 #endif
         }
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
-        const uint Sizing=0x214,GetMinMax=0x24,EnterSize=0x231,ExitSize=0x232,NcDestroy=0x82;
+        const uint Close=0x10,Sizing=0x214,GetMinMax=0x24,EnterSize=0x231,ExitSize=0x232,NcDestroy=0x82;
         static readonly UIntPtr HookId=new UIntPtr(0x5943);
         IntPtr window;
         Subclass callback;
-        bool inSizeMove,normalizing;
+        bool inSizeMove,normalizing,quitRequested;
         int attempts;
         [UnmanagedFunctionPointer(CallingConvention.Winapi)]delegate IntPtr Subclass(IntPtr h,uint message,IntPtr w,IntPtr l,UIntPtr id,UIntPtr data);
         delegate bool EnumWindow(IntPtr h,IntPtr data);
@@ -59,6 +59,12 @@ namespace YesterdayConvoy
         }
         void Update()
         {
+            // Never tear down Mono while a native window message is executing our managed delegate.
+            if(quitRequested)
+            {
+                if(window!=IntPtr.Zero)RemoveWindowSubclass(window,callback,HookId);
+                window=IntPtr.Zero;Application.Quit();return;
+            }
             if(window==IntPtr.Zero){if(++attempts<120)TryInstall();return;}
             if(inSizeMove||normalizing||Screen.fullScreen||IsIconic(window))return;
             GetClientRect(window,out var client);int width=client.Right,height=client.Bottom;
@@ -74,6 +80,7 @@ namespace YesterdayConvoy
         }
         IntPtr ProcessMessage(IntPtr h,uint message,IntPtr w,IntPtr l,UIntPtr id,UIntPtr data)
         {
+            if(message==Close){quitRequested=true;return IntPtr.Zero;}
             if(message==NcDestroy){RemoveWindowSubclass(h,callback,HookId);window=IntPtr.Zero;return DefSubclassProc(h,message,w,l);}
             if(message==EnterSize)inSizeMove=true;
             if(message==ExitSize)inSizeMove=false;

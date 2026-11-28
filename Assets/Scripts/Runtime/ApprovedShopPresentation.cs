@@ -609,7 +609,7 @@ namespace YesterdayConvoy
                 Fill(rect,new Color(.52f,.60f,.65f,.50f));ShopBorder(rect,new Color(.78f,.84f,.88f,.55f),1);
                 GUI.Label(rect,"暂无商品",LoopText(12,TextAnchor.MiddleCenter,new Color(.83f,.89f,.93f)));return;
             }
-            var role=shop.Definition(id);int copies=ShopHeldCopies(id);bool affordable=shop.CanAfford(role.Cost);
+            var role=shop.Definition(id);int copies=ShopHeldCopies(id);bool affordable=shop.CanAfford(shop.Price(id));
             var preview=shop.PreviewPurchase(slot);int upgrade=preview.Success&&preview.FinalStar>1?preview.FinalStar:0;
             DrawLoopCostBackground(rect,role.Cost);
             DrawTestPortrait(new Rect(rect.x+rect.width*.34f,rect.y+5,rect.width*.64f,108),host.Portrait(id));
@@ -632,7 +632,7 @@ namespace YesterdayConvoy
                 Fill(rect,new Color(.16f,.16f,.16f,.76f));ShopBorder(rect,new Color(.40f,.40f,.40f),1);
             }
             Color ink=affordable?Color.white:new Color(.76f,.76f,.76f);
-            GUI.Label(new Rect(rect.x+29,rect.y+5,36,26),role.Cost.ToString(),LoopText(23,TextAnchor.MiddleLeft,ink,700));
+            GUI.Label(new Rect(rect.x+29,rect.y+5,36,26),shop.Price(id).ToString(),LoopText(23,TextAnchor.MiddleLeft,ink,700));
             GUI.Label(new Rect(rect.x+10,rect.y+75,rect.width-20,22),role.Name,LoopText(role.Name.Length>10?12:14,TextAnchor.MiddleLeft,ink,600));
             var tags=LoopText(9,TextAnchor.UpperLeft,affordable?new Color(.89f,.93f,.96f):new Color(.62f,.62f,.62f));tags.wordWrap=true;
             GUI.Label(new Rect(rect.x+10,rect.y+98,rect.width-20,22),string.Join(" / ",ShopTags(id)),tags);
@@ -648,7 +648,7 @@ namespace YesterdayConvoy
                 GUI.Label(owned,"持有 "+copies,LoopText(9,TextAnchor.MiddleCenter,ApprovedUi.Ink,500));
             }
             bool enabled=GUI.enabled;GUI.enabled=enabled&&trading&&affordable;
-            if(GUI.Button(rect,new GUIContent(string.Empty,role.Name+" · "+role.Cost+"金币 · 持有"+copies+"/"+shop.Capacity(id)),GUIStyle.none))
+            if(GUI.Button(rect,new GUIContent(string.Empty,role.Name+" · "+shop.Price(id)+"金币 · 持有"+copies+"/"+shop.Capacity(id)),GUIStyle.none))
             {host.Purchase(slot,global.center);}
             GUI.enabled=enabled;
         }

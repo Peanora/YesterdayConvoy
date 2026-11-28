@@ -81,7 +81,8 @@ namespace YesterdayConvoy
         void GiveBuff(FormationActor a,string k,float value,double duration) { if(a!=null && !(ControlKey(k)&&ControlImmune(a)))State(a).Buffs[k]=new CombatBuff{Value=value,Until=Clock+duration}; }
         void Schedule(double at,Action fire) => events.Add(new CombatEvent{At=at,Order=++actionSequence,Fire=fire});
         void ScheduleOwned(FormationActor owner,double at,Action fire) => ScheduleOwnedPresentation(owner,at,fire);
-        FormationFighter Carry => ResolveV08Carry(Campaign.MainCarryInstance) ?? ResolveV08Carry(Campaign.SecondCarryInstance) ?? Units.Where(u => u.Enabled&&u.Alive).OrderByDescending(u=>u.Attack).FirstOrDefault();
+        FormationFighter Carry => ResolveV08Carry(Campaign.MainCarryInstance) ?? ResolveV08Carry(Campaign.SecondCarryInstance) ??
+            HeroCarry ?? Units.Where(u => u.Enabled&&u.Alive).OrderByDescending(u=>u.Attack).FirstOrDefault();
         FormationFighter PairMember(int instance) => Units.FirstOrDefault(u => u.Enabled&&u.Instance==instance);
         FormationFighter Named(string id) => Units.FirstOrDefault(u => u.Enabled && Key(u)==id);
         bool HasLive(string id) => Named(id)?.Alive == true;
@@ -151,12 +152,12 @@ namespace YesterdayConvoy
             s.BaseArmor=p.Armor+(FiveStar(u)?50:new[]{0,4,10,18}[star])+armor;s.BaseMR=p.MagicResistance+(FiveStar(u)?30:new[]{0,5,10,15}[star])+mr;
             attack+=Campaign.PreplanId=="P12"?Campaign.VeteranStacks(p.Id)*.02f:0;
             if(Campaign.HasAugment("CG3"))attack+=Mathf.Min(.24f,Mathf.Floor(s.BaseArmor/10)*.04f);
-            s.BaseAttack=p.Attack*attackMultiplier;s.AttackPct=attack;s.Power=power;s.AttackSpeed=aspeed;s.NaturalRate=1+sp;
+            s.BaseAttack=p.Attack*attackMultiplier*HeroPromotion(u);s.AttackPct=attack;s.Power=power;s.AttackSpeed=aspeed;s.NaturalRate=1+sp;
             s.BaseRange=p.Range+(Campaign.HasAugment("CG4")?.4f:0);s.BaseSpeed=p.MoveSpeed*(Campaign.HasAugment("CS2")?1.1f:1);
-            s.BaseSP=p.RequiredSP;
+            s.BaseSP=HeroRequired(u,p.RequiredSP);
             if(p.Id=="TAL")
             {
-                int c=Campaign.TalulahCost;s.BaseAttack=(c==5?560:c==4?310:190)*attackMultiplier;s.BaseSP=c==5?28:c==4?24:22;
+                int c=Campaign.TalulahCost;s.BaseAttack=(c==5?FormationBalanceV09.Towards(560,500):c==4?310:190)*attackMultiplier;s.BaseSP=c==5?28:c==4?24:22;
                 s.BaseArmor=(c==5?26:c==4?18:12)+armor+(FiveStar(u)?50:new[]{0,4,10,18}[star]);s.BaseMR=(c==5?40:c==4?30:25)+mr+(FiveStar(u)?30:new[]{0,5,10,15}[star]);
                 if(Campaign.TalulahEnhanced&&c==3){s.AttackPct+=.2f;s.BaseSP=18;}
             }
@@ -170,7 +171,7 @@ namespace YesterdayConvoy
         }
         void RefreshCampaignStats(FormationActor a)
         {
-            var s=State(a);float aspeed=s.AttackSpeed+Buff(a,"as")+Buff(a,"herald_as")+Buff(a,"can_as")+Stack(a,"flywheel")*.02f+Stack(a,"rush")*.03f;
+            var s=State(a);float aspeed=s.AttackSpeed+HeroSpeed(a)+Buff(a,"as")+Buff(a,"herald_as")+Buff(a,"can_as")+Stack(a,"flywheel")*.02f+Stack(a,"rush")*.03f;
             int relay=Level("接棒");float per=relay>=6?.12f:relay>=4?.08f:.05f;aspeed+=s.HandoffStacks*per+Buff(a,"stage_as");
             if(Tagged(a,"海嗣")&&Level("海嗣")>=6&&seaBursts.Count>=4)aspeed+=.35f;
             a.Interval=s.BaseInterval<=0?0:s.BaseInterval/Mathf.Clamp(1+aspeed-(Buff(a,"cold")>0?.2f:0)-Buff(a,"nerve_slow"),0.1f,3);
@@ -204,7 +205,7 @@ namespace YesterdayConvoy
             initialGuardHealth=Defenders.Where(d=>State(d).InitialGuard).Sum(d=>d.MaxHealth+GuardFutureHealth(d));
             foreach(var u in Units.Where(u=>u.Enabled))
             {
-                var s=State(u);u.PhaseStage=0;s.NativeLives=0;u.NativePhase=0;u.NativePhaseChangedAt=0;u.NativePhaseReturningUntil=0;s.LastTarget=-1;s.Action=0;u.SkillCharge=s.Spec?.InitialSP??0;
+                var s=State(u);u.PhaseStage=0;s.NativeLives=0;u.NativePhase=0;u.NativePhaseChangedAt=0;u.NativePhaseReturningUntil=0;s.LastTarget=-1;s.Action=0;u.SkillCharge=Hero(u,"H42")?FormationBalanceV09.Hero(8,10):s.Spec?.InitialSP??0;
                 if(Key(u)=="TAL")u.SkillCharge=Campaign.TalulahCost==5?16:Campaign.TalulahCost==4?12:8;
                 if(Key(u)=="WIS")u.SkillCharge=Campaign.WisadelSkill==1?0:Campaign.WisadelSkill==2?12:16;
                 if(Campaign.HasAugment("CS3"))GainSP(u,u.SkillRequired*.2f,true);if(HasItem(u,"CF"))GainSP(u,u.SkillRequired*.25f,true);
@@ -332,7 +333,8 @@ namespace YesterdayConvoy
             bool makoto = (isBoss || eliteKit != null) && artId == FormationCampaignRules.MakotoBossArtId;
             float health = FormationCampaignRules.RoundedGuardStat(role.Health, node.HealthScale, elite ? 1.35m : 1m);
             float attack = FormationCampaignRules.RoundedGuardStat(role.Attack, node.AttackScale, elite ? 1.10m : 1m);
-            float encounterHealth = FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m);
+            float balanceHealth=Campaign.IsStandaloneBossTrial?1:FormationBalanceV09.GuardHealth(node.Id);
+            float encounterHealth = FormationCampaignRules.RoundedGuardStat(health, FormationCampaignRules.EncounterHealthScale(tier), 1m)*balanceHealth;
             if (eliteKit != null) attack = Mathf.Min(attack, eliteKit.Attack);
             var d = new FormationDefender
             {
@@ -349,7 +351,7 @@ namespace YesterdayConvoy
                 SupernovaBossPhase = supernova ? 1 : 0,
                 IsMakotoBoss = makoto,
                 MakotoBossPhase = makoto ? 1 : 0,
-                MaxHealth = isBoss ? boss.Health : campaignLineup && node.Kind == "奖励" ? 1f :
+                MaxHealth = isBoss ? boss.Health*balanceHealth : campaignLineup && node.Kind == "奖励" ? 1f :
                     supernova ? encounterHealth / 2 : encounterHealth,
                 Attack = isBoss ? boss.Attack : FormationCampaignRules.RoundedGuardStat(attack, FormationCampaignRules.EncounterAttackScale(tier), 1m),
                 Armor = isBoss ? boss.Armor : role.Armor,
@@ -364,6 +366,7 @@ namespace YesterdayConvoy
                 d.MaxHealth = MakotoPhaseHealth(d, 1);
             }
             if (!d.IsSupernovaBoss && !d.IsMakotoBoss) ConfigureArchivedGuard(d);
+            if (!Campaign.IsStandaloneBossTrial) d.Attack *= FormationBalanceV09.GuardAttack(node.Id);
             if (watchesApproach)
             {
                 // Cover a 3.5-cell attacker on the approach to this wing's first frontliner.
@@ -422,7 +425,7 @@ namespace YesterdayConvoy
                         if(LiveFive("B11"))rate=5;
                         a.SkillCharge=Mathf.Min(a.SkillRequired,a.SkillCharge+Mathf.Min(5,rate)*dt);
                     }
-                    if(Key(a)=="M21")CombatHeal(a,(FormationFighter)a,a.MaxHealth*.02f*dt,false,false,showFeedback:false);
+                    if(Key(a)=="M21")CombatHeal(a,(FormationFighter)a,a.MaxHealth*(Hero(a,"H21")?FormationBalanceV09.Hero(.02f,.01f):.02f)*dt,false,false,showFeedback:false);
                     if(Key(a)=="M34"&&(Clock>=5||a.LastHitAt>=0||a.Health<a.MaxHealth)) { if(Stack(a,"awake")==0)AddStack(a,"awake",1,1);SelfLoss((FormationFighter)a,a.MaxHealth*.02f*dt); }
                 }
                 else if(a is FormationDefender defender && UsesGuardTimeCharge(defender) &&
@@ -505,12 +508,12 @@ namespace YesterdayConvoy
         }
         void ResolveOrdinaryAttack(FormationFighter u,FormationDefender target)
         {
-            var s=State(u);s.Autos++;
+            var s=State(u);s.Autos++;HeroOrdinary(u,target);
             if(s.LastTarget!=target.Id){s.Stacks["rush"]=Mathf.Floor(Stack(u,"rush")/2);s.LastTarget=target.Id;}else if(Tagged(u,"迅攻")&&Level("迅攻")>=4)AddStack(u,"rush",1,10);
-            string key=Key(u);float mult=key=="M16"?.75f:key=="M20"?.4f:key=="WIS"&&Campaign.WisadelSkill==2&&Buff(u,"wisadel")>0?2:1;
+            string key=Key(u);float mult=key=="M16"?(Hero(u,"H16")?FormationBalanceV09.Hero(.75f,1.2f):.75f):key=="M20"?.4f:key=="WIS"&&Campaign.WisadelSkill==2&&Buff(u,"wisadel")>0?2:1;
             if(key=="M30"&&Stack(u,"fireautos")>0){mult=2.2f;s.Stacks["fireautos"]--;}
             if(key=="M13"&&Buff(target,"freeze")>0)mult*=1.8f;
-            int count=key=="GOLEM"&&s.Stage>=3?3:key=="M16"?2:key=="M24"?3:key=="WIS"&&Buff(u,"wisadel")>0?(u.Star>=3?5:3):1;
+            int count=key=="GOLEM"&&s.Stage>=3?3:key=="M16"?(Hero(u,"H16")?1:2):key=="M24"?3:key=="WIS"&&Buff(u,"wisadel")>0?(u.Star>=3?5:3):1;
             bool wisadelThree=key=="WIS"&&FiveStar(u)&&Buff(u,"wisadel")>0;
             if(wisadelThree)mult=10;
             var victims=wisadelThree?Defenders.Where(enemy=>enemy.Alive).ToArray():Nearby(target.Position,count>1?1.8f:0,count,target);
@@ -524,6 +527,7 @@ namespace YesterdayConvoy
                 if(HasItem(u,"AD")){AddStack(v,"armorbreak",1,5);GiveBuff(v,"armorbreak",1,6);}
                 if(Tagged(u,"雪怪")&&Level("雪怪")>=2&&s.Autos%3==0)Cold(v);
             }
+            HeroAfterOrdinary(u,target);
             if(key=="M28")AddStack(u,"stone",1,10);
             if(key=="B14"&&s.Autos%3==0)SpawnDog(u);
             CompleteAuto(u,true);

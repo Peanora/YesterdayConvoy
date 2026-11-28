@@ -120,7 +120,7 @@ namespace YesterdayConvoy
             Fill(portrait, new Color32(205, 211, 224, 255));
             DrawFormationPortrait(portrait, card);
             string hp = (actor?.MaxHealth ?? FormationCampaignRules.BaseHealthAtStar(spec, star, Campaign.TalulahCost)).ToString("0");
-            float baseAttack=spec.Id=="TAL"?(Campaign.TalulahCost==5?560:Campaign.TalulahCost==4?310:190):spec.Attack;
+            float baseAttack=spec.Id=="TAL"?(Campaign.TalulahCost==5?FormationBalanceV09.Towards(560,500):Campaign.TalulahCost==4?310:190):spec.Attack;
             bool finalFive=FormationCampaignRules.IsThreeStarFiveCost(spec,star,Campaign.TalulahCost);
             string attack = (actor?.Attack ?? baseAttack * FormationCampaignRules.AttackStarMultiplier(spec,star,Campaign.TalulahCost)).ToString("0");
             string armor = (actor?.Armor ?? (spec.Id=="TAL"?(Campaign.TalulahCost==5?26:Campaign.TalulahCost==4?18:12):spec.Armor)+(finalFive?50:0)).ToString("0");
@@ -156,7 +156,8 @@ namespace YesterdayConvoy
             }
             var area = new Rect(r.x + 11, r.y + offset, r.width - 22, r.height - offset - 8);
             var style = new GUIStyle(approvedShop.LoopText(11, TextAnchor.UpperLeft, OperationsInk)){wordWrap=true};
-            var description = new GUIContent(FormationInspectionSkill(spec));
+            var hero=FormationBalanceV09.Heroes.FirstOrDefault(entry=>entry.Id==Campaign.HeroAugment&&entry.Extra==spec.Id);
+            var description = new GUIContent(FormationInspectionSkill(spec)+(hero==null?"":"\n\n专属战备 · "+hero.Name+"\n"+hero.Effect));
             float bodyWidth = area.width - 18;
             float bodyHeight = Mathf.Max(area.height, style.CalcHeight(description, bodyWidth) + 2);
             formationInspectionScroll = ApprovedUi.BeginDragScrollView(area, formationInspectionScroll,

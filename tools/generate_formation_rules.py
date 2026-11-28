@@ -65,7 +65,7 @@ for u in data['units']:
 lines.append('        };')
 
 for target, source in [('AllPreplans','preplans'),('AllAugments','augments'),('AllItems','items'),('AllComponents','components'),('AllPopulationItems','population_items'),('AllFactions','factions'),('AllStyles','styles')]:
-    lines.append('        public static readonly DataRecord[] ' + target + ' = {')
+    lines.append('        public static readonly DataRecord[] ' + ('BaseStyles' if target=='AllStyles' else target) + ' = {')
     for record in data[source]:
         key = record.get('id', record.get('recipe', ''))
         fields = {'Id':cs(key),'Name':cs(record['name']),'Effect':cs(record.get('effect',record.get('text',''))),
@@ -75,6 +75,8 @@ for target, source in [('AllPreplans','preplans'),('AllAugments','augments'),('A
         lines.append('            new DataRecord{' + ','.join(k + '=' + v for k,v in fields.items()) + '},')
     lines.append('        };')
 
+lines.append('        static readonly DataRecord[] EconomicStyles = BaseStyles.Concat(FormationEconomyV09.Traits).ToArray();')
+lines.append('        public static DataRecord[] AllStyles => FormationBalanceV09.Active == FormationBalanceV09.Variant.Baseline ? BaseStyles : EconomicStyles;')
 lines.append('        public static readonly DefenderDefinition[] Defenders = {')
 for row in data['defenders']:
     sp=re.search(r'(\d+)/(\d+)SP',row[8])
@@ -86,8 +88,8 @@ lines += ['        public static readonly int[] ExperienceToNext = {0,2,4,6,10,2
 for level in range(1,11):
     lines.append('            ' + ints(data['shop_odds'][str(level)] if isinstance(data['shop_odds'],dict) else data['shop_odds'][level-1]) + ',')
 lines += ['        };',
-          '        public static UnitDefinition Find(string id) => AllUnits.FirstOrDefault(u => u.Id == id || u.CardId == id || u.CardId == "CARD_" + id || u.Name == id);',
-          '        public static DataRecord FindRecord(string id) => AllPreplans.Concat(AllAugments).Concat(AllItems).Concat(AllComponents).Concat(AllPopulationItems).Concat(AllFactions).Concat(AllStyles).FirstOrDefault(r => r.Id == id || r.Name == id);',
+          '        public static UnitDefinition Find(string id) => FormationBalanceV09.Tune(AllUnits.FirstOrDefault(u => u.Id == id || u.CardId == id || u.CardId == "CARD_" + id || u.Name == id));',
+          '        public static DataRecord FindRecord(string id) => AllPreplans.Concat(AllAugments).Concat(FormationBalanceV09.Heroes).Concat(AllItems).Concat(AllComponents).Concat(AllPopulationItems).Concat(AllFactions).Concat(AllStyles).FirstOrDefault(r => r.Id == id || r.Name == id);',
           '    }', '}']
 TARGET.write_text('\n'.join(lines)+'\n',encoding='utf-8')
 print('Generated',TARGET,':',len(data['units']),'units;',len(data['preplans']),'preplans')

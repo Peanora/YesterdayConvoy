@@ -268,7 +268,7 @@ namespace YesterdayConvoy
                 Fill(new Rect(0, offset, panel.width, panel.height), new Color(.10f, .15f, .19f, .94f));
                 Fill(new Rect(0, offset, panel.width, MarketHeaderHeight - 4), ApprovedUi.Paper);
                 EconomyLabel(new Rect(10, offset, 80, MarketHeaderHeight - 4), "招募商店", 14, ApprovedUi.Ink, true);
-                EconomyLabel(new Rect(99, offset, 225, MarketHeaderHeight - 4), "点击卡牌购买", 11, ApprovedUi.Muted);
+                EconomyLabel(new Rect(99, offset, Mathf.Min(520,panel.width-200), MarketHeaderHeight - 4), Campaign!=null&&(Campaign.Economy.Count("远见")>0||Campaign.Economy.Count("奇迹")>0)?Campaign.Economy.Summary:"点击卡牌购买", 10, ApprovedUi.Muted);
                 if (EconomyButton(new Rect(panel.width - 96, offset + 4, 86, 20),
                     "收起  Esc", "关闭招募商店", ApprovedUi.Paper, ApprovedUi.Ink, 11))
                     SetMarketVisible(false);
@@ -338,7 +338,7 @@ namespace YesterdayConvoy
 
             var role = Shop.Definition(id);
             var preview = Shop.PreviewPurchase(slot);
-            bool affordable = Shop.CanAfford(role.Cost);
+            bool affordable = Shop.CanAfford(preview.Value);
             bool hovered = GUI.enabled && CanTrade && affordable && preview.Success && card.Contains(Event.current.mousePosition);
             approvedShop.DrawLoopCostBackground(card, role.Cost);
             DrawFormationPortrait(new Rect(card.x + card.width * .34f, card.y + 5, card.width * .64f, 108), id);
@@ -347,7 +347,7 @@ namespace YesterdayConvoy
                 Fill(card, new Color(.16f, .16f, .16f, .60f));
             if (hovered) ApprovedUi.Border(card, EconomyIce, pressedFormationOffer == slot ? 2 : 1);
             DrawFormationCoin(new Rect(card.x + 11, card.y + 12, 13, 13));
-            EconomyLabel(new Rect(card.x + 29, card.y + 5, 36, 26), role.Cost.ToString(), 23, EconomyInk, true);
+            EconomyLabel(new Rect(card.x + 29, card.y + 5, 36, 26), Shop.Price(id).ToString(), 23, EconomyInk, true);
 
             int held = Shop.Bench.Where(p => p.Id == id).Sum(p => ShopTrialModel.Copies(p.Star));
             var status = new Rect(card.xMax - 65, card.y + 6, 59, 17);
@@ -368,7 +368,7 @@ namespace YesterdayConvoy
                 role.Name.Length > 9 ? 12 : 14, EconomyInk, true);
 
             var definition = FormationCampaignRules.Find(id);
-            string tags = definition == null ? "" : string.Join(" / ", definition.Factions.Concat(definition.Styles).Take(2));
+            string tags = definition == null ? "" : string.Join(" / ", definition.Factions.Concat(definition.Styles).OrderByDescending(FormationEconomyV09.IsTrait).Take(3));
             EconomyLabel(new Rect(card.x + 10, card.yMax - 24, card.width - 20, 19), tags,
                 tags.Length > 9 ? 9 : 10, EconomyMuted);
         }

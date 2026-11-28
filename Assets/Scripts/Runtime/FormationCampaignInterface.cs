@@ -195,7 +195,7 @@ namespace YesterdayConvoy
         }
         void DrawCampaignInventory()
         {
-            var r=CampaignWindow("装备与合成","选一件物品，再选角色装备；选两件基础件／宝石可合成固定成品。整备可免费拆下，物品栏不限数量。");
+            var r=CampaignWindow("装备与合成","选择物品后对角色使用；复制器增加1张一星牌，拆卸器一次卸下全部装备。合成不拆解，物品栏不限数量。");
             var view=new Rect(r.x+20,r.y+97,425,330);var inventory=Campaign.Inventory.ToArray();
             campaignItemScroll=ApprovedUi.BeginDragScrollView(view,campaignItemScroll,new Rect(0,0,403,Mathf.Max(330,inventory.Length*48)));
             for(int i=0;i<inventory.Length;i++)
@@ -216,14 +216,17 @@ namespace YesterdayConvoy
                 var piece=units[i];var equipment=Campaign.Equipment(piece.Instance).ToArray();var row=new Rect(0,i*77,421,71);
                 Fill(row,campaignSelectedPiece==piece.Instance?new Color(.81f,.87f,.87f):new Color(.91f,.92f,.91f));
                 CampaignLabel(new Rect(8,row.y+5,225,24),Shop.Definition(piece.Id).Name+" "+new string('★',piece.Star)+(Session.Seats.InLineup(piece.Instance)?" · 上阵":" · 备战"),12,true);
-                if(Button(new Rect(292,row.y+5,119,26),"装备所选物品",campaignSelectedItem>0))
-                {campaignSelectedPiece=piece.Instance;var item=inventory.FirstOrDefault(x=>x.Instance==campaignSelectedItem);CampaignAction(item?.Key=="复制器"?Campaign.UseCopier(item.Instance,piece.Instance):Campaign.Equip(campaignSelectedItem,piece.Instance));campaignSelectedItem=campaignCombineItem=0;}
+                var chosen=inventory.FirstOrDefault(x=>x.Instance==campaignSelectedItem);
+                string action=chosen?.Key==FormationCampaignRun.CopierKey?"复制1张":chosen?.Key==FormationCampaignRun.RemoverKey?"卸下全部装备":"装备所选物品";
+                if(Button(new Rect(292,row.y+5,119,26),action,campaignSelectedItem>0))
+                {campaignSelectedPiece=piece.Instance;if(UseFormationItem(campaignSelectedItem,piece.Instance,new Vector2(r.x+465+350,r.y+97+i*77+18)).Success)campaignSelectedItem=campaignCombineItem=0;}
                 for(int j=0;j<equipment.Length;j++)
                 {
                     var slot=new Rect(8+j*134,row.y+35,129,28);
                     Fill(slot,TraitCard);DrawSupplyItem(new Rect(slot.x+2,slot.y+2,24,24),equipment[j].Key);
-                    TraitLabel(new Rect(slot.x+30,slot.y,95,28),equipment[j].Name+" ×",11,TraitInk);
-                    if(TraitHit(slot,"卸下 "+equipment[j].Name))CampaignAction(Campaign.Unequip(equipment[j].Instance));
+                    TraitLabel(new Rect(slot.x+30,slot.y,95,28),equipment[j].Name+" ⤴",11,TraitInk);
+                    if(TraitHit(slot,"消耗1个拆卸器，卸下此角色全部装备"))
+                    {var tool=Campaign.Inventory.FirstOrDefault(x=>x.Key==FormationCampaignRun.RemoverKey);if(tool!=null)UseFormationItem(tool.Instance,piece.Instance,slot.center);else notice="需要装备拆卸器；奖励关固定掉落";break;}
                 }
             }
             GUI.EndScrollView();
@@ -251,6 +254,7 @@ namespace YesterdayConvoy
                     "赤宝石" => "与指定基础装备合成阵营徽章，成品继承该基础装备的属性。",
                     "蓝宝石" => "与指定基础装备合成流派徽章，成品继承该基础装备的属性。",
                     "复制器" => "获得一张目标角色当前形态的一星卡，占用对应卡池库存。",
+                    "拆卸器" => "整备时对角色使用，消耗1个并将其全部装备原样放回物品栏，含徽章与人口装备；不拆成基础件。目标无装备时不消耗。每个奖励关额外固定掉落1个，已有也继续获得。",
                     _ => string.Empty
                 };
             }
