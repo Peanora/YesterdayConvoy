@@ -13,6 +13,7 @@ namespace YesterdayConvoy.Tests
         static readonly Dictionary<string,string> cardIds=FormationCampaignRules.AllUnits.ToDictionary(u=>u.Id,u=>u.CardId);
         static string Card(string id)=>cardIds[id];
         static readonly string[] members={"M17","M16","B05","B01","B22","M38"};
+        static readonly string[] distributedMembers={"M17","M16","B09","B26","B12","B01","M38","B23","B25","B13"};
         [SetUp] public void Begin()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.B);
         [TearDown] public void End()=>FormationBalanceV09.Select(FormationBalanceV09.Variant.Baseline);
         static FormationEconomyV09 Economy(ShopTrialModel shop,int seed,int version=4)=>(FormationEconomyV09)Activator.CreateInstance(
@@ -103,10 +104,10 @@ namespace YesterdayConvoy.Tests
             public List<PathResult> runs=new List<PathResult>();
         }
         static readonly string[] allPriority={"M18","B22","M17","M38","M16","B05","B01","M25"};
-        static void Lineup(ShopTrialModel shop,string[] wanted)
+        static void Lineup(ShopTrialModel shop,string[] wanted,int version=4)
         {
             var chosen=shop.Bench.GroupBy(p=>p.Id).Select(g=>g.OrderByDescending(p=>p.Star).ThenBy(p=>p.Instance).First())
-                .OrderBy(p=>Array.IndexOf(allPriority,FormationCampaignRules.Find(p.Id).Id)<0?99:Array.IndexOf(allPriority,FormationCampaignRules.Find(p.Id).Id)).Take(shop.PopulationCap).ToArray();
+                .OrderBy(p=>version>=5?-(p.Star>=3?10:shop.Definition(p.Id).Cost):Array.IndexOf(allPriority,FormationCampaignRules.Find(p.Id).Id)<0?99:Array.IndexOf(allPriority,FormationCampaignRules.Find(p.Id).Id)).ThenBy(p=>p.Instance).Take(shop.PopulationCap).ToArray();
             shop.SetLineup(chosen.Select(p=>p.Id),chosen.Select(p=>p.Instance));
         }
         static void Resolve(FormationCampaignRun run)
@@ -124,17 +125,18 @@ namespace YesterdayConvoy.Tests
             var session=FormationShopSession.StartNew(seed,true);var shop=session.Shop;var run=session.Run;
             var e=Economy(shop,seed,version);typeof(FormationCampaignRun).GetField("<Economy>k__BackingField",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(run,e);
             FormationCampaignRunTests.CompleteOpeningDelivery(session);Resolve(run);
-            var wanted=(route=="dual"?members:route=="foresight"?members.Take(3):members.Skip(3)).Concat(new[]{"M18","M25"}).Select(Card).ToArray();
+            var roster=version>=5?distributedMembers:members;int split=version>=5?5:3;
+            var wanted=(route=="dual"?roster:route=="foresight"?roster.Take(split):roster.Skip(split)).Concat(new[]{"M18","M25"}).Select(Card).ToArray();
             var result=new PathResult{seed=seed,route=route,rules="R"+version,assumption=new[]{"low:1-3 casts; win .90/.65/.40","middle:2-4 casts; win .95/.80/.60","high:3-5 casts; win .98/.90/.80"}[scenario]};
             void Mark()
             {
                 if(e.GlobalDiscountReady&&result.firstF<0)result.firstF=run.NodeIndex;
                 if(e.MiracleChainReady&&result.firstM<0)result.firstM=run.NodeIndex;
-                foreach(var p in shop.Bench.Where(p=>p.Star>=3&&members.Select(Card).Contains(p.Id)))if(!result.promotions.Contains(p.Id)){result.promotions.Add(p.Id);if(result.firstThree<0)result.firstThree=run.NodeIndex;}
+                foreach(var p in shop.Bench.Where(p=>p.Star>=3&&roster.Select(Card).Contains(p.Id)))if(!result.promotions.Contains(p.Id)){result.promotions.Add(p.Id);if(result.firstThree<0)result.firstThree=run.NodeIndex;}
             }
             for(int n=0;n<FormationCampaignRules.Nodes.Length&&!run.Finished;n++)
             {
-                Resolve(run);foreach(var p in shop.Bench.Where(p=>!wanted.Contains(p.Id)&&p.Id!=Card("WIS")).ToArray())shop.Sell(p.Instance);Lineup(shop,wanted);
+                Resolve(run);foreach(var p in shop.Bench.Where(p=>!wanted.Contains(p.Id)&&p.Id!=Card("WIS")).ToArray())shop.Sell(p.Instance);Lineup(shop,wanted,version);
                 var node=run.CurrentNode;
                 if(node.Kind=="补给"){if(!run.AdvanceNode())break;continue;}
                 int targetLevel=node.Plane==1?(n<3?3:n<5?4:5):node.Plane==2?(node.Id=="2-7"?7:6):node.Id is "3-4" or "3-5" or "3-6" or "3-7"?9:8;
@@ -149,13 +151,13 @@ namespace YesterdayConvoy.Tests
                         if(keep&&held>=goal||!keep&&!target&&!e.GlobalDiscountReady)continue;
                         if(!e.GlobalDiscountReady&&shop.Gold-shop.Price(id)<floor)continue;
                         var bought=shop.Purchase(slot);if(!bought.Success)continue;result.spentCards+=bought.Value;run.OnPurchase(id);
-                        if(!keep&&!target)shop.Sell(bought.Instance);Lineup(shop,wanted);Mark();
+                        if(!keep&&!target)shop.Sell(bought.Instance);Lineup(shop,wanted,version);Mark();
                     }
                 }
                 Buy();int limit=e.GlobalDiscountReady||e.MiracleChainReady?(node.Id=="3-7"?200:12):node.Plane==1?2:node.Plane==2?3:4;
                 for(int roll=0;roll<limit;roll++)
                 {
-                    while(shop.Level<targetLevel&&shop.Gold>=floor+8){int before=shop.Gold;if(!shop.Upgrade().Success)break;result.spentXP+=before-shop.Gold;Lineup(shop,wanted);}
+                    while(shop.Level<targetLevel&&shop.Gold>=floor+8){int before=shop.Gold;if(!shop.Upgrade().Success)break;result.spentXP+=before-shop.Gold;Lineup(shop,wanted,version);}
                     if(!e.GlobalDiscountReady&&shop.Gold<floor+4)break;
                     int old=shop.Gold,coupons=shop.FreeRefreshes;if(!shop.Refresh().Success)break;result.spentRefresh+=old-shop.Gold;if(coupons>0)result.freeRefreshes++;run.OnManualRefresh();Buy();
                     if(shop.Bench.Any(p=>p.Id==Card("WIS")&&p.Star==3))break;
@@ -176,6 +178,16 @@ namespace YesterdayConvoy.Tests
                 result.nodes++;Mark();Resolve(run);shop.Validate();if(!run.AdvanceNode())break;
             }
             result.survived=run.Won;result.gold=shop.Gold;result.level=shop.Level;result.foresight=e.ForesightLayers;result.miracle=e.MiracleLayers;result.fiveThree=shop.Bench.Any(p=>p.Id==Card("WIS")&&p.Star==3);return result;
+        }
+        [Test,Timeout(360000)] public void DistributedCostRosterCompletesConditionalFiniteRoutes()
+        {
+            var report=new CampaignReport();
+            foreach(string route in new[]{"foresight","miracle","dual"})foreach(int scenario in new[]{0,1,2})
+                for(int seed=0;seed<40;seed++)report.runs.Add(Simulate(20261128+seed,route,scenario,5));
+            Directory.CreateDirectory("artifacts/economy-v09-r5");
+            File.WriteAllText("artifacts/economy-v09-r5/full-route.json",UnityEngine.JsonUtility.ToJson(report,true));
+            Assert.That(report.runs.Count,Is.EqualTo(360));
+            Assert.That(report.runs.All(r=>r.gold>=0&&r.nodes>0&&r.foresight<=325&&r.miracle<=325),Is.True);
         }
         [Test,Timeout(900000)] public void FullRouteEconomyMonteCarloIncludesAcquisitionCostsAndConditionalLosses()
         {

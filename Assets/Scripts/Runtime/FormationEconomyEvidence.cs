@@ -22,7 +22,7 @@ namespace YesterdayConvoy
         {
             var session=StartPractice(seed,Array.FindIndex(FormationCampaignRules.Nodes,n=>n.Id=="2-7"));
             session.Run.ResetBalanceFixture();session.Shop.EnableFormationEconomy();
-            var ids=new[]{"M17","M16","B05","B01","B22","M38","WIS"}.Select(id=>FormationCampaignRules.Find(id).CardId).ToArray();
+            var ids=new[]{"M17","M16","B09","B01","M38","B23","WIS"}.Select(id=>FormationCampaignRules.Find(id).CardId).ToArray();
             var pieces=ids.Select(id=>new ShopTrialModel.Piece{Id=id,Star=mature&&id!=FormationCampaignRules.Find("WIS").CardId?2:1}).ToList();
             if(promotion)
             {
@@ -40,6 +40,7 @@ namespace YesterdayConvoy
     public sealed partial class FormationBattleController
     {
         internal void RefreshEconomicEvidencePresentation()=>RefreshCampaignPreparation();
+        internal void ScrollEconomicEvidenceToMembers()=>formationTraitDetailScroll=new Vector2(0,10000);
         internal IEnumerator OpenEconomyFixture(bool mature=false,bool promotion=false)
         {
             seed=20261128;Session=FormationShopSession.EconomyFixture(seed,mature,promotion);
@@ -59,7 +60,7 @@ namespace YesterdayConvoy
         static bool Requested=>Environment.GetCommandLineArgs().Contains("-formationEconomySmoke");
         [Serializable] sealed class Report
         {
-            public string scope="Rendered Windows Player, actual session purchases/sales/refreshes and real nine-copy fusion. R4: cold zero-layer/one-star refresh check, then EXPLICITLY PRESET 325/325 layers and six TWO-star members at level 9/100 gold. Also verifies a real ninth-copy promotion from an EXPLICIT eight-copy M17 preset; no milestone layers preset. Maturity is NOT earned by this fixture, not natural campaign. Fixed 2-7 map; no equipment or forced damage.";
+            public string scope="Rendered Windows Player, actual session purchases/sales/refreshes and real nine-copy fusion. R5: each economic trait displays one member per cost1-5. Cold zero-layer/one-star refresh check, then EXPLICITLY PRESET 325/325 layers and six TWO-star members at level9/100gold. Real ninth-copy promotion from an EXPLICIT eight-copy M17 preset; no milestone layers preset. Maturity is NOT earned by this fixture, not natural campaign. Fixed2-7 map; no equipment or forced damage.";
             public bool passed,battleWon,maturityPreset=true;public int coldRefreshes,coldGold,coldForesight,coldMiracle,refreshes,gold,layersF,layersM,checks,promotionRefreshes,promotionLayers,promotionCopies;public float seconds;public List<string> exceptions=new List<string>();
         }
         readonly Report report=new Report();string directory;
@@ -75,7 +76,7 @@ namespace YesterdayConvoy
         IEnumerator Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"-formationEvidenceDir");
-            directory=Path.GetFullPath(at>=0?args[at+1]:"artifacts/economy-v09-r4/player");Directory.CreateDirectory(directory);
+            directory=Path.GetFullPath(at>=0?args[at+1]:"artifacts/economy-v09-r5/player");Directory.CreateDirectory(directory);
             var stack=new Stack<IEnumerator>();stack.Push(Work());
             while(stack.Count>0)
             {
@@ -104,6 +105,17 @@ namespace YesterdayConvoy
             var shop=controller.Shop;var economy=controller.Campaign.Economy;
             Check(!shop.UnlimitedGold&&shop.Gold==100,"Fixture must have finite cash");
             Check(controller.Campaign.TraitCount("远见")==3&&controller.Campaign.TraitCount("奇迹")==3,"Economic member counts");
+            foreach(string trait in new[]{"远见","奇迹"})
+            {
+                Check(controller.InspectFormationTrait(trait),"Actual economic details open");
+                var members=controller.SelectedFormationTrait.Members.OrderBy(m=>m.Cost).ToArray();
+                Check(members.Select(m=>m.Cost).SequenceEqual(new[]{1,2,3,4,5}),"Actual details have one member at each cost");
+                var expected=trait=="远见"?new[]{"M17","M16","B09","B26","B12"}:new[]{"B01","M38","B23","B25","B13"};
+                Check(members.Select(m=>m.CardId).SequenceEqual(expected.Select(id=>FormationCampaignRules.Find(id).CardId)),"Actual details show new roster");
+                controller.ScrollEconomicEvidenceToMembers();yield return Shot(trait=="远见"?"00-foresight-members":"00-miracle-members");
+                controller.CloseFormationTraitDetails();
+            }
+            controller.SetMarketVisible(true);
             for(int i=0;i<40;i++){Check(controller.Session.Refresh().Success,"Cold refresh affordability");report.coldRefreshes++;yield return null;}
             report.coldGold=shop.Gold;report.coldForesight=economy.ForesightLayers;report.coldMiracle=economy.MiracleLayers;
             Check(economy.ForesightLayers==0&&economy.MiracleLayers==0,"Refresh created layers before battle");

@@ -85,7 +85,8 @@ namespace YesterdayConvoy.Tests
             var shop=Make(36);var run=new FormationCampaignRun(shop,36);while(run.HasBlockingChoice)run.Choose(0);
             var actors=shop.Bench.Where(p=>p.Id==Card("M17")||p.Id==Card("M16")).ToArray();shop.SetLineup(actors.Select(p=>p.Id),actors.Select(p=>p.Instance));
             var casts=actors.SelectMany(p=>Enumerable.Range(0,5).Select(_=>new FormationBattleModel.CastEvent{Instance=p.Instance,UnitId=FormationCampaignRules.Find(p.Id).Id})).ToArray();
-            Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Not.Null);Assert.That(run.Economy.ForesightLayers,Is.EqualTo(36));Assert.That(run.Economy.EarnedGold,Is.EqualTo(2));int gold=shop.Gold;
+            // The real campaign uses R5: only M17/M16 remain Foresight here, four casts each, 2/3 layers plus first-cast3.
+            Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Not.Null);Assert.That(run.Economy.ForesightLayers,Is.EqualTo(26));Assert.That(run.Economy.EarnedGold,Is.EqualTo(2));int gold=shop.Gold;
             Assert.That(run.SettleBattle(true,1,3,0,false,casts),Is.Null);Assert.That(shop.Gold,Is.EqualTo(gold));Assert.That(new FormationCampaignRun(shop,36).Economy.ForesightLayers,Is.Zero);
         }
         [Test] public void NativeCastBudgetNeedsMultipleCompletedBattles()
