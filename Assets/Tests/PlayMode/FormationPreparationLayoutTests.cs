@@ -411,6 +411,7 @@ namespace YesterdayConvoy.Tests
             Assert.That(transferred.Members.Any(member => member.CardId == "CARD_M21"), Is.False, "A transferred member must be visibly separate from the natural roster.");
             yield return Capture("playmode-currency-trait-members-badge-and-reserve");
 
+            controller.Campaign.AddItem(FormationCampaignRun.RemoverKey);
             Assert.That(controller.Campaign.Unequip(badge.Instance).Success, Is.True);
             Assert.That(controller.SelectedFormationTrait.BadgeMembers, Is.Empty);
             Assert.That(controller.SelectedFormationTrait.Active, Is.False);

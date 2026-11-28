@@ -100,7 +100,8 @@ namespace YesterdayConvoy.Tests
             int owner=shop.Bench.Single().Instance,before=shop.Gold;
             foreach(var item in run.AllEquipment.Where(item=>FormationCampaignRun.CrownKeys.Contains(item.Key)).ToArray())Assert.That(run.Equip(item.Instance,owner).Success,Is.True);
             Assert.That(run.TripleCrownUnlocked,Is.True);Assert.That(shop.Gold,Is.EqualTo(before+300));
-            foreach(var item in run.AllEquipment.Where(item=>FormationCampaignRun.CrownKeys.Contains(item.Key)).ToArray()){run.Unequip(item.Instance);run.Equip(item.Instance,owner);}
+            Assert.That(run.UseRemover(run.AddItem(FormationCampaignRun.RemoverKey).Instance,owner).Success,Is.True);
+            foreach(var item in run.AllEquipment.Where(item=>FormationCampaignRun.CrownKeys.Contains(item.Key)).ToArray())run.Equip(item.Instance,owner);
             Assert.That(shop.Gold,Is.EqualTo(before+300));Assert.That(shop.PopulationCap,Is.EqualTo(13));
             run.AddItem("CROWN");run.AddItem("AEGIS");Assert.That(shop.PopulationCap,Is.EqualTo(14));Assert.That(shop.Level,Is.EqualTo(10));
             Assert.That(FormationCampaignRules.AllItems.Length,Is.EqualTo(21));
@@ -222,7 +223,7 @@ namespace YesterdayConvoy.Tests
             Fixture(out var run,new[]{"B10"},3);int owner=run.Shop.Bench.Single().Instance;
             foreach(string key in FormationCampaignRun.CrownKeys)run.Equip(run.AddItem(key).Instance,owner);
             int gold=run.Shop.Gold;run.NotifyCannottThreeStar(owner);run.NotifyCannottThreeStar(owner);Assert.That(run.Shop.Gold,Is.EqualTo(gold+300));
-            foreach(var item in run.AllEquipment.ToArray())run.Unequip(item.Instance);
+            Assert.That(run.UseRemover(run.AddItem(FormationCampaignRun.RemoverKey).Instance,owner).Success,Is.True);
             typeof(FormationCampaignRun).GetProperty("NodeIndex").SetValue(run,1);
             var enter=typeof(FormationCampaignRun).GetMethod("EnterV08Node",BindingFlags.Instance|BindingFlags.NonPublic);enter.Invoke(run,null);enter.Invoke(run,null);
             Assert.That(run.Shop.Gold,Is.EqualTo(gold+500));

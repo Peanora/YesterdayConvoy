@@ -269,13 +269,17 @@ namespace YesterdayConvoy
             if(!IsReservationActive(ticket))return false;
             rewardReservations.Remove(ticket.Token);pool[ticket.Id]++;Validate();return true;
         }
-        public Result Grant(string id,int star=1)
+        public Result Grant(string id,int star=1)=>Grant(id,star,true);
+        internal Result Duplicate(string id)=>Grant(id,1,false);
+        Result Grant(string id,int star,bool rewardOverflow)
         {
             if(TransactionBlocked)return Fail("先完成塔露拉抉择");
             if(!roles.ContainsKey(id)||star<1||star>MaxStar(id))return Fail("无效奖励角色");
             if(bench.Any(p=>p.Id==id&&p.Star>=MaxStar(id)))return Fail("已持有最高星角色");
-            int copies=Copies(star);if(pool[id]<copies)return Fail("库存不足，奖励进入待领");
+            int copies=Copies(star);if(pool[id]<copies)return Fail(rewardOverflow?"库存不足，奖励进入待领":"卡池库存不足，复制器已保留");
             var result=PlanIncoming(id,out var planned,star);if(!result.Success)return result;
+            if(!rewardOverflow&&ReserveCount(planned)>ShopSeatLayout.ReserveCapacity&&ReserveCount(planned)>ReserveCount(bench))
+                return Fail("备战席已满且本次无法腾出位置，复制器已保留");
             bench.Clear();bench.AddRange(planned);pool[id]-=copies;sequence++;DetectTalulahChoice();RemoveMaxStarOffers();Validate();return result;
         }
         public Result GrantAtLeast(string id,int star)

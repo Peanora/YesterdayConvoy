@@ -39,6 +39,7 @@ namespace YesterdayConvoy
 
         internal static Texture2D SupplyItemArt(string key)
         {
+            if(FormationCampaignRun.IsConsumable(key))return FormationConsumableArt.Icon(key);
             string population=key=="CROWN"?"v08-crown":key=="AEGIS"?"v08-shield":key=="CLOAK"?"v08-cloak":null;
             if(population!=null)
             {
@@ -218,7 +219,7 @@ namespace YesterdayConvoy
                 {
                     int owner = FormationEquipmentDropTarget(point);
                     if (owner > 0 && Campaign.Inventory.Any(item => item.Instance == source))
-                        CampaignAction(Campaign.Equip(source, owner));
+                        UseFormationItem(source, owner, point);
                 }
             }
             return true;
@@ -422,6 +423,7 @@ namespace YesterdayConvoy
         void DrawFormationEquipmentOverlay()
         {
             if (!CanUseEquipmentTiles) return;
+            DrawConsumableFeedback();
             if (EquipmentCombinationPending)
             {
                 if (PreviewEquipmentPair(equipmentCombinationFirst,equipmentCombinationSecond,out string key))

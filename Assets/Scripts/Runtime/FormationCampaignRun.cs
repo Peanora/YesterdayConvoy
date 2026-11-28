@@ -703,6 +703,7 @@ namespace YesterdayConvoy
         {
             int[] counts={OpeningRewardBallCount("1-1"),OpeningRewardBallCount("1-2"),7,9,12};string[] ids={"1-1","1-2","1-8","2-6","3-6"};int[][] odds={new[]{70,28,2,0},new[]{55,40,5,0},new[]{40,48,11,1},new[]{30,50,18,2},new[]{22,48,27,3}};
             int index=Array.IndexOf(ids,id);if(index<0)return;
+            DropRewardRemover(id);
             for(int i=0;i<counts[index];i++){int roll=random.Next(100),sum=0;for(int k=0;k<4;k++){sum+=odds[index][k];if(roll<sum){OpenBall(new[]{"白","蓝","金","彩"}[k]);break;}}}
             if(PreplanId=="P08"&&new[]{"1-1","2-6","3-6"}.Contains(id)) DropRewardComponent(id);
             int floor = id == "1-1" ? 2 : id == "1-2" ? 3 : 0;
@@ -906,13 +907,14 @@ namespace YesterdayConvoy
             var item=new ItemInstance{Instance=++sequence,Key=key};items.Add(item);if(countBudget){if(key.Length==1&&"ABCDEF".Contains(key))equipmentGranted++;else if(FormationCampaignRules.AllItems.Any(x=>x.Id==key))equipmentGranted+=2;}RefreshV08Economy();return item;
         }
         public static string BadgeTrait(string key)=>key!=null&&key.StartsWith("徽章:")?key.Split(':')[1]:null;
-        public static string ItemName(string key)=>key.StartsWith("徽章:")?key.Split(':')[1]+"徽章":key=="复制器"?"完美复制器":FormationCampaignRules.FindRecord(key)?.Name??key;
+        public static string ItemName(string key)=>key.StartsWith("徽章:")?key.Split(':')[1]+"徽章":key==CopierKey?"完美复制器":key==RemoverKey?"装备拆卸器":FormationCampaignRules.FindRecord(key)?.Name??key;
         public ShopTrialModel.Result Equip(int itemInstance,int pieceInstance)
         {
             if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);var piece=shop.Bench.FirstOrDefault(x=>x.Instance==pieceInstance);
             if(item==null||piece==null)return Fail("角色或装备不存在");
-            if(item.Key.EndsWith("宝石")||item.Key=="复制器")return Fail("此道具不能装备");
+            if(item.Key.EndsWith("宝石")||IsConsumable(item.Key))return Fail("此道具不能装备，请对目标使用");
             if(item.Owner==pieceInstance)return Ok("装备保持原位");var equipped=Equipment(pieceInstance);
+            if(item.Owner!=0)return Fail("请先使用装备拆卸器，再转交装备");
             if(equipped.Count>=3)return Fail("每名角色最多三件装备");
             string badge=BadgeTrait(item.Key);
             if(badge!=null&&(HasNativeTrait(piece.Id,badge)||equipped.Any(x=>BadgeTrait(x.Key)!=null)))return Fail("已有该标签或已装备徽章");
@@ -920,7 +922,7 @@ namespace YesterdayConvoy
             item.Owner=pieceInstance;RefreshV08Economy();return Ok("装备已交给"+shop.Definition(piece.Id).Name);
         }
         public ShopTrialModel.Result Unequip(int itemInstance)
-        {if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);if(item==null)return Fail("装备不存在");item.Owner=0;return Ok("已免费卸装");}
+        {if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance);if(item==null)return Fail("装备不存在");if(item.Owner==0)return Fail("此物品尚未装备");var remover=Inventory.FirstOrDefault(x=>x.Key==RemoverKey);return remover==null?Fail("需要装备拆卸器；对目标使用后卸下其全部装备"):UseRemover(remover.Instance,item.Owner);}
 
         internal ShopTrialModel.Result PreviewCombination(int a,int b,out string key)
             => ValidateCombination(items.Find(i=>i.Instance==a),items.Find(i=>i.Instance==b),out key);
@@ -944,6 +946,7 @@ namespace YesterdayConvoy
             key=null;
             if(HasBlockingChoice)return Fail("请先完成待选事项");
             if(x==null||y==null||x==y)return Fail("选择两个不同物品");
+            if(x.Owner!=y.Owner)return Fail("请先使用拆卸器，或选择同一角色身上的两件材料");
             bool Base(string s)=>s.Length==1&&"ABCDEF".Contains(s);
             if(Base(x.Key)&&Base(y.Key))key=string.Concat(new[]{x.Key[0],y.Key[0]}.OrderBy(c=>c));
             else if(x.Key.EndsWith("宝石")&&y.Key.EndsWith("宝石"))
@@ -954,12 +957,23 @@ namespace YesterdayConvoy
                 if(gem!=null&&Base(component.Key))
                 {string[] traits=gem.Key=="赤宝石"?new[]{"整合","雪怪","泥岩","深池","萨卡兹","海嗣"}:new[]{"连击","迅攻","复苏","接棒","同频","提词"};string trait=traits["ABCDEF".IndexOf(component.Key,StringComparison.Ordinal)];if(badgeCounts.GetValueOrDefault(trait)>=2)return Fail("同类徽章整局最多两枚");key="徽章:"+trait+":"+component.Key;}
             }
-            return key==null?Fail("这两件物品没有合成配方"):Ok(ItemName(key));
+            if(key==null)return Fail("这两件物品没有合成配方");
+            string recipeKey=key;
+            if(x.Owner!=0&&Equipment(x.Owner).Except(new[]{x,y}).Any(i=>i.Key==recipeKey))
+                return Fail("目标已有同名进阶装备，请先使用拆卸器再合成");
+            if(x.Owner!=0&&BadgeTrait(key) is { } resultTrait&&shop.Bench.FirstOrDefault(p=>p.Instance==x.Owner) is { } wearer&&
+                (HasNativeTrait(wearer.Id,resultTrait)||Equipment(x.Owner).Except(new[]{x,y}).Any(i=>BadgeTrait(i.Key)!=null)))
+                return Fail("该角色不能穿戴此徽章，请先使用拆卸器");
+            return Ok(ItemName(key));
         }
         public ShopTrialModel.Result UseCopier(int itemInstance,int pieceInstance)
         {
             if(HasBlockingChoice)return Fail("请先完成待选事项");var item=items.Find(x=>x.Instance==itemInstance&&x.Key=="复制器");var piece=shop.Bench.FirstOrDefault(p=>p.Instance==pieceInstance);
-            if(item==null||piece==null)return Fail("复制器或目标不存在");var result=shop.Grant(piece.Id);if(!result.Success)return result;items.Remove(item);OnShopChanged();return result;
+            if(item==null||piece==null)return Fail("复制器或目标不存在");
+            var oldOwners=shop.Bench.Where(p=>p.Id==piece.Id).Select(p=>p.Instance).ToArray();
+            var result=shop.Duplicate(piece.Id);if(!result.Success)return result;
+            PreserveCopiedMergeEquipment(oldOwners,result.Instance);
+            items.Remove(item);OnShopChanged();return result;
         }
         public void NotifySkillCast(int pieceInstance)
         {

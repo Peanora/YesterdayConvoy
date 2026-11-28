@@ -267,7 +267,7 @@ namespace YesterdayConvoy.Tests
                 int Value(string key)=>key.Length==1&&"ABCDEF".Contains(key)?1:FormationCampaignRules.AllItems.Any(item=>item.Id==key)?2:0;
                 int initialCount=run.AllEquipment.Count, initial=run.AllEquipment.Sum(item=>Value(item.Key));
                 run.SettleBattle(true,1,3,0,false);
-                foundSeparateDrop|=run.PendingBalls.Any(drop=>drop.Component!=null);
+                foundSeparateDrop|=run.PendingBalls.Any(drop=>drop.Component!=null&&Value(drop.Component)>0);
                 var original=run.PendingBalls.Select(drop=>drop.Id).ToArray();
                 Assert.That(run.AdvanceNode(),Is.True);
                 run.SettleBattle(true,1,3,0,false);
@@ -287,8 +287,8 @@ namespace YesterdayConvoy.Tests
                 int firstFloor=preplanDrop+Math.Max(0,2-initial-firstLoot-preplanDrop);
                 string trace = "seed "+seed+" plan "+run.PreplanId+" initial "+initial+" firstLoot "+firstLoot+
                     " first: "+string.Join(" | ",run.BallRewards.Where(reward=>reward.Node=="1-1").Select(reward=>reward.Color+"/"+string.Join(",",reward.Items)+"/"+reward.Choice));
-                Assert.That(drops.Count(drop=>drop.Component!=null&&drop.Node=="1-1"),Is.EqualTo(firstFloor),trace);
-                Assert.That(drops.Count(drop=>drop.Component!=null&&drop.Node=="1-2"),
+                Assert.That(drops.Count(drop=>drop.Component!=null&&Value(drop.Component)>0&&drop.Node=="1-1"),Is.EqualTo(firstFloor),trace);
+                Assert.That(drops.Count(drop=>drop.Component!=null&&Value(drop.Component)>0&&drop.Node=="1-2"),
                     Is.EqualTo(Math.Max(0,3-initial-originalLoot-firstFloor)));
             }
             Assert.That(foundSeparateDrop,Is.True);

@@ -52,6 +52,7 @@ namespace YesterdayConvoy.Tests
             Lineup(shop, 0);
             var reserve = FormationTraitView.For(run, shop, "复苏");
             Assert.That(reserve.Count, Is.EqualTo(1)); Assert.That(reserve.BadgeMembers.Single().State, Is.EqualTo(FormationTraitMemberState.Reserve));
+            run.AddItem(FormationCampaignRun.RemoverKey);
             Assert.That(run.Unequip(badge.Instance).Success, Is.True);
             Assert.That(FormationTraitView.For(run, shop, "复苏").BadgeMembers, Is.Empty);
         }
