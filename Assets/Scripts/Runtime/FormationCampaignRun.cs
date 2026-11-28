@@ -416,6 +416,7 @@ namespace YesterdayConvoy
         {if(plannedPurchases>0&&NodeIndex>procurementStart&&shop.Definition(id).Cost>=3&&modulus.GetValueOrDefault("purchase-node",-1)!=NodeIndex){modulus["purchase-node"]=NodeIndex;shop.FreeRefreshes++;}OnShopChanged();}
         public void OnShopChanged()
         {
+            Economy.ObservePromotions();
             foreach(var item in items.Where(x=>x.Owner!=0&&!shop.Bench.Any(p=>p.Instance==x.Owner)))item.Owner=0;
             if(PreplanId=="P03"&&shop.Level>=8&&trainingStart<0)trainingStart=NodeIndex;
             if(HasAugment("ES5")&&!graduationPaid&&shop.Level>=8){graduationPaid=true;shop.AddGold(18);}
